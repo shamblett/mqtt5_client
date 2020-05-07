@@ -19,4 +19,4 @@ The browser client supports only secure(wss) and non-secure(ws) websocket connec
 
 Please read the changelog for details related to specific versions.
 
-#Under Construction - not for production use
+# Under Construction - not for production use
