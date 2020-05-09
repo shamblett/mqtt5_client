@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt_server_client.dart';
 
 // ignore_for_file: deprecated_member_use_from_same_package
 

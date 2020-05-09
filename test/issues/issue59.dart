@@ -7,8 +7,8 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt_server_client.dart';
 
 /// An annotated simple subscribe/publish usage example for mqtt_client. Please read in with reference
 /// to the MQTT specification. The example is runnable, also refer to test/mqtt_client_broker_test...dart
@@ -106,8 +106,8 @@ void onDisconnected() {
   if (client.connectionStatus.state != MqttConnectionState.disconnected) {
     print('EXAMPLE::ERROR - client connection state should be disconnected');
   } else {
-    if (client.connectionStatus.returnCode ==
-        MqttConnectReturnCode.unsolicited) {
+    if (client.connectionStatus.disconnectionOrigin ==
+        MqttDisconnectionOrigin.unsolicited) {
       print('EXAMPLE::SUCCESS - client is indicating unsolicited disconnect');
     } else {
       print(

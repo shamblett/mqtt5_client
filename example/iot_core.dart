@@ -9,8 +9,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt_client.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
 /// An example of connecting to the google iot-core MQTT bridge server and publishing to a devices topic.

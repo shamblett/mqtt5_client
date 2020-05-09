@@ -7,8 +7,8 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt_server_client.dart';
 
 /// A QOS1 publishing example, two QOS one topics are subscribed to and published in quick succession,
 /// tests QOS1 protocol handling.

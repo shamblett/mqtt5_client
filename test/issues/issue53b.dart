@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt_server_client.dart';
 
 const clientId = '5bc71e3ea74ad804cc04a856';
 const token = '2844865:b08b650bdef3774426b2b718f6ab2d6e';

@@ -6,8 +6,8 @@
  */
 
 import 'dart:async';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt_server_client.dart';
 
 Future<int> main() async {
   // Create and connect the client for websocket usage. The scheme must be ws:// otherwise

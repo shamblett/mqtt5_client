@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-/// The mqtt_client has now been split into a server client [MqttServerClient] and a browser
+/// The mqtt5_client has now been split into a server client [MqttServerClient] and a browser
 /// client [MqttBrowserClient]. Example usage of these two clients are contained in this directory.
 /// Example usage for a server client using secure sockets is in the iot_core.dart file.
 ///
