@@ -45,9 +45,6 @@ Future<int> main() async {
   // If needed set the private key file path and the optional passphrase and any other supported security features
   // Note that for flutter users the parameters above can be set in byte format rather than file paths.
   client.securityContext = context;
-  // Set the protocol to V3.1.1 for iot-core, if you fail to do this you will receive a connect ack with the response code
-  // 0x01 Connection Refused, unacceptable protocol version
-  client.setProtocolV311();
   // logging if you wish
   client.logging(on: true);
   // OK, connect, if your encoded JWT token in the password field cannot be decoded by the corresponding public key attached

@@ -30,24 +30,16 @@ class MqttClientConstants {
   /// Default keep alive in seconds
   static int defaultKeepAlive = 60;
 
-  /// Protocol variants
-  /// V3
-  static const int mqttV31ProtocolVersion = 3;
-
-  /// V3 name
-  static const String mqttV31ProtocolName = 'MQIsdp';
-
   /// V4
-  static const int mqttV311ProtocolVersion = 4;
+  static const int mqttProtocolVersion = 5;
 
   /// V4 name
-  static const String mqttV311ProtocolName = 'MQTT';
+  static const String mqttProtocolName = 'MQTT';
 
   /// The default websocket subprotocol list
   static const List<String> protocolsMultipleDefault = <String>[
     'mqtt',
-    'mqttv3.1',
-    'mqttv3.11'
+    'mqttv5'
   ];
 
   /// The default websocket subprotocol list for brokers who expect

@@ -393,16 +393,4 @@ class MqttClient {
       MqttLogger.loggingOn = true;
     }
   }
-
-  /// Set the protocol version to V3.1 - default
-  void setProtocolV31() {
-    Protocol.version = MqttClientConstants.mqttV31ProtocolVersion;
-    Protocol.name = MqttClientConstants.mqttV31ProtocolName;
-  }
-
-  /// Set the protocol version to V3.1.1
-  void setProtocolV311() {
-    Protocol.version = MqttClientConstants.mqttV311ProtocolVersion;
-    Protocol.name = MqttClientConstants.mqttV311ProtocolName;
-  }
 }

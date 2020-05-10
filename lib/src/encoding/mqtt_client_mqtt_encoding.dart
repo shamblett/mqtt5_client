@@ -46,12 +46,10 @@ class MqttEncoding extends Utf8Codec {
   /// invalid within the Mqtt string format.
   static void _validateString(String s) {
     for (var i = 0; i < s.length; i++) {
-      if (Protocol.version == MqttClientConstants.mqttV31ProtocolVersion) {
-        if (s.codeUnitAt(i) > 0x7F) {
-          throw Exception(
-              'mqtt_client::MQTTEncoding: The input string has extended '
-              'UTF characters, which are not supported');
-        }
+      if (s.codeUnitAt(i) > 0x7F) {
+        throw Exception(
+            'mqtt_client::MQTTEncoding: The input string has extended '
+            'UTF characters, which are not supported');
       }
     }
   }
