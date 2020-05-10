@@ -10,26 +10,32 @@ part of mqtt5_client;
 /// Encoding implementation that can encode and decode strings
 /// in the MQTT string format.
 ///
-/// The MQTT string format is simply a pascal string with ANSI character
-/// encoding. The first 2 bytes define the length of the string, and they
-/// are followed by the string itself.
+/// Text fields within the MQTT Control Packets are encoded as UTF-8 strings.
+/// UTF-8 [RFC3629] is an efficient encoding of Unicode [Unicode] characters that
+/// optimizes the encoding of ASCII characters in support of text-based communications.
+///
+/// Each of these strings is prefixed with a two byte integer length field that gives the number
+/// of bytes in a UTF-8 encoded string itself.
+/// Consequently, the maximum size of a UTF-8 encoded string is 65,535 bytes.
+///
 class MqttEncoding extends Utf8Codec {
   /// Encodes all the characters in the specified string
   /// into a sequence of bytes.
   typed.Uint8Buffer getBytes(String s) {
-    _validateString(s);
+    final stringConverted = encoder.convert(s);
+    _validateString(stringConverted);
     final stringBytes = typed.Uint8Buffer();
-    stringBytes.add(s.length >> 8);
-    stringBytes.add(s.length & 0xFF);
-    stringBytes.addAll(encoder.convert(s));
+    stringBytes.add(stringConverted.length >> 8);
+    stringBytes.add(stringConverted.length & 0xFF);
+    stringBytes.addAll(stringConverted);
     return stringBytes;
   }
 
   /// Decodes the bytes in the specified byte array into a string.
   String getString(typed.Uint8Buffer bytes) => decoder.convert(bytes.toList());
 
-  ///  When overridden in a derived class, calculates the number of characters
-  ///  produced by decoding all the bytes in the specified byte array.
+  ///  Calculates the number of characters produced by decoding all the bytes
+  ///  in the specified byte array.
   int getCharCount(typed.Uint8Buffer bytes) {
     if (bytes.length < 2) {
       throw Exception(
@@ -44,13 +50,26 @@ class MqttEncoding extends Utf8Codec {
 
   /// Validates the string to ensure it doesn't contain any characters
   /// invalid within the Mqtt string format.
-  static void _validateString(String s) {
-    for (var i = 0; i < s.length; i++) {
-      if (s.codeUnitAt(i) > 0x7F) {
-        throw Exception(
-            'mqtt_client::MQTTEncoding: The input string has extended '
-            'UTF characters, which are not supported');
-      }
-    }
+  ///
+  /// The character data in a UTF-8 Encoded String MUST be well-formed UTF-8
+  /// as defined by the Unicode specification [Unicode]
+  /// and restated in RFC 3629 [RFC3629]. In particular, the character
+  /// data MUST NOT include encodings of code points between U+D800 and U+DFFF [MQTT-1.5.4-1].
+  /// If the Client or Server receives an MQTT Control Packet containing ill-formed
+  /// UTF-8 it is a Malformed Packet. Refer to section 4.13 for information about handling errors.
+  ///
+  /// A UTF-8 Encoded String MUST NOT include an encoding of the null character U+0000. [MQTT-1.5.4-2].
+  /// If a receiver (Server or Client) receives an MQTT Control Packet containing U+0000 it
+  /// is a Malformed Packet.
+  ///
+  /// The data SHOULD NOT include encodings of the Unicode [Unicode] code points listed below.
+  /// If a receiver (Server or Client) receives an MQTT Control Packet containing any of them
+  /// it MAY treat it as a Malformed Packet. These are the Disallowed Unicode code points.
+  ///
+  ///         U+0001..U+001F control characters
+  ///         U+007F..U+009F control characters
+  ///         Code points defined in the Unicode specification [Unicode] to be non-characters (for example U+0FFFF)
+  static void _validateString(Uint8List s) {
+    // TODO
   }
 }
