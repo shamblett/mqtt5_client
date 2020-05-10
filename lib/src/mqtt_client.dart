@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// The client disconnect callback type
 typedef DisconnectCallback = void Function();

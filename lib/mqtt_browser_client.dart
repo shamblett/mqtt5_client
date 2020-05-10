@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-library mqtt_browser_client;
+library mqtt5_browser_client;
 
 import 'dart:async';
 import 'dart:html';

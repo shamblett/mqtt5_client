@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Implementation of the variable header for an MQTT Subscribe Ack message.
 class MqttSubscribeAckVariableHeader extends MqttVariableHeader {

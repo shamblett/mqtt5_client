@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Implementation of an MQTT Publish Message, used for publishing
 /// telemetry data along a live MQTT stream.

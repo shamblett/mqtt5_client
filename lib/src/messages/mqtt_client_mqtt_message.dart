@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Represents an MQTT message that contains a fixed header, variable
 /// header and message body.

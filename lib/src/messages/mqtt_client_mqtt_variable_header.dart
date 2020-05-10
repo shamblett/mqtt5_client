@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Enumeration used by subclasses to tell the variable header what
 /// should be read from the underlying stream.

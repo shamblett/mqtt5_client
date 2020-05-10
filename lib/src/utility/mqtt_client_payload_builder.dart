@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Utility class to assist with the build in of message topic payloads.
 class MqttClientPayloadBuilder {

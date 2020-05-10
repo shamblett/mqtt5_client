@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Factory for generating instances of MQTT Messages
 class MqttMessageFactory {

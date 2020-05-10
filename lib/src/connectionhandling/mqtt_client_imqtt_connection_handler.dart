@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Callback function definitions
 typedef MessageCallbackFunction = bool Function(MqttMessage message);

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Implementation of a Publication topic that performs additional validations
 /// of messages that are published.

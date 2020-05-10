@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_browser_client;
+part of mqtt5_browser_client;
 
 /// The MQTT browser connection base class
 class MqttBrowserConnection extends MqttConnectionBase {

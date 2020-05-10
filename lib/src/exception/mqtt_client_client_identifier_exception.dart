@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Exception thrown when a client identifier included in a message is too long.
 class ClientIdentifierException implements Exception {

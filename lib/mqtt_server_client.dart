@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-library mqtt_server_client;
+library mqtt5_server_client;
 
 import 'dart:async';
 import 'dart:convert';

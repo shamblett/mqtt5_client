@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Subscribed and Unsubscribed callback typedefs
 typedef SubscribeCallback = void Function(String topic);

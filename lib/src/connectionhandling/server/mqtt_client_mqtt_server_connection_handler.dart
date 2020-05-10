@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_server_client;
+part of mqtt5_server_client;
 
 ///  This class provides specific connection functionality
 ///  for server based connections.

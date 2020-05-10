@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// Class that contains details related to an MQTT Subscribe messages payload
 class MqttSubscribePayload extends MqttPayload {

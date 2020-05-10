@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt5_client;
 
 /// An enumeration of all available MQTT Message Types
 enum MqttMessageType {
