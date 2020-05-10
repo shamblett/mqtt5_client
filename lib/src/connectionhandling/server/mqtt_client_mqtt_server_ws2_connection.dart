@@ -1,7 +1,7 @@
 /*
- * Package : mqtt_client
+ * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
- * Date   : 02/10/2017
+ * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  * 01/19/2019 : Don Edvalson - Added this alternate websocket class to work around AWS deficiencies.
  */
