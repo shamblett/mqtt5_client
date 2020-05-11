@@ -78,6 +78,8 @@ part 'src/dataconvertors/mqtt_client_passthru_payload_convertor.dart';
 
 part 'src/encoding/mqtt_client_mqtt_utf8_encoding.dart';
 
+part 'src/encoding/mqtt_client_mqtt_byte_integer_encoding.dart';
+
 part 'src/dataconvertors/mqtt_client_ascii_payload_convertor.dart';
 
 part 'src/utility/mqtt_client_byte_buffer.dart';

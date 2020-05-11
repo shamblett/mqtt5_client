@@ -79,7 +79,7 @@ class MqttUtf8Encoding extends Utf8Codec {
   ///
   ///         U+0000..U+001F control characters
   ///         U+007F..U+009F control characters
-  static void _validateString(String s) {
+  void _validateString(String s) {
     if (s.runes.any(
         (e) => (e >= 0x0000 && e <= 0x001f) || (e >= 0x007f && e <= 0x009f))) {
       throw Exception(
