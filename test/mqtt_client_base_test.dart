@@ -10,6 +10,7 @@ import 'dart:convert';
 
 import 'package:mqtt5_client/mqtt_client.dart';
 import 'package:test/test.dart';
+import 'package:typed_data/typed_buffers.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
 @TestOn('vm')
@@ -454,12 +455,7 @@ void main() {
     });
     test('Get string', () {
       final enc = MqttUtf8Encoding();
-      final buff = typed.Uint8Buffer(5);
-      buff[0] = 0;
-      buff[1] = 3;
-      buff[2] = 'a'.codeUnits[0];
-      buff[3] = 'b'.codeUnits[0];
-      buff[4] = 'c'.codeUnits[0];
+      final buff = enc.toUtf8('abc');
       final message = enc.fromUtf8(buff);
       expect(message, 'abc');
     });
@@ -499,11 +495,8 @@ void main() {
     test('Control characters initiate failure 1', () {
       final enc = MqttUtf8Encoding();
       var raised = false;
-      final buff = typed.Uint8Buffer(4);
-      buff[0] = 0;
-      buff[1] = 1;
-      buff[2] = 0;
-      buff[3] = 0x7f;
+      final buff = Uint8Buffer();
+      buff.addAll((Utf8Codec().encoder.convert('ab\u{0088}').toList()));
       try {
         enc.fromUtf8(buff);
       } on Exception catch (exception) {
@@ -516,11 +509,8 @@ void main() {
     test('Control characters initiate failure 2', () {
       final enc = MqttUtf8Encoding();
       var raised = false;
-      final buff = typed.Uint8Buffer(4);
-      buff[0] = 0;
-      buff[1] = 1;
-      buff[2] = 0;
-      buff[3] = 0x9f;
+      final buff = Uint8Buffer();
+      buff.addAll((Utf8Codec().encoder.convert('ab\u{0004}').toList()));
       try {
         enc.fromUtf8(buff);
       } on Exception catch (exception) {
@@ -530,22 +520,12 @@ void main() {
       }
       expect(raised, isTrue);
     });
-    test('Control characters initiate failure 3', () {
+    test('Normative example', () {
       final enc = MqttUtf8Encoding();
-      var raised = false;
-      final buff = typed.Uint8Buffer(4);
-      buff[0] = 0;
-      buff[1] = 1;
-      buff[2] = 0;
-      buff[3] = 0x1f;
-      try {
-        enc.fromUtf8(buff);
-      } on Exception catch (exception) {
-        expect(exception.toString(),
-            'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
-        raised = true;
-      }
-      expect(raised, isTrue);
+      var encoded = enc.toUtf8('A𪛔');
+      final count = enc.utf8StringLength(encoded);
+      expect(count, 5);
+      expect(encoded.toList(), [0x00, 0x05, 0x41, 0xf0, 0xaa, 0x9b, 0x94]);
     });
   });
 

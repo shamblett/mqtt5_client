@@ -22,8 +22,12 @@ class MqttUtf8Encoding extends Utf8Codec {
   /// Encodes all the characters in the specified string
   /// into a sequence of bytes.
   typed.Uint8Buffer toUtf8(String s) {
+    _validateString(s);
     final stringConverted = encoder.convert(s);
-    _validateString(stringConverted);
+    if (stringConverted.length > 65535) {
+      throw Exception(
+          'MqttUtf8Encoding::toUtf8 -  UTF8 string length is invalid, length is ${stringConverted.length}');
+    }
     final stringBytes = typed.Uint8Buffer();
     stringBytes.add(stringConverted.length >> 8);
     stringBytes.add(stringConverted.length & 0xFF);
@@ -34,8 +38,13 @@ class MqttUtf8Encoding extends Utf8Codec {
   /// Decodes the bytes in the specified MQTT UTF8 encoded byte array into a string.
   String fromUtf8(typed.Uint8Buffer bytes) {
     var utf8Bytes = bytes.toList().getRange(2, bytes.length);
-    _validateString(Uint8List.fromList(utf8Bytes.toList()));
-    return decoder.convert(utf8Bytes.toList());
+    if (utf8Bytes.length > 65535) {
+      throw Exception(
+          'MqttUtf8Encoding::fromUtf8 -  UTF8 string length is invalid, length is ${utf8Bytes.length}');
+    }
+    var decoded = decoder.convert(utf8Bytes.toList());
+    _validateString(decoded);
+    return decoded;
   }
 
   ///  Gets the length of a UTF8 encoded string from the length bytes
@@ -68,15 +77,11 @@ class MqttUtf8Encoding extends Utf8Codec {
   /// If a receiver (Server or Client) receives an MQTT Control Packet containing any of them
   /// it MAY treat it as a Malformed Packet. These are the Disallowed Unicode code points.
   ///
-  ///         U+0001..U+001F control characters
+  ///         U+0000..U+001F control characters
   ///         U+007F..U+009F control characters
-  static void _validateString(Uint8List s) {
-    // The string must be less than 65535 in length
-    if (s.length > 65535) {
-      throw Exception(
-          'MqttUtf8Encoding:: UTF8 string length is invalid, length is ${s.length}');
-    }
-    if (s.any((e) => e <= 0x001f || (e >= 0x007f && e <= 0x009f))) {
+  static void _validateString(String s) {
+    if (s.runes.any(
+        (e) => (e >= 0x0000 && e <= 0x001f) || (e >= 0x007f && e <= 0x009f))) {
       throw Exception(
           'MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
     }
