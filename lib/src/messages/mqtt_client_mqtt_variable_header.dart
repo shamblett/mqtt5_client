@@ -78,7 +78,7 @@ class MqttVariableHeader {
   int messageIdentifier = 0;
 
   /// Encoder
-  final MqttEncoding _enc = MqttEncoding();
+  final MqttUtf8Encoding _enc = MqttUtf8Encoding();
 
   /// Creates a variable header from the specified header stream.
   /// A subclass can override this method to do completely
@@ -110,13 +110,13 @@ class MqttVariableHeader {
   /// A subclass that overrides writeTo must also overwrite this method.
   int getWriteLength() {
     var headerLength = 0;
-    final enc = MqttEncoding();
-    headerLength += enc.getByteCount(protocolName);
+    final enc = MqttUtf8Encoding();
+    headerLength += enc.utf8ByteCount(protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
     headerLength += 2; // keepAlive
     headerLength += 1; // returnCode
-    headerLength += enc.getByteCount(topicName.toString());
+    headerLength += enc.utf8ByteCount(topicName.toString());
     headerLength += 2; // MessageIdentifier
     return headerLength;
   }
@@ -189,7 +189,7 @@ class MqttVariableHeader {
     topicName = MqttByteBuffer.readMqttString(stream);
     // If the protocol si V311 allow extended UTF8 characters
     if (Protocol.version == MqttClientConstants.mqttProtocolVersion) {
-      length += _enc.getByteCount(topicName);
+      length += _enc.utf8ByteCount(topicName);
     } else {
       length = topicName.length + 2; // 2 for length short at front of string.
     }

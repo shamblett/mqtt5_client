@@ -148,8 +148,8 @@ class MqttByteBuffer {
   /// stringToWrite - The string to write.
   static void writeMqttString(
       MqttByteBuffer stringStream, String stringToWrite) {
-    final enc = MqttEncoding();
-    final stringBytes = enc.getBytes(stringToWrite);
+    final enc = MqttUtf8Encoding();
+    final stringBytes = enc.toUtf8(stringToWrite);
     stringStream.write(stringBytes);
   }
 
@@ -160,10 +160,10 @@ class MqttByteBuffer {
   static String readMqttString(MqttByteBuffer buffer) {
     // Read and check the length
     final lengthBytes = buffer.read(2);
-    final enc = MqttEncoding();
-    final stringLength = enc.getCharCount(lengthBytes);
+    final enc = MqttUtf8Encoding();
+    final stringLength = enc.utf8StringLength(lengthBytes);
     final stringBuff = buffer.read(stringLength);
-    return enc.getString(stringBuff);
+    return enc.fromUtf8(stringBuff);
   }
 
   @override

@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Encoding implementation that can encode and decode strings
-/// in the MQTT string format.
+/// in the MQTT UTF8 string format.
 ///
 /// Text fields within the MQTT Control Packets are encoded as UTF-8 strings.
 /// UTF-8 [RFC3629] is an efficient encoding of Unicode [Unicode] characters that
@@ -18,10 +18,10 @@ part of mqtt5_client;
 /// of bytes in a UTF-8 encoded string itself.
 /// Consequently, the maximum size of a UTF-8 encoded string is 65,535 bytes.
 ///
-class MqttEncoding extends Utf8Codec {
+class MqttUtf8Encoding extends Utf8Codec {
   /// Encodes all the characters in the specified string
   /// into a sequence of bytes.
-  typed.Uint8Buffer getBytes(String s) {
+  typed.Uint8Buffer toUtf8(String s) {
     final stringConverted = encoder.convert(s);
     _validateString(stringConverted);
     final stringBytes = typed.Uint8Buffer();
@@ -31,25 +31,27 @@ class MqttEncoding extends Utf8Codec {
     return stringBytes;
   }
 
-  /// Decodes the bytes in the specified byte array into a string.
-  String getString(typed.Uint8Buffer bytes) => decoder.convert(bytes.toList());
+  /// Decodes the bytes in the specified MQTT UTF8 encoded byte array into a string.
+  String fromUtf8(typed.Uint8Buffer bytes) {
+    var utf8Bytes = bytes.toList().getRange(2, bytes.length);
+    _validateString(Uint8List.fromList(utf8Bytes.toList()));
+    return decoder.convert(utf8Bytes.toList());
+  }
 
-  ///  Calculates the number of characters produced by decoding all the bytes
-  ///  in the specified byte array.
-  int getCharCount(typed.Uint8Buffer bytes) {
+  ///  Gets the length of a UTF8 encoded string from the length bytes
+  int utf8StringLength(typed.Uint8Buffer bytes) {
     if (bytes.length < 2) {
       throw Exception(
-          'mqtt_client::MQTTEncoding: Length byte array must comprise 2 bytes');
+          'MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
     }
     return (bytes[0] << 8) + bytes[1];
   }
 
-  /// Calculates the number of bytes produced by encoding the
-  /// characters in the specified.
-  int getByteCount(String chars) => getBytes(chars).length;
+  /// Gets the total length of a UTF8 encoded string including the length bytes
+  int utf8ByteCount(String chars) => toUtf8(chars).length;
 
-  /// Validates the string to ensure it doesn't contain any characters
-  /// invalid within the Mqtt string format.
+  /// Validates the UTF8 string to ensure it doesn't contain any characters
+  /// invalid within the MQTT string format.
   ///
   /// The character data in a UTF-8 Encoded String MUST be well-formed UTF-8
   /// as defined by the Unicode specification [Unicode]
@@ -68,8 +70,15 @@ class MqttEncoding extends Utf8Codec {
   ///
   ///         U+0001..U+001F control characters
   ///         U+007F..U+009F control characters
-  ///         Code points defined in the Unicode specification [Unicode] to be non-characters (for example U+0FFFF)
   static void _validateString(Uint8List s) {
-    // TODO
+    // The string must be less than 65535 in length
+    if (s.length > 65535) {
+      throw Exception(
+          'MqttUtf8Encoding:: UTF8 string length is invalid, length is ${s.length}');
+    }
+    if (s.any((e) => e <= 0x001f || (e >= 0x007f && e <= 0x009f))) {
+      throw Exception(
+          'MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+    }
   }
 }

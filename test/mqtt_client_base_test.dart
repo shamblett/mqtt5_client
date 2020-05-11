@@ -438,8 +438,8 @@ void main() {
 
   group('Encoding', () {
     test('Get bytes', () {
-      final enc = MqttEncoding();
-      final bytes = enc.getBytes('abc');
+      final enc = MqttUtf8Encoding();
+      final bytes = enc.toUtf8('abc');
       expect(bytes.length, 5);
       expect(bytes[0], 0);
       expect(bytes[1], 3);
@@ -448,66 +448,101 @@ void main() {
       expect(bytes[4], 'c'.codeUnits[0]);
     });
     test('Get byte count', () {
-      final enc = MqttEncoding();
-      final byteCount = enc.getByteCount('abc');
-      print(byteCount);
+      final enc = MqttUtf8Encoding();
+      final byteCount = enc.utf8ByteCount('abc');
       expect(byteCount, 5);
     });
     test('Get string', () {
-      final enc = MqttEncoding();
-      final buff = typed.Uint8Buffer(3);
-      buff[0] = 'a'.codeUnits[0];
-      buff[1] = 'b'.codeUnits[0];
-      buff[2] = 'c'.codeUnits[0];
-      final message = enc.getString(buff);
-      expect(message, 'abc');
-    });
-    test('Get char count valid length LSB', () {
-      final enc = MqttEncoding();
+      final enc = MqttUtf8Encoding();
       final buff = typed.Uint8Buffer(5);
       buff[0] = 0;
       buff[1] = 3;
       buff[2] = 'a'.codeUnits[0];
       buff[3] = 'b'.codeUnits[0];
       buff[4] = 'c'.codeUnits[0];
-      final count = enc.getCharCount(buff);
+      final message = enc.fromUtf8(buff);
+      expect(message, 'abc');
+    });
+    test('Get char count valid length LSB', () {
+      final enc = MqttUtf8Encoding();
+      final buff = typed.Uint8Buffer(5);
+      buff[0] = 0;
+      buff[1] = 3;
+      buff[2] = 'a'.codeUnits[0];
+      buff[3] = 'b'.codeUnits[0];
+      buff[4] = 'c'.codeUnits[0];
+      final count = enc.utf8StringLength(buff);
       expect(count, 3);
     });
     test('Get char count valid length MSB', () {
-      final enc = MqttEncoding();
+      final enc = MqttUtf8Encoding();
       final buff = typed.Uint8Buffer(2);
       buff[0] = 0xFF;
       buff[1] = 0xFF;
-      final count = enc.getCharCount(buff);
+      final count = enc.utf8StringLength(buff);
       expect(count, 65535);
     });
     test('Get char count invalid length', () {
-      final enc = MqttEncoding();
+      final enc = MqttUtf8Encoding();
       var raised = false;
       final buff = typed.Uint8Buffer(1);
       buff[0] = 0;
       try {
-        final count = enc.getCharCount(buff);
-        print(count); // won't get here
+        enc.utf8StringLength(buff);
       } on Exception catch (exception) {
         expect(exception.toString(),
-            'Exception: mqtt_client::MQTTEncoding: Length byte array must comprise 2 bytes');
+            'Exception: MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
         raised = true;
       }
       expect(raised, isTrue);
     });
-    test('Extended characters initiate failure', () {
-      final enc = MqttEncoding();
+    test('Control characters initiate failure 1', () {
+      final enc = MqttUtf8Encoding();
       var raised = false;
-      const extStr = '©';
+      final buff = typed.Uint8Buffer(4);
+      buff[0] = 0;
+      buff[1] = 1;
+      buff[2] = 0;
+      buff[3] = 0x7f;
       try {
-        final buff = enc.getBytes(extStr);
-        print(buff.toString()); // won't get here
+        enc.fromUtf8(buff);
       } on Exception catch (exception) {
-        expect(
-            exception.toString(),
-            'Exception: mqtt_client::MQTTEncoding: The input string has extended '
-            'UTF characters, which are not supported');
+        expect(exception.toString(),
+            'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+        raised = true;
+      }
+      expect(raised, isTrue);
+    });
+    test('Control characters initiate failure 2', () {
+      final enc = MqttUtf8Encoding();
+      var raised = false;
+      final buff = typed.Uint8Buffer(4);
+      buff[0] = 0;
+      buff[1] = 1;
+      buff[2] = 0;
+      buff[3] = 0x9f;
+      try {
+        enc.fromUtf8(buff);
+      } on Exception catch (exception) {
+        expect(exception.toString(),
+            'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+        raised = true;
+      }
+      expect(raised, isTrue);
+    });
+    test('Control characters initiate failure 3', () {
+      final enc = MqttUtf8Encoding();
+      var raised = false;
+      final buff = typed.Uint8Buffer(4);
+      buff[0] = 0;
+      buff[1] = 1;
+      buff[2] = 0;
+      buff[3] = 0x1f;
+      try {
+        enc.fromUtf8(buff);
+      } on Exception catch (exception) {
+        expect(exception.toString(),
+            'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
         raised = true;
       }
       expect(raised, isTrue);

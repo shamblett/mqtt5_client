@@ -55,9 +55,9 @@ class MqttSubscribePayload extends MqttPayload {
   @override
   int getWriteLength() {
     var length = 0;
-    final enc = MqttEncoding();
+    final enc = MqttUtf8Encoding();
     subscriptions.forEach((String key, MqttQos value) {
-      length += enc.getByteCount(key);
+      length += enc.utf8ByteCount(key);
       length += 1;
     });
     return length;
