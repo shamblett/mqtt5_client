@@ -438,94 +438,237 @@ void main() {
   });
 
   group('Encoding', () {
-    test('Get bytes', () {
-      final enc = MqttUtf8Encoding();
-      final bytes = enc.toUtf8('abc');
-      expect(bytes.length, 5);
-      expect(bytes[0], 0);
-      expect(bytes[1], 3);
-      expect(bytes[2], 'a'.codeUnits[0]);
-      expect(bytes[3], 'b'.codeUnits[0]);
-      expect(bytes[4], 'c'.codeUnits[0]);
+    group('UTF8', () {
+      test('Get bytes', () {
+        final enc = MqttUtf8Encoding();
+        final bytes = enc.toUtf8('abc');
+        expect(bytes.length, 5);
+        expect(bytes[0], 0);
+        expect(bytes[1], 3);
+        expect(bytes[2], 'a'.codeUnits[0]);
+        expect(bytes[3], 'b'.codeUnits[0]);
+        expect(bytes[4], 'c'.codeUnits[0]);
+      });
+      test('Get byte count', () {
+        final enc = MqttUtf8Encoding();
+        final byteCount = enc.utf8ByteCount('abc');
+        expect(byteCount, 5);
+      });
+      test('Get string', () {
+        final enc = MqttUtf8Encoding();
+        final buff = enc.toUtf8('abc');
+        final message = enc.fromUtf8(buff);
+        expect(message, 'abc');
+      });
+      test('Get char count valid length LSB', () {
+        final enc = MqttUtf8Encoding();
+        final buff = typed.Uint8Buffer(5);
+        buff[0] = 0;
+        buff[1] = 3;
+        buff[2] = 'a'.codeUnits[0];
+        buff[3] = 'b'.codeUnits[0];
+        buff[4] = 'c'.codeUnits[0];
+        final count = enc.utf8StringLength(buff);
+        expect(count, 3);
+      });
+      test('Get char count valid length MSB', () {
+        final enc = MqttUtf8Encoding();
+        final buff = typed.Uint8Buffer(2);
+        buff[0] = 0xFF;
+        buff[1] = 0xFF;
+        final count = enc.utf8StringLength(buff);
+        expect(count, 65535);
+      });
+      test('Get char count invalid length', () {
+        final enc = MqttUtf8Encoding();
+        var raised = false;
+        final buff = typed.Uint8Buffer(1);
+        buff[0] = 0;
+        try {
+          enc.utf8StringLength(buff);
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('Control characters initiate failure 1', () {
+        final enc = MqttUtf8Encoding();
+        var raised = false;
+        final buff = Uint8Buffer();
+        buff.addAll((Utf8Codec().encoder.convert('ab\u{0088}').toList()));
+        try {
+          enc.fromUtf8(buff);
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('Control characters initiate failure 2', () {
+        final enc = MqttUtf8Encoding();
+        var raised = false;
+        final buff = Uint8Buffer();
+        buff.addAll((Utf8Codec().encoder.convert('ab\u{0004}').toList()));
+        try {
+          enc.fromUtf8(buff);
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('Normative example', () {
+        final enc = MqttUtf8Encoding();
+        var encoded = enc.toUtf8('A𪛔');
+        final count = enc.utf8StringLength(encoded);
+        expect(count, 5);
+        expect(encoded.toList(), [0x00, 0x05, 0x41, 0xf0, 0xaa, 0x9b, 0x94]);
+      });
     });
-    test('Get byte count', () {
-      final enc = MqttUtf8Encoding();
-      final byteCount = enc.utf8ByteCount('abc');
-      expect(byteCount, 5);
-    });
-    test('Get string', () {
-      final enc = MqttUtf8Encoding();
-      final buff = enc.toUtf8('abc');
-      final message = enc.fromUtf8(buff);
-      expect(message, 'abc');
-    });
-    test('Get char count valid length LSB', () {
-      final enc = MqttUtf8Encoding();
-      final buff = typed.Uint8Buffer(5);
-      buff[0] = 0;
-      buff[1] = 3;
-      buff[2] = 'a'.codeUnits[0];
-      buff[3] = 'b'.codeUnits[0];
-      buff[4] = 'c'.codeUnits[0];
-      final count = enc.utf8StringLength(buff);
-      expect(count, 3);
-    });
-    test('Get char count valid length MSB', () {
-      final enc = MqttUtf8Encoding();
-      final buff = typed.Uint8Buffer(2);
-      buff[0] = 0xFF;
-      buff[1] = 0xFF;
-      final count = enc.utf8StringLength(buff);
-      expect(count, 65535);
-    });
-    test('Get char count invalid length', () {
-      final enc = MqttUtf8Encoding();
-      var raised = false;
-      final buff = typed.Uint8Buffer(1);
-      buff[0] = 0;
-      try {
-        enc.utf8StringLength(buff);
-      } on Exception catch (exception) {
-        expect(exception.toString(),
-            'Exception: MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
-        raised = true;
-      }
-      expect(raised, isTrue);
-    });
-    test('Control characters initiate failure 1', () {
-      final enc = MqttUtf8Encoding();
-      var raised = false;
-      final buff = Uint8Buffer();
-      buff.addAll((Utf8Codec().encoder.convert('ab\u{0088}').toList()));
-      try {
-        enc.fromUtf8(buff);
-      } on Exception catch (exception) {
-        expect(exception.toString(),
-            'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
-        raised = true;
-      }
-      expect(raised, isTrue);
-    });
-    test('Control characters initiate failure 2', () {
-      final enc = MqttUtf8Encoding();
-      var raised = false;
-      final buff = Uint8Buffer();
-      buff.addAll((Utf8Codec().encoder.convert('ab\u{0004}').toList()));
-      try {
-        enc.fromUtf8(buff);
-      } on Exception catch (exception) {
-        expect(exception.toString(),
-            'Exception: MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
-        raised = true;
-      }
-      expect(raised, isTrue);
-    });
-    test('Normative example', () {
-      final enc = MqttUtf8Encoding();
-      var encoded = enc.toUtf8('A𪛔');
-      final count = enc.utf8StringLength(encoded);
-      expect(count, 5);
-      expect(encoded.toList(), [0x00, 0x05, 0x41, 0xf0, 0xaa, 0x9b, 0x94]);
+    group('Variable Byte Integer', () {
+      test('toInt - Null Byte Array', () {
+        var enc = MqttByteIntegerEncoding();
+        var raised = false;
+        try {
+          enc.toInt(null);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer has an invalid length null or is null');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('toInt - Empty Byte Array', () {
+        var enc = MqttByteIntegerEncoding();
+        var raised = false;
+        var buff = typed.Uint8Buffer();
+        try {
+          enc.toInt(buff);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer has an invalid length 0 or is null');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('toInt - Byte Array Too Long', () {
+        var enc = MqttByteIntegerEncoding();
+        var raised = false;
+        var buff = typed.Uint8Buffer(5);
+        try {
+          enc.toInt(buff);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer has an invalid length 5 or is null');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('toInt - One Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var buff = typed.Uint8Buffer(1);
+        buff[0] = 0x08;
+        var res = enc.toInt(buff);
+        expect(res, 8);
+      });
+      test('toInt - Two Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var buff = typed.Uint8Buffer(2);
+        buff[0] = 0x80;
+        buff[1] = 0x70;
+        var res = enc.toInt(buff);
+        expect(res, 14336);
+      });
+      test('toInt - Three Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var buff = typed.Uint8Buffer(3);
+        buff[0] = 0x80;
+        buff[1] = 0x80;
+        buff[2] = 0x70;
+        var res = enc.toInt(buff);
+        expect(res, 1835008);
+      });
+      test('toInt - Four Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var buff = typed.Uint8Buffer(4);
+        buff[0] = 0x80;
+        buff[1] = 0x80;
+        buff[2] = 0x80;
+        buff[3] = 0x70;
+        var res = enc.toInt(buff);
+        expect(res, 234881024);
+      });
+      test('toInt - Invalid Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var raised = false;
+        var buff = typed.Uint8Buffer(1);
+        buff[0] = 0xaa;
+        try {
+          enc.toInt(buff);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt invalid byte sequence [170]');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('fromInt - Value Too High', () {
+        var enc = MqttByteIntegerEncoding();
+        var raised = false;
+        var value = MqttByteIntegerEncoding.maxConvertibleValue + 1;
+        try {
+          enc.fromInt(value);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::fromInt supplied value is not convertible 268435456');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('fromInt - Value Negative', () {
+        var enc = MqttByteIntegerEncoding();
+        var raised = false;
+        var value = -10;
+        try {
+          enc.fromInt(value);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::fromInt supplied value is not convertible -10');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('fromInt - One Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var res = enc.fromInt(8);
+        expect(res.toList(), [8]);
+      });
+      test('fromInt - Two Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var res = enc.fromInt(14336);
+        expect(res.toList(), [0x80, 0x70]);
+      });
+      test('fromInt - Three Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var res = enc.fromInt(1835008);
+        expect(res.toList(), [0x80, 0x80, 0x70]);
+      });
+      test('fromInt - Four Byte Value', () {
+        var enc = MqttByteIntegerEncoding();
+        var res = enc.fromInt(234881024);
+        expect(res.toList(), [0x80, 0x80, 0x80, 0x70]);
+      });
+      test('Reversible', () {
+        var enc = MqttByteIntegerEncoding();
+        const val = 10000;
+        var res = enc.fromInt(val);
+        var intRes = enc.toInt(res);
+        expect(intRes, val);
+      });
     });
   });
 

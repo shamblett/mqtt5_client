@@ -17,33 +17,44 @@ part of mqtt5_client;
 /// The encoded value MUST use the minimum number of bytes necessary to
 /// represent the value [MQTT-1.5.5-1].
 class MqttByteIntegerEncoding {
+  static const maxConvertibleValue = 268435455;
+
   /// Byte integer to integer
   int toInt(typed.Uint8Buffer byteInteger) {
     // Must be a maximum length of 4
-    if (byteInteger.isEmpty || byteInteger.length > 4) {
+    if (byteInteger == null || byteInteger.isEmpty || byteInteger.length > 4) {
       throw ArgumentError(
-          'MqttByteIntegerEncoding::toInt byte integer has an invalid length ${byteInteger?.length}');
+          'MqttByteIntegerEncoding::toInt byte integer has an invalid length ${byteInteger?.length} or is null');
     }
     var multiplier = 1;
     var value = 0;
     var index = 0;
     var encodedByte = 0;
-
-    do {
-      encodedByte = byteInteger[index];
-      value += (encodedByte & 127) * multiplier;
-      if (multiplier > 128 * 128 * 128) {
-        throw ArgumentError(
-            'MqttByteIntegerEncoding::toInt Malformed Variable Byte Integer');
-      }
-      multiplier *= 128;
-      index++;
-    } while ((encodedByte & 128) != 0);
+    try {
+      do {
+        encodedByte = byteInteger[index];
+        value += (encodedByte & 127) * multiplier;
+        if (multiplier > 128 * 128 * 128) {
+          throw ArgumentError(
+              'MqttByteIntegerEncoding::toInt Malformed Variable Byte Integer');
+        }
+        multiplier *= 128;
+        index++;
+      } while ((encodedByte & 128) != 0);
+    } on Error {
+      throw ArgumentError(
+          'MqttByteIntegerEncoding::toInt invalid byte sequence $byteInteger');
+    }
     return value;
   }
 
   /// Integer to byte integer
+  /// The convertible value range is 0 .. 268,435,455 (0xFF, 0xFF, 0xFF, 0x7F)
   typed.Uint8Buffer fromInt(int value) {
+    if (value > maxConvertibleValue || value < 0) {
+      throw ArgumentError(
+          'MqttByteIntegerEncoding::fromInt supplied value is not convertible $value');
+    }
     var x = value;
     var encodedByte = 0;
     var result = typed.Uint8Buffer();
