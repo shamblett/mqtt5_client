@@ -161,7 +161,7 @@ class MqttByteBuffer {
     // Read and check the length
     final lengthBytes = buffer.read(2);
     final enc = MqttUtf8Encoding();
-    final stringLength = enc.utf8StringLength(lengthBytes);
+    final stringLength = enc.length(lengthBytes);
     final stringBuff = buffer.read(stringLength);
     return enc.fromUtf8(stringBuff);
   }

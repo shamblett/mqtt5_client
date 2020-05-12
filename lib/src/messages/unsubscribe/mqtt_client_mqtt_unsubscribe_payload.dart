@@ -52,7 +52,7 @@ class MqttUnsubscribePayload extends MqttPayload {
     var length = 0;
     final enc = MqttUtf8Encoding();
     for (final subscription in subscriptions) {
-      length += enc.utf8ByteCount(subscription);
+      length += enc.byteCount(subscription);
     }
     return length;
   }

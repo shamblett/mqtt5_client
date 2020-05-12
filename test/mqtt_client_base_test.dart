@@ -451,7 +451,7 @@ void main() {
       });
       test('Get byte count', () {
         final enc = MqttUtf8Encoding();
-        final byteCount = enc.utf8ByteCount('abc');
+        final byteCount = enc.byteCount('abc');
         expect(byteCount, 5);
       });
       test('Get string', () {
@@ -468,7 +468,7 @@ void main() {
         buff[2] = 'a'.codeUnits[0];
         buff[3] = 'b'.codeUnits[0];
         buff[4] = 'c'.codeUnits[0];
-        final count = enc.utf8StringLength(buff);
+        final count = enc.length(buff);
         expect(count, 3);
       });
       test('Get char count valid length MSB', () {
@@ -476,7 +476,7 @@ void main() {
         final buff = typed.Uint8Buffer(2);
         buff[0] = 0xFF;
         buff[1] = 0xFF;
-        final count = enc.utf8StringLength(buff);
+        final count = enc.length(buff);
         expect(count, 65535);
       });
       test('Get char count invalid length', () {
@@ -485,7 +485,7 @@ void main() {
         final buff = typed.Uint8Buffer(1);
         buff[0] = 0;
         try {
-          enc.utf8StringLength(buff);
+          enc.length(buff);
         } on Exception catch (exception) {
           expect(exception.toString(),
               'Exception: MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
@@ -524,7 +524,7 @@ void main() {
       test('Normative example', () {
         final enc = MqttUtf8Encoding();
         var encoded = enc.toUtf8('A𪛔');
-        final count = enc.utf8StringLength(encoded);
+        final count = enc.length(encoded);
         expect(count, 5);
         expect(encoded.toList(), [0x00, 0x05, 0x41, 0xf0, 0xaa, 0x9b, 0x94]);
       });
@@ -668,6 +668,53 @@ void main() {
         var res = enc.fromInt(val);
         var intRes = enc.toInt(res);
         expect(intRes, val);
+      });
+    });
+    group('BinaryData, ()', () {
+      test('toBinaryData - Null', () {
+        var enc = MqttBinaryDataEncoding();
+        var raised = false;
+        try {
+          enc.toBinaryData(null);
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttBinaryDataEncoding::toBinaryData  -  data is null or empty');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('toBinaryData - Empty', () {
+        var enc = MqttBinaryDataEncoding();
+        var raised = false;
+        try {
+          enc.toBinaryData(typed.Uint8Buffer());
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttBinaryDataEncoding::toBinaryData  -  data is null or empty');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('toBinaryData - Invalid Length Bytes', () {
+        var enc = MqttBinaryDataEncoding();
+        var raised = false;
+        try {
+          enc.toBinaryData(typed.Uint8Buffer(65536));
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttBinaryDataEncoding::toBinaryData  -  data length is invalid, length is 65536');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('toBinaryData - Valid', () {
+        var enc = MqttBinaryDataEncoding();
+        var buff = typed.Uint8Buffer(3);
+        buff[0] = 1;
+        buff[1] = 2;
+        buff[2] = 3;
+        var res = enc.toBinaryData(buff);
+        expect(res.toList(), [0, 3, 1, 2, 3]);
       });
     });
   });

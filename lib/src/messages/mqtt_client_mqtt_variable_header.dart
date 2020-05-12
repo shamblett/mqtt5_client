@@ -111,12 +111,12 @@ class MqttVariableHeader {
   int getWriteLength() {
     var headerLength = 0;
     final enc = MqttUtf8Encoding();
-    headerLength += enc.utf8ByteCount(protocolName);
+    headerLength += enc.byteCount(protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
     headerLength += 2; // keepAlive
     headerLength += 1; // returnCode
-    headerLength += enc.utf8ByteCount(topicName.toString());
+    headerLength += enc.byteCount(topicName.toString());
     headerLength += 2; // MessageIdentifier
     return headerLength;
   }
@@ -189,7 +189,7 @@ class MqttVariableHeader {
     topicName = MqttByteBuffer.readMqttString(stream);
     // If the protocol si V311 allow extended UTF8 characters
     if (Protocol.version == MqttClientConstants.mqttProtocolVersion) {
-      length += _enc.utf8ByteCount(topicName);
+      length += _enc.byteCount(topicName);
     } else {
       length = topicName.length + 2; // 2 for length short at front of string.
     }

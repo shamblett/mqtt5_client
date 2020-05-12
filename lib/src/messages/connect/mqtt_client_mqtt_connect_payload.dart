@@ -91,16 +91,16 @@ class MqttConnectPayload extends MqttPayload {
   int getWriteLength() {
     var length = 0;
     final enc = MqttUtf8Encoding();
-    length += enc.utf8ByteCount(clientIdentifier);
+    length += enc.byteCount(clientIdentifier);
     if (variableHeader.connectFlags.willFlag) {
-      length += enc.utf8ByteCount(willTopic);
-      length += enc.utf8ByteCount(willMessage);
+      length += enc.byteCount(willTopic);
+      length += enc.byteCount(willMessage);
     }
     if (variableHeader.connectFlags.usernameFlag) {
-      length += enc.utf8ByteCount(username);
+      length += enc.byteCount(username);
     }
     if (variableHeader.connectFlags.passwordFlag) {
-      length += enc.utf8ByteCount(password);
+      length += enc.byteCount(password);
     }
     return length;
   }

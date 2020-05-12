@@ -39,7 +39,7 @@ class MqttConnectVariableHeader extends MqttVariableHeader {
   int getWriteLength() {
     var headerLength = 0;
     final enc = MqttUtf8Encoding();
-    headerLength += enc.utf8ByteCount(protocolName);
+    headerLength += enc.byteCount(protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
     headerLength += 2; // keepAlive

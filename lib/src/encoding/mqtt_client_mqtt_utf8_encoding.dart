@@ -48,7 +48,7 @@ class MqttUtf8Encoding extends Utf8Codec {
   }
 
   ///  Gets the length of a UTF8 encoded string from the length bytes
-  int utf8StringLength(typed.Uint8Buffer bytes) {
+  int length(typed.Uint8Buffer bytes) {
     if (bytes.length < 2) {
       throw Exception(
           'MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
@@ -57,7 +57,7 @@ class MqttUtf8Encoding extends Utf8Codec {
   }
 
   /// Gets the total length of a UTF8 encoded string including the length bytes
-  int utf8ByteCount(String chars) => toUtf8(chars).length;
+  int byteCount(String chars) => toUtf8(chars).length;
 
   /// Validates the UTF8 string to ensure it doesn't contain any characters
   /// invalid within the MQTT string format.
