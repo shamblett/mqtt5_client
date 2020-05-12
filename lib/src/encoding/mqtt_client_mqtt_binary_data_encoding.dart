@@ -30,11 +30,8 @@ class MqttBinaryDataEncoding {
 
   /// From binary data
   typed.Uint8Buffer fromBinaryData(typed.Uint8Buffer data) {
-    if (data.length < 2) {
-      throw Exception(
-          'MqttBinaryDataEncoding::toBinaryData length byte array must comprise 2 bytes');
-    }
-    return data.getRange(2, data.length);
+    var len = length(data);
+    return typed.Uint8Buffer()..addAll(data.getRange(2, 2 + len));
   }
 
   /// Length of a binary data sequence

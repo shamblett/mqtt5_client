@@ -497,6 +497,8 @@ void main() {
         final enc = MqttUtf8Encoding();
         var raised = false;
         final buff = Uint8Buffer();
+        buff.add(0);
+        buff.add(4);
         buff.addAll((Utf8Codec().encoder.convert('ab\u{0088}').toList()));
         try {
           enc.fromUtf8(buff);
@@ -511,6 +513,8 @@ void main() {
         final enc = MqttUtf8Encoding();
         var raised = false;
         final buff = Uint8Buffer();
+        buff.add(0);
+        buff.add(3);
         buff.addAll((Utf8Codec().encoder.convert('ab\u{0004}').toList()));
         try {
           enc.fromUtf8(buff);
@@ -715,6 +719,30 @@ void main() {
         buff[2] = 3;
         var res = enc.toBinaryData(buff);
         expect(res.toList(), [0, 3, 1, 2, 3]);
+      });
+      test('fromBinaryData - Invalid Length Bytes', () {
+        var enc = MqttBinaryDataEncoding();
+        var raised = false;
+        var buff = typed.Uint8Buffer(1);
+        try {
+          enc.fromBinaryData(buff);
+        } on Exception catch (exception) {
+          expect(exception.toString(),
+              'Exception: MqttBinaryDataEncoding::length length byte array must comprise 2 bytes');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
+      test('fromBinaryData - Valid', () {
+        var enc = MqttBinaryDataEncoding();
+        var buff = typed.Uint8Buffer(5);
+        buff[0] = 0;
+        buff[1] = 3;
+        buff[2] = 1;
+        buff[3] = 2;
+        buff[4] = 3;
+        var res = enc.fromBinaryData(buff);
+        expect(res.toList(), [1, 2, 3]);
       });
     });
   });

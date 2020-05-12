@@ -37,11 +37,8 @@ class MqttUtf8Encoding extends Utf8Codec {
 
   /// Decodes the bytes in the specified MQTT UTF8 encoded byte array into a string.
   String fromUtf8(typed.Uint8Buffer bytes) {
-    var utf8Bytes = bytes.toList().getRange(2, bytes.length);
-    if (utf8Bytes.length > 65535) {
-      throw Exception(
-          'MqttUtf8Encoding::fromUtf8 -  UTF8 string length is invalid, length is ${utf8Bytes.length}');
-    }
+    var len = length(bytes);
+    var utf8Bytes = bytes.toList().getRange(2, 2 + len);
     var decoded = decoder.convert(utf8Bytes.toList());
     _validateString(decoded);
     return decoded;
