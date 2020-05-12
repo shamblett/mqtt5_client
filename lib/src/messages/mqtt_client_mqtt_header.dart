@@ -8,6 +8,7 @@
 part of mqtt5_client;
 
 /// Represents the Fixed Header of an MQTT message.
+/// Each MQTT Control Packet contains a Fixed Header.
 class MqttHeader {
   /// Initializes a new instance of the MqttHeader class.
   MqttHeader();
@@ -63,8 +64,8 @@ class MqttHeader {
     if (headerStream.length < 2) {
       headerStream.reset();
       throw InvalidHeaderException(
-          'The supplied header is invalid. Header must be at '
-          'least 2 bytes long.');
+          'The supplied header is invalid. Header must be '
+          '2 bytes long.');
     }
     final firstHeaderByte = headerStream.readByte();
     // Pull out the first byte
@@ -111,7 +112,7 @@ class MqttHeader {
   /// Get the remaining byte length in the buffer
   static int readRemainingLength(MqttByteBuffer headerStream) {
     final lengthBytes = readLengthBytes(headerStream);
-    return calculateLength(lengthBytes);
+    return MqttByteIntegerEncoding().toInt(lengthBytes);
   }
 
   /// Reads the length bytes of an MqttHeader from the supplied stream.
@@ -130,34 +131,7 @@ class MqttHeader {
   /// Calculates and return the bytes that represent the
   /// remaining length of the message.
   typed.Uint8Buffer getRemainingLengthBytes() {
-    final lengthBytes = typed.Uint8Buffer();
-    var payloadCalc = _messageSize;
-
-    // Generate a byte array based on the message size, splitting it up into
-    // 7 bit chunks, with the 8th bit being used to indicate 'one more to come'
-    do {
-      var nextByteValue = payloadCalc % 128;
-      payloadCalc = payloadCalc ~/ 128;
-      if (payloadCalc > 0) {
-        nextByteValue = nextByteValue | 0x80;
-      }
-      lengthBytes.add(nextByteValue);
-    } while (payloadCalc > 0);
-
-    return lengthBytes;
-  }
-
-  /// Calculates the remaining length of an MqttMessage
-  /// from the bytes that make up the length.
-  static int calculateLength(typed.Uint8Buffer lengthBytes) {
-    var remainingLength = 0;
-    var multiplier = 1;
-
-    for (final currentByte in lengthBytes) {
-      remainingLength += (currentByte & 0x7f) * multiplier;
-      multiplier *= 0x80;
-    }
-    return remainingLength;
+    return MqttByteIntegerEncoding().fromInt(_messageSize);
   }
 
   /// Sets the IsDuplicate flag of the header.
