@@ -295,6 +295,11 @@ void main() {
       final header = getMqttHeader(headerBytes);
       expect(header.messageType, MqttMessageType.disconnect);
     });
+    test('Message type auth', () {
+      final headerBytes = getHeaderBytes(15 << 4, 0);
+      final header = getMqttHeader(headerBytes);
+      expect(header.messageType, MqttMessageType.auth);
+    });
     test('Duplicate true', () {
       final headerBytes = getHeaderBytes(8, 0);
       final header = getMqttHeader(headerBytes);
