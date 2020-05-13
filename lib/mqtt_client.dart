@@ -170,6 +170,8 @@ part 'src/messages/mqtt_client_mqtt_payload.dart';
 
 part 'src/messages/mqtt_client_mqtt_properties.dart';
 
+part 'src/messages/mqtt_client_mqtt_reason_codes.dart';
+
 part 'src/management/mqtt_client_topic_filter.dart';
 
 part 'src/utility/mqtt_client_utilities.dart';
