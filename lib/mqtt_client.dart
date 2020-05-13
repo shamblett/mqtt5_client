@@ -168,9 +168,13 @@ part 'src/messages/mqtt_client_mqtt_message_factory.dart';
 
 part 'src/messages/mqtt_client_mqtt_payload.dart';
 
+part 'src/messages/mqtt_client_mqtt_properties.dart';
+
 part 'src/management/mqtt_client_topic_filter.dart';
 
 part 'src/utility/mqtt_client_utilities.dart';
+
+part 'src/utility/mqtt_client_enum_helper.dart';
 
 part 'src/connectionhandling/mqtt_client_mqtt_connection_keep_alive.dart';
 
