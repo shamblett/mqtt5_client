@@ -145,7 +145,51 @@ enum MqttReasonCode {
 }
 
 /// MQTT reason code support
-const Map<int, MqttReasonCode> _mqttReasonCodeValues = <int, MqttReasonCode>{};
+const Map<int, MqttReasonCode> _mqttReasonCodeValues = <int, MqttReasonCode>{
+  0x00: MqttReasonCode.success,
+  0x01: MqttReasonCode.grantedQos1,
+  0x02: MqttReasonCode.grantedQos2,
+  0x04: MqttReasonCode.disconnectWithWillMessage,
+  0x10: MqttReasonCode.noMatchingSubscribers,
+  0x11: MqttReasonCode.noSubscriptionExisted,
+  0x18: MqttReasonCode.continueAuthentication,
+  0x19: MqttReasonCode.reauthenticate,
+  0x80: MqttReasonCode.unspecifiedError,
+  0x81: MqttReasonCode.malformedPacket,
+  0x82: MqttReasonCode.protocolError,
+  0x83: MqttReasonCode.implementationSpecificError,
+  0x84: MqttReasonCode.unsupportedProtocolVersion,
+  0x85: MqttReasonCode.clientIdentifierNotValid,
+  0x86: MqttReasonCode.badUsernameOrPassword,
+  0x87: MqttReasonCode.notAuthorized,
+  0x88: MqttReasonCode.serverUnavailable,
+  0x89: MqttReasonCode.serverBusy,
+  0x8a: MqttReasonCode.banned,
+  0x8b: MqttReasonCode.serverShuttingDown,
+  0x8c: MqttReasonCode.badAuthenticationMethod,
+  0x8d: MqttReasonCode.keepAliveTimeout,
+  0x8e: MqttReasonCode.sessionTakenOver,
+  0x8f: MqttReasonCode.topicFilterInvalid,
+  0x90: MqttReasonCode.topicNameInvalid,
+  0x91: MqttReasonCode.packetIdentifierInUse,
+  0x92: MqttReasonCode.packetIdentifierNotFound,
+  0x93: MqttReasonCode.receiveMaximumExceeded,
+  0x94: MqttReasonCode.topicAliasInvalid,
+  0x95: MqttReasonCode.packetTooLarge,
+  0x96: MqttReasonCode.messageRateTooHigh,
+  0x97: MqttReasonCode.quotaExceeded,
+  0x98: MqttReasonCode.administrativeAction,
+  0x99: MqttReasonCode.payloadFormatInvalid,
+  0x9a: MqttReasonCode.retainNotSupported,
+  0x9b: MqttReasonCode.qosNotSupported,
+  0x9c: MqttReasonCode.useAnotherServer,
+  0x9d: MqttReasonCode.serverMoved,
+  0x9e: MqttReasonCode.sharedSubscriptionsNotSupported,
+  0x9f: MqttReasonCode.connectionRateExceeded,
+  0xa0: MqttReasonCode.maximumConnectTime,
+  0xa1: MqttReasonCode.subscriptionIdentifiersNotSupported,
+  0xa2: MqttReasonCode.wildcardSubscriptionsNotSupported
+};
 
 /// MQTT reason code helper
 MqttEnumHelper<MqttReasonCode> mqttReasonCode =
