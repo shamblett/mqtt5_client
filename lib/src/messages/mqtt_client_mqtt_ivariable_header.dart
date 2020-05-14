@@ -14,12 +14,16 @@ part of mqtt5_client;
 /// varies depending on the packet type. The Packet Identifier field of
 /// Variable Header is common in several packet types.
 abstract class MqttIVariableHeader {
-  /// The size of the variable header in bytes
-  int size;
+  /// The length of the variable header in bytes
+  int length;
 
   /// Serialize to a byte buffer stream
   void writeTo(MqttByteBuffer stream);
 
   /// Deserialize from a byte buffer stream
   void readFrom(MqttByteBuffer stream);
+
+  /// Gets the length of the write data when WriteTo will be called.
+  /// A subclass that overrides writeTo must also overwrite this method.
+  int getWriteLength();
 }
