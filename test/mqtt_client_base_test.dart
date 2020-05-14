@@ -414,29 +414,6 @@ void main() {
     });
   });
 
-  group('ASCII String Data Convertor', () {
-    test('ASCII string to byte array', () {
-      const testString = 'testStringA-Z,1-9,a-z';
-      final conv = AsciiPayloadConverter();
-      final buff = conv.convertToBytes(testString);
-      expect(testString.length, buff.length);
-      for (var i = 0; i < testString.length; i++) {
-        expect(testString.codeUnitAt(i), buff[i]);
-      }
-    });
-    test('Byte array to ASCII string', () {
-      final input = <int>[40, 41, 42, 43];
-      final buff = typed.Uint8Buffer();
-      buff.addAll(input);
-      final conv = AsciiPayloadConverter();
-      final output = conv.convertFromBytes(buff);
-      expect(input.length, output.length);
-      for (var i = 0; i < input.length; i++) {
-        expect(input[i], output.codeUnitAt(i));
-      }
-    });
-  });
-
   group('Encoding', () {
     group('UTF8', () {
       test('Get bytes', () {

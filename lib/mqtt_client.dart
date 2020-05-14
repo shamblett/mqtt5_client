@@ -72,10 +72,6 @@ part 'src/mqtt_client_subscriptions_manager.dart';
 
 part 'src/mqtt_client_message_identifier_dispenser.dart';
 
-part 'src/dataconvertors/mqtt_client_payload_convertor.dart';
-
-part 'src/dataconvertors/mqtt_client_passthru_payload_convertor.dart';
-
 part 'src/encoding/mqtt_client_mqtt_utf8_encoding.dart';
 
 part 'src/encoding/mqtt_client_mqtt_byte_integer_encoding.dart';
@@ -83,8 +79,6 @@ part 'src/encoding/mqtt_client_mqtt_byte_integer_encoding.dart';
 part 'src/encoding/mqtt_client_mqtt_binary_data_encoding.dart';
 
 part 'src/encoding/mqtt_client_mqtt_string_pair.dart';
-
-part 'src/dataconvertors/mqtt_client_ascii_payload_convertor.dart';
 
 part 'src/utility/mqtt_client_byte_buffer.dart';
 
