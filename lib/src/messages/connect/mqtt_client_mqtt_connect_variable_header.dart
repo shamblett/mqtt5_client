@@ -15,8 +15,8 @@ part of mqtt5_client;
 class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// Initializes a new instance of the MqttConnectVariableHeader class.
   MqttConnectVariableHeader() {
-    protocolName = Protocol.name;
-    protocolVersion = Protocol.version;
+    protocolName = MqttClientProtocol.name;
+    protocolVersion = MqttClientProtocol.version;
     connectFlags = MqttConnectFlags();
   }
 
@@ -30,10 +30,10 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   int length;
 
   /// Protocol name
-  String protocolName = '';
+  String protocolName = MqttClientProtocol.name;
 
   /// Protocol version
-  int protocolVersion = 0;
+  int protocolVersion = MqttClientProtocol.version;
 
   /// Connect flags
   MqttConnectFlags connectFlags;
@@ -45,12 +45,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
 
   /// Return code
   MqttConnectReturnCode returnCode = MqttConnectReturnCode.brokerUnavailable;
-
-  /// Topic name
-  String topicName = '';
-
-  /// Message identifier
-  int messageIdentifier = 0;
 
   /// Encoder
   final MqttUtf8Encoding _enc = MqttUtf8Encoding();
@@ -105,27 +99,15 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     stream.writeByte(returnCode.index);
   }
 
-  /// Topic name
-  void writeTopicName(MqttByteBuffer stream) {
-    MqttByteBuffer.writeMqttString(stream, topicName.toString());
-  }
-
-  /// Message identifier
-  void writeMessageIdentifier(MqttByteBuffer stream) {
-    stream.writeShort(messageIdentifier);
-  }
-
   /// Connect flags
   void writeConnectFlags(MqttByteBuffer stream) {
     connectFlags.writeTo(stream);
   }
 
-  /// Read functions
-
   /// Protocol name
   void readProtocolName(MqttByteBuffer stream) {
     protocolName = MqttByteBuffer.readMqttString(stream);
-    length += protocolName.length + 2; // 2 for length short at front of string
+    length += _enc.byteCount(protocolName);
   }
 
   /// Protocol version
@@ -144,23 +126,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   void readReturnCode(MqttByteBuffer stream) {
     returnCode = MqttConnectReturnCode.values[stream.readByte()];
     length++;
-  }
-
-  /// Topic name
-  void readTopicName(MqttByteBuffer stream) {
-    topicName = MqttByteBuffer.readMqttString(stream);
-    // If the protocol si V311 allow extended UTF8 characters
-    if (Protocol.version == MqttClientConstants.mqttProtocolVersion) {
-      length += _enc.byteCount(topicName);
-    } else {
-      length = topicName.length + 2; // 2 for length short at front of string.
-    }
-  }
-
-  /// Message identifier
-  void readMessageIdentifier(MqttByteBuffer stream) {
-    messageIdentifier = stream.readShort();
-    length += 2;
   }
 
   /// Connect flags

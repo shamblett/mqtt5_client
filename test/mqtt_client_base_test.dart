@@ -726,8 +726,8 @@ void main() {
 
   group('Utility', () {
     test('Protocol', () {
-      expect(Protocol.version, MqttClientConstants.mqttProtocolVersion);
-      expect(Protocol.name, MqttClientConstants.mqttProtocolName);
+      expect(MqttClientProtocol.version, MqttClientConstants.mqttProtocolVersion);
+      expect(MqttClientProtocol.name, MqttClientConstants.mqttProtocolName);
     });
     test('Byte Buffer', () {
       final uBuff = typed.Uint8Buffer(10);

@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Protocol selection helper class, protocol defaults V5
-class Protocol {
+class MqttClientProtocol {
   /// Version
   static int version = MqttClientConstants.mqttProtocolVersion;
 
