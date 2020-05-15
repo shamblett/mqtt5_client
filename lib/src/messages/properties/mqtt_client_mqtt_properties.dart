@@ -88,7 +88,10 @@ enum MqttPropertyIdentifier {
   subscriptionIdentifierAvailable,
 
   /// Shared Subscription Available - Byte
-  sharedSubscriptionAvailable
+  sharedSubscriptionAvailable,
+
+  /// Not set indicator
+  notSet
 }
 
 /// MQTT property identifier support
@@ -120,7 +123,8 @@ const Map<int, MqttPropertyIdentifier> _mqttPropertyIdentifierValues =
   0x27: MqttPropertyIdentifier.maximumPacketSize,
   0x28: MqttPropertyIdentifier.wildcardSubscriptionAvailable,
   0x29: MqttPropertyIdentifier.subscriptionIdentifierAvailable,
-  0x2a: MqttPropertyIdentifier.sharedSubscriptionAvailable
+  0x2a: MqttPropertyIdentifier.sharedSubscriptionAvailable,
+  0xff: MqttPropertyIdentifier.notSet
 };
 
 /// MQTT property identifier helper

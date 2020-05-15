@@ -164,7 +164,13 @@ part 'src/messages/mqtt_client_mqtt_message_factory.dart';
 
 part 'src/messages/mqtt_client_mqtt_payload.dart';
 
-part 'src/messages/mqtt_client_mqtt_properties.dart';
+part 'src/messages/properties/mqtt_client_mqtt_properties.dart';
+
+part 'src/messages/properties/mqtt_client_imqtt_property.dart';
+
+part 'src/messages/properties/mqtt_client_byte_property.dart';
+
+part 'src/messages/properties/mqtt_client_four_byte_integer_property.dart';
 
 part 'src/messages/mqtt_client_mqtt_reason_codes.dart';
 

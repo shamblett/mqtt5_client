@@ -375,83 +375,43 @@ void main() {
     });
   });
 
-  group('Variable header', () {
-    test('Base construction', () {
-      final varHeader = MqttVariableHeader();
-      varHeader.messageIdentifier = 10;
-      varHeader.keepAlive = 3;
-      varHeader.topicName = 'Billy';
-      varHeader.returnCode = MqttConnectReturnCode.identifierRejected;
-      varHeader.connectFlags.cleanStart = true;
-      varHeader.connectFlags.willFlag = true;
-      final bBuff = typed.Uint8Buffer();
-      final byteBuff = MqttByteBuffer(bBuff);
-      expect(varHeader.length, 0);
-      varHeader.writeTo(byteBuff);
-      print(
-          'Variable header::Base construction: byte buffer ${byteBuff.buffer.toString()}');
-      final varHeader1 = MqttVariableHeader();
-      byteBuff.seek(0);
-      final writeLength = varHeader.getWriteLength();
-      expect(writeLength, 22);
-      varHeader1.readFrom(byteBuff);
-      expect(varHeader1.returnCode, MqttConnectReturnCode.identifierRejected);
-      expect(varHeader1.topicName, 'Billy');
-      expect(varHeader1.keepAlive, 3);
-      expect(varHeader1.messageIdentifier, 10);
-      expect(varHeader1.protocolVersion, 3);
-      expect(varHeader1.protocolName, 'MQIsdp');
-      expect(varHeader1.connectFlags.willQos, MqttQos.atMostOnce);
-      expect(varHeader1.connectFlags.cleanStart, isTrue);
-      expect(varHeader1.connectFlags.willFlag, isTrue);
+  group('Properties', () {
+    test('Byte Property', () {
+      final property = MqttByteProperty(MqttPropertyIdentifier.contentType);
+      expect(property.getWriteLength(), 2);
+      property.value = 0x60;
+      final buffer = typed.Uint8Buffer(2);
+      final stream = MqttByteBuffer(buffer);
+      property.writeTo(stream);
+      stream.reset();
+      expect(stream.readByte(),
+          mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType));
+      expect(stream.readByte(), 0x60);
+      final property1 = MqttByteProperty(MqttPropertyIdentifier.notSet);
+      stream.reset();
+      property1.readFrom(stream);
+      expect(property1.identifier, MqttPropertyIdentifier.contentType);
+      expect(property1.value, 0x60);
     });
-    test('Not enough bytes in string', () {
-      final tmp = typed.Uint8Buffer(3);
-      tmp[0] = 0;
-      tmp[1] = 2;
-      tmp[2] = 'm'.codeUnitAt(0);
-      final buffer = MqttByteBuffer(tmp);
-      var raised = false;
-      try {
-        MqttByteBuffer.readMqttString(buffer);
-      } on Exception catch (exception) {
-        expect(exception.toString(),
-            'Exception: mqtt_client::ByteBuffer: The buffer did not have enough bytes for the read operation length 3, count 2, position 2, buffer [0, 2, 109]');
-        raised = true;
-      }
-      expect(raised, isTrue);
-    });
-    test('Long string is fully read', () {
-      final tmp = typed.Uint8Buffer(65537);
-      tmp.fillRange(2, tmp.length, 'a'.codeUnitAt(0));
-      tmp[0] = (tmp.length - 2) >> 8;
-      tmp[1] = (tmp.length - 2) & 0xFF;
-      final buffer = MqttByteBuffer(tmp);
-      final expectedString = String.fromCharCodes(tmp.getRange(2, tmp.length));
-      var raised = false;
-      try {
-        final readString = MqttByteBuffer.readMqttString(buffer);
-        expect(readString.length, expectedString.length);
-        expect(readString, expectedString);
-      } on Exception catch (exception) {
-        print(exception.toString());
-        raised = true;
-      }
-      expect(raised, isFalse);
-    });
-    test('Not enough bytes to form string', () {
-      final tmp = typed.Uint8Buffer(1);
-      tmp[0] = 0;
-      final buffer = MqttByteBuffer(tmp);
-      var raised = false;
-      try {
-        MqttByteBuffer.readMqttString(buffer);
-      } on Exception catch (exception) {
-        expect(exception.toString(),
-            'Exception: mqtt_client::ByteBuffer: The buffer did not have enough bytes for the read operation length 1, count 2, position 0, buffer [0]');
-        raised = true;
-      }
-      expect(raised, isTrue);
+    test('Four Byte Integer Property', () {
+      final property = MqttFourByteIntegerProperty(MqttPropertyIdentifier.contentType);
+      expect(property.getWriteLength(), 5);
+      property.value = 0xdeadbeef;
+      final buffer = typed.Uint8Buffer(5);
+      final stream = MqttByteBuffer(buffer);
+      property.writeTo(stream);
+      stream.reset();
+      expect(stream.readByte(),
+          mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType));
+      expect(stream.readByte(), 0xde);
+      expect(stream.readByte(), 0xad);
+      expect(stream.readByte(), 0xbe);
+      expect(stream.readByte(), 0xef);
+      final property1 = MqttFourByteIntegerProperty(MqttPropertyIdentifier.notSet);
+      stream.reset();
+      property1.readFrom(stream);
+      expect(property1.identifier, MqttPropertyIdentifier.contentType);
+      expect(property1.value, 0xdeadbeef);
     });
   });
 
@@ -2066,5 +2026,4 @@ void main() {
       expect(raised, isTrue);
     });
   });
-
 }
