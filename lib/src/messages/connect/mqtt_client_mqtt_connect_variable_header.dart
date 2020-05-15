@@ -43,9 +43,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// elapses.
   int keepAlive = 0;
 
-  /// Return code
-  MqttConnectReturnCode returnCode = MqttConnectReturnCode.brokerUnavailable;
-
   /// Encoder
   final MqttUtf8Encoding _enc = MqttUtf8Encoding();
 
@@ -94,11 +91,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     stream.writeShort(keepAlive);
   }
 
-  /// Return code
-  void writeReturnCode(MqttByteBuffer stream) {
-    stream.writeByte(returnCode.index);
-  }
-
   /// Connect flags
   void writeConnectFlags(MqttByteBuffer stream) {
     connectFlags.writeTo(stream);
@@ -120,12 +112,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   void readKeepAlive(MqttByteBuffer stream) {
     keepAlive = stream.readShort();
     length += 2;
-  }
-
-  /// Return code
-  void readReturnCode(MqttByteBuffer stream) {
-    returnCode = MqttConnectReturnCode.values[stream.readByte()];
-    length++;
   }
 
   /// Connect flags

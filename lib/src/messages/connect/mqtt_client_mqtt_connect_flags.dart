@@ -18,9 +18,6 @@ class MqttConnectFlags {
     readFrom(connectFlagsStream);
   }
 
-  /// Reserved1
-  bool reserved1 = false;
-
   /// Clean start
   bool cleanStart = false;
 
@@ -41,7 +38,7 @@ class MqttConnectFlags {
 
   /// Return the connect flag value
   int connectFlagByte() =>
-      (reserved1 ? 1 : 0) |
+      0 | // Reserved, must be 0
       (cleanStart ? 1 : 0) << 1 |
       (willFlag ? 1 : 0) << 2 |
       (willQos.index) << 3 |
@@ -58,7 +55,6 @@ class MqttConnectFlags {
   void readFrom(MqttByteBuffer stream) {
     final connectFlagsByte = stream.readByte();
 
-    reserved1 = (connectFlagsByte & 1) == 1;
     cleanStart = (connectFlagsByte & 2) == 2;
     willFlag = (connectFlagsByte & 4) == 4;
     willQos = MqttUtilities.getQosLevel((connectFlagsByte >> 3) & 3);
@@ -73,7 +69,7 @@ class MqttConnectFlags {
   /// Returns a String that represents the current connect flag settings
   @override
   String toString() =>
-      'Connect Flags: Reserved1=$reserved1, CleanStart=$cleanStart, '
+      'Connect Flags: CleanStart=$cleanStart, '
       'WillFlag=$willFlag, WillQos=$willQos, WillRetain=$willRetain, '
       'PasswordFlag=$passwordFlag, UserNameFlag=$usernameFlag';
 }

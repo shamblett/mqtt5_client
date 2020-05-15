@@ -343,12 +343,6 @@ void main() {
     test('WillQos - Reserved1', () {
       expect(getConnectFlags(24).willQos, MqttQos.reserved1);
     });
-    test('Reserved1 true', () {
-      expect(getConnectFlags(1).reserved1, isTrue);
-    });
-    test('Reserved1 false', () {
-      expect(getConnectFlags(0).reserved1, isFalse);
-    });
     test('Passwordflag true', () {
       expect(getConnectFlags(64).passwordFlag, isTrue);
     });
