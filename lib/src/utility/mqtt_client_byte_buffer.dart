@@ -158,11 +158,10 @@ class MqttByteBuffer {
 
   /// Reads an MQTT string from the underlying stream.
   static String readMqttString(MqttByteBuffer buffer) {
-    // Read and check the length
-    final lengthBytes = buffer.read(2);
     final enc = MqttUtf8Encoding();
-    final stringLength = enc.length(lengthBytes);
-    final stringBuff = buffer.read(stringLength);
+    final stringBuff = buffer.read(2);
+    final length = enc.length(stringBuff);
+    stringBuff.addAll(buffer.read(length));
     return enc.fromUtf8(stringBuff);
   }
 
