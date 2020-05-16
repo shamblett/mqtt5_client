@@ -7,18 +7,16 @@
 
 part of mqtt5_client;
 
-/// Four Byte Integer data values are 32-bit unsigned integers in big-endian order:
-/// the high order byte precedes the successively lower order bytes.
-/// This means that a 32-bit word is presented on the network as
-/// Most Significant Byte (MSB), followed by the next most Significant Byte (MSB),
-/// followed by the next most Significant Byte (MSB), followed by Least Significant
-/// Byte (LSB).
-class MqttFourByteIntegerProperty implements MqttIProperty {
+/// Two Byte Integer data values are 16-bit unsigned integers in big-endian order:
+/// the high order byte precedes the lower order byte. This means that a
+/// 16-bit word is presented on the network as Most Significant Byte (MSB),
+/// followed by Least Significant Byte (LSB).
+class MqttTwoByteIntegerProperty implements MqttIProperty {
   /// Construction
-  MqttFourByteIntegerProperty(this.identifier);
+  MqttTwoByteIntegerProperty(this.identifier);
 
   /// Read/Write length
-  static const length = 5;
+  static const length = 3;
 
   /// Identifier
   @override
@@ -31,8 +29,6 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.writeByte((value >> 24) & 0xff);
-    stream.writeByte((value >> 16) & 0xff);
     stream.writeByte((value >> 8) & 0xff);
     stream.writeByte(value & 0xff);
   }
@@ -42,7 +38,7 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
     var buffer = stream.read(length - 1);
-    value = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
+    value = buffer[0] << 8 | buffer[1];
   }
 
   /// Gets the length of the write data when WriteTo will be called.

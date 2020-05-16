@@ -394,7 +394,8 @@ void main() {
       expect(property1.value, 0x60);
     });
     test('Four Byte Integer Property', () {
-      final property = MqttFourByteIntegerProperty(MqttPropertyIdentifier.contentType);
+      final property =
+          MqttFourByteIntegerProperty(MqttPropertyIdentifier.contentType);
       expect(property.getWriteLength(), 5);
       property.value = 0xdeadbeef;
       final buffer = typed.Uint8Buffer(5);
@@ -407,11 +408,32 @@ void main() {
       expect(stream.readByte(), 0xad);
       expect(stream.readByte(), 0xbe);
       expect(stream.readByte(), 0xef);
-      final property1 = MqttFourByteIntegerProperty(MqttPropertyIdentifier.notSet);
+      final property1 =
+          MqttFourByteIntegerProperty(MqttPropertyIdentifier.notSet);
       stream.reset();
       property1.readFrom(stream);
       expect(property1.identifier, MqttPropertyIdentifier.contentType);
       expect(property1.value, 0xdeadbeef);
+    });
+    test('Two Byte Integer Property', () {
+      final property =
+          MqttTwoByteIntegerProperty(MqttPropertyIdentifier.contentType);
+      expect(property.getWriteLength(), 3);
+      property.value = 0xdead;
+      final buffer = typed.Uint8Buffer(3);
+      final stream = MqttByteBuffer(buffer);
+      property.writeTo(stream);
+      stream.reset();
+      expect(stream.readByte(),
+          mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType));
+      expect(stream.readByte(), 0xde);
+      expect(stream.readByte(), 0xad);
+      final property1 =
+          MqttTwoByteIntegerProperty(MqttPropertyIdentifier.notSet);
+      stream.reset();
+      property1.readFrom(stream);
+      expect(property1.identifier, MqttPropertyIdentifier.contentType);
+      expect(property1.value, 0xdead);
     });
   });
 

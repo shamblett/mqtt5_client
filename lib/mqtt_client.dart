@@ -172,6 +172,8 @@ part 'src/messages/properties/mqtt_client_byte_property.dart';
 
 part 'src/messages/properties/mqtt_client_four_byte_integer_property.dart';
 
+part 'src/messages/properties/mqtt_client_two_byte_integer_property.dart';
+
 part 'src/messages/mqtt_client_mqtt_reason_codes.dart';
 
 part 'src/management/mqtt_client_topic_filter.dart';
