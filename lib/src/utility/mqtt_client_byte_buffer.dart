@@ -75,6 +75,9 @@ class MqttByteBuffer {
     return tmp;
   }
 
+  /// Peeks a byte from the buffer
+  int peekByte() => buffer[_position];
+
   /// Read a short int(16 bits)
   int readShort() {
     final high = readByte();

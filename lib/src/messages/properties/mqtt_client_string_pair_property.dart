@@ -10,7 +10,7 @@ part of mqtt5_client;
 /// String pair property
 class MqttStringPairProperty implements MqttIProperty {
   /// Construction
-  MqttStringPairProperty(this.identifier);
+  MqttStringPairProperty([this.identifier]);
 
   /// Identifier
   @override
@@ -51,4 +51,9 @@ class MqttStringPairProperty implements MqttIProperty {
 
   /// Get the value
   String get value => pair.value;
+
+  @override
+  String toString() {
+    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, name : $name value : $value';
+  }
 }

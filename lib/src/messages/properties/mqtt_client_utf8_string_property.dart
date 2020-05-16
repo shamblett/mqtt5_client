@@ -10,7 +10,7 @@ part of mqtt5_client;
 /// UTF8 String property
 class MqttUtf8StringProperty implements MqttIProperty {
   /// Construction
-  MqttUtf8StringProperty(this.identifier);
+  MqttUtf8StringProperty([this.identifier]);
 
   /// Identifier
   @override
@@ -44,4 +44,9 @@ class MqttUtf8StringProperty implements MqttIProperty {
   /// Gets the length of the write data when WriteTo will be called.
   @override
   int getWriteLength() => _enc.byteCount(value) + 1;
+
+  @override
+  String toString() {
+    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+  }
 }

@@ -10,7 +10,7 @@ part of mqtt5_client;
 /// Byte property
 class MqttByteProperty implements MqttIProperty {
   /// Construction
-  MqttByteProperty(this.identifier);
+  MqttByteProperty([this.identifier]);
 
   /// Read/Write length
   static const length = 2;
@@ -39,4 +39,9 @@ class MqttByteProperty implements MqttIProperty {
   /// Gets the length of the write data when WriteTo will be called.
   @override
   int getWriteLength() => length;
+
+  @override
+  String toString() {
+    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+  }
 }

@@ -10,7 +10,7 @@ part of mqtt5_client;
 /// Binary data property
 class MqttBinaryDataProperty implements MqttIProperty {
   /// Construction
-  MqttBinaryDataProperty(this.identifier);
+  MqttBinaryDataProperty([this.identifier]);
 
   /// Identifier
   @override
@@ -42,7 +42,6 @@ class MqttBinaryDataProperty implements MqttIProperty {
   @override
   int getWriteLength() => _enc.toBinaryData(value).length + 1;
 
-
   /// Add a byte to the buffer
   void addByte(int byte) {
     value.add(byte);
@@ -51,5 +50,10 @@ class MqttBinaryDataProperty implements MqttIProperty {
   /// Add a list of bytes to the buffer
   void addBytes(typed.Uint8Buffer bytes) {
     value.addAll(bytes);
+  }
+
+  @override
+  String toString() {
+    return 'Identifier $identifier, value $value';
   }
 }

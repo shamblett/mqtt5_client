@@ -756,6 +756,7 @@ void main() {
       final buff1 = MqttByteBuffer.fromList(bytes);
       expect(buff1.length, 10);
       expect(buff1.position, 0);
+      expect(buff1.peekByte(), 1);
       buff1.seek(20);
       expect(buff1.position, 10);
     });

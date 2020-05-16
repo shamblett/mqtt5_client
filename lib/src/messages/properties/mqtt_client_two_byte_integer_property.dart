@@ -13,7 +13,7 @@ part of mqtt5_client;
 /// followed by Least Significant Byte (LSB).
 class MqttTwoByteIntegerProperty implements MqttIProperty {
   /// Construction
-  MqttTwoByteIntegerProperty(this.identifier);
+  MqttTwoByteIntegerProperty([this.identifier]);
 
   /// Read/Write length
   static const length = 3;
@@ -44,4 +44,9 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
   /// Gets the length of the write data when WriteTo will be called.
   @override
   int getWriteLength() => length;
+
+  @override
+  String toString() {
+    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+  }
 }

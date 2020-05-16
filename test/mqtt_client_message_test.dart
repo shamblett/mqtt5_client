@@ -392,6 +392,7 @@ void main() {
       property1.readFrom(stream);
       expect(property1.identifier, MqttPropertyIdentifier.contentType);
       expect(property1.value, 0x60);
+      print(property1);
     });
     test('Four Byte Integer Property', () {
       final property =
