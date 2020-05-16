@@ -457,6 +457,32 @@ void main() {
       expect(property1.identifier, MqttPropertyIdentifier.contentType);
       expect(property1.value, 234881024);
     });
+    test('Binary Data Property', () {
+      final property =
+          MqttBinaryDataProperty(MqttPropertyIdentifier.contentType);
+      final buff = typed.Uint8Buffer();
+      buff.addAll([1, 2, 3, 4, 5]);
+      property.addBytes(buff);
+      expect(property.getWriteLength(), 8);
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      property.writeTo(stream);
+      stream.reset();
+      expect(stream.readByte(),
+          mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType));
+      expect(stream.readByte(), 0x00);
+      expect(stream.readByte(), 0x05);
+      expect(stream.readByte(), 0x01);
+      expect(stream.readByte(), 0x02);
+      expect(stream.readByte(), 0x03);
+      expect(stream.readByte(), 0x04);
+      expect(stream.readByte(), 0x05);
+      final property1 = MqttBinaryDataProperty(MqttPropertyIdentifier.notSet);
+      stream.reset();
+      property1.readFrom(stream);
+      expect(property1.identifier, MqttPropertyIdentifier.contentType);
+      expect(property1.value.toList(), [1, 2, 3, 4, 5]);
+    });
   });
 
   group('Connect', () {

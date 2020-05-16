@@ -174,6 +174,8 @@ part 'src/messages/properties/mqtt_client_four_byte_integer_property.dart';
 
 part 'src/messages/properties/mqtt_client_two_byte_integer_property.dart';
 
+part 'src/messages/properties/mqtt_client_binary_data_property.dart';
+
 part 'src/messages/properties/mqtt_client_variable_byte_integer_property.dart';
 
 part 'src/messages/mqtt_client_mqtt_reason_codes.dart';
