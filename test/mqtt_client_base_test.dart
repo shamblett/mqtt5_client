@@ -512,7 +512,7 @@ void main() {
     });
     group('Variable Byte Integer', () {
       test('toInt - Null Byte Array', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var raised = false;
         try {
           enc.toInt(null);
@@ -524,7 +524,7 @@ void main() {
         expect(raised, isTrue);
       });
       test('toInt - Empty Byte Array', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var raised = false;
         var buff = typed.Uint8Buffer();
         try {
@@ -537,7 +537,7 @@ void main() {
         expect(raised, isTrue);
       });
       test('toInt - Byte Array Too Long', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var raised = false;
         var buff = typed.Uint8Buffer(5);
         try {
@@ -550,14 +550,14 @@ void main() {
         expect(raised, isTrue);
       });
       test('toInt - One Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var buff = typed.Uint8Buffer(1);
         buff[0] = 0x08;
         var res = enc.toInt(buff);
         expect(res, 8);
       });
       test('toInt - Two Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var buff = typed.Uint8Buffer(2);
         buff[0] = 0x80;
         buff[1] = 0x70;
@@ -565,7 +565,7 @@ void main() {
         expect(res, 14336);
       });
       test('toInt - Three Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var buff = typed.Uint8Buffer(3);
         buff[0] = 0x80;
         buff[1] = 0x80;
@@ -574,7 +574,7 @@ void main() {
         expect(res, 1835008);
       });
       test('toInt - Four Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var buff = typed.Uint8Buffer(4);
         buff[0] = 0x80;
         buff[1] = 0x80;
@@ -584,7 +584,7 @@ void main() {
         expect(res, 234881024);
       });
       test('toInt - Invalid Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var raised = false;
         var buff = typed.Uint8Buffer(1);
         buff[0] = 0xaa;
@@ -598,9 +598,9 @@ void main() {
         expect(raised, isTrue);
       });
       test('fromInt - Value Too High', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var raised = false;
-        var value = MqttByteIntegerEncoding.maxConvertibleValue + 1;
+        var value = MqttVariableByteIntegerEncoding.maxConvertibleValue + 1;
         try {
           enc.fromInt(value);
         } on Error catch (error) {
@@ -611,7 +611,7 @@ void main() {
         expect(raised, isTrue);
       });
       test('fromInt - Value Negative', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var raised = false;
         var value = -10;
         try {
@@ -624,27 +624,27 @@ void main() {
         expect(raised, isTrue);
       });
       test('fromInt - One Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var res = enc.fromInt(8);
         expect(res.toList(), [8]);
       });
       test('fromInt - Two Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var res = enc.fromInt(14336);
         expect(res.toList(), [0x80, 0x70]);
       });
       test('fromInt - Three Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var res = enc.fromInt(1835008);
         expect(res.toList(), [0x80, 0x80, 0x70]);
       });
       test('fromInt - Four Byte Value', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         var res = enc.fromInt(234881024);
         expect(res.toList(), [0x80, 0x80, 0x80, 0x70]);
       });
       test('Reversible', () {
-        var enc = MqttByteIntegerEncoding();
+        var enc = MqttVariableByteIntegerEncoding();
         const val = 10000;
         var res = enc.fromInt(val);
         var intRes = enc.toInt(res);

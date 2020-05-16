@@ -16,7 +16,7 @@ part of mqtt5_client;
 /// The maximum number of bytes in the Variable Byte Integer field is four.
 /// The encoded value MUST use the minimum number of bytes necessary to
 /// represent the value [MQTT-1.5.5-1].
-class MqttByteIntegerEncoding {
+class MqttVariableByteIntegerEncoding {
   static const maxConvertibleValue = 268435455;
 
   /// Byte integer to integer

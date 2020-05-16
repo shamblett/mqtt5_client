@@ -380,7 +380,7 @@ void main() {
       final property = MqttByteProperty(MqttPropertyIdentifier.contentType);
       expect(property.getWriteLength(), 2);
       property.value = 0x60;
-      final buffer = typed.Uint8Buffer(2);
+      final buffer = typed.Uint8Buffer();
       final stream = MqttByteBuffer(buffer);
       property.writeTo(stream);
       stream.reset();
@@ -398,7 +398,7 @@ void main() {
           MqttFourByteIntegerProperty(MqttPropertyIdentifier.contentType);
       expect(property.getWriteLength(), 5);
       property.value = 0xdeadbeef;
-      final buffer = typed.Uint8Buffer(5);
+      final buffer = typed.Uint8Buffer();
       final stream = MqttByteBuffer(buffer);
       property.writeTo(stream);
       stream.reset();
@@ -420,7 +420,7 @@ void main() {
           MqttTwoByteIntegerProperty(MqttPropertyIdentifier.contentType);
       expect(property.getWriteLength(), 3);
       property.value = 0xdead;
-      final buffer = typed.Uint8Buffer(3);
+      final buffer = typed.Uint8Buffer();
       final stream = MqttByteBuffer(buffer);
       property.writeTo(stream);
       stream.reset();
@@ -434,6 +434,28 @@ void main() {
       property1.readFrom(stream);
       expect(property1.identifier, MqttPropertyIdentifier.contentType);
       expect(property1.value, 0xdead);
+    });
+    test('Variable Byte Integer Property', () {
+      final property =
+          MqttVariableByteIntegerProperty(MqttPropertyIdentifier.contentType);
+      expect(property.getWriteLength(), 5);
+      property.value = 234881024;
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      property.writeTo(stream);
+      stream.reset();
+      expect(stream.readByte(),
+          mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType));
+      expect(stream.readByte(), 0x80);
+      expect(stream.readByte(), 0x80);
+      expect(stream.readByte(), 0x80);
+      expect(stream.readByte(), 0x70);
+      final property1 =
+          MqttVariableByteIntegerProperty(MqttPropertyIdentifier.notSet);
+      stream.reset();
+      property1.readFrom(stream);
+      expect(property1.identifier, MqttPropertyIdentifier.contentType);
+      expect(property1.value, 234881024);
     });
   });
 

@@ -112,7 +112,7 @@ class MqttHeader {
   /// Get the remaining byte length in the buffer
   static int readRemainingLength(MqttByteBuffer headerStream) {
     final lengthBytes = readLengthBytes(headerStream);
-    return MqttByteIntegerEncoding().toInt(lengthBytes);
+    return MqttVariableByteIntegerEncoding().toInt(lengthBytes);
   }
 
   /// Reads the length bytes of an MqttHeader from the supplied stream.
@@ -131,7 +131,7 @@ class MqttHeader {
   /// Calculates and return the bytes that represent the
   /// remaining length of the message.
   typed.Uint8Buffer getRemainingLengthBytes() {
-    return MqttByteIntegerEncoding().fromInt(_messageSize);
+    return MqttVariableByteIntegerEncoding().fromInt(_messageSize);
   }
 
   /// Sets the IsDuplicate flag of the header.
