@@ -483,6 +483,31 @@ void main() {
       expect(property1.identifier, MqttPropertyIdentifier.contentType);
       expect(property1.value.toList(), [1, 2, 3, 4, 5]);
     });
+    test('UTF8 String Property', () {
+      final property =
+          MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+      const value = 'Hello';
+      property.value = value;
+      expect(property.getWriteLength(), 8);
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      property.writeTo(stream);
+      stream.reset();
+      expect(stream.readByte(),
+          mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType));
+      expect(stream.readByte(), 0x00);
+      expect(stream.readByte(), 0x05);
+      expect(stream.readByte(), 0x48);
+      expect(stream.readByte(), 0x65);
+      expect(stream.readByte(), 0x6c);
+      expect(stream.readByte(), 0x6c);
+      expect(stream.readByte(), 0x6f);
+      final property1 = MqttUtf8StringProperty(MqttPropertyIdentifier.notSet);
+      stream.reset();
+      property1.readFrom(stream);
+      expect(property1.identifier, MqttPropertyIdentifier.contentType);
+      expect(property1.value, value);
+    });
   });
 
   group('Connect', () {
