@@ -23,6 +23,7 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
   MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
+  @override
   int value = 0;
 
   /// Serialize to a byte buffer stream

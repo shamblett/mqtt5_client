@@ -17,6 +17,7 @@ class MqttBinaryDataProperty implements MqttIProperty {
   MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
+  @override
   final value = typed.Uint8Buffer();
 
   final _enc = MqttBinaryDataEncoding();

@@ -17,6 +17,7 @@ class MqttUtf8StringProperty implements MqttIProperty {
   MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
+  @override
   String value;
 
   final _enc = MqttUtf8Encoding();

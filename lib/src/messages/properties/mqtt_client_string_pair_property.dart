@@ -50,6 +50,7 @@ class MqttStringPairProperty implements MqttIProperty {
   String get name => pair.name;
 
   /// Get the value
+  @override
   String get value => pair.value;
 
   @override
