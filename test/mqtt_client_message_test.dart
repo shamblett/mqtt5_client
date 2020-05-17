@@ -543,6 +543,215 @@ void main() {
       expect(property1.name, 'Hello ');
       expect(property1.value, 'World');
     });
+    group('Property Factory', () {
+      test('Unknown Property', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x55);
+        buffer.add(0x20);
+        final property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.notSet);
+      });
+      test('Byte Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x01);
+        buffer.add(0x20);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(
+            property.identifier, MqttPropertyIdentifier.payloadFormatIndicator);
+        buffer[0] = 0x17;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier,
+            MqttPropertyIdentifier.requestProblemInformation);
+        buffer[0] = 0x19;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier,
+            MqttPropertyIdentifier.requestResponseInformation);
+        buffer[0] = 0x24;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.maximumQos);
+        buffer[0] = 0x25;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.retainAvailable);
+        buffer[0] = 0x28;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier,
+            MqttPropertyIdentifier.wildcardSubscriptionAvailable);
+        buffer[0] = 0x29;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier,
+            MqttPropertyIdentifier.subscriptionIdentifierAvailable);
+        buffer[0] = 0x2a;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttByteProperty>());
+        expect(property.identifier,
+            MqttPropertyIdentifier.sharedSubscriptionAvailable);
+      });
+      test('Four Byte Integer Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x02);
+        buffer.add(0x80);
+        buffer.add(0x80);
+        buffer.add(0x80);
+        buffer.add(0x70);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttFourByteIntegerProperty>());
+        expect(
+            property.identifier, MqttPropertyIdentifier.messageExpiryInterval);
+        buffer[0] = 0x11;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttFourByteIntegerProperty>());
+        expect(
+            property.identifier, MqttPropertyIdentifier.sessionExpiryInterval);
+        buffer[0] = 0x18;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttFourByteIntegerProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.willDelayInterval);
+        buffer[0] = 0x27;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttFourByteIntegerProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.maximumPacketSize);
+      });
+      test('UTF8 Encoded String Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x03);
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add(0x65);
+        buffer.add(0x66);
+        buffer.add(0x67);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.contentType);
+        buffer[0] = 0x08;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.responseTopic);
+        buffer[0] = 0x12;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(property.identifier,
+            MqttPropertyIdentifier.assignedClientIdentifier);
+        buffer[0] = 0x15;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(
+            property.identifier, MqttPropertyIdentifier.authenticationMethod);
+        buffer[0] = 0x1a;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.responseInformation);
+        buffer[0] = 0x1c;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.serverReference);
+        buffer[0] = 0x1f;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttUtf8StringProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.reasonString);
+      });
+      test('Binary Data Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x09);
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add(0x65);
+        buffer.add(0x66);
+        buffer.add(0x67);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttBinaryDataProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.correlationdata);
+        buffer[0] = 0x16;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttBinaryDataProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.authenticationData);
+      });
+      test('Variable Byte Integer Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x0b);
+        buffer.add(0x80);
+        buffer.add(0x80);
+        buffer.add(0x80);
+        buffer.add(0x70);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttVariableByteIntegerProperty>());
+        expect(
+            property.identifier, MqttPropertyIdentifier.subscriptionIdentifier);
+      });
+      test('Two Byte Integer Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x13);
+        buffer.add(0x80);
+        buffer.add(0x80);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttTwoByteIntegerProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.serverKeepAlive);
+        buffer[0] = 0x21;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttTwoByteIntegerProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.receiveMaximum);
+        buffer[0] = 0x22;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttTwoByteIntegerProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.topicAliasMaximum);
+        buffer[0] = 0x23;
+        stream.reset();
+        property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttTwoByteIntegerProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.topicAlias);
+      });
+      test('String Pair Properties', () {
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        buffer.add(0x26);
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add(0x65);
+        buffer.add(0x66);
+        buffer.add(0x67);
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add(0x65);
+        buffer.add(0x66);
+        buffer.add(0x67);
+        var property = MqttPropertyFactory.get(stream);
+        expect(property, isA<MqttStringPairProperty>());
+        expect(property.identifier, MqttPropertyIdentifier.userProperty);
+      });
+    });
   });
 
   group('Messages', () {
