@@ -28,7 +28,7 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.addAll(_enc.fromInt(value));
+    stream.write(_enc.fromInt(value));
   }
 
   /// Deserialize from a byte buffer stream

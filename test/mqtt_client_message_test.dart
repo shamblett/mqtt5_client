@@ -752,6 +752,119 @@ void main() {
         expect(property.identifier, MqttPropertyIdentifier.userProperty);
       });
     });
+    group('Property Container', () {
+      test('Add', () {
+        final container = MqttPropertyContainer();
+        final stringProp =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+        stringProp.value = 'Hello';
+        final byteProp =
+            MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+        byteProp.value = 0x44;
+        container.add(stringProp);
+        container.add(byteProp);
+        expect(container.count, 2);
+        expect(container.propertiesAreValid(), true);
+      });
+      test('Add - Not Valid And Clear', () {
+        final container = MqttPropertyContainer();
+        final stringProp =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+        stringProp.value = 'Hello';
+        final byteProp = MqttByteProperty(MqttPropertyIdentifier.notSet);
+        byteProp.value = 0x44;
+        container.add(stringProp);
+        container.add(byteProp);
+        expect(container.count, 2);
+        expect(container.propertiesAreValid(), false);
+        container.clear();
+        expect(container.count, 0);
+      });
+      test('Delete', () {
+        final container = MqttPropertyContainer();
+        final stringProp =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+        stringProp.value = 'Hello';
+        final byteProp =
+            MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+        byteProp.value = 0x44;
+        container.add(stringProp);
+        container.add(byteProp);
+        expect(container.count, 2);
+        expect(container.propertiesAreValid(), true);
+        expect(container.delete(MqttPropertyIdentifier.contentType), true);
+        expect(container.count, 1);
+        expect(container.delete(MqttPropertyIdentifier.payloadFormatIndicator),
+            true);
+        expect(container.count, 0);
+        expect(container.delete(MqttPropertyIdentifier.userProperty), false);
+      });
+      test('Serialize', () {
+        final container = MqttPropertyContainer();
+        final stringProp =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+        stringProp.value = 'Hello';
+        final byteProp =
+            MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+        byteProp.value = 0x44;
+        container.add(stringProp);
+        container.add(byteProp);
+        expect(container.count, 2);
+        expect(container.propertiesAreValid(), true);
+        final buffer = container.serialize();
+        expect(buffer.toList(),
+            [0x0a, 0x3, 0x00, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x01, 0x44]);
+        expect(container.getWriteLength(), 11);
+        expect(container.length(), 10);
+      });
+      test('Write To', () {
+        final container = MqttPropertyContainer();
+        final stringProp =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+        stringProp.value = 'Hello';
+        final byteProp =
+            MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+        byteProp.value = 0x44;
+        container.add(stringProp);
+        container.add(byteProp);
+        expect(container.count, 2);
+        expect(container.propertiesAreValid(), true);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        container.writeTo(stream);
+        expect(stream.buffer.toList(),
+            [0x0a, 0x3, 0x00, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x01, 0x44]);
+      });
+      test('Read From', () {
+        final container = MqttPropertyContainer();
+        final buffer = typed.Uint8Buffer()
+          ..addAll([
+            0x0a,
+            0x3,
+            0x00,
+            0x05,
+            0x48,
+            0x65,
+            0x6c,
+            0x6c,
+            0x6f,
+            0x01,
+            0x44
+          ]);
+        final stream = MqttByteBuffer(buffer);
+        container.readFrom(stream);
+        expect(container.count, 2);
+        expect(container.propertiesAreValid(), true);
+        final propList = container.toList();
+        expect(propList[0], isA<MqttUtf8StringProperty>());
+        expect(propList[1], isA<MqttByteProperty>());
+        expect(propList[0].identifier, MqttPropertyIdentifier.contentType);
+        expect((propList[0] as MqttUtf8StringProperty).value, 'Hello');
+        expect(propList[1].identifier,
+            MqttPropertyIdentifier.payloadFormatIndicator);
+        expect((propList[1] as MqttByteProperty).value, 0x44);
+      });
+    });
   });
 
   group('Messages', () {

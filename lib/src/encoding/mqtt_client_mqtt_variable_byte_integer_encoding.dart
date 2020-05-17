@@ -22,9 +22,9 @@ class MqttVariableByteIntegerEncoding {
   /// Byte integer to integer
   int toInt(typed.Uint8Buffer byteInteger) {
     // Must be a maximum length of 4
-    if (byteInteger == null || byteInteger.isEmpty || byteInteger.length > 4) {
+    if (byteInteger == null || byteInteger.isEmpty) {
       throw ArgumentError(
-          'MqttByteIntegerEncoding::toInt byte integer has an invalid length ${byteInteger?.length} or is null');
+          'MqttByteIntegerEncoding::toInt byte integer is null or empty');
     }
     var multiplier = 1;
     var value = 0;
@@ -77,4 +77,7 @@ class MqttVariableByteIntegerEncoding {
     }
     return result;
   }
+
+  /// The length in bytes of the supplied value
+  int length(int value) => fromInt(value).length;
 }

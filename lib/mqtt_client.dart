@@ -74,7 +74,7 @@ part 'src/mqtt_client_message_identifier_dispenser.dart';
 
 part 'src/encoding/mqtt_client_mqtt_utf8_encoding.dart';
 
-part 'src/encoding/mqtt_client_mqtt_byte_integer_encoding.dart';
+part 'src/encoding/mqtt_client_mqtt_variable_byte_integer_encoding.dart';
 
 part 'src/encoding/mqtt_client_mqtt_binary_data_encoding.dart';
 
@@ -175,6 +175,8 @@ part 'src/messages/properties/mqtt_client_four_byte_integer_property.dart';
 part 'src/messages/properties/mqtt_client_string_pair_property.dart';
 
 part 'src/messages/properties/mqtt_client_property_factory.dart';
+
+part 'src/messages/properties/mqtt_client_property_container.dart';
 
 part 'src/messages/properties/mqtt_client_two_byte_integer_property.dart';
 

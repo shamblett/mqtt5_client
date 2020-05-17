@@ -68,8 +68,7 @@ class MqttConnectFlags {
 
   /// Returns a String that represents the current connect flag settings
   @override
-  String toString() =>
-      'Connect Flags: CleanStart=$cleanStart, '
+  String toString() => 'Connect Flags: CleanStart=$cleanStart, '
       'WillFlag=$willFlag, WillQos=$willQos, WillRetain=$willRetain, '
       'PasswordFlag=$passwordFlag, UserNameFlag=$usernameFlag';
 }

@@ -25,7 +25,7 @@ class MqttUtf8StringProperty implements MqttIProperty {
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.addAll(_enc.toUtf8(value));
+    stream.write(_enc.toUtf8(value));
   }
 
   /// Deserialize from a byte buffer stream

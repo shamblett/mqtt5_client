@@ -25,7 +25,7 @@ class MqttBinaryDataProperty implements MqttIProperty {
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.addAll(_enc.toBinaryData(value));
+    stream.write(_enc.toBinaryData(value));
   }
 
   /// Deserialize from a byte buffer stream

@@ -518,7 +518,7 @@ void main() {
           enc.toInt(null);
         } on Error catch (error) {
           expect(error.toString(),
-              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer has an invalid length null or is null');
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer is null or empty');
           raised = true;
         }
         expect(raised, isTrue);
@@ -531,20 +531,7 @@ void main() {
           enc.toInt(buff);
         } on Error catch (error) {
           expect(error.toString(),
-              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer has an invalid length 0 or is null');
-          raised = true;
-        }
-        expect(raised, isTrue);
-      });
-      test('toInt - Byte Array Too Long', () {
-        var enc = MqttVariableByteIntegerEncoding();
-        var raised = false;
-        var buff = typed.Uint8Buffer(5);
-        try {
-          enc.toInt(buff);
-        } on Error catch (error) {
-          expect(error.toString(),
-              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer has an invalid length 5 or is null');
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt byte integer is null or empty');
           raised = true;
         }
         expect(raised, isTrue);
@@ -555,6 +542,7 @@ void main() {
         buff[0] = 0x08;
         var res = enc.toInt(buff);
         expect(res, 8);
+        expect(enc.length(8), 1);
       });
       test('toInt - Two Byte Value', () {
         var enc = MqttVariableByteIntegerEncoding();
@@ -563,6 +551,7 @@ void main() {
         buff[1] = 0x70;
         var res = enc.toInt(buff);
         expect(res, 14336);
+        expect(enc.length(14336), 2);
       });
       test('toInt - Three Byte Value', () {
         var enc = MqttVariableByteIntegerEncoding();
@@ -572,6 +561,7 @@ void main() {
         buff[2] = 0x70;
         var res = enc.toInt(buff);
         expect(res, 1835008);
+        expect(enc.length(1835008), 3);
       });
       test('toInt - Four Byte Value', () {
         var enc = MqttVariableByteIntegerEncoding();
@@ -582,6 +572,7 @@ void main() {
         buff[3] = 0x70;
         var res = enc.toInt(buff);
         expect(res, 234881024);
+        expect(enc.length(234881024), 4);
       });
       test('toInt - Invalid Value', () {
         var enc = MqttVariableByteIntegerEncoding();
@@ -726,7 +717,8 @@ void main() {
 
   group('Utility', () {
     test('Protocol', () {
-      expect(MqttClientProtocol.version, MqttClientConstants.mqttProtocolVersion);
+      expect(
+          MqttClientProtocol.version, MqttClientConstants.mqttProtocolVersion);
       expect(MqttClientProtocol.name, MqttClientConstants.mqttProtocolName);
     });
     test('Byte Buffer', () {
