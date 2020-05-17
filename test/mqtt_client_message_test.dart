@@ -859,10 +859,10 @@ void main() {
         expect(propList[0], isA<MqttUtf8StringProperty>());
         expect(propList[1], isA<MqttByteProperty>());
         expect(propList[0].identifier, MqttPropertyIdentifier.contentType);
-        expect((propList[0] as MqttUtf8StringProperty).value, 'Hello');
+        expect(propList[0].value, 'Hello');
         expect(propList[1].identifier,
             MqttPropertyIdentifier.payloadFormatIndicator);
-        expect((propList[1] as MqttByteProperty).value, 0x44);
+        expect(propList[1].value, 0x44);
       });
     });
   });

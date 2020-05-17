@@ -15,6 +15,9 @@ abstract class MqttIProperty {
   /// Identifier
   MqttPropertyIdentifier identifier;
 
+  /// The value
+  dynamic get value;
+
   /// Serialize to a byte buffer stream
   void writeTo(MqttByteBuffer stream);
 
