@@ -17,14 +17,15 @@ class MqttStringPairProperty implements MqttIProperty {
   MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
 
   /// The value
-  final pair = MqttStringPair();
+  @override
+  final value = MqttStringPair();
 
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    final buff = pair.nameAsUtf8;
-    buff.addAll(pair.valueAsUtf8);
+    final buff = value.nameAsUtf8;
+    buff.addAll(value.valueAsUtf8);
     stream.write(buff);
   }
 
@@ -32,29 +33,29 @@ class MqttStringPairProperty implements MqttIProperty {
   @override
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
-    pair.name = stream.readMqttStringM();
-    pair.value = stream.readMqttStringM();
+    value.name = stream.readMqttStringM();
+    value.value = stream.readMqttStringM();
   }
 
   /// Gets the length of the write data when WriteTo will be called.
   @override
-  int getWriteLength() => pair.nameAsUtf8.length + pair.valueAsUtf8.length + 1;
+  int getWriteLength() =>
+      value.nameAsUtf8.length + value.valueAsUtf8.length + 1;
 
   /// Set the name
-  set name(String val) => pair.name = val;
+  set pairName(String val) => value.name = val;
 
   /// Set the value
-  set value(String val) => pair.value = val;
+  set pairValue(String val) => value.value = val;
 
   /// Get the name
-  String get name => pair.name;
+  String get pairName => value.name;
 
   /// Get the value
-  @override
-  String get value => pair.value;
+  String get pairValue => value.value;
 
   @override
   String toString() {
-    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, name : $name value : $value';
+    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, name : $pairName value : $pairValue';
   }
 }

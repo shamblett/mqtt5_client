@@ -26,6 +26,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     readFrom(headerStream);
   }
 
+  final _propertySet = MqttPropertyContainer();
+
   @override
   int length;
 

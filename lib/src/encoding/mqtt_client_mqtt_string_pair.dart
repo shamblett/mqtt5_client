@@ -12,10 +12,10 @@ part of mqtt5_client;
 /// name, and the second string contains the value.
 class MqttStringPair {
   /// The name
-  String name;
+  String name = '';
 
   /// The value
-  String value;
+  String value = '';
 
   final _enc = MqttUtf8Encoding();
 

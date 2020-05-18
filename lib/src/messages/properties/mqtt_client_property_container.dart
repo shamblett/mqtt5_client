@@ -9,31 +9,57 @@ part of mqtt5_client;
 
 /// A property container for use in MQTT Messages
 class MqttPropertyContainer {
-  // The container can only contain one entry of each property type
+  // The container can only contain one entry of each property type except for
+  // user properties where there can be more than one with duplicate names allowed.
   final _container = <MqttPropertyIdentifier, MqttIProperty>{};
+
+  final _userProperties = <MqttIProperty>[];
 
   final _enc = MqttVariableByteIntegerEncoding();
 
   /// Add a property.
   /// Note that the container will hold the last added property of any type
-  void add(MqttIProperty property) =>
+  /// except user properties.
+  void add(MqttIProperty property) {
+    if (property.identifier != MqttPropertyIdentifier.userProperty) {
       _container[property.identifier] = property;
+    } else {
+      _userProperties.add(property);
+    }
+  }
 
   /// Delete a property.
   /// Returns true if the property was deleted, false if the property didn't
   /// already exist
-  bool delete(MqttPropertyIdentifier identifier) =>
-      _container.remove(identifier) != null;
+  bool delete(MqttIProperty property) {
+    var ok = false;
+    if (property.identifier != MqttPropertyIdentifier.userProperty) {
+      ok = _container.remove(property.identifier) != null;
+    } else {
+      ok = _userProperties.remove(property);
+    }
+    return ok;
+  }
 
   /// Clear
-  void clear() => _container.clear();
+  void clear() {
+    _container.clear();
+    _userProperties.clear();
+  }
 
   /// Contains
-  bool contains(MqttPropertyIdentifier identifier) =>
-      _container.containsKey(identifier);
+  bool contains(MqttIProperty property) {
+    var ok = false;
+    if (property.identifier != MqttPropertyIdentifier.userProperty) {
+      ok = _container.containsKey(property.identifier);
+    } else {
+      ok = _userProperties.contains(property);
+    }
+    return ok;
+  }
 
   /// Number of properties
-  int get count => _container.length;
+  int get count => _container.length + _userProperties.length;
 
   /// To byte buffer
   /// Complete serialization of the properties including the property length bytes
@@ -41,10 +67,13 @@ class MqttPropertyContainer {
     final buffer = typed.Uint8Buffer();
     final stream = MqttByteBuffer(buffer);
     // Empty check
-    if (_container.isEmpty) {
+    if (_container.isEmpty && _userProperties.isEmpty) {
       return _enc.fromInt(0);
     }
     for (var property in _container.values) {
+      property.writeTo(stream);
+    }
+    for (var property in _userProperties) {
       property.writeTo(stream);
     }
     final length = stream.length;
@@ -77,7 +106,11 @@ class MqttPropertyContainer {
     // Build the property set until we run out of them
     while (length != 0) {
       final property = MqttPropertyFactory.get(stream);
-      _container[property.identifier] = property;
+      if (property.identifier != MqttPropertyIdentifier.userProperty) {
+        _container[property.identifier] = property;
+      } else {
+        _userProperties.add(property);
+      }
       length -= property.getWriteLength();
     }
   }
@@ -88,12 +121,16 @@ class MqttPropertyContainer {
       !_container.containsKey(MqttPropertyIdentifier.notSet);
 
   /// To list
-  List<MqttIProperty> toList() => _container.values.toList();
+  List<MqttIProperty> toList() =>
+      _container.values.toList()..addAll(_userProperties);
 
   @override
   String toString() {
     final sb = StringBuffer();
     for (var property in _container.values) {
+      sb.writeln(property);
+    }
+    for (var property in _userProperties) {
       sb.writeln(property);
     }
     return sb.toString();
