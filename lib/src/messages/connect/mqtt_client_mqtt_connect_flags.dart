@@ -18,22 +18,46 @@ class MqttConnectFlags {
     readFrom(connectFlagsStream);
   }
 
-  /// Clean start
+  /// Clean start.
+  ///
+  /// This bit specifies whether the Connection starts a new Session or
+  /// is a continuation of an existing Session.
+  /// If a Connect message is sent with Clean Start set to true, the
+  /// Client MUST discard any existing Session and start a new Session.
+  ///
   bool cleanStart = false;
 
   /// Will
+  ///
+  /// If the Will Flag is true this indicates that a Will Message MUST be
+  /// stored on the Server and associated with the Session.
+  /// The Will Message consists of the Will Properties, Will Topic,
+  /// and Will Payload fields in the payload.
   bool willFlag = false;
 
   /// Will Qos
+  ///
+  /// The QoS level to be used when publishing the Will Message.
   MqttQos willQos = MqttQos.atMostOnce;
 
   /// Will retain
+  ///
+  /// Specifies if the Will Message is to be retained when it is published.
   bool willRetain = false;
 
   /// Password present
+  ///
+  /// If the Password Flag is false, a Password MUST NOT be present in the payload.
+  /// If the Password Flag is true, a Password MUST be present in the payload.
+  /// This version of the protocol allows the sending of a password with no
+  /// user name, where MQTT v3.1.1 did not. This reflects the common
+  /// use of password for credentials other than a password.
   bool passwordFlag = false;
 
   /// Username present
+  ///
+  /// If the User Name Flag false, a User Name MUST NOT be present in the payload.
+  /// If the User Name Flag is true, a User Name MUST be present in the payload.
   bool usernameFlag = false;
 
   /// Return the connect flag value

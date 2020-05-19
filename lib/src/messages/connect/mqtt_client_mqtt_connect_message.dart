@@ -8,6 +8,11 @@
 part of mqtt5_client;
 
 /// An Mqtt message that is used to initiate a connection to a message broker.
+/// After a Network Connection is established by a Client to a Server, the
+/// first packet sent from the Client to the Server MUST be a CONNECT
+/// packet [MQTT-3.1.0-1].
+///
+/// A Client can only send the CONNECT packet once over a Network Connection.
 class MqttConnectMessage extends MqttMessage {
   /// Initializes a new instance of the MqttConnectMessage class.
   /// Only called via the MqttMessage.create operation during processing of
