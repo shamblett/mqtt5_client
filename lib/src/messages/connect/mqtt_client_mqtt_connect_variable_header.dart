@@ -116,6 +116,142 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     _propertySet.add(property);
   }
 
+  /// Receive maximum property
+  ///
+  /// The Client uses this value to limit the number of QoS 1 and QoS 2 publications that it
+  /// is willing to process concurrently. There is no mechanism to limit the QoS 0
+  /// publications that the Server might try to send hence a value of 0 is an error.
+  ///
+  /// The value of Receive Maximum applies only to the current Network Connection.
+  /// If the Receive Maximum value is absent then its value defaults to its
+  /// maximum value of 65,535.
+  final _receiveMaximum = 0;
+  int get receiveMaximum => _receiveMaximum;
+  set receiveMaximum(int maximum) {
+    if (maximum <= 0 || maximum > 65535) {
+      throw ArgumentError.value(maximum, 'value must be between 1 and 65535');
+    }
+    var property =
+        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.receiveMaximum);
+    property.value = maximum;
+    _propertySet.add(property);
+  }
+
+  /// Maximum packet size property
+  ///
+  ///  The Maximum Packet Size the Client is willing to accept. If the
+  ///  Maximum Packet Size is not present, no limit on the packet size is
+  ///  imposed beyond the limitations in the protocol as a result of the
+  ///  remaining length encoding and the protocol header sizes.
+  ///
+  /// The Client uses the Maximum Packet Size to inform the broker that it
+  /// will not process packets exceeding this limit.
+  ///
+  ///  A value of 0 is an error.
+  final _maximumPacketSize = 0;
+  int get maximumPacketSize => _maximumPacketSize;
+  set maximumPacketSize(int size) {
+    if (size == 0) {
+      throw ArgumentError.value(size, 'value must not be 0');
+    }
+    var property =
+        MqttFourByteIntegerProperty(MqttPropertyIdentifier.maximumPacketSize);
+    property.value = size;
+    _propertySet.add(property);
+  }
+
+  /// Topic alias maximum property
+  ///
+  /// This value indicates the highest value that the Client will accept as a
+  /// Topic Alias sent by the broker. The Client uses this value to limit the
+  /// number of Topic Aliases that it is willing to hold on this Connection.
+  ///
+  /// A value of 0 indicates that the Client does not accept any Topic
+  /// Aliases on this connection.
+  final _topicAliasMaximum = 0;
+  int get topicAliasMaximum => _topicAliasMaximum;
+  set topicAliasMaximum(int maximum) {
+    var property =
+        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAliasMaximum);
+    property.value = maximum;
+    _propertySet.add(property);
+  }
+
+  /// Request response information property
+  ///
+  /// The Client uses this value to request the broker to return Response Information in
+  /// the connection acknowledgement message. False indicates that the Server MUST NOT return
+  /// Response Information. If true the broker MAY return Response Information
+  /// in the connection acknowledgement message.
+  final _requestResponseInformation = false;
+  bool get requestResponseInformation => _requestResponseInformation;
+  set requestResponseInformation(bool request) {
+    var property =
+        MqttByteProperty(MqttPropertyIdentifier.requestResponseInformation);
+    property.value = request ? 1 : 0;
+    _propertySet.add(property);
+  }
+
+  /// Request problem information property
+  ///
+  /// The Client uses this value to indicate whether the Reason String or
+  /// User Properties are sent in the case of failures.
+  ///
+  /// If this value is true, the broker MAY return a Reason String or
+  /// User Properties on any message where it is allowed.
+  final _requestProblemInformation = true;
+  bool get requestProblemInformation => _requestProblemInformation;
+  set requestProblemInformation(bool request) {
+    var property =
+        MqttByteProperty(MqttPropertyIdentifier.requestProblemInformation);
+    property.value = request ? 1 : 0;
+    _propertySet.add(property);
+  }
+
+  /// User property
+  ///
+  /// The User Property is allowed to appear multiple times to represent
+  /// multiple name, value pairs. The same name is allowed to appear
+  /// more than once.
+  final _userProperties = <MqttStringPairProperty>[];
+  List<MqttStringPairProperty> get userProperties => _userProperties;
+  set userProperties(List<MqttStringPairProperty> properties) {
+    for (var userProperty in properties) {
+      userProperty.identifier = MqttPropertyIdentifier.userProperty;
+      _propertySet.add(userProperty);
+    }
+  }
+
+  /// Authentication method property
+  ///
+  /// A string containing the name of the authentication method
+  /// used for extended authentication.
+  ///
+  /// If Authentication Method is absent, extended authentication is
+  /// not performed.
+  final _authenticationMethod = '';
+  String get authenticationMethod => _authenticationMethod;
+  set authenticationMethod(String method) {
+    var property =
+        MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
+    property.value = method;
+    _propertySet.add(property);
+  }
+
+  /// Authentication Data property
+  ///
+  /// Binary Data containing authentication data. It is a
+  /// Protocol Error to include Authentication Data if there is no
+  /// Authentication Method.
+  final _authenticationData = typed.Uint8Buffer();
+  typed.Uint8Buffer get authenticationData => _authenticationData;
+  set authenticationData(typed.Uint8Buffer data) {
+    var property =
+        MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
+    property.addBytes(data);
+    _propertySet.add(property);
+  }
+
   /// Encoder
   final MqttUtf8Encoding _enc = MqttUtf8Encoding();
 
