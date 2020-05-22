@@ -20,12 +20,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     connectFlags = MqttConnectFlags();
   }
 
-  /// Initializes a new instance of the MqttVariableHeader class,
-  /// populating it with data from a stream.
-  MqttConnectVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
-    readFrom(headerStream);
-  }
-
   // The property set
   final _propertySet = MqttPropertyContainer();
 
@@ -252,16 +246,12 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     _propertySet.add(property);
   }
 
-  /// Encoder
-  final MqttUtf8Encoding _enc = MqttUtf8Encoding();
-
   /// Creates a variable header from the specified header stream.
+  /// Not implemented for this message type which for the client is send only.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
-    readProtocolName(variableHeaderStream);
-    readProtocolVersion(variableHeaderStream);
-    readConnectFlags(variableHeaderStream);
-    readKeepAlive(variableHeaderStream);
+    throw UnimplementedError(
+        'MqttConnectVariableHeader::readFrom - not implemented on this message type');
   }
 
   /// Writes the variable header to the supplied stream.
@@ -271,6 +261,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     writeProtocolVersion(variableHeaderStream);
     writeConnectFlags(variableHeaderStream);
     writeKeepAlive(variableHeaderStream);
+    WriteProperties(variableHeaderStream);
   }
 
   /// Gets the length of the write data when WriteTo will be called.
@@ -282,6 +273,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
     headerLength += 2; // keepAlive
+    headerLength += _propertySet.getWriteLength();
     return headerLength;
   }
 
@@ -305,33 +297,15 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     connectFlags.writeTo(stream);
   }
 
-  /// Protocol name
-  void readProtocolName(MqttByteBuffer stream) {
-    protocolName = MqttByteBuffer.readMqttString(stream);
-    length += _enc.byteCount(protocolName);
-  }
-
-  /// Protocol version
-  void readProtocolVersion(MqttByteBuffer stream) {
-    protocolVersion = stream.readByte();
-    length++;
-  }
-
-  /// Keep alive
-  void readKeepAlive(MqttByteBuffer stream) {
-    keepAlive = stream.readShort();
-    length += 2;
-  }
-
-  /// Connect flags
-  void readConnectFlags(MqttByteBuffer stream) {
-    connectFlags = MqttConnectFlags.fromByteBuffer(stream);
-    length += 1;
+  /// Properties
+  void WriteProperties(MqttByteBuffer stream) {
+    _propertySet.writeTo(stream);
   }
 
   @override
   String toString() => 'Connect Variable Header: ProtocolName=$protocolName, '
       'ProtocolVersion=$protocolVersion, '
       'ConnectFlags=${connectFlags.toString()}, '
-      'KeepAlive=$keepAlive';
+      'KeepAlive=$keepAlive ,'
+      'Properties=${_propertySet.toString()}';
 }

@@ -122,13 +122,6 @@ class MqttConnectMessage extends MqttMessage {
     payload.writeTo(messageStream);
   }
 
-  /// Reads a message from the supplied stream.
-  @override
-  void readFrom(MqttByteBuffer messageStream) {
-    variableHeader = MqttConnectVariableHeader.fromByteBuffer(messageStream);
-    payload = MqttConnectPayload.fromByteBuffer(variableHeader, messageStream);
-  }
-
   @override
   String toString() {
     final sb = StringBuffer();
