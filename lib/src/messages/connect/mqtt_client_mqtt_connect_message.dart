@@ -30,19 +30,6 @@ class MqttConnectMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  /// Sets the name of the protocol to use.
-  MqttConnectMessage withProtocolName(String protocolName) {
-    variableHeader.protocolName = protocolName;
-    return this;
-  }
-
-  /// Sets the protocol version. (Defaults to v3, the only protcol
-  /// version supported)
-  MqttConnectMessage withProtocolVersion(int protocolVersion) {
-    variableHeader.protocolVersion = protocolVersion;
-    return this;
-  }
-
   /// Sets the startClean flag so that the broker drops any messages
   /// that were previously destined for us.
   MqttConnectMessage startClean() {

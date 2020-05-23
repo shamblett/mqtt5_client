@@ -1001,7 +1001,175 @@ void main() {
   });
 
   group('Variable Headers', () {
-    group('Connect', () {});
+    test('Variable Header Connect - No User Properties', () {
+      final variableHeader = MqttConnectVariableHeader();
+      final connectFlags = MqttConnectFlags();
+      connectFlags.passwordFlag = true;
+      connectFlags.willRetain = true;
+      connectFlags.usernameFlag = true;
+      connectFlags.willQos = MqttQos.exactlyOnce;
+      variableHeader.connectFlags = connectFlags;
+      variableHeader.keepAlive = 0x10;
+      variableHeader.receiveMaximum = 0x20;
+      variableHeader.authenticationMethod = 'AuthenticationMethod';
+      variableHeader.requestProblemInformation = false;
+      variableHeader.topicAliasMaximum = 0x30;
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      variableHeader.writeTo(stream);
+      expect(variableHeader.getWriteLength(), 42);
+      expect(stream.buffer, [
+        0,
+        4,
+        77,
+        81,
+        84,
+        84,
+        5,
+        240,
+        0,
+        16,
+        31,
+        33,
+        0,
+        32,
+        21,
+        0,
+        20,
+        65,
+        117,
+        116,
+        104,
+        101,
+        110,
+        116,
+        105,
+        99,
+        97,
+        116,
+        105,
+        111,
+        110,
+        77,
+        101,
+        116,
+        104,
+        111,
+        100,
+        23,
+        0,
+        34,
+        0,
+        48
+      ]);
+      expect(variableHeader.connectFlags.passwordFlag, isTrue);
+      expect(variableHeader.connectFlags.willRetain, isTrue);
+      expect(variableHeader.connectFlags.willQos, MqttQos.exactlyOnce);
+      expect(variableHeader.connectFlags.passwordFlag, isTrue);
+      expect(variableHeader.keepAlive, 0x10);
+      expect(variableHeader.receiveMaximum, 0x20);
+      expect(variableHeader.authenticationMethod, 'AuthenticationMethod');
+      expect(variableHeader.requestProblemInformation, false);
+      expect(variableHeader.topicAliasMaximum, 0x30);
+    });
+    test('Variable Header Connect - User Properties', () {
+      final variableHeader = MqttConnectVariableHeader();
+      variableHeader.sessionExpiryInterval = 0x20;
+      variableHeader.maximumPacketSize = 0x30;
+      variableHeader.requestResponseInformation = true;
+      var buffer = typed.Uint8Buffer();
+      buffer.addAll([1, 2, 3, 4]);
+      variableHeader.authenticationData = buffer;
+      var property1 = MqttStringPairProperty();
+      property1.pairName = 'Prop1';
+      property1.pairValue = 'Prop1Value';
+      var property2 = MqttStringPairProperty();
+      property2.pairName = 'Prop2';
+      property2.pairValue = 'Prop2Value';
+      variableHeader.userProperties = [property1, property2];
+      final streamBuffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(streamBuffer);
+      variableHeader.writeTo(stream);
+      expect(variableHeader.getWriteLength(), 70);
+      expect(stream.buffer, [
+        0,
+        4,
+        77,
+        81,
+        84,
+        84,
+        5,
+        0,
+        0,
+        0,
+        59,
+        17,
+        0,
+        0,
+        0,
+        32,
+        39,
+        0,
+        0,
+        0,
+        48,
+        25,
+        1,
+        22,
+        0,
+        4,
+        1,
+        2,
+        3,
+        4,
+        38,
+        0,
+        5,
+        80,
+        114,
+        111,
+        112,
+        49,
+        0,
+        10,
+        80,
+        114,
+        111,
+        112,
+        49,
+        86,
+        97,
+        108,
+        117,
+        101,
+        38,
+        0,
+        5,
+        80,
+        114,
+        111,
+        112,
+        50,
+        0,
+        10,
+        80,
+        114,
+        111,
+        112,
+        50,
+        86,
+        97,
+        108,
+        117,
+        101
+      ]);
+      expect(variableHeader.sessionExpiryInterval, 0x20);
+      expect(variableHeader.authenticationData.toList(), [1, 2, 3, 4]);
+      expect(variableHeader.requestResponseInformation, true);
+      expect(variableHeader.maximumPacketSize, 0x30);
+      expect(variableHeader.userProperties[0], property1);
+      expect(variableHeader.userProperties[1], property2);
+    });
   });
 
   group('Messages', () {
@@ -1019,8 +1187,6 @@ void main() {
       });
       test('With will set', () {
         final msg = MqttConnectMessage()
-            .withProtocolName('MQIsdp')
-            .withProtocolVersion(3)
             .withClientIdentifier('mark')
             .keepAliveFor(30)
             .startClean()

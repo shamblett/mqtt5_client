@@ -13,31 +13,27 @@ part of mqtt5_client;
 /// in this order: Protocol Name, Protocol Level, Connect Flags,
 /// Keep Alive, and Properties.
 class MqttConnectVariableHeader implements MqttIVariableHeader {
-  /// Initializes a new instance of the MqttConnectVariableHeader class.
-  MqttConnectVariableHeader() {
-    protocolName = MqttClientProtocol.name;
-    protocolVersion = MqttClientProtocol.version;
-    connectFlags = MqttConnectFlags();
-  }
-
   // The property set
   final _propertySet = MqttPropertyContainer();
 
+  /// The length of the variable header
   @override
-  int length;
+  int get length => getWriteLength();
+  @override
+  set length(int length) {}
 
   /// Protocol name
-  String protocolName = MqttClientProtocol.name;
+  final _protocolName = MqttClientProtocol.name;
 
   /// Protocol version
-  int protocolVersion = MqttClientProtocol.version;
+  final _protocolVersion = MqttClientProtocol.version;
 
   /// Connect flags
   ///
   /// The Connect Flags byte contains several parameters specifying the
   /// behavior of the MQTT connection. It also indicates the
   /// presence or absence of fields in the payload.
-  MqttConnectFlags connectFlags;
+  MqttConnectFlags connectFlags = MqttConnectFlags();
 
   /// Keep alive
   ///
@@ -101,13 +97,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// long Session Expiry Interval if they intend to reconnect to the broker at some
   /// later point in time. When a Client has determined that it has no further
   /// use for the Session it should disconnect with a Session Expiry Interval set to 0.
-  final _sessionExpiryInterval = 0;
+  int _sessionExpiryInterval = 0;
   int get sessionExpiryInterval => _sessionExpiryInterval;
   set sessionExpiryInterval(int interval) {
     var property = MqttFourByteIntegerProperty(
         MqttPropertyIdentifier.sessionExpiryInterval);
     property.value = interval;
     _propertySet.add(property);
+    _sessionExpiryInterval = interval;
   }
 
   /// Receive maximum property
@@ -119,7 +116,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// The value of Receive Maximum applies only to the current Network Connection.
   /// If the Receive Maximum value is absent then its value defaults to its
   /// maximum value of 65,535.
-  final _receiveMaximum = 0;
+  int _receiveMaximum = 0;
   int get receiveMaximum => _receiveMaximum;
   set receiveMaximum(int maximum) {
     if (maximum <= 0 || maximum > 65535) {
@@ -129,6 +126,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
         MqttTwoByteIntegerProperty(MqttPropertyIdentifier.receiveMaximum);
     property.value = maximum;
     _propertySet.add(property);
+    _receiveMaximum = maximum;
   }
 
   /// Maximum packet size property
@@ -142,7 +140,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// will not process packets exceeding this limit.
   ///
   ///  A value of 0 is an error.
-  final _maximumPacketSize = 0;
+  int _maximumPacketSize = 0;
   int get maximumPacketSize => _maximumPacketSize;
   set maximumPacketSize(int size) {
     if (size == 0) {
@@ -152,6 +150,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
         MqttFourByteIntegerProperty(MqttPropertyIdentifier.maximumPacketSize);
     property.value = size;
     _propertySet.add(property);
+    _maximumPacketSize = size;
   }
 
   /// Topic alias maximum property
@@ -162,13 +161,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// A value of 0 indicates that the Client does not accept any Topic
   /// Aliases on this connection.
-  final _topicAliasMaximum = 0;
+  int _topicAliasMaximum = 0;
   int get topicAliasMaximum => _topicAliasMaximum;
   set topicAliasMaximum(int maximum) {
     var property =
         MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAliasMaximum);
     property.value = maximum;
     _propertySet.add(property);
+    _topicAliasMaximum = maximum;
   }
 
   /// Request response information property
@@ -177,13 +177,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// the connection acknowledgement message. False indicates that the Server MUST NOT return
   /// Response Information. If true the broker MAY return Response Information
   /// in the connection acknowledgement message.
-  final _requestResponseInformation = false;
+  bool _requestResponseInformation = false;
   bool get requestResponseInformation => _requestResponseInformation;
   set requestResponseInformation(bool request) {
     var property =
         MqttByteProperty(MqttPropertyIdentifier.requestResponseInformation);
     property.value = request ? 1 : 0;
     _propertySet.add(property);
+    _requestResponseInformation = request;
   }
 
   /// Request problem information property
@@ -193,13 +194,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// If this value is true, the broker MAY return a Reason String or
   /// User Properties on any message where it is allowed.
-  final _requestProblemInformation = true;
+  bool _requestProblemInformation = true;
   bool get requestProblemInformation => _requestProblemInformation;
   set requestProblemInformation(bool request) {
     var property =
         MqttByteProperty(MqttPropertyIdentifier.requestProblemInformation);
     property.value = request ? 1 : 0;
     _propertySet.add(property);
+    _requestProblemInformation = request;
   }
 
   /// User property
@@ -213,6 +215,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     for (var userProperty in properties) {
       userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
+      _userProperties.addAll(properties);
     }
   }
 
@@ -223,13 +226,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// If Authentication Method is absent, extended authentication is
   /// not performed.
-  final _authenticationMethod = '';
+  String _authenticationMethod = '';
   String get authenticationMethod => _authenticationMethod;
   set authenticationMethod(String method) {
     var property =
         MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
     property.value = method;
     _propertySet.add(property);
+    _authenticationMethod = method;
   }
 
   /// Authentication Data property
@@ -244,6 +248,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
         MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
     property.addBytes(data);
     _propertySet.add(property);
+    _authenticationData.clear();
+    _authenticationData.addAll(data);
   }
 
   /// Creates a variable header from the specified header stream.
@@ -269,7 +275,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   int getWriteLength() {
     var headerLength = 0;
     final enc = MqttUtf8Encoding();
-    headerLength += enc.byteCount(protocolName);
+    headerLength += enc.byteCount(_protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
     headerLength += 2; // keepAlive
@@ -279,12 +285,12 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
 
   /// Protocol name
   void writeProtocolName(MqttByteBuffer stream) {
-    MqttByteBuffer.writeMqttString(stream, protocolName);
+    MqttByteBuffer.writeMqttString(stream, _protocolName);
   }
 
   /// Protocol version
   void writeProtocolVersion(MqttByteBuffer stream) {
-    stream.writeByte(protocolVersion);
+    stream.writeByte(_protocolVersion);
   }
 
   /// Keep alive
@@ -303,8 +309,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   }
 
   @override
-  String toString() => 'Connect Variable Header: ProtocolName=$protocolName, '
-      'ProtocolVersion=$protocolVersion, '
+  String toString() => 'Connect Variable Header: ProtocolName=$_protocolName, '
+      'ProtocolVersion=$_protocolVersion, '
       'ConnectFlags=${connectFlags.toString()}, '
       'KeepAlive=$keepAlive ,'
       'Properties=${_propertySet.toString()}';
