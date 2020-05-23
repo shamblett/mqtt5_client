@@ -7,7 +7,7 @@
 
 part of mqtt5_client;
 
-/// Represents the payload (Body) of an MQTT Message.
+// Base class for the payload (Body) of an MQTT Message.
 abstract class MqttPayload {
   /// Initializes a new instance of the MqttPayload class.
   MqttPayload();
