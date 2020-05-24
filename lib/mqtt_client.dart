@@ -104,6 +104,8 @@ part 'src/messages/connect/mqtt_client_mqtt_connect_variable_header.dart';
 
 part 'src/messages/connect/mqtt_client_mqtt_connect_message.dart';
 
+part 'src/messages/connect/mqtt_client_mqtt_will_properties.dart';
+
 part 'src/messages/connectack/mqtt_client_mqtt_connect_ack_variable_header.dart';
 
 part 'src/messages/connectack/mqtt_client_mqtt_connect_ack_message.dart';

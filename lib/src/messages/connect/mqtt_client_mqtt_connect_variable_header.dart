@@ -309,9 +309,13 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   }
 
   @override
-  String toString() => 'Connect Variable Header: ProtocolName=$_protocolName, '
-      'ProtocolVersion=$_protocolVersion, '
-      'ConnectFlags=${connectFlags.toString()}, '
-      'KeepAlive=$keepAlive ,'
-      'Properties=${_propertySet.toString()}';
+  String toString() {
+    final sb = StringBuffer();
+    sb.writeln('ProtocolName = $_protocolName');
+    sb.writeln('ProtocolVersion = $_protocolVersion');
+    sb.writeln('ConnectFlags = ${connectFlags.toString()}');
+    sb.writeln('KeepAlive = $keepAlive');
+    sb.writeln('Properties = ${_propertySet.toString()}');
+    return sb.toString();
+  }
 }
