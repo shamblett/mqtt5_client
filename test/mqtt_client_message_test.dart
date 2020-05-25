@@ -1240,8 +1240,8 @@ void main() {
             .will()
             .withWillQos(MqttQos.atLeastOnce)
             .withWillRetain()
-            .withWillTopic('willTopic')
-            .withWillMessage('willMessage');
+            .withWillTopic('willTopic');
+            // TODO .withWillMessage('willMessage');
         print('Connect - With will set::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);

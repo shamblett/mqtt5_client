@@ -55,7 +55,7 @@ class MqttConnectPayload extends MqttPayload {
   String willTopic;
 
   /// Will payload
-  final willPayload = typed.Uint8Buffer();
+  typed.Uint8Buffer willPayload = typed.Uint8Buffer();
 
   String _username;
 

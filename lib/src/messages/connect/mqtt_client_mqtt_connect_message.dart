@@ -67,10 +67,10 @@ class MqttConnectMessage extends MqttMessage {
     return this;
   }
 
-  /// Sets the will message.
-  MqttConnectMessage withWillMessage(String willMessage) {
+  /// Sets the will payload
+  MqttConnectMessage withWillPayload(typed.Uint8Buffer willPayload) {
     will();
-    payload.willMessage = willMessage;
+    payload.willPayload = willPayload;
     return this;
   }
 

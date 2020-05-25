@@ -69,7 +69,7 @@ Future<int> main() async {
       .withClientIdentifier('Mqtt_MyClientUniqueId')
       .keepAliveFor(20) // Must agree with the keep alive set above or not set
       .withWillTopic('willtopic') // If you set this you must set a will message
-      .withWillMessage('My Will message')
+      // TODO .withWillMessage('My Will message')
       .startClean() // Non persistent session for testing
       .withWillQos(MqttQos.atLeastOnce);
   print('EXAMPLE::Mosquitto client connecting....');
