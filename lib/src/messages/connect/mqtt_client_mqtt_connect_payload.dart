@@ -22,6 +22,9 @@ class MqttConnectPayload extends MqttPayload {
   /// Variable header, needed for payload encoding
   MqttConnectVariableHeader variableHeader = MqttConnectVariableHeader();
 
+  /// Will properties
+  final willProperties = MqttWillProperties();
+
   /// Client identifier.
   ///
   /// The Client Identifier (ClientID) identifies the Client to the Server.
@@ -52,6 +55,7 @@ class MqttConnectPayload extends MqttPayload {
   String willTopic;
 
   /// Will payload
+  final willPayload = typed.Uint8Buffer();
 
   String _username;
 
@@ -66,9 +70,6 @@ class MqttConnectPayload extends MqttPayload {
 
   set password(String pwd) => _password = pwd != null ? pwd.trim() : pwd;
 
-  /// Will message
-  String willMessage;
-
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
@@ -76,13 +77,12 @@ class MqttConnectPayload extends MqttPayload {
         'MqttConnectPayload::readFrom - message is transmit only');
   }
 
-  /// Writes the connect message payload to the supplied stream.
-  @override
-  void writeTo(MqttByteBuffer payloadStream) {
+  void _serialize(MqttByteBuffer payloadStream) {
     payloadStream.writeMqttStringM(clientIdentifier);
     if (variableHeader.connectFlags.willFlag) {
+      willProperties.writeTo(payloadStream);
       payloadStream.writeMqttStringM(willTopic);
-      payloadStream.writeMqttStringM(willMessage);
+      payloadStream.write(willPayload);
     }
     if (variableHeader.connectFlags.usernameFlag) {
       payloadStream.writeMqttStringM(username);
@@ -92,25 +92,27 @@ class MqttConnectPayload extends MqttPayload {
     }
   }
 
+  /// Writes the connect message payload to the supplied stream.
+  @override
+  void writeTo(MqttByteBuffer payloadStream) => _serialize(payloadStream);
+
   @override
   int getWriteLength() {
-    var length = 0;
-    final enc = MqttUtf8Encoding();
-    length += enc.byteCount(clientIdentifier);
-    if (variableHeader.connectFlags.willFlag) {
-      length += enc.byteCount(willTopic);
-      length += enc.byteCount(willMessage);
-    }
-    if (variableHeader.connectFlags.usernameFlag) {
-      length += enc.byteCount(username);
-    }
-    if (variableHeader.connectFlags.passwordFlag) {
-      length += enc.byteCount(password);
-    }
-    return length;
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    _serialize(stream);
+    return stream.length;
   }
 
   @override
-  String toString() =>
-      'MqttConnectPayload - client identifier is : $clientIdentifier';
+  String toString() {
+    final sb = StringBuffer();
+    sb.writeln('Client identifier is = $clientIdentifier');
+    sb.writeln('Will topic = $willTopic');
+    sb.write('User name = ');
+    username != null ? sb.writeln('$username') : sb.writeln('not set');
+    sb.write('Password = ');
+    password != null ? sb.writeln('$password') : sb.writeln('not set');
+    return sb.toString();
+  }
 }
