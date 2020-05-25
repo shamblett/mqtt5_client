@@ -1172,6 +1172,53 @@ void main() {
     });
   });
 
+  group('Payload', () {
+    group('Connect Message', () {
+      test('Will Properties - Empty', () {
+        final willProperties = MqttWillProperties();
+        expect(willProperties.responseTopic, isNull);
+        expect(willProperties.messageExpiryInterval, 0);
+        expect(willProperties.payloadFormatIndicator, isFalse);
+        expect(willProperties.willDelayInterval, 0);
+        expect(willProperties.contentType, isNull);
+        expect(willProperties.correlationData, isNull);
+        expect(willProperties.userProperties, isEmpty);
+        expect(willProperties.getWriteLength(), 1);
+        expect(willProperties.length, 0);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        willProperties.writeTo(stream);
+        expect(stream.length, 1);
+        expect(stream.buffer[0], 0);
+        expect(stream.position, 1);
+      });
+      test('Will Properties - Complete', () {
+        final willProperties = MqttWillProperties();
+        willProperties.responseTopic = 'Response Topic';
+        expect(willProperties.responseTopic, 'Response Topic');
+        willProperties.messageExpiryInterval = 10;
+        expect(willProperties.messageExpiryInterval, 10);
+        willProperties.payloadFormatIndicator = true;
+        expect(willProperties.payloadFormatIndicator, isTrue);
+        willProperties.willDelayInterval = 30;
+        expect(willProperties.willDelayInterval, 30);
+        willProperties.contentType = 'Content Type';
+        expect(willProperties.contentType, 'Content Type');
+        final correlationdata = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
+        willProperties.correlationData = correlationdata;
+        expect(willProperties.correlationData.toList(), [1, 2, 3, 4]);
+        final user1 = MqttStringPairProperty()
+          ..pairName = 'name'
+          ..pairValue = 'value';
+        willProperties.userProperties = <MqttStringPairProperty>[user1];
+        expect(willProperties.userProperties, isNotEmpty);
+        expect(willProperties.userProperties[0], user1);
+        expect(willProperties.getWriteLength(), 63);
+        expect(willProperties.length, 62);
+      });
+    });
+  });
+
   group('Messages', () {
     group('Connect', () {
       test('Basic serialization', () {

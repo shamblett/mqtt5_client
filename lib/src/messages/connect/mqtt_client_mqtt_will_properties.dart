@@ -149,6 +149,9 @@ class MqttWillProperties {
   /// Write length
   int getWriteLength() => _propertySet.getWriteLength();
 
+  /// Length of the properties
+  int get length => _propertySet.length();
+
   @override
   String toString() {
     final sb = StringBuffer();
