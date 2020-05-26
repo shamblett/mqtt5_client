@@ -22,7 +22,12 @@ class MqttConnectPayload extends MqttPayload {
   /// Variable header, needed for payload encoding
   MqttConnectVariableHeader variableHeader = MqttConnectVariableHeader();
 
-  /// Will properties
+  /// Will Properties.
+  ///
+  /// Note that unless the will flag,
+  /// [MqttConnectFlags.willFlag], in the variable header is
+  /// set these properties will not be encoded in the payload even if
+  /// they are set.
   final willProperties = MqttWillProperties();
 
   /// Client identifier.
@@ -50,11 +55,16 @@ class MqttConnectPayload extends MqttPayload {
 
   /// Will topic.
   ///
-  /// If the Will Flag is set, the Will Topic is the next field in the Payload.
-  /// The Will Topic MUST be a UTF-8 Encoded String.
+  /// If the Will Flag is set [MqttConnectFlags.willFlag], the Will Topic is the
+  /// encoded in the Payload.
   String willTopic;
 
-  /// Will payload
+  /// Will payload.
+  ///
+  /// Note that unless the will flag,
+  /// [MqttConnectFlags.willFlag], in the variable header is
+  /// set this payload will not be encoded in the payload even if
+  /// it is set.
   typed.Uint8Buffer willPayload = typed.Uint8Buffer();
 
   String _username;
