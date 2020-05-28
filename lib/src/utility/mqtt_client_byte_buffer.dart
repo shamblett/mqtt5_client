@@ -151,9 +151,11 @@ class MqttByteBuffer {
   /// stringToWrite - The string to write.
   static void writeMqttString(
       MqttByteBuffer stringStream, String stringToWrite) {
-    final enc = MqttUtf8Encoding();
-    final stringBytes = enc.toUtf8(stringToWrite);
-    stringStream.write(stringBytes);
+    if (stringToWrite != null) {
+      final enc = MqttUtf8Encoding();
+      final stringBytes = enc.toUtf8(stringToWrite);
+      stringStream.write(stringBytes);
+    }
   }
 
   /// Reads an MQTT string from the underlying stream member

@@ -1216,6 +1216,118 @@ void main() {
         expect(willProperties.getWriteLength(), 63);
         expect(willProperties.length, 62);
       });
+      test('Payload - No Will Properties', () {
+        final variableHeader = MqttConnectVariableHeader();
+        variableHeader.connectFlags.usernameFlag = true;
+        variableHeader.connectFlags.passwordFlag = true;
+        final payload = MqttConnectPayload(variableHeader);
+        payload.clientIdentifier = 'Client Identifier';
+        payload.username = 'Username';
+        payload.password = 'Password';
+        expect(payload.getWriteLength(), 39);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        payload.writeTo(stream);
+        expect(stream.buffer, [
+          0,
+          17,
+          67,
+          108,
+          105,
+          101,
+          110,
+          116,
+          32,
+          73,
+          100,
+          101,
+          110,
+          116,
+          105,
+          102,
+          105,
+          101,
+          114,
+          0,
+          8,
+          85,
+          115,
+          101,
+          114,
+          110,
+          97,
+          109,
+          101,
+          0,
+          8,
+          80,
+          97,
+          115,
+          115,
+          119,
+          111,
+          114,
+          100
+        ]);
+      });
+      test('Payload - Will Properties', () {
+        final variableHeader = MqttConnectVariableHeader();
+        variableHeader.connectFlags.willFlag = true;
+        variableHeader.connectFlags.willQos = MqttQos.exactlyOnce;
+        final payload = MqttConnectPayload(variableHeader);
+        payload.clientIdentifier = 'Client Identifier';
+        payload.username = 'Username';
+        payload.password = 'Password';
+        payload.willProperties.contentType = 'Content Type';
+        payload.willProperties.willDelayInterval = 0xFF;
+        payload.variableHeader.connectFlags.willRetain = true;
+        expect(payload.getWriteLength(), 40);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        payload.writeTo(stream);
+        expect(stream.buffer, [
+          0,
+          17,
+          67,
+          108,
+          105,
+          101,
+          110,
+          116,
+          32,
+          73,
+          100,
+          101,
+          110,
+          116,
+          105,
+          102,
+          105,
+          101,
+          114,
+          20,
+          3,
+          0,
+          12,
+          67,
+          111,
+          110,
+          116,
+          101,
+          110,
+          116,
+          32,
+          84,
+          121,
+          112,
+          101,
+          24,
+          0,
+          0,
+          0,
+          255
+        ]);
+      });
     });
   });
 
@@ -1241,7 +1353,7 @@ void main() {
             .withWillQos(MqttQos.atLeastOnce)
             .withWillRetain()
             .withWillTopic('willTopic');
-            // TODO .withWillMessage('willMessage');
+        // TODO .withWillMessage('willMessage');
         print('Connect - With will set::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
