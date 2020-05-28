@@ -115,9 +115,16 @@ class MqttConnectMessage extends MqttMessage {
   }
 
   /// Add a specific user property
-  MqttConnectMessage withUserProperty(MqttStringPairProperty property) {
+  void addUserProperty(MqttStringPairProperty property) {
     variableHeader.userProperties = [property];
-    return this;
+  }
+
+  /// Add a user property from the name/value pair
+  void addUserPropertyPair(String name, String value) {
+    final property = MqttStringPairProperty.asUserProperty();
+    property.pairName = name;
+    property.pairValue = value;
+    addUserProperty(property);
   }
 
   /// Sets the authentication

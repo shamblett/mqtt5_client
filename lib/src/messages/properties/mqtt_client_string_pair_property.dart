@@ -12,6 +12,11 @@ class MqttStringPairProperty implements MqttIProperty {
   /// Construction
   MqttStringPairProperty([this.identifier]);
 
+  /// As a user property
+  MqttStringPairProperty.asUserProperty() {
+    identifier = MqttPropertyIdentifier.userProperty;
+  }
+
   /// Identifier
   @override
   MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;

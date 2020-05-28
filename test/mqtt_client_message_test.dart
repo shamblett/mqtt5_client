@@ -1341,7 +1341,6 @@ void main() {
         print('Connect - Basic serialization::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
-        // VH will = 12, Msg = 6
         expect(mb[1], 0x12);
       });
       test('With will set', () {
@@ -1353,12 +1352,36 @@ void main() {
             .withWillQos(MqttQos.atLeastOnce)
             .withWillRetain()
             .withWillTopic('willTopic');
-        // TODO .withWillMessage('willMessage');
         print('Connect - With will set::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
-        // VH will = 12, Msg = 6
-        expect(mb[1], 0x2A);
+        expect(mb[1], 0x1D);
+      });
+      test('User properties', () {
+        final userProp =
+            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        userProp.pairName = 'Name';
+        userProp.pairValue = 'Value';
+        final msg = MqttConnectMessage()
+            .withClientIdentifier('mark')
+            .keepAliveFor(30)
+            .startClean()
+            .withUserProperties([userProp]);
+        print('Connect - User properties::${msg.toString()}');
+        final mb = MessageSerializationHelper.getMessageBytes(msg);
+        expect(mb[0], 0x10);
+        expect(mb[1], 0x1F);
+      });
+      test('Authentication', () {
+        final msg = MqttConnectMessage()
+            .withClientIdentifier('mark')
+            .keepAliveFor(30)
+            .startClean()
+            .authenticateAs('Username', 'password');
+        print('Connect - Authentication ::${msg.toString()}');
+        final mb = MessageSerializationHelper.getMessageBytes(msg);
+        expect(mb[0], 0x10);
+        expect(mb[1], 0x25);
       });
     });
 
