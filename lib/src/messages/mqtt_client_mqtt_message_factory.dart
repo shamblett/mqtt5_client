@@ -9,13 +9,13 @@ part of mqtt5_client;
 
 /// Factory for generating instances of MQTT Messages
 class MqttMessageFactory {
-  /// Gets an instance of an MqttMessage based on the message type requested.
+  /// Gets an instance of an MqttMessage based on the message type requested
+  /// from a byte stream.
   static MqttMessage getMessage(
       MqttHeader header, MqttByteBuffer messageStream) {
     MqttMessage message;
     switch (header.messageType) {
       case MqttMessageType.connect:
-        message = MqttConnectMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.connectAck:
         message = MqttConnectAckMessage.fromByteBuffer(header, messageStream);

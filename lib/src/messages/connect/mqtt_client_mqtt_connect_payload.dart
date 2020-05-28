@@ -28,7 +28,7 @@ class MqttConnectPayload extends MqttPayload {
   /// [MqttConnectFlags.willFlag], in the variable header is
   /// set these properties will not be encoded in the payload even if
   /// they are set.
-  final willProperties = MqttWillProperties();
+  MqttWillProperties willProperties = MqttWillProperties();
 
   /// Client identifier.
   ///
