@@ -18,7 +18,7 @@ class MqttConnectAckMessage extends MqttMessage {
   MqttConnectAckMessage() {
     header = MqttHeader().asType(MqttMessageType.connectAck);
     variableHeader = MqttConnectAckVariableHeader();
-    variableHeader.returnCode = MqttConnectReturnCode.connectionAccepted;
+   // variableHeader.returnCode = MqttConnectReturnCode.connectionAccepted;
   }
 
   /// Initializes a new instance of the MqttConnectAckMessage class.
@@ -48,7 +48,7 @@ class MqttConnectAckMessage extends MqttMessage {
 
   /// Sets the return code of the Variable Header.
   MqttConnectAckMessage withReturnCode(MqttConnectReturnCode returnCode) {
-    variableHeader.returnCode = returnCode;
+    //variableHeader.returnCode = returnCode;
     return this;
   }
 

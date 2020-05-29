@@ -11,26 +11,28 @@ part of mqtt5_client;
 ///
 /// The Variable Header of the Connect Acknowledgement message contains the following fields
 /// in the order: Connect Acknowledge Flags, Connect Reason Code, and Properties.
-class MqttConnectAckVariableHeader extends MqttVariableHeader {
+class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Initializes a new instance of the MqttConnectVariableHeader class.
   MqttConnectAckVariableHeader();
 
   /// Initializes a new instance of the MqttConnectVariableHeader class.
-  MqttConnectAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream)
-      : super.fromByteBuffer(headerStream);
+  MqttConnectAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
+
+  }
+
+  @override
+  int length = 0;
 
   /// Writes the variable header to the supplied stream.
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    variableHeaderStream.writeByte(0);
-    writeReturnCode(variableHeaderStream);
+
   }
 
   /// Creates a variable header from the specified header stream.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
-    variableHeaderStream.readByte();
-    readReturnCode(variableHeaderStream);
+
   }
 
   /// Gets the length of the write data when WriteTo will be called.
@@ -42,7 +44,6 @@ class MqttConnectAckVariableHeader extends MqttVariableHeader {
   int getWriteLength() => 2;
 
   @override
-  String toString() =>
-      'Connect Acknowledge Variable Header: TopicNameCompressionResponse={0}, '
-      'ReturnCode={$returnCode}';
+  String toString() {}
+
 }
