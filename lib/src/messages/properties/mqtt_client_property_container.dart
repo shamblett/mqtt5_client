@@ -13,8 +13,8 @@ class MqttPropertyContainer {
   // user properties where there can be more than one with duplicate names allowed.
   final _container = <MqttPropertyIdentifier, MqttIProperty>{};
 
-  final _userProperties = <MqttIProperty>[];
-  List<MqttIProperty> get userProperties => _userProperties;
+  final _userProperties = <MqttStringPairProperty>[];
+  List<MqttStringPairProperty> get userProperties => _userProperties;
 
   final _enc = MqttVariableByteIntegerEncoding();
 

@@ -1172,8 +1172,7 @@ void main() {
         expect(variableHeader.userProperties[1], property2);
       });
     });
-    group('Connect Ack Message', ()
-    {
+    group('Connect Ack Message', () {
       test('Variable Header Connect Ack - Defaults', () {
         final message = MqttConnectAckVariableHeader();
         final buffer = typed.Uint8Buffer();
@@ -1228,55 +1227,68 @@ void main() {
         buffer.add(1); // Session present
         buffer.add(0); // Reason code success
         final properties = MqttPropertyContainer();
-        var property4Byte = MqttFourByteIntegerProperty(
+        var property4Byte1 = MqttFourByteIntegerProperty(
             MqttPropertyIdentifier.sessionExpiryInterval);
-        property4Byte.value = 30;
-        properties.add(property4Byte);
-        var property2Byte = MqttTwoByteIntegerProperty(
-            MqttPropertyIdentifier.receiveMaximum);
-        property2Byte.value = 1024;
-        properties.add(property2Byte);
-        var propertyByte = MqttByteProperty(MqttPropertyIdentifier.maximumQos);
-        propertyByte.value = 1;
-        properties.add(propertyByte);
-        propertyByte.identifier = MqttPropertyIdentifier.retainAvailable;
-        propertyByte.value = 1;
-        properties.add(propertyByte);
-        property4Byte.identifier = MqttPropertyIdentifier.maximumPacketSize;
-        property4Byte.value = 2048;
-        properties.add(property4Byte);
-        var propertyString = MqttUtf8StringProperty(MqttPropertyIdentifier.assignedClientIdentifier);
-        propertyString.value = 'Assigned CLID';
-        properties.add(propertyString);
-        property2Byte.identifier = MqttPropertyIdentifier.topicAliasMaximum;
-        property2Byte.value = 10;
-        properties.add(property2Byte);
-        propertyString.identifier = MqttPropertyIdentifier.reasonString;
-        propertyString.value = 'Reason String';
-        properties.add(propertyString);
-        propertyByte.identifier = MqttPropertyIdentifier.wildcardSubscriptionAvailable;
-        propertyByte.value = 0;
-        properties.add(propertyByte);
-        propertyByte.identifier = MqttPropertyIdentifier.sharedSubscriptionAvailable;
-        propertyByte.value = 0;
-        properties.add(propertyByte);
-        propertyByte.identifier = MqttPropertyIdentifier.subscriptionIdentifierAvailable;
-        propertyByte.value = 0;
-        properties.add(propertyByte);
-        property2Byte.identifier = MqttPropertyIdentifier.serverKeepAlive;
-        property2Byte.value = 40;
-        properties.add(property2Byte);
-        propertyString.identifier = MqttPropertyIdentifier.responseInformation;
-        propertyString.value = 'Response Information';
-        properties.add(propertyString);
-        propertyString.identifier = MqttPropertyIdentifier.serverReference;
-        propertyString.value = 'Server Reference';
-        properties.add(propertyString);
-        propertyString.identifier = MqttPropertyIdentifier.authenticationMethod;
-        propertyString.value = 'Authentication method';
-        properties.add(propertyString);
-        var propertyBinary = MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
-        var authData = typed.Uint8Buffer()..addAll([1,2,3,4]);
+        property4Byte1.value = 30;
+        properties.add(property4Byte1);
+        var property2Byte1 =
+            MqttTwoByteIntegerProperty(MqttPropertyIdentifier.receiveMaximum);
+        property2Byte1.value = 1024;
+        properties.add(property2Byte1);
+        var propertyByte1 = MqttByteProperty(MqttPropertyIdentifier.maximumQos);
+        propertyByte1.value = 1;
+        properties.add(propertyByte1);
+        var propertyByte2 =
+            MqttByteProperty(MqttPropertyIdentifier.retainAvailable);
+        propertyByte2.value = 1;
+        properties.add(propertyByte2);
+        var property4Byte2 = MqttFourByteIntegerProperty(
+            MqttPropertyIdentifier.maximumPacketSize);
+        property4Byte2.value = 2048;
+        properties.add(property4Byte2);
+        var propertyString1 = MqttUtf8StringProperty(
+            MqttPropertyIdentifier.assignedClientIdentifier);
+        propertyString1.value = 'Assigned CLID';
+        properties.add(propertyString1);
+        var property2Byte2 = MqttTwoByteIntegerProperty(
+            MqttPropertyIdentifier.topicAliasMaximum);
+        property2Byte2.value = 10;
+        properties.add(property2Byte2);
+        var propertyString2 =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
+        propertyString2.value = 'Reason String';
+        properties.add(propertyString2);
+        var propertyByte3 = MqttByteProperty(
+            MqttPropertyIdentifier.wildcardSubscriptionAvailable);
+        propertyByte3.value = 0;
+        properties.add(propertyByte3);
+        var propertyByte4 = MqttByteProperty(
+            MqttPropertyIdentifier.sharedSubscriptionAvailable);
+        propertyByte4.value = 0;
+        properties.add(propertyByte4);
+        var propertyByte5 = MqttByteProperty(
+            MqttPropertyIdentifier.subscriptionIdentifierAvailable);
+        propertyByte5.value = 0;
+        properties.add(propertyByte5);
+        var property2Byte3 =
+            MqttTwoByteIntegerProperty(MqttPropertyIdentifier.serverKeepAlive);
+        property2Byte3.value = 40;
+        properties.add(property2Byte3);
+        var propertyString3 =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.responseInformation);
+        propertyString3.value = 'Response Information';
+        properties.add(propertyString3);
+        var propertyString4 =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.serverReference);
+        propertyString4.value = 'Server Reference';
+        properties.add(propertyString4);
+        var propertyString5 =
+            MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
+        propertyString5.value = 'Authentication Method';
+        properties.add(propertyString5);
+        var propertyBinary =
+            MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
+        var authData = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
         propertyBinary.addBytes(authData);
         properties.add(propertyBinary);
         var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
@@ -1284,8 +1296,8 @@ void main() {
         user1.pairValue = 'User 1 value';
         properties.add(user1);
         var user2 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
-        user2.pairName = 'User 1 name';
-        user2.pairValue = 'User 1 value';
+        user2.pairName = 'User 2 name';
+        user2.pairValue = 'User 2 value';
         properties.add(user2);
         final propBuffer = typed.Uint8Buffer();
         final propStream = MqttByteBuffer(propBuffer);
@@ -1312,7 +1324,7 @@ void main() {
         expect(message.responseInformation, 'Response Information');
         expect(message.serverReference, 'Server Reference');
         expect(message.authenticationMethod, 'Authentication Method');
-        expect(message.authenticationData.toList(), [1,2,3,4]);
+        expect(message.authenticationData.toList(), [1, 2, 3, 4]);
         expect(message.getWriteLength(), 0);
       });
     });

@@ -202,7 +202,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
           _maximumQos = property.value;
           break;
         case MqttPropertyIdentifier.retainAvailable:
-          _retainAvailable = property.value;
+          _retainAvailable = property.value == 1;
           break;
         case MqttPropertyIdentifier.maximumPacketSize:
           _maximumPacketSize = property.value;
@@ -217,13 +217,13 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
           _reasonString = property.value;
           break;
         case MqttPropertyIdentifier.wildcardSubscriptionAvailable:
-          _wildcardSubscriptionsAvailable = property.value;
+          _wildcardSubscriptionsAvailable = property.value == 1;
           break;
         case MqttPropertyIdentifier.subscriptionIdentifierAvailable:
-          _subscriptionIdentifiersAvailable = property.value;
+          _subscriptionIdentifiersAvailable = property.value == 1;
           break;
         case MqttPropertyIdentifier.sharedSubscriptionAvailable:
-          _sharedSubscriptionAvailable = property.value;
+          _sharedSubscriptionAvailable = property.value == 1;
           break;
         case MqttPropertyIdentifier.serverKeepAlive:
           _serverKeepAlive = property.value;
@@ -260,6 +260,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     var byte = variableHeaderStream.readByte();
     _reasonCode = mqttReasonCode.fromInt(byte);
     // Properties
+    variableHeaderStream.shrink();
     _propertySet.readFrom(variableHeaderStream);
     _processProperties();
   }
