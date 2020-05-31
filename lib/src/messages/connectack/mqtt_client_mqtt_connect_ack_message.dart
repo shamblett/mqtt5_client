@@ -18,10 +18,9 @@ class MqttConnectAckMessage extends MqttMessage {
   MqttConnectAckMessage() {
     header = MqttHeader().asType(MqttMessageType.connectAck);
     variableHeader = MqttConnectAckVariableHeader();
-    // variableHeader.returnCode = MqttConnectReturnCode.connectionAccepted;
   }
 
-  /// Initializes a new instance of the MqttConnectAckMessage class.
+  /// Initializes a new instance of the MqttConnectAckMessage from a byte buffer
   MqttConnectAckMessage.fromByteBuffer(
       MqttHeader header, MqttByteBuffer messageStream) {
     this.header = header;
@@ -39,17 +38,10 @@ class MqttConnectAckMessage extends MqttMessage {
     variableHeader = MqttConnectAckVariableHeader.fromByteBuffer(messageStream);
   }
 
-  /// Writes a message to the supplied stream.
+  /// Writes a message to the supplied stream. Not implemented for this message.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength(), messageStream);
-    variableHeader.writeTo(messageStream);
-  }
-
-  /// Sets the return code of the Variable Header.
-  MqttConnectAckMessage withReturnCode(MqttConnectReturnCode returnCode) {
-    //variableHeader.returnCode = returnCode;
-    return this;
+    throw UnimplementedError('MqttConnectAckMessage::writeTo - message is receive only');
   }
 
   @override
