@@ -15,15 +15,17 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Initializes a new instance of the MqttConnectVariableHeader class.
   MqttConnectAckVariableHeader();
 
+  /// Initializes a new instance of the MqttConnectVariableHeader from a byte buffer.
+  MqttConnectAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
+    readFrom(headerStream);
+  }
+
   /// Connect acknowledge message flags
   MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
   /// Reason Code
   MqttReasonCode _reasonCode = MqttReasonCode.notSet;
   MqttReasonCode get reasonCode => _reasonCode;
-
-  /// Initializes a new instance of the MqttConnectVariableHeader class.
-  MqttConnectAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {}
 
   /// The property set
   final _propertySet = MqttPropertyContainer();
@@ -60,9 +62,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Retain Available.
   ///
   /// A Client receiving Retain Available set to false from the broker
-  /// must not send a Publish message with the retain flag set true
-  bool _retainFlag = false;
-  bool get retainFlag => _retainFlag;
+  /// must not send a Publish message with retain available set true
+  bool _retainAvailable = false;
+  bool get retainAvailable => _retainAvailable;
 
   /// Maximum Packet Size
   ///
@@ -92,7 +94,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
   String _reasonString;
-  String get ReasonString => _reasonString;
+  String get reasonString => _reasonString;
 
   /// User Property
   ///
@@ -116,17 +118,17 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// False means that Subscription Identifiers are not supported.
   /// True means Subscription Identifiers are supported. The default is that
   /// Subscription Identifiers are supported.
-  bool _subscriptionIdentifiersSupported = true;
-  bool get subscriptionIdentifiersSupported =>
-      _subscriptionIdentifiersSupported;
+  bool _subscriptionIdentifiersAvailable = true;
+  bool get subscriptionIdentifiersAvailable =>
+      _subscriptionIdentifiersAvailable;
 
   /// Shared Subscription Available.
   ///
   /// False means that Shared Subscriptions are not supported.
   /// True means Shared Subscriptions are supported. The default is that
   /// Shared Subscriptions are supported.
-  bool _sharedSubscriptionsAvailable = true;
-  bool get sharedSubscriptionsAvailable => _sharedSubscriptionsAvailable;
+  bool _sharedSubscriptionAvailable = true;
+  bool get sharedSubscriptionAvailable => _sharedSubscriptionAvailable;
 
   /// Server Keep Alive.
   ///
@@ -177,9 +179,84 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
         'MqttConnectAckVariableHeader::writeTo - Not implemented, message is receive only');
   }
 
+  // Process the properties read from the byte stream
+  void _processProperties() {
+    if (!_propertySet.propertiesAreValid()) {
+      throw FormatException(
+          'MqttConnectAckVariableHeader::_processProperties, message properties received are invalid');
+    }
+    final properties = _propertySet.toList();
+    for (final property in properties) {
+      switch (property.identifier) {
+        case MqttPropertyIdentifier.sessionExpiryInterval:
+          _sessionExpiryInterval = property.value;
+          break;
+        case MqttPropertyIdentifier.receiveMaximum:
+          _receiveMaximum = property.value;
+          break;
+        case MqttPropertyIdentifier.maximumQos:
+          _maximumQos = property.value;
+          break;
+        case MqttPropertyIdentifier.retainAvailable:
+          _retainAvailable = property.value;
+          break;
+        case MqttPropertyIdentifier.maximumPacketSize:
+          _maximumPacketSize = property.value;
+          break;
+        case MqttPropertyIdentifier.assignedClientIdentifier:
+          _assignedClientIdentifier = property.value;
+          break;
+        case MqttPropertyIdentifier.topicAliasMaximum:
+          _topicAliasMaximum = property.value;
+          break;
+        case MqttPropertyIdentifier.reasonString:
+          _reasonString = property.value;
+          break;
+        case MqttPropertyIdentifier.wildcardSubscriptionAvailable:
+          _wildcardSubscriptionsAvailable = property.value;
+          break;
+        case MqttPropertyIdentifier.subscriptionIdentifierAvailable:
+          _subscriptionIdentifiersAvailable = property.value;
+          break;
+        case MqttPropertyIdentifier.sharedSubscriptionAvailable:
+          _sharedSubscriptionAvailable = property.value;
+          break;
+        case MqttPropertyIdentifier.serverKeepAlive:
+          _serverKeepAlive = property.value;
+          break;
+        case MqttPropertyIdentifier.responseInformation:
+          _responseInformation = property.value;
+          break;
+        case MqttPropertyIdentifier.serverReference:
+          _serverReference = property.value;
+          break;
+        case MqttPropertyIdentifier.authenticationMethod:
+          _authenticationMethod = property.value;
+          break;
+        case MqttPropertyIdentifier.authenticationData:
+          _authenticationData = typed.Uint8Buffer()..addAll(property.value);
+          break;
+        default:
+          MqttLogger.log(
+              'MqttConnectAckVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring');
+      }
+      _userProperty = _propertySet.userProperties;
+    }
+  }
+
   /// Creates a variable header from the specified header stream.
   @override
-  void readFrom(MqttByteBuffer variableHeaderStream) {}
+  void readFrom(MqttByteBuffer variableHeaderStream) {
+    // Connect ack flags
+    connectAckFlags.readFrom(variableHeaderStream);
+    // Reason code
+    var byte = variableHeaderStream.readByte();
+    _reasonCode = mqttReasonCode.fromInt(byte);
+    // Properties
+    _propertySet.readFrom(variableHeaderStream);
+    _processProperties();
+  }
 
   /// Gets the length of the write data when WriteTo will be called.
   /// 0 for this message as [writeTo] is not implemented
@@ -187,5 +264,33 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   int getWriteLength() => 0;
 
   @override
-  String toString() {}
+  String toString() {
+    final sb = StringBuffer();
+    sb.writeln('Session Present = ${connectAckFlags.sessionPresent}');
+    sb.writeln('Connect Reason Code = $reasonCode');
+    sb.writeln('Session Expiry Interval = $sessionExpiryInterval');
+    sb.writeln('Receive Maximum = $receiveMaximum');
+    sb.writeln('Maximum QoS = $maximumQos');
+    sb.writeln('Retain Available = $retainAvailable');
+    sb.writeln('Maximum Packet Size = $maximumPacketSize');
+    sb.writeln('Assigned Client Identifier = $assignedClientidentifier');
+    sb.writeln('Topic Alias Maximum = $topicAliasMaximum');
+    sb.writeln('Reason String = $reasonString');
+    sb.writeln(
+        'Wildcard Subscription Available = $wildcardSubscriptionsAvailable');
+    sb.writeln(
+        'Subscription Identifiers Available = $subscriptionIdentifiersAvailable');
+    sb.writeln('Shared Subscription Available = $sharedSubscriptionAvailable');
+    sb.writeln('Server Keep Alive = $serverKeepAlive');
+    sb.writeln('Response Information = $responseInformation');
+    sb.writeln('Server Reference = $serverReference');
+    sb.writeln('Authentication Method = $authenticationMethod');
+    if (userProperty != null) {
+      sb.writeln('User Properties :');
+      for (final property in userProperty) {
+        sb.writeln('${property.toString()}');
+      }
+    }
+    return sb.toString();
+  }
 }

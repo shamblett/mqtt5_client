@@ -200,7 +200,7 @@ MqttEnumHelper<MqttReasonCode> mqttReasonCode =
     MqttEnumHelper<MqttReasonCode>(_mqttReasonCodeValues);
 
 /// Utilities class
-class ReasonCodeUtilities {
+class MqttReasonCodeUtilities {
   /// Is the reason code an error. True if an error code or is not set
   static bool isError(int code) => code >= 0x80;
 }

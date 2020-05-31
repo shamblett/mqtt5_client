@@ -214,20 +214,12 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
     try {
       final MqttConnectAckMessage ackMsg = msg;
       // Drop the connection if our connect request has been rejected.
-      if (ackMsg.variableHeader.returnCode ==
-              MqttConnectReturnCode.brokerUnavailable ||
-          ackMsg.variableHeader.returnCode ==
-              MqttConnectReturnCode.identifierRejected ||
-          ackMsg.variableHeader.returnCode ==
-              MqttConnectReturnCode.unacceptedProtocolVersion ||
-          ackMsg.variableHeader.returnCode ==
-              MqttConnectReturnCode.notAuthorized ||
-          ackMsg.variableHeader.returnCode ==
-              MqttConnectReturnCode.badUsernameOrPassword) {
+      if (MqttReasonCodeUtilities.isError(
+          mqttReasonCode.asInt(ackMsg.variableHeader.reasonCode))) {
         MqttLogger.log(
             'SynchronousMqttServerConnectionHandler::_connectAckProcessor '
             'connection rejected');
-        connectionStatus.returnCode = ackMsg.variableHeader.returnCode;
+        // TODO connectionStatus.returnCode = ackMsg.variableHeader.returnCode;
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.

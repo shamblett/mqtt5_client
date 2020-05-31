@@ -14,6 +14,7 @@ class MqttPropertyContainer {
   final _container = <MqttPropertyIdentifier, MqttIProperty>{};
 
   final _userProperties = <MqttIProperty>[];
+  List<MqttIProperty> get userProperties => _userProperties;
 
   final _enc = MqttVariableByteIntegerEncoding();
 
