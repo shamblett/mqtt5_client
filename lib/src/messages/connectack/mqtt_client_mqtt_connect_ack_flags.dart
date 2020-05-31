@@ -24,6 +24,9 @@ class MqttConnectAckFlags {
     sessionPresent = byte & 0x01 == 1;
   }
 
+  /// Length
+  int get length => 1;
+
   @override
   String toString() {
     final sb = StringBuffer();

@@ -141,7 +141,10 @@ enum MqttReasonCode {
   subscriptionIdentifiersNotSupported,
 
   /// Wildcard Subscriptions not supported
-  wildcardSubscriptionsNotSupported
+  wildcardSubscriptionsNotSupported,
+
+  /// Not set indication
+  notSet
 }
 
 /// MQTT reason code support
@@ -188,7 +191,8 @@ const Map<int, MqttReasonCode> _mqttReasonCodeValues = <int, MqttReasonCode>{
   0x9f: MqttReasonCode.connectionRateExceeded,
   0xa0: MqttReasonCode.maximumConnectTime,
   0xa1: MqttReasonCode.subscriptionIdentifiersNotSupported,
-  0xa2: MqttReasonCode.wildcardSubscriptionsNotSupported
+  0xa2: MqttReasonCode.wildcardSubscriptionsNotSupported,
+  0xff: MqttReasonCode.notSet
 };
 
 /// MQTT reason code helper
@@ -197,6 +201,6 @@ MqttEnumHelper<MqttReasonCode> mqttReasonCode =
 
 /// Utilities class
 class ReasonCodeUtilities {
-  /// Is the reason code an error. True if an error code
+  /// Is the reason code an error. True if an error code or is not set
   static bool isError(int code) => code >= 0x80;
 }

@@ -15,35 +15,177 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Initializes a new instance of the MqttConnectVariableHeader class.
   MqttConnectAckVariableHeader();
 
-  /// Initializes a new instance of the MqttConnectVariableHeader class.
-  MqttConnectAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
+  /// Connect acknowledge message flags
+  MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
-  }
+  /// Reason Code
+  MqttReasonCode _reasonCode = MqttReasonCode.notSet;
+  MqttReasonCode get reasonCode => _reasonCode;
+
+  /// Initializes a new instance of the MqttConnectVariableHeader class.
+  MqttConnectAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {}
+
+  /// The property set
+  final _propertySet = MqttPropertyContainer();
 
   @override
   int length = 0;
 
+  /// Session Expiry Interval.
+  ///
+  /// The broker uses this property to inform the Client that it is using a value
+  /// other than that sent by the Client in the Connect Message.
+  int _sessionExpiryInterval = 0;
+  int get sessionExpiryInterval => _sessionExpiryInterval;
+
+  /// Receive Maximum.
+  ///
+  /// The Server uses this value to limit the number of QoS 1 and QoS 2 publications
+  /// that it is willing to process concurrently for the Client. It does not provide a
+  /// mechanism to limit the QoS 0 publications that the Client might try to send.
+  int _receiveMaximum = 65535;
+  int get receiveMaximum => _receiveMaximum;
+
+  /// Maximum QoS.
+  ///
+  /// A Client does not need to support QoS 1 or QoS 2 PUBLISH packets.
+  /// If this is the case, the Client simply restricts the maximum QoS field in
+  /// any Subscribe messages it sends to a value it can support.
+  ///
+  /// If a Client receives a Maximum QoS from a broker, it must not send Publish messages at
+  /// a QoS level exceeding the Maximum QoS level specified.
+  int _maximumQos = 2;
+  int get maximumQos => _maximumQos;
+
+  /// Retain Available.
+  ///
+  /// A Client receiving Retain Available set to false from the broker
+  /// must not send a Publish message with the retain flag set true
+  bool _retainFlag = false;
+  bool get retainFlag => _retainFlag;
+
+  /// Maximum Packet Size
+  ///
+  /// A value of zero indicates this property is not set.
+  int _maximumPacketSize = 0;
+  int get maximumPacketSize => _maximumPacketSize;
+
+  /// Assigned Client Identifier.
+  ///
+  /// The Client Identifier which was assigned by the broker because a zero length Client Identifier
+  /// was found in the Connect message.
+  String _assignedClientIdentifier;
+  String get assignedClientidentifier => _assignedClientIdentifier;
+
+  /// Topic Alias Maximum.
+  ///
+  /// This value indicates the highest value that the broker will accept as a
+  /// Topic Alias sent by the Client.
+  /// The Client MUST NOT send a Topic Alias in a PUBLISH packet to the broker
+  /// greater than this value.
+  /// If Topic Alias Maximum is 0, the Client must not send any Topic
+  /// Aliases on to the broker.
+  int _topicAliasMaximum = 0;
+  int get topicAliasMaximum => _topicAliasMaximum;
+
+  /// Reason String.
+  ///
+  /// The Reason String is a human readable string designed for diagnostics only.
+  String _reasonString;
+  String get ReasonString => _reasonString;
+
+  /// User Property
+  ///
+  /// This property can be used to provide additional information to the Client including
+  /// diagnostic information.
+  /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
+  /// The same name is allowed to appear more than once.
+  List<MqttStringPairProperty> _userProperty;
+  List<MqttStringPairProperty> get userProperty => _userProperty;
+
+  /// Wildcard Subscription Available.
+  ///
+  /// False means that Wildcard Subscriptions are not supported.
+  /// True means Wildcard Subscriptions are supported. The default is that Wildcard
+  /// Subscriptions are supported.
+  bool _wildcardSubscriptionsAvailable = true;
+  bool get wildcardSubscriptionsAvailable => _wildcardSubscriptionsAvailable;
+
+  /// Subscription Identifiers Available.
+  ///
+  /// False means that Subscription Identifiers are not supported.
+  /// True means Subscription Identifiers are supported. The default is that
+  /// Subscription Identifiers are supported.
+  bool _subscriptionIdentifiersSupported = true;
+  bool get subscriptionIdentifiersSupported =>
+      _subscriptionIdentifiersSupported;
+
+  /// Shared Subscription Available.
+  ///
+  /// False means that Shared Subscriptions are not supported.
+  /// True means Shared Subscriptions are supported. The default is that
+  /// Shared Subscriptions are supported.
+  bool _sharedSubscriptionsAvailable = true;
+  bool get sharedSubscriptionsAvailable => _sharedSubscriptionsAvailable;
+
+  /// Server Keep Alive.
+  ///
+  ///  If the broker sends a Server Keep Alive the Client must use this value
+  ///  instead of the Keep Alive value the Client may have sent in the Connect message.
+  ///
+  ///  The primary use of the Server Keep Alive is for the broker to inform the Client
+  ///  that it will disconnect the Client for inactivity sooner than the Keep Alive
+  ///  specified by the Client.
+  ///
+  /// A value of 0 indicates not set by the broker.
+  int _serverKeepAlive = 0;
+  int get serverKeepAlive => _serverKeepAlive;
+
+  /// Response Information.
+  ///
+  /// This string is used as the basis for creating a Response Topic.
+  ///
+  /// A common use of this is to pass a globally unique portion of the topic tree
+  /// which is reserved for this Client for at least the lifetime of its Session.
+  String _responseInformation;
+  String get responseInformation => _responseInformation;
+
+  /// Server Reference
+  ///
+  /// A string to indicate another Server to use.
+  String _serverReference;
+  String get serverReference => _serverReference;
+
+  /// Authentication Method.
+  ///
+  /// A string containing the name of the authentication method.
+  String _authenticationMethod;
+  String get authenticationMethod => _authenticationMethod;
+
+  /// Authentication Data.
+  ///
+  /// The contents of this data are defined by the authentication method and the state
+  /// of already exchanged authentication data.
+  typed.Uint8Buffer _authenticationData;
+  typed.Uint8Buffer get authenticationData => _authenticationData;
+
   /// Writes the variable header to the supplied stream.
+  /// Not implemented for this message
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-
+    throw UnimplementedError(
+        'MqttConnectAckVariableHeader::writeTo - Not implemented, message is receive only');
   }
 
   /// Creates a variable header from the specified header stream.
   @override
-  void readFrom(MqttByteBuffer variableHeaderStream) {
-
-  }
+  void readFrom(MqttByteBuffer variableHeaderStream) {}
 
   /// Gets the length of the write data when WriteTo will be called.
-  /// This method is overriden by the ConnectAckVariableHeader because the
-  /// variable header of this message type, for some reason, contains an extra
-  /// byte that is not present in the variable header spec, meaning we have to
-  /// do some custom serialization and deserialization.
+  /// 0 for this message as [writeTo] is not implemented
   @override
-  int getWriteLength() => 2;
+  int getWriteLength() => 0;
 
   @override
   String toString() {}
-
 }
