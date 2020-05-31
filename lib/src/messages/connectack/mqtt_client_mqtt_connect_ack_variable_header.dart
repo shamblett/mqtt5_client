@@ -45,6 +45,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// The Server uses this value to limit the number of QoS 1 and QoS 2 publications
   /// that it is willing to process concurrently for the Client. It does not provide a
   /// mechanism to limit the QoS 0 publications that the Client might try to send.
+  ///
+  /// A value of 65535 indicates not set.
   int _receiveMaximum = 65535;
   int get receiveMaximum => _receiveMaximum;
 
@@ -56,6 +58,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   ///
   /// If a Client receives a Maximum QoS from a broker, it must not send Publish messages at
   /// a QoS level exceeding the Maximum QoS level specified.
+  ///
+  /// A value of 2 is the default.
   int _maximumQos = 2;
   int get maximumQos => _maximumQos;
 
@@ -77,7 +81,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// The Client Identifier which was assigned by the broker because a zero length Client Identifier
   /// was found in the Connect message.
   String _assignedClientIdentifier;
-  String get assignedClientidentifier => _assignedClientIdentifier;
+  String get assignedClientIdentifier => _assignedClientIdentifier;
 
   /// Topic Alias Maximum.
   ///
@@ -237,9 +241,11 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
           _authenticationData = typed.Uint8Buffer()..addAll(property.value);
           break;
         default:
-          MqttLogger.log(
-              'MqttConnectAckVariableHeader::_processProperties, unexpected property type'
-              'received, identifier is ${property.identifier}, ignoring');
+          if (property.identifier != MqttPropertyIdentifier.userProperty) {
+            MqttLogger.log(
+                'MqttConnectAckVariableHeader::_processProperties, unexpected property type'
+                'received, identifier is ${property.identifier}, ignoring');
+          }
       }
       _userProperty = _propertySet.userProperties;
     }
@@ -273,7 +279,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sb.writeln('Maximum QoS = $maximumQos');
     sb.writeln('Retain Available = $retainAvailable');
     sb.writeln('Maximum Packet Size = $maximumPacketSize');
-    sb.writeln('Assigned Client Identifier = $assignedClientidentifier');
+    sb.writeln('Assigned Client Identifier = $assignedClientIdentifier');
     sb.writeln('Topic Alias Maximum = $topicAliasMaximum');
     sb.writeln('Reason String = $reasonString');
     sb.writeln(
