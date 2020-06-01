@@ -69,7 +69,7 @@ class MqttVariableHeader {
   int keepAlive = 0;
 
   /// Return code
-  MqttConnectReturnCode returnCode = MqttConnectReturnCode.brokerUnavailable;
+  // MqttConnectReturnCode returnCode = MqttConnectReturnCode.brokerUnavailable;
 
   /// Topic name
   String topicName = '';
@@ -140,7 +140,7 @@ class MqttVariableHeader {
 
   /// Return code
   void writeReturnCode(MqttByteBuffer stream) {
-    stream.writeByte(returnCode.index);
+ //   stream.writeByte(returnCode.index);
   }
 
   /// Topic name
@@ -180,7 +180,7 @@ class MqttVariableHeader {
 
   /// Return code
   void readReturnCode(MqttByteBuffer stream) {
-    returnCode = MqttConnectReturnCode.values[stream.readByte()];
+    // returnCode = MqttConnectReturnCode.values[stream.readByte()];
     length++;
   }
 

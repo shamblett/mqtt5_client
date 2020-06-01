@@ -218,8 +218,9 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
           mqttReasonCode.asInt(ackMsg.variableHeader.reasonCode))) {
         MqttLogger.log(
             'SynchronousMqttServerConnectionHandler::_connectAckProcessor '
-            'connection rejected');
-        // TODO connectionStatus.returnCode = ackMsg.variableHeader.returnCode;
+            'connection rejected, reason code is ${mqttReasonCode.asString(ackMsg.variableHeader.reasonCode)}');
+        connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
+        connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.
@@ -227,7 +228,8 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
             'SynchronousMqttServerConnectionHandler::_connectAckProcessor '
             '- state = connected');
         connectionStatus.state = MqttConnectionState.connected;
-        connectionStatus.returnCode = MqttConnectReturnCode.connectionAccepted;
+        connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
+        connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
         // Call the connected callback if we have one
         if (onConnected != null) {
           onConnected();

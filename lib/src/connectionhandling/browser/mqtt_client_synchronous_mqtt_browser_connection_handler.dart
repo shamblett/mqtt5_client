@@ -75,8 +75,7 @@ class SynchronousMqttBrowserConnectionHandler
       if (!autoReconnectInProgress) {
         MqttLogger.log(
             'SynchronousMqttBrowserConnectionHandler::internalConnect failed');
-        if (connectionStatus.returnCode ==
-            MqttConnectReturnCode.noneSpecified) {
+        if (connectionStatus.reasonCode == MqttReasonCode.notSet) {
           throw NoConnectionException('The maximum allowed connection attempts '
               '({$MqttConnectionHandlerBase.maxConnectionAttempts}) were exceeded. '
               'The broker is not responding to the connection request message '
@@ -85,7 +84,7 @@ class SynchronousMqttBrowserConnectionHandler
           throw NoConnectionException('The maximum allowed connection attempts '
               '({$MqttConnectionHandlerBase.maxConnectionAttempts}) were exceeded. '
               'The broker is not responding to the connection request message correctly'
-              'The return code is ${connectionStatus.returnCode}');
+              'The return code is ${mqttReasonCode.asString(connectionStatus.reasonCode)}');
         }
       }
     }

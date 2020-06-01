@@ -23,8 +23,7 @@ void main() {
     var disconnectCallbackCalled = false;
 
     void messageHandlerConnect(typed.Uint8Buffer messageArrived) {
-      final ack = MqttConnectAckMessage()
-          .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+      final ack = MqttConnectAckMessage();
       broker.sendMessage(ack);
     }
 

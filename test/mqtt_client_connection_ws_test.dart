@@ -72,8 +72,7 @@ void main() {
       var expectRequest = 0;
 
       void messageHandlerConnect(typed.Uint8Buffer messageArrived) {
-        final ack = MqttConnectAckMessage()
-            .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+        final ack = MqttConnectAckMessage();
         brokerWs.sendMessage(ack);
       }
 

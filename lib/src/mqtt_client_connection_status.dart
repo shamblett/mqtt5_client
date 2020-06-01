@@ -12,8 +12,11 @@ class MqttClientConnectionStatus {
   /// Connection state
   MqttConnectionState state = MqttConnectionState.disconnected;
 
-  /// Return code
-  MqttConnectReturnCode returnCode = MqttConnectReturnCode.noneSpecified;
+  /// Reason Code
+  MqttReasonCode reasonCode = MqttReasonCode.notSet;
+
+  /// Reason String
+  String reasonString;
 
   /// Disconnection origin
   MqttDisconnectionOrigin disconnectionOrigin = MqttDisconnectionOrigin.none;
@@ -21,7 +24,7 @@ class MqttClientConnectionStatus {
   @override
   String toString() {
     final s = state.toString().split('.')[1];
-    final r = returnCode.toString().split('.')[1];
+    final r = mqttReasonCode.asString(reasonCode);
     final t = disconnectionOrigin.toString().split('.')[1];
     return 'Connection status is $s with return code of $r and a disconnection origin of $t';
   }

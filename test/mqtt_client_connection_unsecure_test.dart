@@ -85,8 +85,7 @@ void main() {
         expect(e.toString().contains(nonExistantHostName), isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(
-          ch.connectionStatus.returnCode, MqttConnectReturnCode.noneSpecified);
+      expect(ch.connectionStatus.reasonCode, MqttReasonCode.notSet);
     });
     test('Connect invalid port', () async {
       var cbCalled = false;
@@ -104,8 +103,7 @@ void main() {
         expect(e.toString().contains('refused'), isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(
-          ch.connectionStatus.returnCode, MqttConnectReturnCode.noneSpecified);
+      expect(ch.connectionStatus.reasonCode, MqttReasonCode.notSet);
       expect(cbCalled, isTrue);
     });
     test('Connect no connect ack', () async {
@@ -119,14 +117,12 @@ void main() {
         expect(e is NoConnectionException, isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(
-          ch.connectionStatus.returnCode, MqttConnectReturnCode.noneSpecified);
+      expect(ch.connectionStatus.reasonCode, MqttReasonCode.notSet);
     });
     test('Successful response and disconnect', () async {
       var connectCbCalled = false;
       void messageHandler(typed.Uint8Buffer messageArrived) {
-        final ack = MqttConnectAckMessage()
-            .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+        final ack = MqttConnectAckMessage();
         broker.sendMessage(ack);
       }
 
@@ -141,16 +137,14 @@ void main() {
       await ch.connect(mockBrokerAddress, mockBrokerPort,
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
-      expect(ch.connectionStatus.returnCode,
-          MqttConnectReturnCode.connectionAccepted);
+      expect(ch.connectionStatus.reasonCode, MqttReasonCode.success);
       expect(connectCbCalled, isTrue);
       final state = ch.disconnect();
       expect(state, MqttConnectionState.disconnected);
     });
     test('Successful response and disconnect with returned status', () async {
       void messageHandler(typed.Uint8Buffer messageArrived) {
-        final ack = MqttConnectAckMessage()
-            .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+        final ack = MqttConnectAckMessage();
         broker.sendMessage(ack);
       }
 
@@ -160,7 +154,7 @@ void main() {
       final status = await ch.connect(mockBrokerAddress, mockBrokerPort,
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(status.state, MqttConnectionState.connected);
-      expect(status.returnCode, MqttConnectReturnCode.connectionAccepted);
+      expect(ch.connectionStatus.reasonCode, MqttReasonCode.success);
       final state = ch.disconnect();
       expect(state, MqttConnectionState.disconnected);
     });
@@ -174,8 +168,7 @@ void main() {
         final headerStream = MqttByteBuffer(messageArrived);
         final header = MqttHeader.fromByteBuffer(headerStream);
         expect(header.messageType, MqttMessageType.connect);
-        final ack = MqttConnectAckMessage()
-            .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+        final ack = MqttConnectAckMessage();
         broker.sendMessage(ack);
       }
 
@@ -196,8 +189,7 @@ void main() {
       await ch.connect(mockBrokerAddress, mockBrokerPort,
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
-      expect(ch.connectionStatus.returnCode,
-          MqttConnectReturnCode.connectionAccepted);
+      expect(ch.connectionStatus.reasonCode, MqttReasonCode.success);
       final ka = MqttConnectionKeepAlive(ch, 2);
       broker.setMessageHandler = messageHandlerPingRequest;
       print(
@@ -215,8 +207,7 @@ void main() {
   group('Client interface Mock broker', () {
     test('Normal publish', () async {
       void messageHandlerConnect(typed.Uint8Buffer messageArrived) {
-        final ack = MqttConnectAckMessage()
-            .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+        final ack = MqttConnectAckMessage();
         broker.sendMessage(ack);
       }
 

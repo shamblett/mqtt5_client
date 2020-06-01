@@ -116,8 +116,7 @@ void main() {
       broker = MockBrokerSecure();
       broker.pemName = 'localhost';
       void messageHandlerConnect(typed.Uint8Buffer messageArrived) {
-        final ack = MqttConnectAckMessage()
-            .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+        final ack = MqttConnectAckMessage();
         broker.sendMessage(ack);
       }
 

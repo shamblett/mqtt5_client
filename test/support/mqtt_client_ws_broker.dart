@@ -96,8 +96,7 @@ Future<void> main(List<String> argv) async {
   final brokerWs = MockBrokerWs();
 
   void messageHandlerConnect(typed.Uint8Buffer messageArrived) {
-    final ack = MqttConnectAckMessage()
-        .withReturnCode(MqttConnectReturnCode.connectionAccepted);
+    final ack = MqttConnectAckMessage();
     print('WS Broker - sending connect ack');
     brokerWs.sendMessage(ack);
   }
