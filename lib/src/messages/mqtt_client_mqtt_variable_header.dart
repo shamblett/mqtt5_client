@@ -140,7 +140,7 @@ class MqttVariableHeader {
 
   /// Return code
   void writeReturnCode(MqttByteBuffer stream) {
- //   stream.writeByte(returnCode.index);
+    //   stream.writeByte(returnCode.index);
   }
 
   /// Topic name

@@ -41,7 +41,8 @@ class MqttConnectAckMessage extends MqttMessage {
   /// Writes a message to the supplied stream. Not implemented for this message.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    throw UnimplementedError('MqttConnectAckMessage::writeTo - message is receive only');
+    throw UnimplementedError(
+        'MqttConnectAckMessage::writeTo - message is receive only');
   }
 
   @override
