@@ -263,6 +263,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     variableHeaderStream.shrink();
     _propertySet.readFrom(variableHeaderStream);
     _processProperties();
+    variableHeaderStream.shrink();
   }
 
   /// Gets the length of the write data when WriteTo will be called.

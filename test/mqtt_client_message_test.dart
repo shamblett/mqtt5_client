@@ -1544,12 +1544,12 @@ void main() {
     });
 
     group('Connect Acknowledge', () {
-      test('Deserialisation - Unspecified error', () {
+      test('Deserialisation - Unspecified Error', () {
         final sampleMessage = typed.Uint8Buffer(5);
         sampleMessage[0] = 0x20;
         sampleMessage[1] = 0x03;
-        sampleMessage[2] = 0x01;
-        sampleMessage[3] = 0x80;
+        sampleMessage[2] = 0x01; // Session Present true
+        sampleMessage[3] = 0x80; // Reason Code Unspecified Error
         sampleMessage[4] = 0x00;
         final byteBuffer = MqttByteBuffer(sampleMessage);
         final baseMessage = MqttMessage.createFrom(byteBuffer);
@@ -1573,6 +1573,36 @@ void main() {
             MqttReasonCodeUtilities.isError(
                 mqttReasonCode.asInt(message.variableHeader.reasonCode)),
             isTrue);
+      });
+      test('Deserialisation - No Will Flag', () {
+        final sampleMessage = typed.Uint8Buffer(11);
+        sampleMessage[0] = 0x20;
+        sampleMessage[1] = 0x09;
+        sampleMessage[2] = 0x00; // Session Present false
+        sampleMessage[3] = 0x00; // Reason Code success
+        sampleMessage[4] = 0x06;
+        sampleMessage[5] = 0x21; // Receive Maximum 10
+        sampleMessage[6] = 0x00;
+        sampleMessage[7] = 0x0a;
+        sampleMessage[8] = 0x22; // Topic Alias Maximum 5
+        sampleMessage[9] = 0x00;
+        sampleMessage[10] = 0x05;
+
+        final byteBuffer = MqttByteBuffer(sampleMessage);
+        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        expect(baseMessage, const TypeMatcher<MqttConnectAckMessage>());
+        final MqttConnectAckMessage message = baseMessage;
+        expect(message.header.messageType, MqttMessageType.connectAck);
+        expect(message.header.messageSize, 9);
+        expect(message.variableHeader.connectAckFlags.sessionPresent, isFalse);
+        expect(message.variableHeader.reasonCode, MqttReasonCode.success);
+        expect(
+            MqttReasonCodeUtilities.isError(
+                mqttReasonCode.asInt(message.variableHeader.reasonCode)),
+            isFalse);
+        expect(message.variableHeader.receiveMaximum, 10);
+        expect(message.variableHeader.topicAliasMaximum, 5);
+        expect(byteBuffer.position, 11);
       });
     });
 
