@@ -7,8 +7,9 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Publish Message, used for publishing
-/// telemetry data along a live MQTT stream.
+/// Implementation of an MQTT Publish Message.
+///
+/// A Publish message is sent to a broker to transport an Application Message.
 class MqttPublishMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishMessage class.
   MqttPublishMessage() {
