@@ -92,7 +92,7 @@ void main() {
       const topic = '';
       var raised = false;
       try {
-        final pubTopic = PublicationTopic(topic);
+        final pubTopic = MqttPublicationTopic(topic);
         print(pubTopic.rawTopic); // wont get here
       } on Exception catch (exception) {
         expect(exception.toString(),
@@ -104,27 +104,27 @@ void main() {
     test('Max length', () {
       var raised = false;
       final sb = StringBuffer();
-      for (var i = 0; i < Topic.maxTopicLength + 1; i++) {
+      for (var i = 0; i < MqttTopic.maxTopicLength + 1; i++) {
         sb.write('a');
       }
       try {
         final topic = sb.toString();
-        final pubTopic = PublicationTopic(topic);
+        final pubTopic = MqttPublicationTopic(topic);
         print(pubTopic.rawTopic); // wont get here
       } on Exception catch (exception) {
         expect(
             exception.toString(),
             'Exception: mqtt_client::Topic: The length of the supplied rawTopic '
-            '(65536) is longer than the maximum allowable (${Topic.maxTopicLength})');
+            '(65536) is longer than the maximum allowable (${MqttTopic.maxTopicLength})');
         raised = true;
       }
       expect(raised, isTrue);
     });
     test('Wildcards', () {
-      const topic = Topic.wildcard;
+      const topic = MqttTopic.wildcard;
       var raised = false;
       try {
-        final pubTopic = PublicationTopic(topic);
+        final pubTopic = MqttPublicationTopic(topic);
         print(pubTopic.rawTopic); // wont get here
       } on Exception catch (exception) {
         expect(
@@ -135,9 +135,9 @@ void main() {
       }
       expect(raised, isTrue);
       raised = false;
-      const topic1 = Topic.multiWildcard;
+      const topic1 = MqttTopic.multiWildcard;
       try {
-        final pubTopic1 = PublicationTopic(topic1);
+        final pubTopic1 = MqttPublicationTopic(topic1);
         print(pubTopic1.rawTopic); // wont get here
       } on Exception catch (exception) {
         expect(
@@ -150,14 +150,14 @@ void main() {
     });
     test('Valid', () {
       const topic = 'AValidTopic';
-      final pubTopic = PublicationTopic(topic);
+      final pubTopic = MqttPublicationTopic(topic);
       expect(pubTopic.hasWildcards, false);
       expect(pubTopic.rawTopic, topic);
       expect(pubTopic.toString(), topic);
-      final pubTopic1 = PublicationTopic(topic);
+      final pubTopic1 = MqttPublicationTopic(topic);
       expect(pubTopic1, pubTopic);
       expect(pubTopic1.hashCode, pubTopic.hashCode);
-      final pubTopic2 = PublicationTopic('DDDDDDD');
+      final pubTopic2 = MqttPublicationTopic('DDDDDDD');
       expect(pubTopic.hashCode, isNot(equals(pubTopic2.hashCode)));
     });
   });
@@ -255,7 +255,7 @@ void main() {
     });
     test('Max length', () {
       final sb = StringBuffer();
-      for (var i = 0; i < Topic.maxTopicLength + 1; i++) {
+      for (var i = 0; i < MqttTopic.maxTopicLength + 1; i++) {
         sb.write('a');
       }
       var raised = false;
@@ -267,7 +267,7 @@ void main() {
         expect(
             exception.toString(),
             'Exception: mqtt_client::Topic: The length of the supplied rawTopic '
-            '(65536) is longer than the maximum allowable (${Topic.maxTopicLength})');
+            '(65536) is longer than the maximum allowable (${MqttTopic.maxTopicLength})');
         raised = true;
       }
       expect(raised, isTrue);
@@ -292,36 +292,36 @@ void main() {
     test('Single level equal topics match', () {
       const topic = 'finance';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic(topic)), isTrue);
+      expect(subTopic.matches(MqttPublicationTopic(topic)), isTrue);
     });
     test('MultiWildcard only topic matches any random', () {
       const topic = '#';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance/ibm/closingprice')),
+      expect(subTopic.matches(MqttPublicationTopic('finance/ibm/closingprice')),
           isTrue);
     });
     test('MultiWildcard only topic matches topic starting with separator', () {
       const topic = '#';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('/finance/ibm/closingprice')),
+      expect(subTopic.matches(MqttPublicationTopic('/finance/ibm/closingprice')),
           isTrue);
     });
     test('MultiWildcard at end matches topic that does not match same depth',
         () {
       const topic = 'finance/#';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance')), isTrue);
+      expect(subTopic.matches(MqttPublicationTopic('finance')), isTrue);
     });
     test('MultiWildcard at end matches topic with anything at Wildcard level',
         () {
       const topic = 'finance/#';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance/ibm')), isTrue);
+      expect(subTopic.matches(MqttPublicationTopic('finance/ibm')), isTrue);
     });
     test('Single Wildcard at end matches anything in same level', () {
       const topic = 'finance/+/closingprice';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance/ibm/closingprice')),
+      expect(subTopic.matches(MqttPublicationTopic('finance/ibm/closingprice')),
           isTrue);
     });
     test(
@@ -331,7 +331,7 @@ void main() {
       final subTopic = SubscriptionTopic(topic);
       expect(
           subTopic.matches(
-              PublicationTopic('finance/ibm/closingprice/month/october')),
+              MqttPublicationTopic('finance/ibm/closingprice/month/october')),
           isTrue);
     });
     test(
@@ -341,31 +341,31 @@ void main() {
       final subTopic = SubscriptionTopic(topic);
       expect(
           subTopic.matches(
-              PublicationTopic('finance/ibm/closingprice/month/october/2014')),
+              MqttPublicationTopic('finance/ibm/closingprice/month/october/2014')),
           isTrue);
     });
     test('Single Wildcard matches topic empty fragment at that point', () {
       const topic = 'finance/+/closingprice';
       final subTopic = SubscriptionTopic(topic);
       expect(
-          subTopic.matches(PublicationTopic('finance//closingprice')), isTrue);
+          subTopic.matches(MqttPublicationTopic('finance//closingprice')), isTrue);
     });
     test(
         'Single Wildcard at end matches topic with empty last fragment at that spot',
         () {
       const topic = 'finance/ibm/+';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance/ibm/')), isTrue);
+      expect(subTopic.matches(MqttPublicationTopic('finance/ibm/')), isTrue);
     });
     test('Single level non equal topics do not match', () {
       const topic = 'finance';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('money')), isFalse);
+      expect(subTopic.matches(MqttPublicationTopic('money')), isFalse);
     });
     test('Single Wildcard at end does not match topic that goes deeper', () {
       const topic = 'finance/+';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance/ibm/closingprice')),
+      expect(subTopic.matches(MqttPublicationTopic('finance/ibm/closingprice')),
           isFalse);
     });
     test(
@@ -373,24 +373,24 @@ void main() {
         () {
       const topic = 'finance/+';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('finance')), isFalse);
+      expect(subTopic.matches(MqttPublicationTopic('finance')), isFalse);
     });
     test('Multi level non equal topics do not match', () {
       const topic = 'finance/ibm/closingprice';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('some/random/topic')), isFalse);
+      expect(subTopic.matches(MqttPublicationTopic('some/random/topic')), isFalse);
     });
     test(
         'MultiWildcard does not match topic with difference before Wildcard level',
         () {
       const topic = 'finance/#';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('money/ibm')), isFalse);
+      expect(subTopic.matches(MqttPublicationTopic('money/ibm')), isFalse);
     });
     test('Topics differing only by case do not match', () {
       const topic = 'finance';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(PublicationTopic('Finance')), isFalse);
+      expect(subTopic.matches(MqttPublicationTopic('Finance')), isFalse);
     });
     test('To string', () {
       const topic = 'finance';

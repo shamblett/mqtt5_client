@@ -94,7 +94,7 @@ Future<int> main() async {
 
   sleep(Duration(seconds: 50));
   client.disconnect();
-  exit(0);
+  return 0;
 
 //  /// Ok, lets try a subscription
 //  print('EXAMPLE::Subscribing to the test/lol topic');

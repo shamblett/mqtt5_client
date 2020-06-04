@@ -286,7 +286,7 @@ class MqttClient {
       throw ConnectionException(connectionHandler?.connectionStatus?.state);
     }
     try {
-      final pubTopic = PublicationTopic(topic);
+      final pubTopic = MqttPublicationTopic(topic);
       return publishingManager.publish(
           pubTopic, qualityOfService, data, retain);
     } on Exception catch (e) {

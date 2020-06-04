@@ -84,7 +84,7 @@ class PublishingManager implements IPublishingManager {
   /// The message identifier assigned to the message.
   @override
   int publish(
-      PublicationTopic topic, MqttQos qualityOfService, typed.Uint8Buffer data,
+      MqttPublicationTopic topic, MqttQos qualityOfService, typed.Uint8Buffer data,
       [bool retain = false]) {
     final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     final msg = MqttPublishMessage()
@@ -120,7 +120,7 @@ class PublishingManager implements IPublishingManager {
     final MqttPublishMessage pubMsg = msg;
     var publishSuccess = true;
     try {
-      final topic = PublicationTopic(pubMsg.variableHeader.topicName);
+      final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
       if (pubMsg.header.qos == MqttQos.atMostOnce) {
         // QOS AtMostOnce 0 require no response.
         // Send the message for processing to whoever is waiting.
@@ -162,7 +162,7 @@ class PublishingManager implements IPublishingManager {
           receivedMessages.remove(pubRelMsg.variableHeader.messageIdentifier);
       if (pubMsg != null) {
         // Send the message for processing to whoever is waiting.
-        final topic = PublicationTopic(pubMsg.variableHeader.topicName);
+        final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
         _clientEventBus.fire(MessageReceived(topic, pubMsg));
         final compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);

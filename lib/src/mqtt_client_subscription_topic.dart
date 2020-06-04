@@ -9,26 +9,26 @@ part of mqtt5_client;
 
 /// Implementation of a Subscription topic that performs additional validations
 /// of topics that are subscribed to.
-class SubscriptionTopic extends Topic {
+class SubscriptionTopic extends MqttTopic {
   /// Creates a new instance of a rawTopic from a topic string.
   SubscriptionTopic(String rawTopic)
       : super(rawTopic, <dynamic>[
-          Topic.validateMinLength,
-          Topic.validateMaxLength,
+          MqttTopic.validateMinLength,
+          MqttTopic.validateMaxLength,
           _validateMultiWildcard,
           _validateFragments
         ]);
 
   /// Validates all unique fragments in the topic match the
   /// MQTT spec requirements.
-  static void _validateFragments(Topic topicInstance) {
+  static void _validateFragments(MqttTopic topicInstance) {
     // If any fragment contains a wildcard or a multi wildcard
     // but is greater than 1 character long, then it's an error -
     // wildcards must appear by themselves.
     final invalidFragment = topicInstance.topicFragments.any(
         (String fragment) =>
-            (fragment.contains(Topic.multiWildcard) ||
-                fragment.contains(Topic.wildcard)) &&
+            (fragment.contains(MqttTopic.multiWildcard) ||
+                fragment.contains(MqttTopic.wildcard)) &&
             fragment.length > 1);
     if (invalidFragment) {
       throw Exception(
@@ -39,15 +39,15 @@ class SubscriptionTopic extends Topic {
 
   /// Validates the placement of the multi-wildcard character
   /// in subscription topics.
-  static void _validateMultiWildcard(Topic topicInstance) {
-    if (topicInstance.rawTopic.contains(Topic.multiWildcard) &&
-        !topicInstance.rawTopic.endsWith(Topic.multiWildcard)) {
+  static void _validateMultiWildcard(MqttTopic topicInstance) {
+    if (topicInstance.rawTopic.contains(MqttTopic.multiWildcard) &&
+        !topicInstance.rawTopic.endsWith(MqttTopic.multiWildcard)) {
       throw Exception('mqtt_client::SubscriptionTopic: The rawTopic wildcard # '
           'can only be present at the end of a topic');
     }
     if (topicInstance.rawTopic.length > 1 &&
-        topicInstance.rawTopic.endsWith(Topic.multiWildcard) &&
-        !topicInstance.rawTopic.endsWith(Topic.multiWildcardValidEnd)) {
+        topicInstance.rawTopic.endsWith(MqttTopic.multiWildcard) &&
+        !topicInstance.rawTopic.endsWith(MqttTopic.multiWildcardValidEnd)) {
       throw Exception(
           'mqtt_client::SubscriptionTopic: Topics using the # wildcard '
           'longer than 1 character must '
@@ -59,11 +59,11 @@ class SubscriptionTopic extends Topic {
   /// the MQTT rawTopic matching rules.
   /// Returns true if the rawTopic matches based on the MQTT rawTopic
   /// matching rules, otherwise false.
-  bool matches(PublicationTopic matcheeTopic) {
+  bool matches(MqttPublicationTopic matcheeTopic) {
     // If the left rawTopic is just a multi wildcard then we
     // have a match without
     // needing to check any further.
-    if (rawTopic == Topic.multiWildcard) {
+    if (rawTopic == MqttTopic.multiWildcard) {
       return true;
     }
     // If the topics are an exact match, bail early with a cheap comparison
@@ -76,10 +76,10 @@ class SubscriptionTopic extends Topic {
       // If we've reached a multi wildcard in the lhs rawTopic,
       // we have a match.
       // (this is the mqtt spec rule finance matches finance or finance/#)
-      if (lhsFragment == Topic.multiWildcard) {
+      if (lhsFragment == MqttTopic.multiWildcard) {
         return true;
       }
-      final isLhsWildcard = lhsFragment == Topic.wildcard;
+      final isLhsWildcard = lhsFragment == MqttTopic.wildcard;
       // If we've reached a wildcard match but the matchee does
       // not have anything at this fragment level then it's not a match.
       // (this is the MQTT spec rule 'finance does not match finance/+'

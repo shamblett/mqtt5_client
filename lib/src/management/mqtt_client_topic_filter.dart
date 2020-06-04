@@ -45,7 +45,7 @@ class MqttClientTopicFilter {
       final tmp = <MqttReceivedMessage<MqttMessage>>[];
       for (final message in c) {
         lastTopic = message.topic;
-        if (_subscriptionTopic.matches(PublicationTopic(message.topic))) {
+        if (_subscriptionTopic.matches(MqttPublicationTopic(message.topic))) {
           tmp.add(message);
         }
       }

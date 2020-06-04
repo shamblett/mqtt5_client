@@ -39,6 +39,92 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Encoder
   final MqttUtf8Encoding _enc = MqttUtf8Encoding();
 
+  /// Payload Format Indicator
+  ///
+  /// false indicates that the Payload is unspecified bytes, which is equivalent to
+  /// not sending a Payload Format Indicator.
+  /// True indicates that the Payload is UTF-8 Encoded Character Data.
+  bool _payloadFormatIndicator = false;
+  bool get payloadFormatIndicator => _payloadFormatIndicator;
+  set payloadFormatIndicator(bool indicator) {
+    var property =
+        MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+    property.value = indicator ? 1 : 0;
+    _propertySet.add(property);
+    _payloadFormatIndicator = indicator;
+  }
+
+  /// Message Expiry Interval
+  ///
+  ///  The lifetime of the Application Message in seconds.
+  ///  If absent, the Application Message does not expire.
+  int _messageExpiryInterval = 65535;
+  int get messageExpiryInterval => _messageExpiryInterval;
+  set messageExpiryInterval(int interval) {
+    var property = MqttFourByteIntegerProperty(
+        MqttPropertyIdentifier.messageExpiryInterval);
+    property.value = interval;
+    _propertySet.add(property);
+    _messageExpiryInterval = interval;
+  }
+
+  /// Topic Alias
+  ///
+  /// A Topic Alias is an integer value that is used to identify the Topic instead of
+  /// using the Topic Name.
+  /// Topic Alias mappings exist only within a Network Connection and last only for
+  /// the lifetime of that Network Connection.
+  /// A Topic Alias of 0 is not permitted.
+  int _topicAlias = 255;
+  int get topicAlias => _topicAlias;
+  set topicAlias(int maximum) {
+    if (maximum == 0) {
+      throw ArgumentError(
+          'MqttPublishVariableHeader::topicAlias - 0 is not a valid value');
+    }
+    var property =
+        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAliasMaximum);
+    property.value = maximum;
+    _propertySet.add(property);
+    _topicAlias = maximum;
+  }
+
+  /// Response Topic
+  ///
+  /// The Topic Name for a response message.
+  /// The Response Topic MUST NOT contain wildcard characters.
+  String _responseTopic = '';
+  String get responseTopic => _responseTopic;
+  set responseTopic(String topic) {
+    // Validate the response topic
+    try {
+      MqttPublicationTopic(topic);
+    } on Exception {
+      throw ArgumentError(
+          'MqttPublishVariableHeader::responseTopic topic cannot contain wildcards');
+    }
+    var property = MqttUtf8StringProperty(MqttPropertyIdentifier.responseTopic);
+    property.value = topic;
+    _propertySet.add(property);
+    _responseTopic = topic;
+  }
+
+  /// User property
+  ///
+  /// The User Property is allowed to appear multiple times to represent
+  /// multiple name, value pairs. The same name is allowed to appear
+  /// more than once.
+  final _userProperties = <MqttStringPairProperty>[];
+  List<MqttStringPairProperty> get userProperties => _userProperties;
+  set userProperties(List<MqttStringPairProperty> properties) {
+    for (var userProperty in properties) {
+      userProperty.identifier = MqttPropertyIdentifier.userProperty;
+      _propertySet.add(userProperty);
+      _userProperties.addAll(properties);
+    }
+  }
+
+  ///
   /// Creates a variable header from the specified header stream.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {

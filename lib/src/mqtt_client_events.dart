@@ -31,10 +31,10 @@ class MessageReceived {
   MqttMessage get message => _message;
 
   /// The topic
-  final PublicationTopic _topic;
+  final MqttPublicationTopic _topic;
 
   /// Topic
-  PublicationTopic get topic => _topic;
+  MqttPublicationTopic get topic => _topic;
 }
 
 /// Auto reconnect event

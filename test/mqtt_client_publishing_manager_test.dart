@@ -116,7 +116,7 @@ void main() {
       buff[2] = 's'.codeUnitAt(0);
       buff[3] = 't'.codeUnitAt(0);
       final msgId = pm.publish(
-          PublicationTopic('A/rawTopic'), MqttQos.atMostOnce, buff, true);
+          MqttPublicationTopic('A/rawTopic'), MqttQos.atMostOnce, buff, true);
       expect(msgId, 1);
       expect(pm.publishedMessages.containsKey(1), isFalse);
       final MqttPublishMessage pubMess = testCHS.sentMessages[0];
@@ -140,7 +140,7 @@ void main() {
       buff[3] = 't'.codeUnitAt(0);
       pm.messageIdentifierDispenser.reset();
       final msgId =
-          pm.publish(PublicationTopic('A/rawTopic'), MqttQos.atLeastOnce, buff);
+          pm.publish(MqttPublicationTopic('A/rawTopic'), MqttQos.atLeastOnce, buff);
       expect(msgId, 1);
       expect(pm.publishedMessages.containsKey(1), isTrue);
       final pubMess = pm.publishedMessages[1];
@@ -163,7 +163,7 @@ void main() {
       buff[2] = 's'.codeUnitAt(0);
       buff[3] = 't'.codeUnitAt(0);
       final msgId =
-          pm.publish(PublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
+          pm.publish(MqttPublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
       expect(msgId, 1);
       expect(pm.publishedMessages.containsKey(1), isTrue);
       final pubMess = pm.publishedMessages[1];
@@ -184,9 +184,9 @@ void main() {
       buff[2] = 's'.codeUnitAt(0);
       buff[3] = 't'.codeUnitAt(0);
       final msgId1 =
-          pm.publish(PublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
+          pm.publish(MqttPublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
       final msgId2 =
-          pm.publish(PublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
+          pm.publish(MqttPublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
       expect(msgId2, msgId1 + 1);
     });
     test('Publish at least once and ack', () {
@@ -200,7 +200,7 @@ void main() {
       buff[2] = 's'.codeUnitAt(0);
       buff[3] = 't'.codeUnitAt(0);
       final msgId =
-          pm.publish(PublicationTopic('A/rawTopic'), MqttQos.atLeastOnce, buff);
+          pm.publish(MqttPublicationTopic('A/rawTopic'), MqttQos.atLeastOnce, buff);
       expect(msgId, 1);
       pm.handlePublishAcknowledgement(
           MqttPublishAckMessage().withMessageIdentifier(msgId));
@@ -217,7 +217,7 @@ void main() {
       buff[2] = 's'.codeUnitAt(0);
       buff[3] = 't'.codeUnitAt(0);
       final msgId =
-          pm.publish(PublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
+          pm.publish(MqttPublicationTopic('A/rawTopic'), MqttQos.exactlyOnce, buff);
       expect(msgId, 1);
       expect(pm.publishedMessages.containsKey(1), isTrue);
       pm.handlePublishReceived(
@@ -318,10 +318,10 @@ void main() {
       final payload2 = MqttClientPayloadBuilder();
       payload2.addString('test2');
       final msgId1 = pm.publish(
-          PublicationTopic('topic1'), MqttQos.exactlyOnce, payload1.payload);
+          MqttPublicationTopic('topic1'), MqttQos.exactlyOnce, payload1.payload);
       expect(msgId1, 1);
       final msgId2 = pm.publish(
-          PublicationTopic('topic2'), MqttQos.exactlyOnce, payload2.payload);
+          MqttPublicationTopic('topic2'), MqttQos.exactlyOnce, payload2.payload);
       expect(msgId2, 2);
       expect(pm.publishedMessages.containsKey(msgId1), isTrue);
       expect(pm.publishedMessages.containsKey(msgId2), isTrue);
@@ -354,7 +354,7 @@ void main() {
 
       // Publish 1
       final msgId1 = pm.publish(
-          PublicationTopic('topic1'), MqttQos.exactlyOnce, payload1.payload);
+          MqttPublicationTopic('topic1'), MqttQos.exactlyOnce, payload1.payload);
       expect(pm.publishedMessages.length, 1);
       expect(pm.publishedMessages.containsKey(msgId1), isTrue);
       expect(msgId1, 1);
@@ -367,7 +367,7 @@ void main() {
 
       // Publish 2
       final msgId2 = pm.publish(
-          PublicationTopic('topic2'), MqttQos.exactlyOnce, payload2.payload);
+          MqttPublicationTopic('topic2'), MqttQos.exactlyOnce, payload2.payload);
       expect(msgId2, 2);
       expect(pm.publishedMessages.length, 2);
       expect(pm.publishedMessages.containsKey(msgId2), isTrue);

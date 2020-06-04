@@ -8,11 +8,11 @@
 part of mqtt5_client;
 
 /// Provides the base implementation of an MQTT topic.
-abstract class Topic {
+abstract class MqttTopic {
   /// Creates a new instance of a rawTopic from a rawTopic string.
   /// rawTopic - The topic to represent.
   /// validations - The validations to run on the rawTopic.
-  Topic(this.rawTopic, List<dynamic> validations) {
+  MqttTopic(this.rawTopic, List<dynamic> validations) {
     topicFragments = rawTopic.split(topicSeparator[0]);
     // run all validations
     for (final dynamic validation in validations) {
@@ -43,7 +43,7 @@ abstract class Topic {
 
   /// Validates that the topic does not exceed the maximum length.
   /// topicInstance - The instance to check.
-  static void validateMaxLength(Topic topicInstance) {
+  static void validateMaxLength(MqttTopic topicInstance) {
     if (topicInstance.rawTopic.length > maxTopicLength) {
       throw Exception('mqtt_client::Topic: The length of the supplied rawTopic '
           '(${topicInstance.rawTopic.length}) is longer than the '
@@ -58,7 +58,7 @@ abstract class Topic {
 
   /// Validates that the topic does not fall below the minimum length.
   /// topicInstance - The instance to check.
-  static void validateMinLength(Topic topicInstance) {
+  static void validateMinLength(MqttTopic topicInstance) {
     if (topicInstance.rawTopic.isEmpty) {
       throw Exception(
           'mqtt_client::Topic: rawTopic must contain at least one character');
@@ -75,7 +75,7 @@ abstract class Topic {
     if (identical(this, other)) {
       return true;
     }
-    return other is Topic && rawTopic == other.rawTopic;
+    return other is MqttTopic && rawTopic == other.rawTopic;
   }
 
   /// Returns a String representation of the topic.
