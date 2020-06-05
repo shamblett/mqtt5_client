@@ -293,12 +293,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sb.writeln('Response Information = $responseInformation');
     sb.writeln('Server Reference = $serverReference');
     sb.writeln('Authentication Method = $authenticationMethod');
-    if (userProperty != null) {
-      sb.writeln('User Properties :');
-      for (final property in userProperty) {
-        sb.writeln('${property.toString()}');
-      }
-    }
+    sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }
 }

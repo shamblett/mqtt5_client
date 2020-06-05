@@ -23,9 +23,11 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Standard header
   MqttHeader header;
 
-  /// Length
+  /// The length of the variable header
   @override
-  int length = 0;
+  int get length => getWriteLength();
+  @override
+  set length(int length) {}
 
   /// Topic name
   String topicName = '';
@@ -77,16 +79,16 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// A Topic Alias of 0 is not permitted.
   int _topicAlias = 255;
   int get topicAlias => _topicAlias;
-  set topicAlias(int maximum) {
-    if (maximum == 0) {
+  set topicAlias(int alias) {
+    if (alias == 0) {
       throw ArgumentError(
           'MqttPublishVariableHeader::topicAlias - 0 is not a valid value');
     }
     var property =
-        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAliasMaximum);
-    property.value = maximum;
+        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAlias);
+    property.value = alias;
     _propertySet.add(property);
-    _topicAlias = maximum;
+    _topicAlias = alias;
   }
 
   /// Response Topic
@@ -129,13 +131,13 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// The User Property is allowed to appear multiple times to represent
   /// multiple name, value pairs. The same name is allowed to appear
   /// more than once.
-  final _userProperties = <MqttStringPairProperty>[];
-  List<MqttStringPairProperty> get userProperties => _userProperties;
+  List<MqttStringPairProperty> _userProperty = <MqttStringPairProperty>[];
+  List<MqttStringPairProperty> get userProperty => _userProperty;
   set userProperties(List<MqttStringPairProperty> properties) {
     for (var userProperty in properties) {
       userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
-      _userProperties.addAll(properties);
+      _userProperty.addAll(properties);
     }
   }
 
@@ -172,6 +174,46 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     _contentType = type;
   }
 
+  void _processProperties() {
+    if (!_propertySet.propertiesAreValid()) {
+      throw FormatException(
+          'MqttConnectPublishHeader::_processProperties, message properties received are invalid');
+    }
+    final properties = _propertySet.toList();
+    for (final property in properties) {
+      switch (property.identifier) {
+        case MqttPropertyIdentifier.payloadFormatIndicator:
+          _payloadFormatIndicator = property.value == 1;
+          break;
+        case MqttPropertyIdentifier.messageExpiryInterval:
+          _messageExpiryInterval = property.value;
+          break;
+        case MqttPropertyIdentifier.topicAlias:
+          _topicAlias = property.value;
+          break;
+        case MqttPropertyIdentifier.responseTopic:
+          _responseTopic = property.value;
+          break;
+        case MqttPropertyIdentifier.correlationdata:
+          _correlationData = property.value;
+          break;
+        case MqttPropertyIdentifier.subscriptionIdentifier:
+          _subscriptionIdentifier.add(property.value);
+          break;
+        case MqttPropertyIdentifier.contentType:
+          _contentType = property.value;
+          break;
+        default:
+          if (property.identifier != MqttPropertyIdentifier.userProperty) {
+            MqttLogger.log(
+                'MqttPublishVariableHeader::_processProperties, unexpected property type'
+                'received, identifier is ${property.identifier}, ignoring');
+          }
+      }
+      _userProperty = _propertySet.userProperties;
+    }
+  }
+
   /// Creates a variable header from the specified header stream.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
@@ -179,6 +221,11 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     if (header.qos == MqttQos.atLeastOnce ||
         header.qos == MqttQos.exactlyOnce) {
       readMessageIdentifier(variableHeaderStream);
+      // Properties
+      variableHeaderStream.shrink();
+      _propertySet.readFrom(variableHeaderStream);
+      _processProperties();
+      variableHeaderStream.shrink();
     }
   }
 
@@ -189,6 +236,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     if (header.qos == MqttQos.atLeastOnce ||
         header.qos == MqttQos.exactlyOnce) {
       writeMessageIdentifier(variableHeaderStream);
+      _propertySet.writeTo(variableHeaderStream);
     }
   }
 
@@ -201,19 +249,18 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
         header.qos == MqttQos.exactlyOnce) {
       headerLength += 2;
     }
+    headerLength += _propertySet.getWriteLength();
     return headerLength;
   }
 
   /// Topic name
   void readTopicName(MqttByteBuffer stream) {
     topicName = MqttByteBuffer.readMqttString(stream);
-    length += _enc.byteCount(topicName);
   }
 
   /// Message identifier
   void readMessageIdentifier(MqttByteBuffer stream) {
     messageIdentifier = stream.readShort();
-    length += 2;
   }
 
   /// Topic name
@@ -229,8 +276,14 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('TopicName = {$topicName}');
-    sb.writeln('MessageIdentifier = {$messageIdentifier}');
+    sb.writeln('TopicName = $topicName');
+    sb.writeln('MessageIdentifier = $messageIdentifier');
+    sb.writeln('Payload Format Indicator = $payloadFormatIndicator');
+    sb.writeln('Message Expiry Interval = $messageExpiryInterval');
+    sb.writeln('Topic Alias = $topicAlias');
+    sb.writeln('Response Topic = $responseTopic');
+    sb.writeln('Subscription Identifier = $subscriptionIdentifier');
+    sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }
 }
