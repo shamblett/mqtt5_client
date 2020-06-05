@@ -109,6 +109,21 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     _responseTopic = topic;
   }
 
+  /// Correlation Data
+  ///
+  ///  The Correlation Data is used by the sender of the Request Message
+  ///  to identify which request the Response Message is for when it is
+  ///  received.
+  typed.Uint8Buffer _correlationData;
+  typed.Uint8Buffer get correlationData => _correlationData;
+  set correlationData(typed.Uint8Buffer data) {
+    final property =
+        MqttBinaryDataProperty(MqttPropertyIdentifier.correlationdata);
+    property.addBytes(data);
+    _propertySet.add(property);
+    _correlationData = data;
+  }
+
   /// User property
   ///
   /// The User Property is allowed to appear multiple times to represent
@@ -124,7 +139,39 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     }
   }
 
+  /// Subscription Identifier
   ///
+  /// The Subscription Identifier can have the value of 1 to 268,435,455.
+  /// Multiple Subscription Identifiers will be included in a received message if the
+  /// publication is the result of a match to more than one subscription, in this case their
+  /// order is not significant.
+  final _subscriptionIdentifier = <int>[];
+  List<int> get subscriptionIdentifier => _subscriptionIdentifier;
+  set subscriptionIdentifier(identifier) {
+    if (identifier < 1 || identifier > 268435455) {
+      throw ArgumentError(
+          'MqttPublishVariableHeader::subscriptionIdentifier identifier is invalid');
+    }
+    final property = MqttVariableByteIntegerProperty(
+        MqttPropertyIdentifier.subscriptionIdentifier);
+    property.value = identifier;
+    _propertySet.add(property);
+    _subscriptionIdentifier.add(identifier);
+  }
+
+  /// Content Type
+  ///
+  /// The value of the Content Type is defined by the sending and
+  /// receiving application.
+  String _contentType = '';
+  String get contentType => _contentType;
+  set contentType(String type) {
+    final property = MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+    property.value = type;
+    _propertySet.add(property);
+    _contentType = type;
+  }
+
   /// Creates a variable header from the specified header stream.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
