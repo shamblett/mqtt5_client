@@ -12,9 +12,6 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
   /// Construction
   MqttVariableByteIntegerProperty([this.identifier]);
 
-  /// Read/Write length
-  static const length = 5;
-
   /// Identifier
   @override
   MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
@@ -36,13 +33,21 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
   @override
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
-    var buffer = stream.read(length - 1);
+    final buffer = typed.Uint8Buffer();
+    var end = false;
+    while ( !end ) {
+      var byte = stream.readByte();
+      buffer.add(byte);
+      if ( byte < 128 ) {
+        end = true;
+      }
+    }
     value = _enc.toInt(buffer);
   }
 
   /// Gets the length of the write data when WriteTo will be called.
   @override
-  int getWriteLength() => length;
+  int getWriteLength() => _enc.fromInt(value).length + 1;
 
   @override
   String toString() {
