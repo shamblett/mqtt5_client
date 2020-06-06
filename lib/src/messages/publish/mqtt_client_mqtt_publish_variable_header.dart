@@ -133,7 +133,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// more than once.
   List<MqttStringPairProperty> _userProperty = <MqttStringPairProperty>[];
   List<MqttStringPairProperty> get userProperty => _userProperty;
-  set userProperties(List<MqttStringPairProperty> properties) {
+  set userProperty(List<MqttStringPairProperty> properties) {
     for (var userProperty in properties) {
       userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
@@ -236,8 +236,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     if (header.qos == MqttQos.atLeastOnce ||
         header.qos == MqttQos.exactlyOnce) {
       writeMessageIdentifier(variableHeaderStream);
-      _propertySet.writeTo(variableHeaderStream);
     }
+    _propertySet.writeTo(variableHeaderStream);
   }
 
   /// Gets the length of the write data when WriteTo will be called.

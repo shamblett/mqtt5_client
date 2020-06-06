@@ -1328,6 +1328,76 @@ void main() {
         expect(message.getWriteLength(), 0);
       });
     });
+    group('Publish Message', () {
+      test('Variable Header Publish - Defaults', () {
+        final header = MqttHeader();
+        header.messageType = MqttMessageType.publish;
+        final message = MqttPublishVariableHeader(header);
+        expect(message.topicName, '');
+        expect(message.messageIdentifier, 0);
+        expect(message.payloadFormatIndicator, isFalse);
+        expect(message.messageExpiryInterval, 65535);
+        expect(message.topicAlias, 255);
+        expect(message.responseTopic, '');
+        expect(message.correlationData, isNull);
+        expect(message.userProperty, isEmpty);
+        expect(message.subscriptionIdentifier, isEmpty);
+        expect(message.contentType, '');
+        expect(message.length, 3);
+        message.header.qos = MqttQos.atLeastOnce;
+        expect(message.length, 5);
+        message.header.qos = MqttQos.exactlyOnce;
+        expect(message.length, 5);
+      });
+      test('Variable Header Publish - Reversible', () {
+        final header = MqttHeader();
+        header.qos = MqttQos.atLeastOnce;
+        header.messageType = MqttMessageType.publish;
+        final message = MqttPublishVariableHeader(header);
+        message.topicName = 'TopicName';
+        message.messageIdentifier = 1;
+        message.payloadFormatIndicator = true;
+        message.messageExpiryInterval = 10;
+        message.topicAlias = 5;
+        message.responseTopic = 'ResponseTopic';
+        message.correlationData = typed.Uint8Buffer()..addAll([1, 2, 3, 4, 5]);
+        var properties = <MqttStringPairProperty>[];
+        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        properties.add(user1);
+        var user2 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        user2.pairName = 'User 2 name';
+        user2.pairValue = 'User 2 value';
+        properties.add(user2);
+        message.userProperty = properties;
+        message.subscriptionIdentifier = 1;
+        message.contentType = 'Content Type';
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(message.getWriteLength(), stream.length);
+        stream.reset();
+        header.messageSize = stream.length;
+        final message1 =
+            MqttPublishVariableHeader.fromByteBuffer(header, stream);
+        expect(message1.topicName, 'TopicName');
+        expect(message1.messageIdentifier, 1);
+        expect(message1.payloadFormatIndicator, isTrue);
+        expect(message1.messageExpiryInterval, 10);
+        expect(message1.topicAlias, 5);
+        expect(message1.responseTopic, 'ResponseTopic');
+        expect(message1.correlationData.buffer, [1, 2, 3, 4, 5]);
+        expect(message1.userProperty, isNotEmpty);
+        expect(message1.userProperty[0].pairName, 'User 1 name');
+        expect(message1.userProperty[0].pairValue, 'User 1 value');
+        expect(message1.userProperty[1].pairName, 'User 2 name');
+        expect(message1.userProperty[1].pairValue, 'User 2 value');
+        expect(message1.subscriptionIdentifier, isNotEmpty);
+        expect(message1.subscriptionIdentifier[0], 1);
+        expect(message1.contentType, 'Content Type');
+      });
+    });
   });
 
   group('Payload', () {
