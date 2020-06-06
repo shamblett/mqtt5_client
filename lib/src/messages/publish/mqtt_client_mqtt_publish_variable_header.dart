@@ -137,8 +137,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     for (var userProperty in properties) {
       userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
-      _userProperty.addAll(properties);
     }
+    _userProperty.addAll(properties);
   }
 
   /// Subscription Identifier
@@ -177,7 +177,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttConnectPublishHeader::_processProperties, message properties received are invalid');
+          'MqttPublishVariableHeader::_processProperties, message properties received are invalid');
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -221,12 +221,12 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     if (header.qos == MqttQos.atLeastOnce ||
         header.qos == MqttQos.exactlyOnce) {
       readMessageIdentifier(variableHeaderStream);
-      // Properties
-      variableHeaderStream.shrink();
-      _propertySet.readFrom(variableHeaderStream);
-      _processProperties();
-      variableHeaderStream.shrink();
     }
+    // Properties
+    variableHeaderStream.shrink();
+    _propertySet.readFrom(variableHeaderStream);
+    _processProperties();
+    variableHeaderStream.shrink();
   }
 
   /// Writes the variable header to the supplied stream.

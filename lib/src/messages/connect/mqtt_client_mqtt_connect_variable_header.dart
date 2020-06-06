@@ -215,8 +215,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     for (var userProperty in properties) {
       userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
-      _userProperties.addAll(properties);
     }
+    _userProperties.addAll(properties);
   }
 
   /// Authentication method property
