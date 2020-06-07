@@ -1937,6 +1937,70 @@ void main() {
         expect(pm.payload.message[4], 'o'.codeUnitAt(0));
         expect(pm.payload.message[5], '!'.codeUnitAt(0));
       });
+      test('Serialisation - Valid payload - properties - with Qos', () {
+        final message = MqttPublishMessage()..withQos(MqttQos.exactlyOnce);
+        message.variableHeader.topicName = 'fred';
+        message.variableHeader.payloadFormatIndicator = true;
+        message.variableHeader.messageIdentifier = 1;
+        message.variableHeader.topicAlias = 5;
+        var properties = <MqttStringPairProperty>[];
+        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        user1.pairName = 'name';
+        user1.pairValue = 'value';
+        properties.add(user1);
+        message.variableHeader.userProperty = properties;
+        message.payload.message.addAll([
+          'h'.codeUnitAt(0),
+          'e'.codeUnitAt(0),
+          'l'.codeUnitAt(0),
+          'l'.codeUnitAt(0),
+          'o'.codeUnitAt(0),
+          '!'.codeUnitAt(0)
+        ]);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        final serializeTestBuffer = typed.Uint8Buffer()
+          ..addAll([
+            52,
+            34,
+            0,
+            4,
+            102,
+            114,
+            101,
+            100,
+            0,
+            1,
+            19,
+            1,
+            1,
+            35,
+            0,
+            5,
+            38,
+            0,
+            4,
+            110,
+            97,
+            109,
+            101,
+            0,
+            5,
+            118,
+            97,
+            108,
+            117,
+            101,
+            104,
+            101,
+            108,
+            108,
+            111,
+            33
+          ]);
+        expect(stream.buffer, serializeTestBuffer);
+      });
     });
 
     group('Publish Ack', () {
