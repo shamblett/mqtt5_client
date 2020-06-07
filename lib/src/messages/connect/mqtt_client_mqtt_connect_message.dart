@@ -8,11 +8,11 @@
 part of mqtt5_client;
 
 /// An Mqtt message that is used to initiate a connection to a message broker.
-/// After a Network Connection is established by a Client to a Server, the
-/// first packet sent from the Client to the Server MUST be a CONNECT
-/// packet.
+/// After a network connection is established by a client to a broker, the
+/// first message sent from the client to the broker MUST be a connect
+/// message.
 ///
-/// A Client can only send the CONNECT packet once over a Network Connection.
+/// A client can only send the connect message once over a network connection.
 ///
 /// Various fields are used in the construction of this message, for more details on
 /// the meaning of these fields please refer to the classes in which they are defined,
@@ -25,47 +25,50 @@ class MqttConnectMessage extends MqttMessage {
   /// Initializes a new instance of the MqttConnectMessage class.
   MqttConnectMessage() {
     header = MqttHeader().asType(MqttMessageType.connect);
-    variableHeader = MqttConnectVariableHeader();
-    payload = MqttConnectPayload(variableHeader);
+    _variableHeader = MqttConnectVariableHeader();
+    payload = MqttConnectPayload(_variableHeader);
   }
 
-  /// The variable header contents.
-  /// Contains extended metadata about the message
-  MqttConnectVariableHeader variableHeader;
+  MqttConnectVariableHeader _variableHeader;
 
-  /// The payload of the Mqtt Message.
+  /// The variable header contents.
+  /// Contains extended metadata about the message.
+  MqttConnectVariableHeader get variableHeader => _variableHeader;
+
+  /// The payload of the message.
   MqttConnectPayload payload;
 
-  /// Sets the startClean flag so that the broker drops any messages
-  /// that were previously destined for us.
+  /// Sets the clean start flag.
   MqttConnectMessage startClean() {
-    variableHeader.connectFlags.cleanStart = true;
+    _variableHeader.connectFlags.cleanStart = true;
     return this;
   }
 
   /// Sets the keep alive period
   MqttConnectMessage keepAliveFor(int keepAliveSeconds) {
-    variableHeader.keepAlive = keepAliveSeconds;
+    _variableHeader.keepAlive = keepAliveSeconds;
     return this;
   }
 
-  /// Sets the Will flag of the variable header.
+  /// Sets the Will flag.
+  ///
   /// Note that setting this will also activate encoding of will
   /// properties and other dependant fields.
+  /// Refer to the [MqttWillProperties] class for details.
   MqttConnectMessage will() {
-    variableHeader.connectFlags.willFlag = true;
+    _variableHeader.connectFlags.willFlag = true;
     return this;
   }
 
-  /// Sets the WillQos of the connect flag.
+  /// Sets the Will Qos.
   MqttConnectMessage withWillQos(MqttQos qos) {
-    variableHeader.connectFlags.willQos = qos;
+    _variableHeader.connectFlags.willQos = qos;
     return this;
   }
 
-  /// Sets the WillRetain flag of the Connection Flags
+  /// Sets the Will retain flag.
   MqttConnectMessage withWillRetain() {
-    variableHeader.connectFlags.willRetain = true;
+    _variableHeader.connectFlags.willRetain = true;
     return this;
   }
 
@@ -75,33 +78,25 @@ class MqttConnectMessage extends MqttMessage {
     return this;
   }
 
-  /// Sets the will payload
-  /// Automatically sets the will flag
+  /// Sets the will payload.
   MqttConnectMessage withWillPayload(typed.Uint8Buffer willPayload) {
-    will();
     payload.willPayload = willPayload;
     return this;
   }
 
-  /// Sets the Will Topic
-  /// Automatically sets the will flag
+  /// Sets the Will topic.
   MqttConnectMessage withWillTopic(String willTopic) {
-    will();
     payload.willTopic = willTopic;
     return this;
   }
 
   /// Sets the will properties
-  /// Automatically sets the will flag
   MqttConnectMessage withWillProperties(MqttWillProperties properties) {
     payload.willProperties = properties;
-    if (properties != null) {
-      will();
-    }
     return this;
   }
 
-  /// Sets the payload
+  /// Sets the message payload
   MqttConnectMessage withPayload(MqttConnectPayload payload) {
     this.payload = payload;
     return this;
@@ -110,16 +105,16 @@ class MqttConnectMessage extends MqttMessage {
   /// Sets a list of user properties
   MqttConnectMessage withUserProperties(
       List<MqttStringPairProperty> properties) {
-    variableHeader.userProperties = properties;
+    _variableHeader.userProperties = properties;
     return this;
   }
 
   /// Add a specific user property
   void addUserProperty(MqttStringPairProperty property) {
-    variableHeader.userProperties = [property];
+    _variableHeader.userProperties = [property];
   }
 
-  /// Add a user property from the name/value pair
+  /// Add a user property from the supplied name/value pair
   void addUserPropertyPair(String name, String value) {
     final property = MqttStringPairProperty.asUserProperty();
     property.pairName = name;
@@ -127,14 +122,62 @@ class MqttConnectMessage extends MqttMessage {
     addUserProperty(property);
   }
 
-  /// Sets the authentication
+  /// Sets the session expiry interval.
+  MqttConnectMessage withSessionExpiryInterval(int interval) {
+    _variableHeader.sessionExpiryInterval = interval;
+    return this;
+  }
+
+  /// Sets the receive maximum.
+  MqttConnectMessage withReceiveMaximum(int maximum) {
+    _variableHeader.receiveMaximum = maximum;
+    return this;
+  }
+
+  /// Sets the maximum message size.
+  MqttConnectMessage withMaximumMessageSize(int maximum) {
+    _variableHeader.maximumPacketSize = maximum;
+    return this;
+  }
+
+  /// Sets the topic alias maximum.
+  MqttConnectMessage withTopicAliasMaximum(int maximum) {
+    _variableHeader.topicAliasMaximum = maximum;
+    return this;
+  }
+
+  /// Sets the request response information flag.
+  MqttConnectMessage withRequestResponseInformation(bool information) {
+    _variableHeader.requestResponseInformation = information;
+    return this;
+  }
+
+  /// Sets the request problem information flag.
+  MqttConnectMessage withRequestProblemInformation(bool information) {
+    _variableHeader.requestProblemInformation = information;
+    return this;
+  }
+
+  /// Sets the authentication method.
+  MqttConnectMessage withAuthenticationMethod(String method) {
+    _variableHeader.authenticationMethod = method;
+    return this;
+  }
+
+  /// Sets the authentication data
+  MqttConnectMessage withAuthenticationData(typed.Uint8Buffer data) {
+    _variableHeader.authenticationData = data;
+    return this;
+  }
+
+  /// Sets the authentication details
   MqttConnectMessage authenticateAs(String username, String password) {
     if (username != null) {
-      variableHeader.connectFlags.usernameFlag = username.isNotEmpty;
+      _variableHeader.connectFlags.usernameFlag = username.isNotEmpty;
       payload.username = username;
     }
     if (password != null) {
-      variableHeader.connectFlags.passwordFlag = password.isNotEmpty;
+      _variableHeader.connectFlags.passwordFlag = password.isNotEmpty;
       payload.password = password;
     }
     return this;
@@ -143,9 +186,9 @@ class MqttConnectMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
+    header.writeTo(_variableHeader.getWriteLength() + payload.getWriteLength(),
         messageStream);
-    variableHeader.writeTo(messageStream);
+    _variableHeader.writeTo(messageStream);
     payload.writeTo(messageStream);
   }
 
@@ -153,8 +196,8 @@ class MqttConnectMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.writeln(super.toString());
-    sb.writeln('Client Identifier = ${payload.clientIdentifier}');
-    sb.write('${variableHeader.toString()}');
+    sb.writeln('client Identifier = ${payload.clientIdentifier}');
+    sb.write('${_variableHeader.toString()}');
     sb.writeln('${payload.toString()}');
     return sb.toString();
   }

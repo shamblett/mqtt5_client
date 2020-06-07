@@ -74,8 +74,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   ///
   /// A Topic Alias is an integer value that is used to identify the Topic instead of
   /// using the Topic Name.
-  /// Topic Alias mappings exist only within a Network Connection and last only for
-  /// the lifetime of that Network Connection.
+  /// Topic Alias mappings exist only within a network connection and last only for
+  /// the lifetime of that network connection.
   /// A Topic Alias of 0 is not permitted.
   int _topicAlias = 255;
   int get topicAlias => _topicAlias;

@@ -20,17 +20,17 @@ class MqttConnectFlags {
 
   /// Clean start.
   ///
-  /// This bit specifies whether the Connection starts a new Session or
+  /// This bit specifies whether the connection starts a new Session or
   /// is a continuation of an existing Session.
   /// If a Connect message is sent with Clean Start set to true, the
-  /// Client MUST discard any existing Session and start a new Session.
+  /// client MUST discard any existing Session and start a new Session.
   ///
   bool cleanStart = false;
 
   /// Will
   ///
   /// If the Will Flag is true this indicates that a Will Message MUST be
-  /// stored on the Server and associated with the Session.
+  /// stored on the broker and associated with the Session.
   /// The Will Message consists of the Will Properties, Will Topic,
   /// and Will Payload fields in the payload.
   bool willFlag = false;

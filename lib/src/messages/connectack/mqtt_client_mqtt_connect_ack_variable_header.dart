@@ -35,16 +35,16 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
 
   /// Session Expiry Interval.
   ///
-  /// The broker uses this property to inform the Client that it is using a value
-  /// other than that sent by the Client in the Connect Message.
+  /// The broker uses this property to inform the client that it is using a value
+  /// other than that sent by the client in the Connect Message.
   int _sessionExpiryInterval = 0;
   int get sessionExpiryInterval => _sessionExpiryInterval;
 
   /// Receive Maximum.
   ///
-  /// The Server uses this value to limit the number of QoS 1 and QoS 2 publications
-  /// that it is willing to process concurrently for the Client. It does not provide a
-  /// mechanism to limit the QoS 0 publications that the Client might try to send.
+  /// The broker uses this value to limit the number of QoS 1 and QoS 2 publications
+  /// that it is willing to process concurrently for the client. It does not provide a
+  /// mechanism to limit the QoS 0 publications that the client might try to send.
   ///
   /// A value of 65535 indicates not set.
   int _receiveMaximum = 65535;
@@ -52,11 +52,11 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
 
   /// Maximum QoS.
   ///
-  /// A Client does not need to support QoS 1 or QoS 2 PUBLISH packets.
-  /// If this is the case, the Client simply restricts the maximum QoS field in
+  /// A client does not need to support QoS 1 or QoS 2 publish messages.
+  /// If this is the case, the client simply restricts the maximum QoS field in
   /// any Subscribe messages it sends to a value it can support.
   ///
-  /// If a Client receives a Maximum QoS from a broker, it must not send Publish messages at
+  /// If a client receives a Maximum QoS from a broker, it must not send Publish messages at
   /// a QoS level exceeding the Maximum QoS level specified.
   ///
   /// A value of 2 is the default.
@@ -65,7 +65,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
 
   /// Retain Available.
   ///
-  /// A Client receiving Retain Available set to false from the broker
+  /// A client receiving Retain Available set to false from the broker
   /// must not send a Publish message with retain available set true
   bool _retainAvailable = false;
   bool get retainAvailable => _retainAvailable;
@@ -76,9 +76,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   int _maximumPacketSize = 0;
   int get maximumPacketSize => _maximumPacketSize;
 
-  /// Assigned Client Identifier.
+  /// Assigned client Identifier.
   ///
-  /// The Client Identifier which was assigned by the broker because a zero length Client Identifier
+  /// The client Identifier which was assigned by the broker because a zero length client Identifier
   /// was found in the Connect message.
   String _assignedClientIdentifier;
   String get assignedClientIdentifier => _assignedClientIdentifier;
@@ -86,10 +86,10 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Topic Alias Maximum.
   ///
   /// This value indicates the highest value that the broker will accept as a
-  /// Topic Alias sent by the Client.
-  /// The Client MUST NOT send a Topic Alias in a PUBLISH packet to the broker
+  /// Topic Alias sent by the client.
+  /// The client MUST NOT send a Topic Alias in a publish message to the broker
   /// greater than this value.
-  /// If Topic Alias Maximum is 0, the Client must not send any Topic
+  /// If Topic Alias Maximum is 0, the client must not send any Topic
   /// Aliases on to the broker.
   int _topicAliasMaximum = 0;
   int get topicAliasMaximum => _topicAliasMaximum;
@@ -102,7 +102,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
 
   /// User Property
   ///
-  /// This property can be used to provide additional information to the Client including
+  /// This property can be used to provide additional information to the client including
   /// diagnostic information.
   /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
   /// The same name is allowed to appear more than once.
@@ -134,14 +134,14 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   bool _sharedSubscriptionAvailable = true;
   bool get sharedSubscriptionAvailable => _sharedSubscriptionAvailable;
 
-  /// Server Keep Alive.
+  /// broker Keep Alive.
   ///
-  ///  If the broker sends a Server Keep Alive the Client must use this value
-  ///  instead of the Keep Alive value the Client may have sent in the Connect message.
+  ///  If the broker sends a broker Keep Alive the client must use this value
+  ///  instead of the Keep Alive value the client may have sent in the Connect message.
   ///
-  ///  The primary use of the Server Keep Alive is for the broker to inform the Client
-  ///  that it will disconnect the Client for inactivity sooner than the Keep Alive
-  ///  specified by the Client.
+  ///  The primary use of the broker Keep Alive is for the broker to inform the client
+  ///  that it will disconnect the client for inactivity sooner than the Keep Alive
+  ///  specified by the client.
   ///
   /// A value of 0 indicates not set by the broker.
   int _serverKeepAlive = 0;
@@ -152,13 +152,13 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// This string is used as the basis for creating a Response Topic.
   ///
   /// A common use of this is to pass a globally unique portion of the topic tree
-  /// which is reserved for this Client for at least the lifetime of its Session.
+  /// which is reserved for this client for at least the lifetime of its Session.
   String _responseInformation;
   String get responseInformation => _responseInformation;
 
-  /// Server Reference
+  /// broker Reference
   ///
-  /// A string to indicate another Server to use.
+  /// A string to indicate another broker to use.
   String _serverReference;
   String get serverReference => _serverReference;
 
@@ -281,7 +281,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sb.writeln('Maximum QoS = $maximumQos');
     sb.writeln('Retain Available = $retainAvailable');
     sb.writeln('Maximum Packet Size = $maximumPacketSize');
-    sb.writeln('Assigned Client Identifier = $assignedClientIdentifier');
+    sb.writeln('Assigned client Identifier = $assignedClientIdentifier');
     sb.writeln('Topic Alias Maximum = $topicAliasMaximum');
     sb.writeln('Reason String = $reasonString');
     sb.writeln(
@@ -289,9 +289,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sb.writeln(
         'Subscription Identifiers Available = $subscriptionIdentifiersAvailable');
     sb.writeln('Shared Subscription Available = $sharedSubscriptionAvailable');
-    sb.writeln('Server Keep Alive = $serverKeepAlive');
+    sb.writeln('broker Keep Alive = $serverKeepAlive');
     sb.writeln('Response Information = $responseInformation');
-    sb.writeln('Server Reference = $serverReference');
+    sb.writeln('broker Reference = $serverReference');
     sb.writeln('Authentication Method = $authenticationMethod');
     sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();

@@ -53,7 +53,7 @@ enum MqttReasonCode {
   /// Unsupported Protocol Version
   unsupportedProtocolVersion,
 
-  /// Client Identifier not valid
+  /// client Identifier not valid
   clientIdentifierNotValid,
 
   /// Bad User Name or Password
@@ -62,16 +62,16 @@ enum MqttReasonCode {
   /// Not authorized
   notAuthorized,
 
-  /// Server unavailable
+  /// broker unavailable
   serverUnavailable,
 
-  /// Server busy
+  /// broker busy
   serverBusy,
 
   /// Banned
   banned,
 
-  /// Server shutting down
+  /// broker shutting down
   serverShuttingDown,
 
   /// Bad authentication method
@@ -90,10 +90,10 @@ enum MqttReasonCode {
   topicNameInvalid,
 
   /// Packet Identifier in use
-  packetIdentifierInUse,
+  messageIdentifierInUse,
 
   /// Packet Identifier not found
-  packetIdentifierNotFound,
+  messageIdentifierNotFound,
 
   /// Receive Maximum exceeded
   receiveMaximumExceeded,
@@ -102,7 +102,7 @@ enum MqttReasonCode {
   topicAliasInvalid,
 
   /// Packet too large
-  packetTooLarge,
+  messageTooLarge,
 
   /// Message rate too high
   messageRateTooHigh,
@@ -123,15 +123,15 @@ enum MqttReasonCode {
   qosNotSupported,
 
   /// Use another server
-  useAnotherServer,
+  useAnotherbroker,
 
-  /// Server moved
+  /// broker moved
   serverMoved,
 
   /// Shared Subscriptions not supported
   sharedSubscriptionsNotSupported,
 
-  /// Connection rate exceeded
+  /// connection rate exceeded
   connectionRateExceeded,
 
   /// Maximum connect time
@@ -174,18 +174,18 @@ const Map<int, MqttReasonCode> _mqttReasonCodeValues = <int, MqttReasonCode>{
   0x8e: MqttReasonCode.sessionTakenOver,
   0x8f: MqttReasonCode.topicFilterInvalid,
   0x90: MqttReasonCode.topicNameInvalid,
-  0x91: MqttReasonCode.packetIdentifierInUse,
-  0x92: MqttReasonCode.packetIdentifierNotFound,
+  0x91: MqttReasonCode.messageIdentifierInUse,
+  0x92: MqttReasonCode.messageIdentifierNotFound,
   0x93: MqttReasonCode.receiveMaximumExceeded,
   0x94: MqttReasonCode.topicAliasInvalid,
-  0x95: MqttReasonCode.packetTooLarge,
+  0x95: MqttReasonCode.messageTooLarge,
   0x96: MqttReasonCode.messageRateTooHigh,
   0x97: MqttReasonCode.quotaExceeded,
   0x98: MqttReasonCode.administrativeAction,
   0x99: MqttReasonCode.payloadFormatInvalid,
   0x9a: MqttReasonCode.retainNotSupported,
   0x9b: MqttReasonCode.qosNotSupported,
-  0x9c: MqttReasonCode.useAnotherServer,
+  0x9c: MqttReasonCode.useAnotherbroker,
   0x9d: MqttReasonCode.serverMoved,
   0x9e: MqttReasonCode.sharedSubscriptionsNotSupported,
   0x9f: MqttReasonCode.connectionRateExceeded,

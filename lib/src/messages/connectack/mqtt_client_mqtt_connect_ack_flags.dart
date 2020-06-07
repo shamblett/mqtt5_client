@@ -13,9 +13,9 @@ class MqttConnectAckFlags {
   MqttConnectAckFlags();
 
   /// Session present
-  /// The Session Present flag informs the Client whether the Server is using Session
-  /// State from a previous connection for this ClientID. This allows the Client
-  /// and Server to have a consistent view of the Session State.
+  /// The Session Present flag informs the client whether the broker is using Session
+  /// State from a previous connection for this ClientID. This allows the client
+  /// and broker to have a consistent view of the Session State.
   bool sessionPresent = false;
 
   /// Read from a byte stream

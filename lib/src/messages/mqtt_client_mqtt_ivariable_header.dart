@@ -11,8 +11,8 @@ part of mqtt5_client;
 ///
 /// Some types of MQTT Control Packet contain a Variable Header component. It resides
 /// between the Fixed Header and the Payload. The content of the Variable Header
-/// varies depending on the packet type. The Packet Identifier field of
-/// Variable Header is common in several packet types.
+/// varies depending on the message type. The Packet Identifier field of
+/// Variable Header is common in several message types.
 abstract class MqttIVariableHeader {
   /// The length of the variable header in bytes
   int length;

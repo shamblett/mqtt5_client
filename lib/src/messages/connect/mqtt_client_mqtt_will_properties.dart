@@ -39,7 +39,7 @@ class MqttWillProperties {
   /// False indicates that the Will Message is unspecified bytes, which is equivalent
   /// to not sending a Payload Format Indicator.
   /// True indicates that the Will Message is UTF-8 Encoded Character Data.
-  ///  The Server MAY validate that the Will Message is of the format indicated,
+  ///  The broker MAY validate that the Will Message is of the format indicated,
   ///  and if it is not send a Connect Acknowledgement message [MqttConnectAckMessage]
   ///  with the Reason Code of 0x99 (Payload format invalid).
   bool _payloadFormatIndicator = false;
@@ -55,8 +55,8 @@ class MqttWillProperties {
   /// Message Expiry Interval
   ///
   ///  The value is the lifetime of the Will Message in seconds and is sent as the
-  ///  Publication Expiry Interval when the Server publishes the Will Message.
-  ///  If absent(value = 0), no Message Expiry Interval is sent when the Server
+  ///  Publication Expiry Interval when the broker publishes the Will Message.
+  ///  If absent(value = 0), no Message Expiry Interval is sent when the broker
   ///  publishes the Will Message.
   int _messageExpiryInterval = 0;
   int get messageExpiryInterval => _messageExpiryInterval;

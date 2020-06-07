@@ -13,7 +13,7 @@ part of mqtt5_client;
 /// more length-prefixed fields, whose presence is determined by the
 /// flags in the Variable Header.
 ///
-/// These fields, if present, MUST appear in the order Client Identifier,
+/// These fields, if present, MUST appear in the order client Identifier,
 /// Will Properties, Will Topic, Will Payload, User Name, Password.
 class MqttConnectPayload extends MqttPayload {
   /// Initializes a new instance of the MqttConnectPayload class.
@@ -30,27 +30,27 @@ class MqttConnectPayload extends MqttPayload {
   /// they are set.
   MqttWillProperties willProperties = MqttWillProperties();
 
-  /// Client identifier.
+  /// client identifier.
   ///
-  /// The Client Identifier (ClientID) identifies the Client to the Server.
-  /// Each Client connecting to the Server has a unique ClientID.
-  /// The ClientID MUST be used by Clients and by Servers to identify state
-  /// that they hold relating to this MQTT Session between the Client and the Server.
+  /// The client Identifier (ClientID) identifies the client to the broker.
+  /// Each client connecting to the broker has a unique ClientID.
+  /// The ClientID MUST be used by Clients and by brokers to identify state
+  /// that they hold relating to this MQTT Session between the client and the broker.
   ///
   /// The ClientID MUST be present and is the first field
   /// in the Connect message Payload and must be a
   /// UTF-8 Encoded String.
   ///
-  /// The Server MUST allow ClientID’s which are between 1 and 23 UTF-8
+  /// The broker MUST allow ClientID’s which are between 1 and 23 UTF-8
   /// encoded bytes in length, and that contain only the characters
   /// "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
-  /// The Server MAY allow ClientID’s that contain more than 23 encoded bytes.
-  /// The Server MAY allow ClientID’s that contain characters not
+  /// The broker MAY allow ClientID’s that contain more than 23 encoded bytes.
+  /// The broker MAY allow ClientID’s that contain characters not
   /// included in the list given above.
   ///
-  /// If the Server rejects the ClientID it MAY respond to the Connect message
+  /// If the broker rejects the ClientID it MAY respond to the Connect message
   /// with a Connect Acknowledgement message [MqttConnectAckMessage] using
-  /// Reason Code Client Identifier not valid [MqttReasonCode.clientIdentifierNotValid].
+  /// Reason Code client Identifier not valid [MqttReasonCode.clientIdentifierNotValid].
   String clientIdentifier = '';
 
   /// Will topic.
@@ -117,7 +117,7 @@ class MqttConnectPayload extends MqttPayload {
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('Client identifier is = $clientIdentifier');
+    sb.writeln('client identifier is = $clientIdentifier');
     sb.writeln('Will topic = $willTopic');
     sb.write('User name = ');
     username != null ? sb.writeln('$username') : sb.writeln('not set');

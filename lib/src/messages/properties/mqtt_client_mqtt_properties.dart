@@ -30,10 +30,10 @@ enum MqttPropertyIdentifier {
   /// Session Expiry Interval - Four Byte Integer
   sessionExpiryInterval,
 
-  /// Assigned Client Identifier - UTF-8 Encoded String
+  /// Assigned client Identifier - UTF-8 Encoded String
   assignedClientIdentifier,
 
-  /// Server Keep Alive - Two Byte Integer
+  /// broker Keep Alive - Two Byte Integer
   serverKeepAlive,
 
   /// Authentication Method - UTF-8 Encoded String
@@ -54,7 +54,7 @@ enum MqttPropertyIdentifier {
   /// Response Information - UTF-8 Encoded String
   responseInformation,
 
-  /// Server Reference - UTF-8 Encoded String
+  /// broker Reference - UTF-8 Encoded String
   serverReference,
 
   /// Reason String - UTF-8 Encoded String
