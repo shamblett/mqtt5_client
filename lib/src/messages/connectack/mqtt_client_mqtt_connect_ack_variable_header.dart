@@ -70,13 +70,13 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   bool _retainAvailable = false;
   bool get retainAvailable => _retainAvailable;
 
-  /// Maximum Packet Size
+  /// Maximum Packet Size.
   ///
   /// A value of zero indicates this property is not set.
   int _maximumPacketSize = 0;
   int get maximumPacketSize => _maximumPacketSize;
 
-  /// Assigned client Identifier.
+  /// Assigned Client Identifier.
   ///
   /// The client Identifier which was assigned by the broker because a zero length client Identifier
   /// was found in the Connect message.
@@ -100,7 +100,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   String _reasonString;
   String get reasonString => _reasonString;
 
-  /// User Property
+  /// User Property.
   ///
   /// This property can be used to provide additional information to the client including
   /// diagnostic information.
@@ -134,13 +134,13 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   bool _sharedSubscriptionAvailable = true;
   bool get sharedSubscriptionAvailable => _sharedSubscriptionAvailable;
 
-  /// broker Keep Alive.
+  /// Server Keep Alive.
   ///
-  ///  If the broker sends a broker Keep Alive the client must use this value
-  ///  instead of the Keep Alive value the client may have sent in the Connect message.
+  ///  If the broker sends a Server Keep Alive the client must use this value
+  ///  instead of the keep alive value the client may have sent in the Connect message.
   ///
-  ///  The primary use of the broker Keep Alive is for the broker to inform the client
-  ///  that it will disconnect the client for inactivity sooner than the Keep Alive
+  ///  The primary use of the Server Keep Alive is for the broker to inform the client
+  ///  that it will disconnect the client for inactivity sooner than the keep alive
   ///  specified by the client.
   ///
   /// A value of 0 indicates not set by the broker.
@@ -156,7 +156,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   String _responseInformation;
   String get responseInformation => _responseInformation;
 
-  /// broker Reference
+  /// Server Reference.
   ///
   /// A string to indicate another broker to use.
   String _serverReference;

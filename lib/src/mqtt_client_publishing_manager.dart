@@ -83,8 +83,8 @@ class PublishingManager implements IPublishingManager {
   /// The message to send.
   /// The message identifier assigned to the message.
   @override
-  int publish(
-      MqttPublicationTopic topic, MqttQos qualityOfService, typed.Uint8Buffer data,
+  int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
+      typed.Uint8Buffer data,
       [bool retain = false]) {
     final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     final msg = MqttPublishMessage()

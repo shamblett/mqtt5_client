@@ -9,15 +9,15 @@ part of mqtt5_client;
 
 /// Message that indicates a connection acknowledgement.
 ///
-/// The connection Acknowledgement message is the message sent by the broker in response
-/// to a Connect message received from the client.
+/// The connection acknowledgement message is the message sent by the broker in response
+/// to a connect message received from the client.
 class MqttConnectAckMessage extends MqttMessage {
   /// Initializes a new instance of the MqttConnectAckMessage class.
   /// Only called via the MqttMessage.Create operation during processing
   /// of an Mqtt message stream.
   MqttConnectAckMessage() {
     header = MqttHeader().asType(MqttMessageType.connectAck);
-    variableHeader = MqttConnectAckVariableHeader();
+    _variableHeader = MqttConnectAckVariableHeader();
   }
 
   /// Initializes a new instance of the MqttConnectAckMessage from a byte buffer
@@ -27,15 +27,73 @@ class MqttConnectAckMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message
-  MqttConnectAckVariableHeader variableHeader;
+  MqttConnectAckVariableHeader _variableHeader;
+
+  /// The variable header contents.
+  MqttConnectAckVariableHeader get variableHeader => _variableHeader;
+
+  /// Session Expiry Interval.
+  int get sessionExpiryInterval => _variableHeader.sessionExpiryInterval;
+
+  /// Receive Maximum.
+  int get receiveMaximum => _variableHeader.receiveMaximum;
+
+  /// Maximum QoS.
+  int get maximumQos => _variableHeader.maximumQos;
+
+  /// Retain Available.
+  bool get retainAvailable => _variableHeader.retainAvailable;
+
+  /// Maximum Packet Size
+  int get maximumPacketSize => _variableHeader.maximumPacketSize;
+
+  /// Assigned client Identifier.
+  String get assignedClientIdentifier =>
+      _variableHeader.assignedClientIdentifier;
+
+  /// Topic Alias Maximum.
+  int get topicAliasMaximum => _variableHeader.topicAliasMaximum;
+
+  /// Reason String.
+  String get reasonString => _variableHeader.reasonString;
+
+  /// User Property
+  List<MqttStringPairProperty> get userProperty => _variableHeader.userProperty;
+
+  /// Wildcard Subscription Available.
+  bool get wildcardSubscriptionsAvailable =>
+      _variableHeader.wildcardSubscriptionsAvailable;
+
+  /// Subscription Identifiers Available.
+  bool get subscriptionIdentifiersAvailable =>
+      _variableHeader.subscriptionIdentifiersAvailable;
+
+  /// Shared Subscription Available.
+  bool get sharedSubscriptionAvailable =>
+      _variableHeader.sharedSubscriptionAvailable;
+
+  /// Server Keep Alive.
+  int get serverKeepAlive => _variableHeader.serverKeepAlive;
+
+  /// Response Information
+  String get responseInformation => _variableHeader.responseInformation;
+
+  /// Server Reference.
+  String get serverReference => _variableHeader.serverReference;
+
+  /// Authentication Method.
+  String get authenticationMethod => _variableHeader.authenticationMethod;
+
+  /// Authentication Data.
+  typed.Uint8Buffer get authenticationData =>
+      _variableHeader.authenticationData;
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
     super.readFrom(messageStream);
-    variableHeader = MqttConnectAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader =
+        MqttConnectAckVariableHeader.fromByteBuffer(messageStream);
   }
 
   /// Writes a message to the supplied stream. Not implemented for this message.
@@ -49,7 +107,7 @@ class MqttConnectAckMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.write(super.toString());
-    sb.writeln(variableHeader.toString());
+    sb.writeln(_variableHeader.toString());
     return sb.toString();
   }
 }

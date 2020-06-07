@@ -7,7 +7,8 @@
 
 part of mqtt5_client;
 
-/// String pair property
+/// String pair property.
+/// Typically used to add user properties to a message.
 class MqttStringPairProperty implements MqttIProperty {
   /// Construction
   MqttStringPairProperty([this.identifier]);

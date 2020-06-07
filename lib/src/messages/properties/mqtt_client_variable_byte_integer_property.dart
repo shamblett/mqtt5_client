@@ -35,10 +35,10 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
     final buffer = typed.Uint8Buffer();
     var end = false;
-    while ( !end ) {
+    while (!end) {
       var byte = stream.readByte();
       buffer.add(byte);
-      if ( byte < 128 ) {
+      if (byte < 128) {
         end = true;
       }
     }
