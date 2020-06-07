@@ -1427,7 +1427,7 @@ void main() {
         header.messageSize = stream.length;
         stream.reset();
         final message1 =
-        MqttPublishVariableHeader.fromByteBuffer(header, stream);
+            MqttPublishVariableHeader.fromByteBuffer(header, stream);
         expect(message1.topicName, 'TopicName');
         expect(message1.messageIdentifier, 0);
         expect(message1.payloadFormatIndicator, isTrue);
@@ -1796,21 +1796,18 @@ void main() {
     });
 
     group('Publish', () {
-      test('Deserialisation - Valid payload', () {
-        // Tests basic message deserialization from a raw byte array.
-        // Message Specs________________
-        // <30><0C><00><04>fredhello!
+      test('Deserialisation - Valid payload - No properties', () {
         final sampleMessage = <int>[
           0x30,
-          0x0C,
+          0x0D,
           0x00,
-          0x04,
+          0x04, // Topic name
           'f'.codeUnitAt(0),
           'r'.codeUnitAt(0),
           'e'.codeUnitAt(0),
           'd'.codeUnitAt(0),
-          // message payload is here
-          'h'.codeUnitAt(0),
+          0x00, // No properties
+          'h'.codeUnitAt(0), // payload
           'e'.codeUnitAt(0),
           'l'.codeUnitAt(0),
           'l'.codeUnitAt(0),
@@ -1821,17 +1818,15 @@ void main() {
         buff.addAll(sampleMessage);
         final byteBuffer = MqttByteBuffer(buff);
         final baseMessage = MqttMessage.createFrom(byteBuffer);
-        print('Publish - Valid payload::${baseMessage.toString()}');
-        // Check that the message was correctly identified as a publish message.
         expect(baseMessage, const TypeMatcher<MqttPublishMessage>());
-        // Validate the message deserialization
         expect(baseMessage.header.duplicate, isFalse);
         expect(baseMessage.header.retain, isFalse);
         expect(baseMessage.header.qos, MqttQos.atMostOnce);
         expect(baseMessage.header.messageType, MqttMessageType.publish);
-        expect(baseMessage.header.messageSize, 12);
+        expect(baseMessage.header.messageSize, 13);
         final MqttPublishMessage pm = baseMessage;
-        // Check the payload
+        expect(pm.variableHeader.topicName, 'fred');
+        expect(pm.variableHeader.messageIdentifier, 0);
         expect(pm.payload.message[0], 'h'.codeUnitAt(0));
         expect(pm.payload.message[1], 'e'.codeUnitAt(0));
         expect(pm.payload.message[2], 'l'.codeUnitAt(0));
@@ -1839,21 +1834,20 @@ void main() {
         expect(pm.payload.message[4], 'o'.codeUnitAt(0));
         expect(pm.payload.message[5], '!'.codeUnitAt(0));
       });
-      test('Deserialisation - Valid payload V311', () {
-        // Tests basic message deserialization from a raw byte array.
-        // Message Specs________________
-        // <30><0C><00><04>fredhello!
+      test('Deserialisation - Valid payload - No properties - with Qos', () {
         final sampleMessage = <int>[
-          0x30,
-          0x0C,
+          0x34,
+          0x0F,
           0x00,
-          0x04,
+          0x04, // Topic name
           'f'.codeUnitAt(0),
           'r'.codeUnitAt(0),
           'e'.codeUnitAt(0),
           'd'.codeUnitAt(0),
-          // message payload is here
-          'h'.codeUnitAt(0),
+          0x00, // Message Identifier
+          0x01,
+          0x00, // No properties
+          'h'.codeUnitAt(0), // payload
           'e'.codeUnitAt(0),
           'l'.codeUnitAt(0),
           'l'.codeUnitAt(0),
@@ -1863,19 +1857,16 @@ void main() {
         final buff = typed.Uint8Buffer();
         buff.addAll(sampleMessage);
         final byteBuffer = MqttByteBuffer(buff);
-        MqttClientProtocol.version = MqttClientConstants.mqttProtocolVersion;
         final baseMessage = MqttMessage.createFrom(byteBuffer);
-        print('Publish - Valid payload::${baseMessage.toString()}');
-        // Check that the message was correctly identified as a publish message.
         expect(baseMessage, const TypeMatcher<MqttPublishMessage>());
-        // Validate the message deserialization
         expect(baseMessage.header.duplicate, isFalse);
         expect(baseMessage.header.retain, isFalse);
-        expect(baseMessage.header.qos, MqttQos.atMostOnce);
+        expect(baseMessage.header.qos, MqttQos.exactlyOnce);
         expect(baseMessage.header.messageType, MqttMessageType.publish);
-        expect(baseMessage.header.messageSize, 12);
+        expect(baseMessage.header.messageSize, 15);
         final MqttPublishMessage pm = baseMessage;
-        // Check the payload
+        expect(pm.variableHeader.topicName, 'fred');
+        expect(pm.variableHeader.messageIdentifier, 1);
         expect(pm.payload.message[0], 'h'.codeUnitAt(0));
         expect(pm.payload.message[1], 'e'.codeUnitAt(0));
         expect(pm.payload.message[2], 'l'.codeUnitAt(0));
@@ -1883,192 +1874,68 @@ void main() {
         expect(pm.payload.message[4], 'o'.codeUnitAt(0));
         expect(pm.payload.message[5], '!'.codeUnitAt(0));
       });
-      test('Deserialisation - payload too short', () {
+      test('Deserialisation - Valid payload - properties - with Qos', () {
         final sampleMessage = <int>[
-          0x30,
-          0x0C,
+          0x34,
+          0x22,
           0x00,
-          0x04,
+          0x04, // Topic name
           'f'.codeUnitAt(0),
           'r'.codeUnitAt(0),
           'e'.codeUnitAt(0),
           'd'.codeUnitAt(0),
-          // message payload is here
-          'h'.codeUnitAt(0),
+          0x00, // Message Identifier
+          0x01,
+          0x13, // Properties
+          0x01, // Payload Format Indicator
+          0x01,
+          0x23, // Topic Alias
+          0x00,
+          0x05,
+          0x26, // User property
+          0x00,
+          0x04,
+          'n'.codeUnitAt(0),
+          'a'.codeUnitAt(0),
+          'm'.codeUnitAt(0),
+          'e'.codeUnitAt(0),
+          0x00,
+          0x05,
+          'v'.codeUnitAt(0),
+          'a'.codeUnitAt(0),
+          'l'.codeUnitAt(0),
+          'u'.codeUnitAt(0),
+          'e'.codeUnitAt(0),
+          'h'.codeUnitAt(0), // payload
           'e'.codeUnitAt(0),
           'l'.codeUnitAt(0),
           'l'.codeUnitAt(0),
-          'o'.codeUnitAt(0)
+          'o'.codeUnitAt(0),
+          '!'.codeUnitAt(0)
         ];
         final buff = typed.Uint8Buffer();
         buff.addAll(sampleMessage);
         final byteBuffer = MqttByteBuffer(buff);
-        var raised = false;
-        try {
-          final baseMessage = MqttMessage.createFrom(byteBuffer);
-          print(baseMessage.toString());
-        } on Exception {
-          raised = true;
-        }
-        expect(raised, isTrue);
-      });
-      test('Serialisation - Qos Level 2 Exactly Once', () {
-        final expected = <int>[
-          0x34,
-          0x0E,
-          0x00,
-          0x04,
-          'f'.codeUnitAt(0),
-          'r'.codeUnitAt(0),
-          'e'.codeUnitAt(0),
-          'd'.codeUnitAt(0),
-          0x00,
-          0x0A,
-          // message payload is here
-          'h'.codeUnitAt(0),
-          'e'.codeUnitAt(0),
-          'l'.codeUnitAt(0),
-          'l'.codeUnitAt(0),
-          'o'.codeUnitAt(0),
-          '!'.codeUnitAt(0)
-        ];
-        final payload = typed.Uint8Buffer(6);
-        payload[0] = 'h'.codeUnitAt(0);
-        payload[1] = 'e'.codeUnitAt(0);
-        payload[2] = 'l'.codeUnitAt(0);
-        payload[3] = 'l'.codeUnitAt(0);
-        payload[4] = 'o'.codeUnitAt(0);
-        payload[5] = '!'.codeUnitAt(0);
-        final msg = MqttPublishMessage()
-            .withQos(MqttQos.exactlyOnce)
-            .withMessageIdentifier(10)
-            .toTopic('fred')
-            .publishData(payload);
-        print('Publish - Qos Level 2 Exactly Once::${msg.toString()}');
-        final actual = MessageSerializationHelper.getMessageBytes(msg);
-        expect(actual.length, expected.length);
-        expect(actual[0], expected[0]); // msg type of header + other bits
-        expect(actual[1], expected[1]); // remaining length
-        expect(actual[2], expected[2]); // first topic length byte
-        expect(actual[3], expected[3]); // second topic length byte
-        expect(actual[4], expected[4]); // f
-        expect(actual[5], expected[5]); // r
-        expect(actual[6], expected[6]); // e
-        expect(actual[7], expected[7]); // d
-        expect(actual[8], expected[8]); // h
-        expect(actual[9], expected[9]); // e
-        expect(actual[10], expected[10]); // l
-        expect(actual[11], expected[11]); // l
-        expect(actual[12], expected[12]); // o
-        expect(actual[13], expected[13]); // !
-      });
-      test('Serialisation - Topic has special characters', () {
-        final expected = <int>[
-          0x34,
-          0x0E,
-          0x00,
-          0x04,
-          'f'.codeUnitAt(0),
-          'r'.codeUnitAt(0),
-          'e'.codeUnitAt(0),
-          'd'.codeUnitAt(0),
-          0x00,
-          0x0A,
-          // message payload is here
-          'h'.codeUnitAt(0),
-          'e'.codeUnitAt(0),
-          'l'.codeUnitAt(0),
-          'l'.codeUnitAt(0),
-          'o'.codeUnitAt(0),
-          '!'.codeUnitAt(0)
-        ];
-        final payload = typed.Uint8Buffer(6);
-        payload[0] = 'h'.codeUnitAt(0);
-        payload[1] = 'e'.codeUnitAt(0);
-        payload[2] = 'l'.codeUnitAt(0);
-        payload[3] = 'l'.codeUnitAt(0);
-        payload[4] = 'o'.codeUnitAt(0);
-        payload[5] = '!'.codeUnitAt(0);
-        MqttClientProtocol.version = MqttClientConstants.mqttProtocolVersion;
-        final msg = MqttPublishMessage()
-            .withQos(MqttQos.exactlyOnce)
-            .withMessageIdentifier(10)
-            .toTopic(
-                '/hfp/v1/journey/ongoing/bus/0012/01314/2550/2/Itäkeskus(M)/19:16/1454121/3/60;25/20/14/83')
-            .publishData(payload);
-        print('Publish - Qos Level 2 Exactly Once::${msg.toString()}');
-        final actual = MessageSerializationHelper.getMessageBytes(msg);
-        expect(actual.length, 102);
-        expect(actual[0], expected[0]); // msg type of header + other bits
-        expect(actual[1], 100); // remaining length
-        expect(actual[2], expected[2]); // first topic length byte
-        expect(actual[3], 89); // second topic length byte
-        expect(actual[4], 47);
-        expect(actual[5], 104);
-        expect(actual[6], 102);
-        expect(actual[7], 112);
-      });
-      test('Serialisation - Qos Level 0 No MID', () {
-        final expected = <int>[
-          0x30,
-          0x0C,
-          0x00,
-          0x04,
-          'f'.codeUnitAt(0),
-          'r'.codeUnitAt(0),
-          'e'.codeUnitAt(0),
-          'd'.codeUnitAt(0),
-          // message payload is here
-          'h'.codeUnitAt(0),
-          'e'.codeUnitAt(0),
-          'l'.codeUnitAt(0),
-          'l'.codeUnitAt(0),
-          'o'.codeUnitAt(0),
-          '!'.codeUnitAt(0)
-        ];
-        final payload = typed.Uint8Buffer(6);
-        payload[0] = 'h'.codeUnitAt(0);
-        payload[1] = 'e'.codeUnitAt(0);
-        payload[2] = 'l'.codeUnitAt(0);
-        payload[3] = 'l'.codeUnitAt(0);
-        payload[4] = 'o'.codeUnitAt(0);
-        payload[5] = '!'.codeUnitAt(0);
-        final msg = MqttPublishMessage().toTopic('fred').publishData(payload);
-        print('Publish - Qos Level 0 No MID::${msg.toString()}');
-        final actual = MessageSerializationHelper.getMessageBytes(msg);
-        expect(actual.length, expected.length);
-        expect(actual[0], expected[0]); // msg type of header + other bits
-        expect(actual[1], expected[1]); // remaining length
-        expect(actual[2], expected[2]); // first topic length byte
-        expect(actual[3], expected[3]); // second topic length byte
-        expect(actual[4], expected[4]); // f
-        expect(actual[5], expected[5]); // r
-        expect(actual[6], expected[6]); // e
-        expect(actual[7], expected[7]); // d
-        expect(actual[8], expected[8]); // h
-        expect(actual[9], expected[9]); // e
-        expect(actual[10], expected[10]); // l
-        expect(actual[11], expected[11]); // l
-        expect(actual[12], expected[12]); // o
-        expect(actual[13], expected[13]); // !
-      });
-      test('Serialisation - With non-default Qos', () {
-        final msg = MqttPublishMessage()
-            .toTopic('mark')
-            .withQos(MqttQos.atLeastOnce)
-            .withMessageIdentifier(4)
-            .publishData(typed.Uint8Buffer(9));
-        final msgBytes = MessageSerializationHelper.getMessageBytes(msg);
-        expect(msgBytes.length, 19);
-      });
-      test('Clear publish data', () {
-        final data = typed.Uint8Buffer(2);
-        data[0] = 0;
-        data[1] = 1;
-        final msg = MqttPublishMessage().publishData(data);
-        expect(msg.payload.message.length, 2);
-        msg.clearPublishData();
-        expect(msg.payload.message.length, 0);
+        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        expect(baseMessage, const TypeMatcher<MqttPublishMessage>());
+        expect(baseMessage.header.duplicate, isFalse);
+        expect(baseMessage.header.retain, isFalse);
+        expect(baseMessage.header.qos, MqttQos.exactlyOnce);
+        expect(baseMessage.header.messageType, MqttMessageType.publish);
+        expect(baseMessage.header.messageSize, 34);
+        final MqttPublishMessage pm = baseMessage;
+        expect(pm.variableHeader.topicName, 'fred');
+        expect(pm.variableHeader.messageIdentifier, 1);
+        expect(pm.variableHeader.payloadFormatIndicator, isTrue);
+        expect(pm.variableHeader.topicAlias, 5);
+        expect(pm.variableHeader.userProperty[0].pairName, 'name');
+        expect(pm.variableHeader.userProperty[0].pairValue, 'value');
+        expect(pm.payload.message[0], 'h'.codeUnitAt(0));
+        expect(pm.payload.message[1], 'e'.codeUnitAt(0));
+        expect(pm.payload.message[2], 'l'.codeUnitAt(0));
+        expect(pm.payload.message[3], 'l'.codeUnitAt(0));
+        expect(pm.payload.message[4], 'o'.codeUnitAt(0));
+        expect(pm.payload.message[5], '!'.codeUnitAt(0));
       });
     });
 

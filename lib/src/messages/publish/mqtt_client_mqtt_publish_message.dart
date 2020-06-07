@@ -10,6 +10,11 @@ part of mqtt5_client;
 /// Implementation of an MQTT Publish Message.
 ///
 /// A Publish message is sent to a broker to transport an Application Message.
+///
+/// Various fields are used in the construction of this message, for more details on
+/// the meaning of these fields please refer to the classes in which they are defined,
+/// specifically [MqttPublishVariableHeader] and [MqttPublishPayload].
+
 class MqttPublishMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishMessage class.
   MqttPublishMessage() {

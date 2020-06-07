@@ -30,6 +30,24 @@ class MqttUtilities {
         return MqttQos.reserved1;
     }
   }
+
+  /// Converts an array of bytes to a byte string.
+  static String bytesToString(typed.Uint8Buffer message) {
+    final sb = StringBuffer();
+    for (final b in message) {
+      sb.write('<');
+      sb.write(b);
+      sb.write('>');
+    }
+    return sb.toString();
+  }
+
+  /// Converts an array of bytes to a character string.
+  static String bytesToStringAsString(typed.Uint8Buffer message) {
+    final sb = StringBuffer();
+    message.forEach(sb.writeCharCode);
+    return sb.toString();
+  }
 }
 
 /// Cancellable asynchronous sleep support class

@@ -113,7 +113,7 @@ Future<int> main() async {
   client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final MqttPublishMessage recMess = c[0].payload;
     final pt =
-        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        MqttUtilities.bytesToStringAsString(recMess.payload.message);
 
     /// The above may seem a little convoluted for users only interested in the
     /// payload, some users however may be interested in the received publish message,
