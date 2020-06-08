@@ -275,7 +275,7 @@ class MqttClient {
   }
 
   /// Publishes a message to the message broker.
-  /// Returns The message identifer assigned to the message.
+  /// Returns the message identifer assigned to the message.
   /// Raises InvalidTopicException if the topic supplied violates the
   /// MQTT topic format rules.
   int publishMessage(
@@ -293,6 +293,12 @@ class MqttClient {
       throw InvalidTopicException(e.toString(), topic);
     }
   }
+
+  /// Publishes a user supplied message to the message broker.
+  /// The user is responsible for the integrity of the publishing message.
+  /// Returns the message identifer assigned to the message.
+  int publishUserMessage(MqttPublishMessage message) =>
+      publishingManager.publishUserMessage(message);
 
   /// Unsubscribe from a topic
   void unsubscribe(String topic) {
