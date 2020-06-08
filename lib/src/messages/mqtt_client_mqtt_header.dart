@@ -19,6 +19,9 @@ class MqttHeader {
     readFrom(headerStream);
   }
 
+  // Header length encoding
+  final _enc = MqttVariableByteIntegerEncoding();
+
   /// Backing storage for the payload size.
   int _messageSize = 0;
 
@@ -65,7 +68,7 @@ class MqttHeader {
       headerStream.reset();
       throw InvalidHeaderException(
           'The supplied header is invalid. Header must be '
-          '2 bytes long.');
+          'at least 2 bytes long.');
     }
     final firstHeaderByte = headerStream.readByte();
     // Pull out the first byte
@@ -131,7 +134,7 @@ class MqttHeader {
   /// Calculates and return the bytes that represent the
   /// remaining length of the message.
   typed.Uint8Buffer getRemainingLengthBytes() {
-    return MqttVariableByteIntegerEncoding().fromInt(_messageSize);
+    return _enc.fromInt(_messageSize);
   }
 
   /// Sets the IsDuplicate flag of the header.
