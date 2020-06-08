@@ -12,7 +12,7 @@ class MqttPublishReceivedMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishReceivedMessage class.
   MqttPublishReceivedMessage() {
     header = MqttHeader().asType(MqttMessageType.publishReceived);
-    variableHeader = MqttPublishReceivedVariableHeader();
+    variableHeader = MqttPublishReceivedVariableHeader(header);
   }
 
   /// Initializes a new instance of the MqttPublishReceivedMessage class.
@@ -20,7 +20,7 @@ class MqttPublishReceivedMessage extends MqttMessage {
       MqttHeader header, MqttByteBuffer messageStream) {
     this.header = header;
     variableHeader =
-        MqttPublishReceivedVariableHeader.fromByteBuffer(messageStream);
+        MqttPublishReceivedVariableHeader.fromByteBuffer(header, messageStream);
   }
 
   /// Gets or sets the variable header contents. Contains extended
