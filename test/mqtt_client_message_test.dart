@@ -1447,14 +1447,49 @@ void main() {
     });
     group('Publish Ack Message', () {
       test('Variable Header Publish Ack - Defaults', () {
-        final header = MqttPublishAckVariableHeader();
+        final mHeader = MqttHeader().asType(MqttMessageType.publishAck);
+        mHeader.messageSize = 0x00;
+        final header = MqttPublishAckVariableHeader(mHeader);
         expect(header.messageIdentifier, 0);
         expect(header.reasonCode, MqttPublishReasonCode.notSet);
         expect(header.reasonString, isNull);
         expect(header.userProperty, isNull);
         expect(header.getWriteLength(), 0);
       });
+      test('Variable Header Publish Ack - No Reason Code', () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishAck);
+        mHeader.messageSize = 0x02;
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttPublishAckVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.messageIdentifier, 1);
+        expect(header.reasonCode, MqttPublishReasonCode.success);
+        expect(header.reasonString, isNull);
+        expect(header.userProperty, isNull);
+        expect(header.getWriteLength(), 0);
+      });
+      test('Variable Header Publish Ack - No Properties', () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishAck);
+        mHeader.messageSize = 0x03;
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80);
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttPublishAckVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.messageIdentifier, 1);
+        expect(header.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(header.reasonString, isNull);
+        expect(header.userProperty, isNull);
+        expect(header.getWriteLength(), 0);
+      });
       test('Variable Header Publish Ack - All', () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishAck);
+        mHeader.messageSize = 0x18;
         final buffer = typed.Uint8Buffer();
         buffer.add(0); // Message Identifier
         buffer.add(1);
@@ -1481,7 +1516,8 @@ void main() {
         buffer.add('l'.codeUnitAt(0));
         buffer.add('1'.codeUnitAt(0));
         final stream = MqttByteBuffer(buffer);
-        final header = MqttPublishAckVariableHeader.fromByteBuffer(stream);
+        final header =
+            MqttPublishAckVariableHeader.fromByteBuffer(mHeader, stream);
         expect(header.messageIdentifier, 1);
         expect(header.reasonCode, MqttPublishReasonCode.unspecifiedError);
         expect(header.reasonString, 'abcd');

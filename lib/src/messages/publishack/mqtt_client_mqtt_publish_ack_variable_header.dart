@@ -12,12 +12,17 @@ part of mqtt5_client;
 /// publish reason code and the properties.
 class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   /// Initializes a new instance of the MqttPublishAckVariableHeader class.
-  MqttPublishAckVariableHeader();
+  MqttPublishAckVariableHeader(this._header);
 
   /// Initializes a new instance of the class from a byte buffer.
-  MqttPublishAckVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
+  MqttPublishAckVariableHeader.fromByteBuffer(
+      this._header, MqttByteBuffer headerStream) {
     readFrom(headerStream);
   }
+
+  // The message header
+  final _header;
+  MqttHeader get header => _header;
 
   /// The message identifier
   int messageIdentifier = 0;
@@ -76,11 +81,13 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
     readMessageIdentifier(variableHeaderStream);
     readReasonCode(variableHeaderStream);
     // Properties
-    variableHeaderStream.shrink();
-    _propertySet.readFrom(variableHeaderStream);
-    _processProperties();
-    variableHeaderStream.shrink();
-    length += _propertySet.getWriteLength();
+    if (header._messageSize > 4) {
+      variableHeaderStream.shrink();
+      _propertySet.readFrom(variableHeaderStream);
+      _processProperties();
+      variableHeaderStream.shrink();
+      length += _propertySet.getWriteLength();
+    }
   }
 
   /// Writes a variable header to the supplied message stream.
@@ -99,8 +106,12 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
 
   /// Read the reason code.
   void readReasonCode(MqttByteBuffer stream) {
-    reasonCode = mqttPublishReasonCode.fromInt(stream.readByte());
-    length += 1;
+    if (header.messageSize != 2) {
+      reasonCode = mqttPublishReasonCode.fromInt(stream.readByte());
+      length += 1;
+    } else {
+      reasonCode = MqttPublishReasonCode.success;
+    }
   }
 
   /// Gets the length of the write data when WriteTo will be called.
