@@ -24,8 +24,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
   /// Reason Code
-  MqttReasonCode _reasonCode = MqttReasonCode.notSet;
-  MqttReasonCode get reasonCode => _reasonCode;
+  MqttConectReasonCode _reasonCode = MqttConectReasonCode.notSet;
+  MqttConectReasonCode get reasonCode => _reasonCode;
 
   /// The property set
   final _propertySet = MqttPropertyContainer();
@@ -256,18 +256,21 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   void readFrom(MqttByteBuffer variableHeaderStream) {
     // Connect ack flags
     connectAckFlags.readFrom(variableHeaderStream);
+    length += 1;
     // Reason code
     var byte = variableHeaderStream.readByte();
-    _reasonCode = mqttReasonCode.fromInt(byte);
+    _reasonCode = mqttConnectReasonCode.fromInt(byte);
+    length += 1;
     // Properties
     variableHeaderStream.shrink();
     _propertySet.readFrom(variableHeaderStream);
     _processProperties();
     variableHeaderStream.shrink();
+    length += _propertySet.getWriteLength();
   }
 
   /// Gets the length of the write data when WriteTo will be called.
-  /// 0 for this message as [writeTo] is not implemented
+  /// 0 for this message as [writeTo] is not implemented.
   @override
   int getWriteLength() => 0;
 
@@ -275,7 +278,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   String toString() {
     final sb = StringBuffer();
     sb.writeln('Session Present = ${connectAckFlags.sessionPresent}');
-    sb.writeln('Connect Reason Code = $reasonCode');
+    sb.writeln(
+        'Connect Reason Code = ${mqttConnectReasonCode.asString(reasonCode)}');
     sb.writeln('Session Expiry Interval = $sessionExpiryInterval');
     sb.writeln('Receive Maximum = $receiveMaximum');
     sb.writeln('Maximum QoS = $maximumQos');

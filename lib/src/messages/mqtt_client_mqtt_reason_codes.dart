@@ -10,10 +10,12 @@ part of mqtt5_client;
 /// MQTT reason code
 ///
 /// A Reason Code is a one byte unsigned value that indicates the result of an operation.
-/// Reason Codes less than 0x80 indicate successful completion of an operation.
+/// Reason codes less than 0x80 indicate successful completion of an operation.
 /// The normal Reason Code for success is 0.
 /// Reason Code values of 0x80 or greater indicate failure.
-enum MqttReasonCode {
+
+/// Connect message processing reason codes.
+enum MqttConectReasonCode {
   /// Success/Normal disconnection/Granted QoS 0
   success,
 
@@ -143,64 +145,127 @@ enum MqttReasonCode {
   /// Wildcard Subscriptions not supported
   wildcardSubscriptionsNotSupported,
 
-  /// Not set indication
+  /// Not set indication, not part of the MQTT specification,
+  /// used by the client to indicate a field has not yet been set.
   notSet
 }
 
-/// MQTT reason code support
-const Map<int, MqttReasonCode> _mqttReasonCodeValues = <int, MqttReasonCode>{
-  0x00: MqttReasonCode.success,
-  0x01: MqttReasonCode.grantedQos1,
-  0x02: MqttReasonCode.grantedQos2,
-  0x04: MqttReasonCode.disconnectWithWillMessage,
-  0x10: MqttReasonCode.noMatchingSubscribers,
-  0x11: MqttReasonCode.noSubscriptionExisted,
-  0x18: MqttReasonCode.continueAuthentication,
-  0x19: MqttReasonCode.reauthenticate,
-  0x80: MqttReasonCode.unspecifiedError,
-  0x81: MqttReasonCode.malformedPacket,
-  0x82: MqttReasonCode.protocolError,
-  0x83: MqttReasonCode.implementationSpecificError,
-  0x84: MqttReasonCode.unsupportedProtocolVersion,
-  0x85: MqttReasonCode.clientIdentifierNotValid,
-  0x86: MqttReasonCode.badUsernameOrPassword,
-  0x87: MqttReasonCode.notAuthorized,
-  0x88: MqttReasonCode.serverUnavailable,
-  0x89: MqttReasonCode.serverBusy,
-  0x8a: MqttReasonCode.banned,
-  0x8b: MqttReasonCode.serverShuttingDown,
-  0x8c: MqttReasonCode.badAuthenticationMethod,
-  0x8d: MqttReasonCode.keepAliveTimeout,
-  0x8e: MqttReasonCode.sessionTakenOver,
-  0x8f: MqttReasonCode.topicFilterInvalid,
-  0x90: MqttReasonCode.topicNameInvalid,
-  0x91: MqttReasonCode.messageIdentifierInUse,
-  0x92: MqttReasonCode.messageIdentifierNotFound,
-  0x93: MqttReasonCode.receiveMaximumExceeded,
-  0x94: MqttReasonCode.topicAliasInvalid,
-  0x95: MqttReasonCode.messageTooLarge,
-  0x96: MqttReasonCode.messageRateTooHigh,
-  0x97: MqttReasonCode.quotaExceeded,
-  0x98: MqttReasonCode.administrativeAction,
-  0x99: MqttReasonCode.payloadFormatInvalid,
-  0x9a: MqttReasonCode.retainNotSupported,
-  0x9b: MqttReasonCode.qosNotSupported,
-  0x9c: MqttReasonCode.useAnotherbroker,
-  0x9d: MqttReasonCode.serverMoved,
-  0x9e: MqttReasonCode.sharedSubscriptionsNotSupported,
-  0x9f: MqttReasonCode.connectionRateExceeded,
-  0xa0: MqttReasonCode.maximumConnectTime,
-  0xa1: MqttReasonCode.subscriptionIdentifiersNotSupported,
-  0xa2: MqttReasonCode.wildcardSubscriptionsNotSupported,
-  0xff: MqttReasonCode.notSet
+/// MQTT connect reason code support
+const Map<int, MqttConectReasonCode> _mqttConnectReasonCodeValues =
+    <int, MqttConectReasonCode>{
+  0x00: MqttConectReasonCode.success,
+  0x01: MqttConectReasonCode.grantedQos1,
+  0x02: MqttConectReasonCode.grantedQos2,
+  0x04: MqttConectReasonCode.disconnectWithWillMessage,
+  0x10: MqttConectReasonCode.noMatchingSubscribers,
+  0x11: MqttConectReasonCode.noSubscriptionExisted,
+  0x18: MqttConectReasonCode.continueAuthentication,
+  0x19: MqttConectReasonCode.reauthenticate,
+  0x80: MqttConectReasonCode.unspecifiedError,
+  0x81: MqttConectReasonCode.malformedPacket,
+  0x82: MqttConectReasonCode.protocolError,
+  0x83: MqttConectReasonCode.implementationSpecificError,
+  0x84: MqttConectReasonCode.unsupportedProtocolVersion,
+  0x85: MqttConectReasonCode.clientIdentifierNotValid,
+  0x86: MqttConectReasonCode.badUsernameOrPassword,
+  0x87: MqttConectReasonCode.notAuthorized,
+  0x88: MqttConectReasonCode.serverUnavailable,
+  0x89: MqttConectReasonCode.serverBusy,
+  0x8a: MqttConectReasonCode.banned,
+  0x8b: MqttConectReasonCode.serverShuttingDown,
+  0x8c: MqttConectReasonCode.badAuthenticationMethod,
+  0x8d: MqttConectReasonCode.keepAliveTimeout,
+  0x8e: MqttConectReasonCode.sessionTakenOver,
+  0x8f: MqttConectReasonCode.topicFilterInvalid,
+  0x90: MqttConectReasonCode.topicNameInvalid,
+  0x91: MqttConectReasonCode.messageIdentifierInUse,
+  0x92: MqttConectReasonCode.messageIdentifierNotFound,
+  0x93: MqttConectReasonCode.receiveMaximumExceeded,
+  0x94: MqttConectReasonCode.topicAliasInvalid,
+  0x95: MqttConectReasonCode.messageTooLarge,
+  0x96: MqttConectReasonCode.messageRateTooHigh,
+  0x97: MqttConectReasonCode.quotaExceeded,
+  0x98: MqttConectReasonCode.administrativeAction,
+  0x99: MqttConectReasonCode.payloadFormatInvalid,
+  0x9a: MqttConectReasonCode.retainNotSupported,
+  0x9b: MqttConectReasonCode.qosNotSupported,
+  0x9c: MqttConectReasonCode.useAnotherbroker,
+  0x9d: MqttConectReasonCode.serverMoved,
+  0x9e: MqttConectReasonCode.sharedSubscriptionsNotSupported,
+  0x9f: MqttConectReasonCode.connectionRateExceeded,
+  0xa0: MqttConectReasonCode.maximumConnectTime,
+  0xa1: MqttConectReasonCode.subscriptionIdentifiersNotSupported,
+  0xa2: MqttConectReasonCode.wildcardSubscriptionsNotSupported,
+  0xff: MqttConectReasonCode.notSet
 };
 
-/// MQTT reason code helper
-MqttEnumHelper<MqttReasonCode> mqttReasonCode =
-    MqttEnumHelper<MqttReasonCode>(_mqttReasonCodeValues);
+/// MQTT connect reason code helper
+MqttEnumHelper<MqttConectReasonCode> mqttConnectReasonCode =
+    MqttEnumHelper<MqttConectReasonCode>(_mqttConnectReasonCodeValues);
+
+/// Publish message processing reason codes.
+enum MqttPublishReasonCode {
+  /// The message is accepted.
+  /// Publication of the QoS 1 message proceeds.
+  success,
+
+  /// The message is accepted but there are no subscribers.
+  /// This is sent only by the broker If the broker knows that
+  /// there are no matching subscribers, it MAY use this reason dode instead
+  /// of success.
+  noMatchingSubscribers,
+
+  /// The receiver does not accept the publish but either does not want to
+  /// reveal the reason, or it does not match one of the other values.
+  unspecifiedError,
+
+  /// The publish is valid but the receiver is not willing to accept it.
+  implementationSpecificError,
+
+  /// The publish is not authorized.
+  notAuthorized,
+
+  /// The Topic Name is not malformed, but is not accepted by
+  /// the client or broker.
+  topicNameInvalid,
+
+  /// The packet(message) identifier is already in use. This might indicate a
+  /// mismatch in the session state between the client and the broker.
+  packetIdentifierInUse,
+
+  /// An implementation or administrative imposed limit has been exceeded.
+  quotaExceeded,
+
+  /// The payload format does not match the specified payload
+  /// format indicator.
+  payloadFormatInvalid,
+
+  /// Not set indication, not part of the MQTT specification,
+  /// used by the client to indicate a field has not yet been set.
+  notSet
+}
+
+/// MQTT publish reason code support
+const Map<int, MqttPublishReasonCode> _mqttPublishReasonCodeValues =
+    <int, MqttPublishReasonCode>{
+  0x00: MqttPublishReasonCode.success,
+  0x10: MqttPublishReasonCode.noMatchingSubscribers,
+  0x80: MqttPublishReasonCode.unspecifiedError,
+  0x83: MqttPublishReasonCode.implementationSpecificError,
+  0x87: MqttPublishReasonCode.notAuthorized,
+  0x90: MqttPublishReasonCode.topicNameInvalid,
+  0x91: MqttPublishReasonCode.packetIdentifierInUse,
+  0x97: MqttPublishReasonCode.quotaExceeded,
+  0x99: MqttPublishReasonCode.payloadFormatInvalid,
+  0xff: MqttPublishReasonCode.notSet
+};
+
+/// MQTT publish reason code helper
+MqttEnumHelper<MqttPublishReasonCode> mqttPublishReasonCode =
+    MqttEnumHelper<MqttPublishReasonCode>(_mqttPublishReasonCodeValues);
 
 /// Utilities class
 class MqttReasonCodeUtilities {
-  /// Is the reason code an error. True if an error code or is not set
+  /// Is the reason code an error. True if an error code or is not set.
   static bool isError(int code) => code >= 0x80;
 }

@@ -85,7 +85,7 @@ void main() {
         expect(e.toString().contains(nonExistantHostName), isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(ch.connectionStatus.reasonCode, MqttReasonCode.notSet);
+      expect(ch.connectionStatus.reasonCode, MqttConectReasonCode.notSet);
     });
     test('Connect invalid port', () async {
       var cbCalled = false;
@@ -103,7 +103,7 @@ void main() {
         expect(e.toString().contains('refused'), isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(ch.connectionStatus.reasonCode, MqttReasonCode.notSet);
+      expect(ch.connectionStatus.reasonCode, MqttConectReasonCode.notSet);
       expect(cbCalled, isTrue);
     });
     test('Connect no connect ack', () async {
@@ -117,7 +117,7 @@ void main() {
         expect(e is NoConnectionException, isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(ch.connectionStatus.reasonCode, MqttReasonCode.notSet);
+      expect(ch.connectionStatus.reasonCode, MqttConectReasonCode.notSet);
     });
     test('Successful response and disconnect', () async {
       var connectCbCalled = false;
@@ -137,7 +137,7 @@ void main() {
       await ch.connect(mockBrokerAddress, mockBrokerPort,
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
-      expect(ch.connectionStatus.reasonCode, MqttReasonCode.success);
+      expect(ch.connectionStatus.reasonCode, MqttConectReasonCode.success);
       expect(connectCbCalled, isTrue);
       final state = ch.disconnect();
       expect(state, MqttConnectionState.disconnected);
@@ -154,7 +154,7 @@ void main() {
       final status = await ch.connect(mockBrokerAddress, mockBrokerPort,
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(status.state, MqttConnectionState.connected);
-      expect(ch.connectionStatus.reasonCode, MqttReasonCode.success);
+      expect(ch.connectionStatus.reasonCode, MqttConectReasonCode.success);
       final state = ch.disconnect();
       expect(state, MqttConnectionState.disconnected);
     });
@@ -189,7 +189,7 @@ void main() {
       await ch.connect(mockBrokerAddress, mockBrokerPort,
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
-      expect(ch.connectionStatus.reasonCode, MqttReasonCode.success);
+      expect(ch.connectionStatus.reasonCode, MqttConectReasonCode.success);
       final ka = MqttConnectionKeepAlive(ch, 2);
       broker.setMessageHandler = messageHandlerPingRequest;
       print(

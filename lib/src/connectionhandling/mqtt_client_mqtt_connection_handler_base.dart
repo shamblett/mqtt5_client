@@ -217,10 +217,10 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
       final MqttConnectAckMessage ackMsg = msg;
       // Drop the connection if our connect request has been rejected.
       if (MqttReasonCodeUtilities.isError(
-          mqttReasonCode.asInt(ackMsg.variableHeader.reasonCode))) {
+          mqttConnectReasonCode.asInt(ackMsg.variableHeader.reasonCode))) {
         MqttLogger.log(
             'SynchronousMqttServerConnectionHandler::_connectAckProcessor '
-            'connection rejected, reason code is ${mqttReasonCode.asString(ackMsg.variableHeader.reasonCode)}');
+            'connection rejected, reason code is ${mqttConnectReasonCode.asString(ackMsg.variableHeader.reasonCode)}');
         connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
         connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
         _performConnectionDisconnect();

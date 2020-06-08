@@ -1184,8 +1184,8 @@ void main() {
         final message1 = MqttConnectAckVariableHeader.fromByteBuffer(stream);
         expect(message.connectAckFlags.sessionPresent, isFalse);
         expect(message1.connectAckFlags.sessionPresent, isFalse);
-        expect(message.reasonCode, MqttReasonCode.notSet);
-        expect(message1.reasonCode, MqttReasonCode.notSet);
+        expect(message.reasonCode, MqttConectReasonCode.notSet);
+        expect(message1.reasonCode, MqttConectReasonCode.notSet);
         expect(message.sessionExpiryInterval, 0);
         expect(message1.sessionExpiryInterval, 0);
         expect(message.receiveMaximum, 65535);
@@ -1307,7 +1307,7 @@ void main() {
         final stream = MqttByteBuffer(buffer);
         final message = MqttConnectAckVariableHeader.fromByteBuffer(stream);
         expect(message.connectAckFlags.sessionPresent, isTrue);
-        expect(message.reasonCode, MqttReasonCode.success);
+        expect(message.reasonCode, MqttConectReasonCode.success);
         expect(message.sessionExpiryInterval, 30);
         expect(message.receiveMaximum, 1024);
         expect(message.maximumQos, 1);
@@ -1685,10 +1685,10 @@ void main() {
         expect(message.header.messageSize, 3);
         expect(message.variableHeader.connectAckFlags.sessionPresent, isTrue);
         expect(
-            message.variableHeader.reasonCode, MqttReasonCode.unspecifiedError);
+            message.variableHeader.reasonCode, MqttConectReasonCode.unspecifiedError);
         expect(
             MqttReasonCodeUtilities.isError(
-                mqttReasonCode.asInt(message.variableHeader.reasonCode)),
+                mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),
             isTrue);
       });
       test('Deserialisation - No Will Flag', () {
@@ -1712,10 +1712,10 @@ void main() {
         expect(message.header.messageType, MqttMessageType.connectAck);
         expect(message.header.messageSize, 9);
         expect(message.variableHeader.connectAckFlags.sessionPresent, isFalse);
-        expect(message.variableHeader.reasonCode, MqttReasonCode.success);
+        expect(message.variableHeader.reasonCode, MqttConectReasonCode.success);
         expect(
             MqttReasonCodeUtilities.isError(
-                mqttReasonCode.asInt(message.variableHeader.reasonCode)),
+                mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),
             isFalse);
         expect(message.variableHeader.receiveMaximum, 10);
         expect(message.variableHeader.topicAliasMaximum, 5);
