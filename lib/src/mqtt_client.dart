@@ -280,15 +280,15 @@ class MqttClient {
   /// MQTT topic format rules.
   int publishMessage(
       String topic, MqttQos qualityOfService, typed.Uint8Buffer data,
-      {bool retain = false}) {
+      {bool retain = false, List<MqttStringPairProperty> userProperties}) {
     if (connectionHandler?.connectionStatus?.state !=
         MqttConnectionState.connected) {
       throw ConnectionException(connectionHandler?.connectionStatus?.state);
     }
     try {
       final pubTopic = MqttPublicationTopic(topic);
-      return publishingManager.publish(
-          pubTopic, qualityOfService, data, retain);
+      return publishingManager.publish(pubTopic, qualityOfService, data,
+          retain: retain, userProperties: userProperties);
     } on Exception catch (e) {
       throw InvalidTopicException(e.toString(), topic);
     }

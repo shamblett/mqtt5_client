@@ -1088,7 +1088,7 @@ void main() {
         var property2 = MqttStringPairProperty();
         property2.pairName = 'Prop2';
         property2.pairValue = 'Prop2Value';
-        variableHeader.userProperties = [property1, property2];
+        variableHeader.userProperty = [property1, property2];
         final streamBuffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(streamBuffer);
         variableHeader.writeTo(stream);
@@ -1169,8 +1169,8 @@ void main() {
         expect(variableHeader.authenticationData.toList(), [1, 2, 3, 4]);
         expect(variableHeader.requestResponseInformation, true);
         expect(variableHeader.maximumPacketSize, 0x30);
-        expect(variableHeader.userProperties[0], property1);
-        expect(variableHeader.userProperties[1], property2);
+        expect(variableHeader.userProperty[0], property1);
+        expect(variableHeader.userProperty[1], property2);
       });
     });
     group('Connect Ack Message', () {

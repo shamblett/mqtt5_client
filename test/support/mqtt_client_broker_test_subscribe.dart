@@ -26,8 +26,7 @@ Future<int> main() async {
   client.subscribe(topic, MqttQos.exactlyOnce);
   client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final MqttPublishMessage recMess = c[0].payload;
-    final pt =
-        MqttUtilities.bytesToStringAsString(recMess.payload.message);
+    final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message);
     print('Change notification:: payload is <$pt> for topic <$topic>');
   });
   print('Sleeping....');

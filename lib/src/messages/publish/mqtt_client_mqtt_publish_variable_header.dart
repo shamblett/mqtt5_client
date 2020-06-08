@@ -35,15 +35,15 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Message identifier
   int messageIdentifier = 0;
 
-  /// Properties
+  // Properties
   final _propertySet = MqttPropertyContainer();
 
-  /// Encoder
+  // Encoder
   final MqttUtf8Encoding _enc = MqttUtf8Encoding();
 
   /// Payload Format Indicator
   ///
-  /// false indicates that the Payload is unspecified bytes, which is equivalent to
+  /// False indicates that the Payload is unspecified bytes, which is equivalent to
   /// not sending a Payload Format Indicator.
   /// True indicates that the Payload is UTF-8 Encoded Character Data.
   bool _payloadFormatIndicator = false;

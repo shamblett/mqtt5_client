@@ -77,20 +77,18 @@ class PublishingManager implements IPublishingManager {
   /// The event bus
   final events.EventBus _clientEventBus;
 
-  /// Publish a message to the broker on the specified topic.
-  /// The topic to send the message to
-  /// The QOS to use when publishing the message.
-  /// The message to send.
-  /// The message identifier assigned to the message.
+  /// Publish a message to the broker on the specified topic at the specified Qos.
+  /// Returns the message identifier assigned to the message.
   @override
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
       typed.Uint8Buffer data,
-      [bool retain = false]) {
+      {bool retain = false, List<MqttStringPairProperty> userProperties}) {
     final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     final msg = MqttPublishMessage()
         .toTopic(topic.toString())
         .withMessageIdentifier(msgId)
         .withQos(qualityOfService)
+        .withUserProperties(userProperties)
         .publishData(data);
     // Retain
     msg.setRetain(state: retain);
@@ -100,6 +98,19 @@ class PublishingManager implements IPublishingManager {
       publishedMessages[msgId] = msg;
     }
     connectionHandler.sendMessage(msg);
+    return msgId;
+  }
+
+  /// Publish a user supplied publish message.
+  @override
+  int publishUserMessage(MqttPublishMessage message) {
+    final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+    message.withMessageIdentifier(msgId);
+    if (message.header.qos == MqttQos.atLeastOnce ||
+        message.header.qos == MqttQos.exactlyOnce) {
+      publishedMessages[msgId] = message;
+    }
+    connectionHandler.sendMessage(message);
     return msgId;
   }
 

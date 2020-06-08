@@ -209,14 +209,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// The user property is allowed to appear multiple times to represent
   /// multiple name, value pairs. The same name is allowed to appear
   /// more than once.
-  final _userProperties = <MqttStringPairProperty>[];
-  List<MqttStringPairProperty> get userProperties => _userProperties;
-  set userProperties(List<MqttStringPairProperty> properties) {
+  final _userProperty = <MqttStringPairProperty>[];
+  List<MqttStringPairProperty> get userProperty => _userProperty;
+  set userProperty(List<MqttStringPairProperty> properties) {
     for (var userProperty in properties) {
       userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
     }
-    _userProperties.addAll(properties);
+    _userProperty.addAll(properties);
   }
 
   /// Authentication Method.

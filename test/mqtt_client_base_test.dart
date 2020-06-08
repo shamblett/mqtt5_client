@@ -303,7 +303,8 @@ void main() {
     test('MultiWildcard only topic matches topic starting with separator', () {
       const topic = '#';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(MqttPublicationTopic('/finance/ibm/closingprice')),
+      expect(
+          subTopic.matches(MqttPublicationTopic('/finance/ibm/closingprice')),
           isTrue);
     });
     test('MultiWildcard at end matches topic that does not match same depth',
@@ -340,15 +341,15 @@ void main() {
       const topic = 'finance/+/closingprice/month/#';
       final subTopic = SubscriptionTopic(topic);
       expect(
-          subTopic.matches(
-              MqttPublicationTopic('finance/ibm/closingprice/month/october/2014')),
+          subTopic.matches(MqttPublicationTopic(
+              'finance/ibm/closingprice/month/october/2014')),
           isTrue);
     });
     test('Single Wildcard matches topic empty fragment at that point', () {
       const topic = 'finance/+/closingprice';
       final subTopic = SubscriptionTopic(topic);
-      expect(
-          subTopic.matches(MqttPublicationTopic('finance//closingprice')), isTrue);
+      expect(subTopic.matches(MqttPublicationTopic('finance//closingprice')),
+          isTrue);
     });
     test(
         'Single Wildcard at end matches topic with empty last fragment at that spot',
@@ -378,7 +379,8 @@ void main() {
     test('Multi level non equal topics do not match', () {
       const topic = 'finance/ibm/closingprice';
       final subTopic = SubscriptionTopic(topic);
-      expect(subTopic.matches(MqttPublicationTopic('some/random/topic')), isFalse);
+      expect(
+          subTopic.matches(MqttPublicationTopic('some/random/topic')), isFalse);
     });
     test(
         'MultiWildcard does not match topic with difference before Wildcard level',

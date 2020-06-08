@@ -105,13 +105,13 @@ class MqttConnectMessage extends MqttMessage {
   /// Sets a list of user properties
   MqttConnectMessage withUserProperties(
       List<MqttStringPairProperty> properties) {
-    _variableHeader.userProperties = properties;
+    _variableHeader.userProperty = properties;
     return this;
   }
 
   /// Add a specific user property
   void addUserProperty(MqttStringPairProperty property) {
-    _variableHeader.userProperties = [property];
+    _variableHeader.userProperty = [property];
   }
 
   /// Add a user property from the supplied name/value pair
