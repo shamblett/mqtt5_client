@@ -30,9 +30,22 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
 
   /// The length of the variable header
   @override
-  int get length => getWriteLength();
-  @override
-  set length(int length) {}
+  int length = 0;
+
+  /// Reason String.
+  ///
+  /// The Reason String is a human readable string designed for diagnostics only.
+  String _reasonString;
+  String get reasonString => _reasonString;
+
+  /// User Property.
+  ///
+  /// This property can be used to provide additional information to the client including
+  /// diagnostic information.
+  /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
+  /// The same name is allowed to appear more than once.
+  List<MqttStringPairProperty> _userProperty;
+  List<MqttStringPairProperty> get userProperty => _userProperty;
 
   // Process the properties read from the byte stream
   void _processProperties() {
@@ -43,8 +56,17 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
     final properties = _propertySet.toList();
     for (final property in properties) {
       switch (property.identifier) {
+        case MqttPropertyIdentifier.reasonString:
+          _reasonString = property.value;
+          break;
         default:
+          if (property.identifier != MqttPropertyIdentifier.userProperty) {
+            MqttLogger.log(
+                'MqttPublishAckVariableHeader::_processProperties, unexpected property type'
+                'received, identifier is ${property.identifier}, ignoring');
+          }
       }
+      _userProperty = _propertySet.userProperties;
     }
   }
 

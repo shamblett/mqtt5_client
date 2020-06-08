@@ -1445,6 +1445,51 @@ void main() {
         expect(message1.contentType, 'Content Type');
       });
     });
+    group('Publish Ack Message', () {
+      test('Variable Header Publish Ack - Defaults', () {
+        final header = MqttPublishAckVariableHeader();
+        expect(header.messageIdentifier, 0);
+        expect(header.reasonCode, MqttPublishReasonCode.notSet);
+        expect(header.reasonString, isNull);
+        expect(header.userProperty, isNull);
+        expect(header.getWriteLength(), 0);
+      });
+      test('Variable Header Publish Ack - All', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80); // Reason code
+        buffer.add(0x14); // Properties
+        buffer.add(0x1f);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add(0x26);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('m'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('v'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('l'.codeUnitAt(0));
+        buffer.add('1'.codeUnitAt(0));
+        final stream = MqttByteBuffer(buffer);
+        final header = MqttPublishAckVariableHeader.fromByteBuffer(stream);
+        expect(header.messageIdentifier, 1);
+        expect(header.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(header.reasonString, 'abcd');
+        expect(header.userProperty[0].pairName, 'name');
+        expect(header.userProperty[0].pairValue, 'val1');
+        expect(header.length, 24);
+      });
+    });
   });
 
   group('Payload', () {
@@ -1684,8 +1729,8 @@ void main() {
         expect(message.header.messageType, MqttMessageType.connectAck);
         expect(message.header.messageSize, 3);
         expect(message.variableHeader.connectAckFlags.sessionPresent, isTrue);
-        expect(
-            message.variableHeader.reasonCode, MqttConectReasonCode.unspecifiedError);
+        expect(message.variableHeader.reasonCode,
+            MqttConectReasonCode.unspecifiedError);
         expect(
             MqttReasonCodeUtilities.isError(
                 mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),
@@ -2004,44 +2049,46 @@ void main() {
     });
 
     group('Publish Ack', () {
-      test('Deserialisation - Valid payload', () {
-        // Tests basic message deserialization from a raw byte array.
-        // Message Specs________________
-        // <30><0C><00><04>fredhello!
-        final sampleMessage = <int>[
-          0x40,
-          0x02,
-          0x00,
-          0x04,
-        ];
-        final buff = typed.Uint8Buffer();
-        buff.addAll(sampleMessage);
-        final byteBuffer = MqttByteBuffer(buff);
+      test('Deserialisation - Valid', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x40);
+        buffer.add(0x18);
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80); // Reason code
+        buffer.add(0x14); // Properties
+        buffer.add(0x1f);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add(0x26);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('m'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('v'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('l'.codeUnitAt(0));
+        buffer.add('1'.codeUnitAt(0));
+        final byteBuffer = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(byteBuffer);
-        print('Publish Ack - Valid payload::${baseMessage.toString()}');
-        // Check that the message was correctly identified as a publish ack message.
         expect(baseMessage, const TypeMatcher<MqttPublishAckMessage>());
-        // Validate the message deserialization
         expect(baseMessage.header.messageType, MqttMessageType.publishAck);
-        expect(baseMessage.header.messageSize, 2);
+        expect(baseMessage.header.messageSize, 24);
         final MqttPublishAckMessage bm = baseMessage;
-        expect(bm.variableHeader.messageIdentifier, 4);
-      });
-      test('Serialisation - Valid payload', () {
-        // Publish ack msg with message identifier 4
-        final expected = typed.Uint8Buffer(4);
-        expected[0] = 0x40;
-        expected[1] = 0x02;
-        expected[2] = 0x0;
-        expected[3] = 0x4;
-        final msg = MqttPublishAckMessage().withMessageIdentifier(4);
-        print('Publish Ack - Valid payload::${msg.toString()}');
-        final actual = MessageSerializationHelper.getMessageBytes(msg);
-        expect(actual.length, expected.length);
-        expect(actual[0], expected[0]); // msg type of header + other bits
-        expect(actual[1], expected[1]); // remaining length
-        expect(actual[2], expected[2]); // first topic length byte
-        expect(actual[3], expected[3]); // second topic length byte
+        expect(bm.messageIdentifier, 1);
+        expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(bm.reasonString, 'abcd');
+        expect(bm.userProperty[0].pairName, 'name');
+        expect(bm.userProperty[0].pairValue, 'val1');
+        expect(bm.variableHeader.length, 24);
       });
     });
 

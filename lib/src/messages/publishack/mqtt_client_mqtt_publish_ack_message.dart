@@ -7,25 +7,28 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Publish Acknowledgement Message, used to ACK a
+/// Implementation of an MQTT Publish Acknowledgement Message, used to acknowledge a
 /// publish message that has it's QOS set to AtLeast or Exactly Once.
 class MqttPublishAckMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage() {
     header = MqttHeader().asType(MqttMessageType.publishAck);
-    variableHeader = MqttPublishAckVariableHeader();
+    _variableHeader = MqttPublishAckVariableHeader();
   }
 
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage.fromByteBuffer(
       MqttHeader header, MqttByteBuffer messageStream) {
     this.header = header;
-    variableHeader = MqttPublishAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader =
+        MqttPublishAckVariableHeader.fromByteBuffer(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message
-  MqttPublishAckVariableHeader variableHeader;
+  MqttPublishAckVariableHeader _variableHeader;
+
+  /// Gets the variable header contents. Contains extended
+  /// metadata about the message.
+  MqttPublishAckVariableHeader get variableHeader => _variableHeader;
 
   /// Writes the message to the supplied stream.
   @override
@@ -39,6 +42,18 @@ class MqttPublishAckMessage extends MqttMessage {
     variableHeader.messageIdentifier = messageIdentifier;
     return this;
   }
+
+  /// The message identifier
+  int get messageIdentifier => variableHeader.messageIdentifier;
+
+  /// Publish reason code
+  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+
+  /// Reason String.
+  String get reasonString => variableHeader.reasonString;
+
+  /// User Property.
+  List<MqttStringPairProperty> get userProperty => variableHeader.userProperty;
 
   @override
   String toString() {
