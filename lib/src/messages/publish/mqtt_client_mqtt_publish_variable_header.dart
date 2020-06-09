@@ -23,9 +23,11 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Standard header
   MqttHeader header;
 
-  /// The length of the variable header
+  final _length = 0;
+  /// The length of the variable header as received.
+  /// To get the write length use[getWriteLength].
   @override
-  int get length => getWriteLength();
+  int get length => _length;
   @override
   set length(int length) {}
 
@@ -225,6 +227,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     // Properties
     variableHeaderStream.shrink();
     _propertySet.readFrom(variableHeaderStream);
+    length += _propertySet.getWriteLength();
     _processProperties();
     variableHeaderStream.shrink();
   }
@@ -256,11 +259,13 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Topic name
   void readTopicName(MqttByteBuffer stream) {
     topicName = MqttByteBuffer.readMqttString(stream);
+    length += topicName.length + 2;
   }
 
   /// Message identifier
   void readMessageIdentifier(MqttByteBuffer stream) {
     messageIdentifier = stream.readShort();
+    length += 2;
   }
 
   /// Topic name

@@ -125,6 +125,9 @@ class MqttPropertyContainer {
   List<MqttIProperty> toList() =>
       _container.values.toList()..addAll(_userProperties);
 
+  /// Is Empty
+  bool get isEmpty => _container.isEmpty && _userProperties.isEmpty;
+
   @override
   String toString() {
     final sb = StringBuffer();

@@ -16,7 +16,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   // The property set
   final _propertySet = MqttPropertyContainer();
 
-  /// The length of the variable header
+  /// The length of the variable header, as this is a send only message
+  /// this is always the write length.
   @override
   int get length => getWriteLength();
   @override

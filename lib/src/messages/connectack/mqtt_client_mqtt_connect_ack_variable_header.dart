@@ -30,6 +30,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// The property set
   final _propertySet = MqttPropertyContainer();
 
+  /// Length of the recieved message.
   @override
   int length = 0;
 

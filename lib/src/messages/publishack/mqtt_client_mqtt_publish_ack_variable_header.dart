@@ -33,9 +33,14 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   // Properties
   final _propertySet = MqttPropertyContainer();
 
-  /// The length of the variable header
+  int _length = 0;
+
+  /// The length of the variable header as received.
+  /// To get the write length us [getWriteLength]
   @override
-  int length = 0;
+  int get length => _length;
+  @override
+  set length(int length) {}
 
   /// Reason String.
   ///
@@ -86,38 +91,61 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
       _propertySet.readFrom(variableHeaderStream);
       _processProperties();
       variableHeaderStream.shrink();
-      length += _propertySet.getWriteLength();
+      _length += _propertySet.getWriteLength();
     }
   }
 
+  // Serialize the header
+  typed.Uint8Buffer _serialize() {
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    writeMessageIdentifier(stream);
+    // If there are no properties and the reason code is success
+    // we can end here.
+    if (reasonCode == MqttPublishReasonCode.success && _propertySet.isEmpty) {
+    } else {
+      writeReasonCode(stream);
+      _propertySet.writeTo(stream);
+    }
+
+    return stream.buffer;
+  }
+
   /// Writes a variable header to the supplied message stream.
-  /// Not implemented for this message
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    throw UnimplementedError(
-        'MqttPublishAckVariableHeader::writeTo - Not implemented, message is receive only');
+    variableHeaderStream.addAll(_serialize());
   }
 
   /// Read the message identifier
   void readMessageIdentifier(MqttByteBuffer stream) {
     messageIdentifier = stream.readShort();
-    length += 2;
+    _length += 2;
   }
 
   /// Read the reason code.
   void readReasonCode(MqttByteBuffer stream) {
     if (header.messageSize != 2) {
       reasonCode = mqttPublishReasonCode.fromInt(stream.readByte());
-      length += 1;
+      _length += 1;
     } else {
       reasonCode = MqttPublishReasonCode.success;
     }
   }
 
-  /// Gets the length of the write data when WriteTo will be called.
-  /// 0 for this message as [writeTo] is not implemented.
+  /// Write the message identifier.
+  void writeMessageIdentifier(MqttByteBuffer stream) {
+    stream.writeShort(messageIdentifier);
+  }
+
+  /// Write the reason code
+  void writeReasonCode(MqttByteBuffer stream) {
+    stream.writeByte(mqttPublishReasonCode.asInt(reasonCode));
+  }
+
+  /// Gets the length of the write data.
   @override
-  int getWriteLength() => 0;
+  int getWriteLength() => _serialize().length;
 
   @override
   String toString() {
