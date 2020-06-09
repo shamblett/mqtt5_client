@@ -35,6 +35,7 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   final _propertySet = MqttPropertyContainer();
 
   int _length = 0;
+
   /// The length of the variable header as received.
   /// To get the write length us [getWriteLength]
   @override
@@ -47,6 +48,13 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   /// The Reason String is a human readable string designed for diagnostics only.
   String _reasonString;
   String get reasonString => _reasonString;
+  set reasonString(String reason) {
+    final property =
+        MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
+    property.value = reason;
+    _propertySet.add(property);
+    _reasonString = reason;
+  }
 
   /// User Property.
   ///
@@ -56,6 +64,13 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   /// The same name is allowed to appear more than once.
   List<MqttStringPairProperty> _userProperty;
   List<MqttStringPairProperty> get userProperty => _userProperty;
+  set userProperty(List<MqttStringPairProperty> properties) {
+    for (var property in properties) {
+      property.identifier = MqttPropertyIdentifier.userProperty;
+      _propertySet.add(property);
+      _userProperty.add(property);
+    }
+  }
 
   // Process the properties read from the byte stream
   void _processProperties() {
@@ -95,12 +110,26 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
     }
   }
 
+  // Serialize the header
+  typed.Uint8Buffer _serialize() {
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    writeMessageIdentifier(stream);
+    // If there are no properties and the reason code is success
+    // we can end here.
+    if (reasonCode == MqttPublishReasonCode.success && _propertySet.isEmpty) {
+    } else {
+      writeReasonCode(stream);
+      _propertySet.writeTo(stream);
+    }
+
+    return stream.buffer;
+  }
+
   /// Writes a variable header to the supplied message stream.
-  /// Not implemented for this message
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    throw UnimplementedError(
-        'MqttPublishReceivedVariableHeader::writeTo - Not implemented, message is receive only');
+    variableHeaderStream.addAll(_serialize());
   }
 
   /// Read the message identifier
@@ -119,10 +148,19 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
     }
   }
 
-  /// Gets the length of the write data when WriteTo will be called.
-  /// 0 for this message as [writeTo] is not implemented.
+  /// Write the message identifier.
+  void writeMessageIdentifier(MqttByteBuffer stream) {
+    stream.writeShort(messageIdentifier);
+  }
+
+  /// Write the reason code
+  void writeReasonCode(MqttByteBuffer stream) {
+    stream.writeByte(mqttPublishReasonCode.asInt(reasonCode));
+  }
+
+  /// Gets the length of the write data.
   @override
-  int getWriteLength() => 0;
+  int getWriteLength() => _serialize().length;
 
   @override
   String toString() {

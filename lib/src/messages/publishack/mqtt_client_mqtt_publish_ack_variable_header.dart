@@ -47,6 +47,13 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   /// The Reason String is a human readable string designed for diagnostics only.
   String _reasonString;
   String get reasonString => _reasonString;
+  set reasonString(String reason) {
+    final property =
+        MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
+    property.value = reason;
+    _propertySet.add(property);
+    _reasonString = reason;
+  }
 
   /// User Property.
   ///
@@ -54,8 +61,15 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   /// diagnostic information.
   /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
   /// The same name is allowed to appear more than once.
-  List<MqttStringPairProperty> _userProperty;
+  List<MqttStringPairProperty> _userProperty = <MqttStringPairProperty>[];
   List<MqttStringPairProperty> get userProperty => _userProperty;
+  set userProperty(List<MqttStringPairProperty> properties) {
+    for (var property in properties) {
+      property.identifier = MqttPropertyIdentifier.userProperty;
+      _propertySet.add(property);
+      _userProperty.add(property);
+    }
+  }
 
   // Process the properties read from the byte stream
   void _processProperties() {

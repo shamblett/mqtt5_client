@@ -40,6 +40,24 @@ class MqttPublishReceivedMessage extends MqttMessage {
     return this;
   }
 
+  /// Sets the reason code of the MqttMessage.
+  MqttPublishReceivedMessage withReasonCode(MqttPublishReasonCode reason) {
+    variableHeader.reasonCode = reason;
+    return this;
+  }
+
+  /// The message identifier
+  int get messageIdentifier => variableHeader.messageIdentifier;
+
+  /// Publish reason code
+  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+
+  /// Reason String.
+  String get reasonString => variableHeader.reasonString;
+
+  /// User Property.
+  List<MqttStringPairProperty> get userProperty => variableHeader.userProperty;
+
   @override
   String toString() {
     final sb = StringBuffer();

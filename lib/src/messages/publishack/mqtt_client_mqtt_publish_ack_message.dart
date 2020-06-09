@@ -43,6 +43,12 @@ class MqttPublishAckMessage extends MqttMessage {
     return this;
   }
 
+  /// Sets the reason code of the MqttMessage.
+  MqttPublishAckMessage withReasonCode(MqttPublishReasonCode reason) {
+    variableHeader.reasonCode = reason;
+    return this;
+  }
+
   /// The message identifier
   int get messageIdentifier => variableHeader.messageIdentifier;
 

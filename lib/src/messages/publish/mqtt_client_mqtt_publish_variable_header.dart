@@ -24,6 +24,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   MqttHeader header;
 
   final _length = 0;
+
   /// The length of the variable header as received.
   /// To get the write length use[getWriteLength].
   @override
