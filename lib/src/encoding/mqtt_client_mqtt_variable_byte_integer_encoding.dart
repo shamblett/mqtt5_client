@@ -21,7 +21,6 @@ class MqttVariableByteIntegerEncoding {
 
   /// Byte integer to integer
   int toInt(typed.Uint8Buffer byteInteger) {
-    // Must be a maximum length of 4
     if (byteInteger == null || byteInteger.isEmpty) {
       throw ArgumentError(
           'MqttByteIntegerEncoding::toInt byte integer is null or empty');
@@ -32,6 +31,10 @@ class MqttVariableByteIntegerEncoding {
     var encodedByte = 0;
     try {
       do {
+        // Must be a maximum length of 4
+        if (index > 4) {
+          break;
+        }
         encodedByte = byteInteger[index];
         value += (encodedByte & 127) * multiplier;
         if (multiplier > 128 * 128 * 128) {
@@ -44,6 +47,10 @@ class MqttVariableByteIntegerEncoding {
     } on Error {
       throw ArgumentError(
           'MqttByteIntegerEncoding::toInt invalid byte sequence $byteInteger');
+    }
+    if (index > 4) {
+      throw FormatException(
+          'MqttByteIntegerEncoding::toInt - variable byte integer is incorrectly formatted');
     }
     return value;
   }
@@ -58,8 +65,13 @@ class MqttVariableByteIntegerEncoding {
     var x = value;
     var encodedByte = 0;
     var result = typed.Uint8Buffer();
+    var count = 0;
 
     do {
+      // We can't encode more than 4 bytes
+      if (count > 4) {
+        break;
+      }
       encodedByte = x % 128;
       x = x ~/ 128;
       // if there is more data to encode, set the top bit of this byte
@@ -68,10 +80,11 @@ class MqttVariableByteIntegerEncoding {
       }
 
       result.add(encodedByte);
+      count++;
     } while (x > 0);
 
     // Must be a maximum length of 4
-    if (result.isEmpty || result.length > 4) {
+    if (result.isEmpty || count > 4) {
       throw ArgumentError(
           'MqttByteIntegerEncoding::fromInt byte integer has an invalid length ${result.length}, value is $value');
     }

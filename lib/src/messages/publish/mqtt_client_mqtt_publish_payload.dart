@@ -32,7 +32,8 @@ class MqttPublishPayload extends MqttPayload {
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    final messageBytes = header.messageSize - variableHeader.length;
+    final messageBytes = header.messageSize - variableHeader.getWriteLength();
+    ;
     message = payloadStream.read(messageBytes);
   }
 

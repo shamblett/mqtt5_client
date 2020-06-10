@@ -175,8 +175,7 @@ void main() {
       var raised = false;
       buffer.seek(0);
       try {
-        final outputHeader = MqttHeader.fromByteBuffer(buffer);
-        print(outputHeader.toString());
+        MqttHeader.fromByteBuffer(buffer);
       } on Exception {
         raised = true;
       }
@@ -188,8 +187,7 @@ void main() {
       buffer.seek(0);
       var raised = false;
       try {
-        final outputHeader = MqttHeader.fromByteBuffer(buffer);
-        print(outputHeader.toString());
+        MqttHeader.fromByteBuffer(buffer);
       } on Exception {
         raised = true;
       }
@@ -392,7 +390,6 @@ void main() {
       property1.readFrom(stream);
       expect(property1.identifier, MqttPropertyIdentifier.contentType);
       expect(property1.value, 0x60);
-      print(property1);
     });
     test('Four Byte Integer Property', () {
       final property =
@@ -1344,11 +1341,13 @@ void main() {
         expect(message.userProperty, isEmpty);
         expect(message.subscriptionIdentifier, isEmpty);
         expect(message.contentType, '');
-        expect(message.length, 3);
+        expect(message.length, 0);
+        expect(message.getWriteLength(), 3);
         message.header.qos = MqttQos.atLeastOnce;
-        expect(message.length, 5);
+        expect(message.length, 0);
+        expect(message.getWriteLength(), 5);
         message.header.qos = MqttQos.exactlyOnce;
-        expect(message.length, 5);
+        expect(message.getWriteLength(), 5);
       });
       test('Variable Header Publish - Reversible With Qos', () {
         final header = MqttHeader();
@@ -1941,10 +1940,9 @@ void main() {
             .withClientIdentifier('mark')
             .keepAliveFor(40)
             .startClean();
-        print('Connect - Basic serialization::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
-        expect(mb[1], 0x12);
+        expect(mb[1], 0x11);
       });
       test('With will set', () {
         final msg = MqttConnectMessage()
@@ -1955,7 +1953,6 @@ void main() {
             .withWillQos(MqttQos.atLeastOnce)
             .withWillRetain()
             .withWillTopic('willTopic');
-        print('Connect - With will set::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
         expect(mb[1], 0x1D);
@@ -1970,7 +1967,6 @@ void main() {
             .keepAliveFor(30)
             .startClean()
             .withUserProperties([userProp]);
-        print('Connect - User properties::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
         expect(mb[1], 0x1F);
@@ -1981,7 +1977,6 @@ void main() {
             .keepAliveFor(30)
             .startClean()
             .authenticateAs('Username', 'password');
-        print('Connect - Authentication ::${msg.toString()}');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
         expect(mb[1], 0x25);
@@ -2444,8 +2439,7 @@ void main() {
         final byteBuffer = MqttByteBuffer(buff);
         var raised = false;
         try {
-          final baseMessage = MqttMessage.createFrom(byteBuffer);
-          print(baseMessage.toString());
+          MqttMessage.createFrom(byteBuffer);
         } on Exception {
           raised = true;
         }

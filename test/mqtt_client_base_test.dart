@@ -538,6 +538,19 @@ void main() {
         }
         expect(raised, isTrue);
       });
+      test('toInt - Byte Array Too Long', () {
+        var enc = MqttVariableByteIntegerEncoding();
+        var raised = false;
+        var buff = typed.Uint8Buffer(5)..fillRange(0, 4, 0x80);
+        try {
+          enc.toInt(buff);
+        } on Error catch (error) {
+          expect(error.toString(),
+              'Invalid argument(s): MqttByteIntegerEncoding::toInt invalid byte sequence [128, 128, 128, 128, 0]');
+          raised = true;
+        }
+        expect(raised, isTrue);
+      });
       test('toInt - One Byte Value', () {
         var enc = MqttVariableByteIntegerEncoding();
         var buff = typed.Uint8Buffer(1);
@@ -729,9 +742,8 @@ void main() {
       final buff = MqttByteBuffer(uBuff);
       expect(buff.length, 10);
       expect(buff.position, 0);
-      var tmp = buff.readByte();
-      tmp = buff.readShort();
-      print(tmp);
+      buff.readByte();
+      buff.readShort();
       expect(buff.position, 3);
       final tmpBuff = buff.read(4);
       expect(tmpBuff.length, 4);
