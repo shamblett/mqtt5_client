@@ -7,14 +7,15 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Publish Release Message.
+/// A publish release message is the response to a publish received message.
+/// It is the third packet of the QoS 2 protocol exchange.
 class MqttPublishReleaseMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishReleaseMessage class.
   MqttPublishReleaseMessage() {
     header = MqttHeader().asType(MqttMessageType.publishRelease);
-    // Qos is specified for this message
+    // Qos of at least once has to be specified for this message
     header.qos = MqttQos.atLeastOnce;
-    variableHeader = MqttPublishReleaseVariableHeader();
+    variableHeader = MqttPublishReleaseVariableHeader(header);
   }
 
   /// Initializes a new instance of the MqttPublishReleaseMessage class.
@@ -22,7 +23,7 @@ class MqttPublishReleaseMessage extends MqttMessage {
       MqttHeader header, MqttByteBuffer messageStream) {
     this.header = header;
     variableHeader =
-        MqttPublishReleaseVariableHeader.fromByteBuffer(messageStream);
+        MqttPublishReleaseVariableHeader.fromByteBuffer(header, messageStream);
   }
 
   /// Gets or sets the variable header contents. Contains extended
@@ -41,6 +42,24 @@ class MqttPublishReleaseMessage extends MqttMessage {
     variableHeader.messageIdentifier = messageIdentifier;
     return this;
   }
+
+  /// Sets the reason code of the MqttMessage.
+  MqttPublishReleaseMessage withReasonCode(MqttPublishReasonCode reason) {
+    variableHeader.reasonCode = reason;
+    return this;
+  }
+
+  /// The message identifier
+  int get messageIdentifier => variableHeader.messageIdentifier;
+
+  /// Publish reason code
+  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+
+  /// Reason String.
+  String get reasonString => variableHeader.reasonString;
+
+  /// User Property.
+  List<MqttStringPairProperty> get userProperty => variableHeader.userProperty;
 
   @override
   String toString() {

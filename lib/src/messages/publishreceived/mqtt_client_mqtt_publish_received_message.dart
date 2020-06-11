@@ -7,7 +7,8 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Publish Received Message.
+/// A publish receive message is the response to a publish message with QoS 2.
+/// It is the second packet of the QoS 2 protocol exchange.
 class MqttPublishReceivedMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishReceivedMessage class.
   MqttPublishReceivedMessage() {

@@ -233,6 +233,11 @@ enum MqttPublishReasonCode {
   /// mismatch in the session state between the client and the broker.
   packetIdentifierInUse,
 
+  /// The packet(message) identifier is not known. This is not an error during recovery,
+  /// but at other times indicates a mismatch between
+  /// the session state on the client and broker.
+  packetIdentifierNotFound,
+
   /// An implementation or administrative imposed limit has been exceeded.
   quotaExceeded,
 
@@ -255,6 +260,7 @@ const Map<int, MqttPublishReasonCode> _mqttPublishReasonCodeValues =
   0x87: MqttPublishReasonCode.notAuthorized,
   0x90: MqttPublishReasonCode.topicNameInvalid,
   0x91: MqttPublishReasonCode.packetIdentifierInUse,
+  0x92: MqttPublishReasonCode.packetIdentifierNotFound,
   0x97: MqttPublishReasonCode.quotaExceeded,
   0x99: MqttPublishReasonCode.payloadFormatInvalid,
   0xff: MqttPublishReasonCode.notSet

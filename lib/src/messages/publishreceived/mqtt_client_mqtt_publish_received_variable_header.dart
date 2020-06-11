@@ -12,7 +12,7 @@ part of mqtt5_client;
 /// publish reason code and the properties.
 ///
 class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
-  /// Initializes a new instance of the MqttPublishAckVariableHeader class.
+  /// Initializes a new instance of the MqttPublishReceivedVariableHeader class.
   MqttPublishReceivedVariableHeader(this._header);
 
   /// Initializes a new instance of the class from a byte buffer.
@@ -62,7 +62,7 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   /// diagnostic information.
   /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
   /// The same name is allowed to appear more than once.
-  List<MqttStringPairProperty> _userProperty;
+  List<MqttStringPairProperty> _userProperty = <MqttStringPairProperty>[];
   List<MqttStringPairProperty> get userProperty => _userProperty;
   set userProperty(List<MqttStringPairProperty> properties) {
     for (var property in properties) {

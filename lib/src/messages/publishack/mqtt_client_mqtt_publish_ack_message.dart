@@ -7,8 +7,7 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Publish Acknowledgement Message, used to acknowledge a
-/// publish message that has it's QOS set to AtLeast or Exactly Once.
+/// A publish acknowledge messageis the response to a publish message with QoS 1.
 class MqttPublishAckMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage() {
