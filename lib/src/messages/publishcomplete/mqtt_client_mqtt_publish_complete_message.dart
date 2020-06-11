@@ -7,12 +7,13 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Publish Complete Message.
+/// The publish complete message is the response to a publisg release message.
+/// It is the fourth and final message of the QoS 2 protocol exchange.
 class MqttPublishCompleteMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPublishCompleteMessage class.
   MqttPublishCompleteMessage() {
     header = MqttHeader().asType(MqttMessageType.publishComplete);
-    variableHeader = MqttPublishCompleteVariableHeader();
+    variableHeader = MqttPublishCompleteVariableHeader(header);
   }
 
   /// Initializes a new instance of the MqttPublishCompleteMessage class.
@@ -20,11 +21,11 @@ class MqttPublishCompleteMessage extends MqttMessage {
       MqttHeader header, MqttByteBuffer messageStream) {
     this.header = header;
     variableHeader =
-        MqttPublishCompleteVariableHeader.fromByteBuffer(messageStream);
+        MqttPublishCompleteVariableHeader.fromByteBuffer(header, messageStream);
   }
 
   /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message
+  /// metadata about the message.
   MqttPublishCompleteVariableHeader variableHeader;
 
   /// Writes the message to the supplied stream.
@@ -39,6 +40,24 @@ class MqttPublishCompleteMessage extends MqttMessage {
     variableHeader.messageIdentifier = messageIdentifier;
     return this;
   }
+
+  /// Sets the reason code of the MqttMessage.
+  MqttPublishCompleteMessage withReasonCode(MqttPublishReasonCode reason) {
+    variableHeader.reasonCode = reason;
+    return this;
+  }
+
+  /// The message identifier
+  int get messageIdentifier => variableHeader.messageIdentifier;
+
+  /// Publish reason code
+  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+
+  /// Reason String.
+  String get reasonString => variableHeader.reasonString;
+
+  /// User Property.
+  List<MqttStringPairProperty> get userProperty => variableHeader.userProperty;
 
   @override
   String toString() {

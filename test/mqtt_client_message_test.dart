@@ -1715,8 +1715,173 @@ void main() {
       test(
           'Variable Header Publish Release - Serialize - Reason Code - With Properties',
           () {
-        final mHeader = MqttHeader().asType(MqttMessageType.publishReceived);
+        final mHeader = MqttHeader().asType(MqttMessageType.publishRelease);
         final header = MqttPublishReleaseVariableHeader(mHeader);
+        header.messageIdentifier = 2;
+        header.reasonCode = MqttPublishReasonCode.unspecifiedError;
+        header.reasonString = 'abcd';
+        var properties = <MqttStringPairProperty>[];
+        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        properties.add(user1);
+        header.userProperty = properties;
+        expect(header.getWriteLength(), 39);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(stream.buffer, [
+          0,
+          2,
+          128,
+          35,
+          31,
+          0,
+          4,
+          97,
+          98,
+          99,
+          100,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+      });
+    });
+    group('Publish Complete Message', () {
+      test('Variable Header Publish Complete - Defaults', () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        mHeader.messageSize = 0x00;
+        final header = MqttPublishCompleteVariableHeader(mHeader);
+        expect(header.messageIdentifier, 0);
+        expect(header.reasonCode, MqttPublishReasonCode.notSet);
+        expect(header.reasonString, isNull);
+        expect(header.userProperty, isEmpty);
+        expect(header.getWriteLength(), 4);
+      });
+      test('Variable Header Publish Complete - Deserialize - No Reason Code',
+          () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        mHeader.messageSize = 0x02;
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttPublishCompleteVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.messageIdentifier, 1);
+        expect(header.reasonCode, MqttPublishReasonCode.success);
+        expect(header.reasonString, isNull);
+        expect(header.userProperty, isEmpty);
+      });
+      test('Variable Header Publish Complete - Deserialize - No Properties',
+          () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        mHeader.messageSize = 0x03;
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80);
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttPublishCompleteVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.messageIdentifier, 1);
+        expect(header.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(header.reasonString, isNull);
+        expect(header.userProperty, isEmpty);
+      });
+      test('Variable Header Publish Complete - Deserialize - All', () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        mHeader.messageSize = 0x18;
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80); // Reason code
+        buffer.add(0x14); // Properties
+        buffer.add(0x1f);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add(0x26);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('m'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('v'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('l'.codeUnitAt(0));
+        buffer.add('1'.codeUnitAt(0));
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttPublishCompleteVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.messageIdentifier, 1);
+        expect(header.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(header.reasonString, 'abcd');
+        expect(header.userProperty[0].pairName, 'name');
+        expect(header.userProperty[0].pairValue, 'val1');
+        expect(header.length, 24);
+      });
+      test('Variable Header Publish Complete - Serialize - No Reason Code', () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        final header = MqttPublishCompleteVariableHeader(mHeader);
+        header.messageIdentifier = 2;
+        header.reasonCode = MqttPublishReasonCode.success;
+        expect(header.getWriteLength(), 2);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(stream.buffer, [0, 2]);
+      });
+      test(
+          'Variable Header Publish Complete - Serialize - Reason Code - No Properties',
+          () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        final header = MqttPublishCompleteVariableHeader(mHeader);
+        header.messageIdentifier = 2;
+        header.reasonCode = MqttPublishReasonCode.unspecifiedError;
+        expect(header.getWriteLength(), 4);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(stream.buffer, [0, 2, 0x80, 0]);
+      });
+      test(
+          'Variable Header Publish Complete - Serialize - Reason Code - With Properties',
+          () {
+        final mHeader = MqttHeader().asType(MqttMessageType.publishComplete);
+        final header = MqttPublishCompleteVariableHeader(mHeader);
         header.messageIdentifier = 2;
         header.reasonCode = MqttPublishReasonCode.unspecifiedError;
         header.reasonString = 'abcd';
@@ -2487,8 +2652,56 @@ void main() {
     });
 
     group('Publish Complete', () {
-      test('Deserialisation - Valid payload', () {});
-      test('Serialisation - Valid payload', () {});
+      test('Deserialisation - Valid', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x70);
+        buffer.add(0x18);
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80); // Reason code
+        buffer.add(0x14); // Properties
+        buffer.add(0x1f);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add(0x26);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('m'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('v'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('l'.codeUnitAt(0));
+        buffer.add('1'.codeUnitAt(0));
+        final byteBuffer = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        expect(baseMessage, const TypeMatcher<MqttPublishCompleteMessage>());
+        expect(baseMessage.header.messageType, MqttMessageType.publishComplete);
+        expect(baseMessage.header.messageSize, 24);
+        final MqttPublishCompleteMessage bm = baseMessage;
+        expect(bm.messageIdentifier, 1);
+        expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(bm.reasonString, 'abcd');
+        expect(bm.userProperty[0].pairName, 'name');
+        expect(bm.userProperty[0].pairValue, 'val1');
+        expect(bm.variableHeader.length, 24);
+      });
+      test('Serialisation - Valid', () {
+        final message = MqttPublishCompleteMessage()
+            .withMessageIdentifier(2)
+            .withReasonCode(MqttPublishReasonCode.success);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer, [0x70, 0x2, 0x00, 0x2]);
+      });
     });
 
     group('Publish Received', () {
