@@ -7,11 +7,18 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Subscribe Message.
+/// The subscribe message is sent from the client to the broker to create one or more subscriptions.
+/// Each subscription registers the client’s interest in one or more topics.
+/// The broker sends publish messagesto the client to forward application messages
+/// that were published to topics that match these subscriptions.
+///
+/// The subscribe message also specifies (for each subscription) the maximum QoS with
+/// which the broker can send application messages to the client.
 class MqttSubscribeMessage extends MqttMessage {
   /// Initializes a new instance of the MqttSubscribeMessage class.
   MqttSubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.subscribe);
+    // Qos at least once must be set for a subscribe message
     header.qos = MqttQos.atLeastOnce;
     variableHeader = MqttSubscribeVariableHeader();
     payload = MqttSubscribePayload();

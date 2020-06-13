@@ -19,7 +19,7 @@ class MqttSubscribePayload extends MqttPayload {
   }
 
   /// Variable header
-  MqttVariableHeader variableHeader;
+  MqttIVariableHeader variableHeader;
 
   /// Message header
   MqttHeader header;
