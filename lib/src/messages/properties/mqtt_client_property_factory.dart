@@ -58,7 +58,7 @@ class MqttPropertyFactory {
         final property = MqttTwoByteIntegerProperty();
         return property..readFrom(stream);
       case MqttPropertyIdentifier.userProperty:
-        final property = MqttStringPairProperty();
+        final property = MqttUserProperty();
         return property..readFrom(stream);
     }
 

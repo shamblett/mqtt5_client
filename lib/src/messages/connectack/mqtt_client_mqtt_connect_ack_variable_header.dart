@@ -107,8 +107,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// diagnostic information.
   /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
   /// The same name is allowed to appear more than once.
-  List<MqttStringPairProperty> _userProperty;
-  List<MqttStringPairProperty> get userProperty => _userProperty;
+  List<MqttUserProperty> _userProperty;
+  List<MqttUserProperty> get userProperty => _userProperty;
 
   /// Wildcard Subscription Available.
   ///

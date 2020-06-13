@@ -280,7 +280,7 @@ class MqttClient {
   /// MQTT topic format rules.
   int publishMessage(
       String topic, MqttQos qualityOfService, typed.Uint8Buffer data,
-      {bool retain = false, List<MqttStringPairProperty> userProperties}) {
+      {bool retain = false, List<MqttUserProperty> userProperties}) {
     if (connectionHandler?.connectionStatus?.state !=
         MqttConnectionState.connected) {
       throw ConnectionException(connectionHandler?.connectionStatus?.state);

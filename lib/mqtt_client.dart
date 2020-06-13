@@ -188,6 +188,8 @@ part 'src/messages/properties/mqtt_client_binary_data_property.dart';
 
 part 'src/messages/properties/mqtt_client_variable_byte_integer_property.dart';
 
+part 'src/messages/properties/mqtt_client_user_property.dart';
+
 part 'src/messages/mqtt_client_mqtt_reason_codes.dart';
 
 part 'src/management/mqtt_client_topic_filter.dart';

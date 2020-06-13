@@ -107,20 +107,19 @@ class MqttPublishMessage extends MqttMessage {
   }
 
   /// Sets a list of user properties
-  MqttPublishMessage withUserProperties(
-      List<MqttStringPairProperty> properties) {
+  MqttPublishMessage withUserProperties(List<MqttUserProperty> properties) {
     _variableHeader.userProperty = properties;
     return this;
   }
 
   /// Add a specific user property
-  void addUserProperty(MqttStringPairProperty property) {
+  void addUserProperty(MqttUserProperty property) {
     _variableHeader.userProperty = [property];
   }
 
   /// Add a user property from the supplied name/value pair
   void addUserPropertyPair(String name, String value) {
-    final property = MqttStringPairProperty.asUserProperty();
+    final property = MqttUserProperty();
     property.pairName = name;
     property.pairValue = value;
     addUserProperty(property);

@@ -58,7 +58,7 @@ class MqttConnectAckMessage extends MqttMessage {
   String get reasonString => _variableHeader.reasonString;
 
   /// User Property
-  List<MqttStringPairProperty> get userProperty => _variableHeader.userProperty;
+  List<MqttUserProperty> get userProperty => _variableHeader.userProperty;
 
   /// Wildcard Subscription Available.
   bool get wildcardSubscriptionsAvailable =>

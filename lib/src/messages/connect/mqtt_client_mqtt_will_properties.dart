@@ -133,11 +133,10 @@ class MqttWillProperties {
   /// The User Property is allowed to appear multiple times to represent
   /// multiple name, value pairs. The same name is allowed to appear
   /// more than once.
-  final _userProperties = <MqttStringPairProperty>[];
-  List<MqttStringPairProperty> get userProperties => _userProperties;
-  set userProperties(List<MqttStringPairProperty> properties) {
+  final _userProperties = <MqttUserProperty>[];
+  List<MqttUserProperty> get userProperties => _userProperties;
+  set userProperties(List<MqttUserProperty> properties) {
     for (var userProperty in properties) {
-      userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
       _userProperties.addAll(properties);
     }

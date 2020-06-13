@@ -15,7 +15,7 @@ abstract class IPublishingManager {
   /// Returns the message identifier assigned to the message.
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
       typed.Uint8Buffer data,
-      {bool retain = false, List<MqttStringPairProperty> userProperties});
+      {bool retain = false, List<MqttUserProperty> userProperties});
 
   /// Publish a user supplied publish message
   int publishUserMessage(MqttPublishMessage message);

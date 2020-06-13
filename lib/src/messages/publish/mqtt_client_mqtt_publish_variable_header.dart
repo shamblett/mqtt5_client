@@ -134,11 +134,10 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// The User Property is allowed to appear multiple times to represent
   /// multiple name, value pairs. The same name is allowed to appear
   /// more than once.
-  List<MqttStringPairProperty> _userProperty = <MqttStringPairProperty>[];
-  List<MqttStringPairProperty> get userProperty => _userProperty;
-  set userProperty(List<MqttStringPairProperty> properties) {
+  List<MqttUserProperty> _userProperty = <MqttUserProperty>[];
+  List<MqttUserProperty> get userProperty => _userProperty;
+  set userProperty(List<MqttUserProperty> properties) {
     for (var userProperty in properties) {
-      userProperty.identifier = MqttPropertyIdentifier.userProperty;
       _propertySet.add(userProperty);
     }
     _userProperty.addAll(properties);

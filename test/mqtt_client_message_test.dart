@@ -746,7 +746,7 @@ void main() {
         buffer.add(0x66);
         buffer.add(0x67);
         var property = MqttPropertyFactory.get(stream);
-        expect(property, isA<MqttStringPairProperty>());
+        expect(property, isA<MqttUserProperty>());
         expect(property.identifier, MqttPropertyIdentifier.userProperty);
       });
     });
@@ -759,12 +759,10 @@ void main() {
         final byteProp =
             MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
         byteProp.value = 0x44;
-        final userProperty1 =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProperty1 = MqttUserProperty();
         userProperty1.pairName = 'First';
         userProperty1.pairValue = 'First Value';
-        final userProperty2 =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProperty2 = MqttUserProperty();
         userProperty2.pairName = 'Second';
         userProperty1.pairValue = 'Second Value';
         container.add(stringProp);
@@ -802,12 +800,10 @@ void main() {
         final byteProp =
             MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
         byteProp.value = 0x44;
-        final userProperty1 =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProperty1 = MqttUserProperty();
         userProperty1.pairName = 'First';
         userProperty1.pairValue = 'First Value';
-        final userProperty2 =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProperty2 = MqttUserProperty();
         userProperty2.pairName = 'Second';
         userProperty2.pairValue = 'Second Value';
         container.add(stringProp);
@@ -852,12 +848,10 @@ void main() {
         final byteProp =
             MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
         byteProp.value = 0x44;
-        final userProperty1 =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProperty1 = MqttUserProperty();
         userProperty1.pairName = 'a';
         userProperty1.pairValue = 'b';
-        final userProperty2 =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProperty2 = MqttUserProperty();
         userProperty2.pairName = 'c';
         userProperty2.pairValue = 'd';
         container.add(stringProp);
@@ -981,8 +975,8 @@ void main() {
         final propList = container.toList();
         expect(propList[0], isA<MqttUtf8StringProperty>());
         expect(propList[1], isA<MqttByteProperty>());
-        expect(propList[2], isA<MqttStringPairProperty>());
-        expect(propList[3], isA<MqttStringPairProperty>());
+        expect(propList[2], isA<MqttUserProperty>());
+        expect(propList[3], isA<MqttUserProperty>());
         expect(propList[0].identifier, MqttPropertyIdentifier.contentType);
         expect(propList[0].value, 'Hello');
         expect(propList[1].identifier,
@@ -1079,10 +1073,10 @@ void main() {
         var buffer = typed.Uint8Buffer();
         buffer.addAll([1, 2, 3, 4]);
         variableHeader.authenticationData = buffer;
-        var property1 = MqttStringPairProperty();
+        var property1 = MqttUserProperty();
         property1.pairName = 'Prop1';
         property1.pairValue = 'Prop1Value';
-        var property2 = MqttStringPairProperty();
+        var property2 = MqttUserProperty();
         property2.pairName = 'Prop2';
         property2.pairValue = 'Prop2Value';
         variableHeader.userProperty = [property1, property2];
@@ -1289,11 +1283,11 @@ void main() {
         var authData = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
         propertyBinary.addBytes(authData);
         properties.add(propertyBinary);
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
-        var user2 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var user2 = MqttUserProperty();
         user2.pairName = 'User 2 name';
         user2.pairValue = 'User 2 value';
         properties.add(user2);
@@ -1361,12 +1355,12 @@ void main() {
         message.topicAlias = 5;
         message.responseTopic = 'ResponseTopic';
         message.correlationData = typed.Uint8Buffer()..addAll([1, 2, 3, 4, 5]);
-        var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
-        var user2 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var user2 = MqttUserProperty();
         user2.pairName = 'User 2 name';
         user2.pairValue = 'User 2 value';
         properties.add(user2);
@@ -1407,12 +1401,12 @@ void main() {
         message.topicAlias = 5;
         message.responseTopic = 'ResponseTopic';
         message.correlationData = typed.Uint8Buffer()..addAll([1, 2, 3, 4, 5]);
-        var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
-        var user2 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var user2 = MqttUserProperty();
         user2.pairName = 'User 2 name';
         user2.pairValue = 'User 2 value';
         properties.add(user2);
@@ -1556,8 +1550,8 @@ void main() {
         header.messageIdentifier = 2;
         header.reasonCode = MqttPublishReasonCode.unspecifiedError;
         header.reasonString = 'abcd';
-        var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
@@ -1720,8 +1714,8 @@ void main() {
         header.messageIdentifier = 2;
         header.reasonCode = MqttPublishReasonCode.unspecifiedError;
         header.reasonString = 'abcd';
-        var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
@@ -1885,8 +1879,8 @@ void main() {
         header.messageIdentifier = 2;
         header.reasonCode = MqttPublishReasonCode.unspecifiedError;
         header.reasonString = 'abcd';
-        var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
@@ -2048,8 +2042,8 @@ void main() {
         header.messageIdentifier = 2;
         header.reasonCode = MqttPublishReasonCode.unspecifiedError;
         header.reasonString = 'abcd';
-        var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';
         user1.pairValue = 'User 1 value';
         properties.add(user1);
@@ -2138,10 +2132,10 @@ void main() {
         final correlationdata = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
         willProperties.correlationData = correlationdata;
         expect(willProperties.correlationData.toList(), [1, 2, 3, 4]);
-        final user1 = MqttStringPairProperty()
+        final user1 = MqttUserProperty()
           ..pairName = 'name'
           ..pairValue = 'value';
-        willProperties.userProperties = <MqttStringPairProperty>[user1];
+        willProperties.userProperties = <MqttUserProperty>[user1];
         expect(willProperties.userProperties, isNotEmpty);
         expect(willProperties.userProperties[0], user1);
         expect(willProperties.getWriteLength(), 63);
@@ -2287,8 +2281,7 @@ void main() {
         expect(mb[1], 0x1D);
       });
       test('User properties', () {
-        final userProp =
-            MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        final userProp = MqttUserProperty();
         userProp.pairName = 'Name';
         userProp.pairValue = 'Value';
         final msg = MqttConnectMessage()
@@ -2539,7 +2532,7 @@ void main() {
         message.variableHeader.messageIdentifier = 1;
         message.variableHeader.topicAlias = 5;
         var properties = <MqttStringPairProperty>[];
-        var user1 = MqttStringPairProperty(MqttPropertyIdentifier.userProperty);
+        var user1 = MqttUserProperty();
         user1.pairName = 'name';
         user1.pairValue = 'value';
         properties.add(user1);

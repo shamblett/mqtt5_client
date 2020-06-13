@@ -57,7 +57,7 @@ class MqttPublishCompleteMessage extends MqttMessage {
   String get reasonString => variableHeader.reasonString;
 
   /// User Property.
-  List<MqttStringPairProperty> get userProperty => variableHeader.userProperty;
+  List<MqttUserProperty> get userProperty => variableHeader.userProperty;
 
   @override
   String toString() {

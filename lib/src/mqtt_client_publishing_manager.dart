@@ -82,7 +82,7 @@ class PublishingManager implements IPublishingManager {
   @override
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
       typed.Uint8Buffer data,
-      {bool retain = false, List<MqttStringPairProperty> userProperties}) {
+      {bool retain = false, List<MqttUserProperty> userProperties}) {
     final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     final msg = MqttPublishMessage()
         .toTopic(topic.toString())
