@@ -416,6 +416,29 @@ void main() {
     });
   });
 
+  group('Subscription Options', () {
+    test('Subscription Options - Default', () {
+      final option = MqttSubscriptionOption();
+      expect(option.getWriteLength(), 1);
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      option.writeTo(stream);
+      expect(stream.buffer[0], 0x8);
+    });
+    test('Subscription Options - All Set', () {
+      final option = MqttSubscriptionOption();
+      option.maximumQos = MqttQos.exactlyOnce;
+      option.noLocal = true;
+      option.retainAsPublished = false;
+      option.retainHandling = MqttRetainHandling.doNotSendRetained;
+      expect(option.getWriteLength(), 1);
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      option.writeTo(stream);
+      expect(stream.buffer[0], 0x26);
+    });
+  });
+
   group('Encoding', () {
     group('UTF8', () {
       test('Get bytes', () {
