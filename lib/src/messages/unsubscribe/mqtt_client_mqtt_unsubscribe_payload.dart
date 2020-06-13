@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Class that contains details related to an MQTT Unsubscribe messages payload
-class MqttUnsubscribePayload extends MqttPayload {
+class MqttUnsubscribePayload extends MqttIPayload {
   /// Initializes a new instance of the MqttUnsubscribePayload class.
   MqttUnsubscribePayload();
 

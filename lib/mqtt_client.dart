@@ -60,6 +60,8 @@ part 'src/mqtt_client_subscription_status.dart';
 
 part 'src/mqtt_client_mqtt_qos.dart';
 
+part 'src/mqtt_client_mqtt_retain_handling.dart';
+
 part 'src/mqtt_client_mqtt_received_message.dart';
 
 part 'src/mqtt_client_publishing_manager.dart';
@@ -164,7 +166,9 @@ part 'src/messages/mqtt_client_mqtt_message_type.dart';
 
 part 'src/messages/mqtt_client_mqtt_message_factory.dart';
 
-part 'src/messages/mqtt_client_mqtt_payload.dart';
+part 'src/messages/mqtt_client_mqtt_ipayload.dart';
+
+part 'src/messages/mqtt_client_mqtt_subscription_option.dart';
 
 part 'src/messages/properties/mqtt_client_mqtt_properties.dart';
 

@@ -15,7 +15,7 @@ part of mqtt5_client;
 ///
 /// These fields, if present, MUST appear in the order client Identifier,
 /// Will Properties, Will Topic, Will Payload, User Name, Password.
-class MqttConnectPayload extends MqttPayload {
+class MqttConnectPayload implements MqttIPayload {
   /// Initializes a new instance of the MqttConnectPayload class.
   MqttConnectPayload(this.variableHeader);
 

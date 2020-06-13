@@ -9,7 +9,7 @@ part of mqtt5_client;
 
 /// Class that contains details related to an MQTT Subscribe Ack
 /// messages payload.
-class MqttSubscribeAckPayload extends MqttPayload {
+class MqttSubscribeAckPayload extends MqttIPayload {
   /// Initializes a new instance of the MqttSubscribeAckPayload class.
   MqttSubscribeAckPayload();
 

@@ -164,5 +164,5 @@ class MqttHeader {
   @override
   String toString() =>
       'Header: MessageType = $messageType, Duplicate = $duplicate, '
-      'Retain = $retain, Qos = $qos, Size = $_messageSize';
+      'Retain = $retain, Qos = ${qos.toString().split(".")[1]}, Size = $_messageSize';
 }

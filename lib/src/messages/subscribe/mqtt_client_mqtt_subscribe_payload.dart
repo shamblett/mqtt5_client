@@ -7,8 +7,13 @@
 
 part of mqtt5_client;
 
-/// Class that contains details related to an MQTT Subscribe messages payload
-class MqttSubscribePayload extends MqttPayload {
+/// The payload of a subscribe message  contains a list of topic filters indicating the
+/// topics to which the client wants to subscribe. Each topic filter is followed by a
+/// subscription options value.
+///
+/// The payload must contain at least one topic filter and subscription
+/// options pair.
+class MqttSubscribePayload implements MqttIPayload {
   /// Initializes a new instance of the MqttSubscribePayload class.
   MqttSubscribePayload();
 

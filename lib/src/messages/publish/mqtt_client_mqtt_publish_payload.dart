@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Class that contains details related to an MQTT Publish message payload
-class MqttPublishPayload extends MqttPayload {
+class MqttPublishPayload implements MqttIPayload {
   /// Initializes a new instance of the MqttPublishPayload class.
   MqttPublishPayload() {
     message = typed.Uint8Buffer();
@@ -33,7 +33,6 @@ class MqttPublishPayload extends MqttPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     final messageBytes = header.messageSize - variableHeader.getWriteLength();
-    ;
     message = payloadStream.read(messageBytes);
   }
 

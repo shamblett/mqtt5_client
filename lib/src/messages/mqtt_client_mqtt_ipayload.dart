@@ -8,12 +8,12 @@
 part of mqtt5_client;
 
 // Base class for the payload (Body) of an MQTT Message.
-abstract class MqttPayload {
+abstract class MqttIPayload {
   /// Initializes a new instance of the MqttPayload class.
-  MqttPayload();
+  MqttIPayload();
 
   /// Initializes a new instance of the MqttPayload class.
-  MqttPayload.fromMqttByteBuffer(MqttByteBuffer payloadStream) {
+  MqttIPayload.fromMqttByteBuffer(MqttByteBuffer payloadStream) {
     readFrom(payloadStream);
   }
 
