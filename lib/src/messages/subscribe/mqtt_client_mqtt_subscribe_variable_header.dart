@@ -77,7 +77,6 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
     final buffer = typed.Uint8Buffer();
     final stream = MqttByteBuffer(buffer);
     writeMessageIdentifier(stream);
-    writeSubscriptionIdentifier(stream);
     _propertySet.writeTo(stream);
     return stream.buffer;
   }
@@ -85,13 +84,6 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   /// Write the message identifier.
   void writeMessageIdentifier(MqttByteBuffer stream) {
     stream.writeShort(messageIdentifier);
-  }
-
-  /// Write the subscription identifier.
-  void writeSubscriptionIdentifier(MqttByteBuffer stream) {
-    if (subscriptionIdentifier != 0) {
-      stream.writeByte(subscriptionIdentifier);
-    }
   }
 
   /// Writes a variable header to the supplied message stream.

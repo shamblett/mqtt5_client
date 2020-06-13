@@ -2095,6 +2095,36 @@ void main() {
         ]);
       });
     });
+    group('Subscribe Message', () {
+      test('Variable Header Subscribe - Defaults', () {
+        final header = MqttSubscribeVariableHeader();
+        expect(header.messageIdentifier, 0);
+        expect(header.subscriptionIdentifier, 0);
+        expect(header.userProperty, isEmpty);
+        expect(header.getWriteLength(), 3);
+        expect(header.length, 0);
+      });
+      test('Variable Header Subscribe - Serialize - All', () {
+        final header = MqttSubscribeVariableHeader();
+        header.messageIdentifier = 2;
+        header.subscriptionIdentifier = 10;
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        properties.add(user1);
+        header.userProperty = properties;
+        expect(header.getWriteLength(), 33);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(header.messageIdentifier, 2);
+        expect(header.subscriptionIdentifier, 10);
+        expect(header.userProperty, isNotEmpty);
+        expect(header.userProperty[0].pairName, 'User 1 name');
+        expect(header.userProperty[0].pairValue, 'User 1 value');
+      });
+    });
   });
 
   group('Payload', () {
@@ -2531,7 +2561,7 @@ void main() {
         message.variableHeader.payloadFormatIndicator = true;
         message.variableHeader.messageIdentifier = 1;
         message.variableHeader.topicAlias = 5;
-        var properties = <MqttStringPairProperty>[];
+        var properties = <MqttUserProperty>[];
         var user1 = MqttUserProperty();
         user1.pairName = 'name';
         user1.pairValue = 'value';
