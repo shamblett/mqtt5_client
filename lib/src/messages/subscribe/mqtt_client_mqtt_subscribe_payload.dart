@@ -7,6 +7,20 @@
 
 part of mqtt5_client;
 
+///
+/// The subscription payload topic class.
+/// Comprises a topic and its associated topic option.
+class MqttSubscribePayloadTopic {
+  /// Construction
+  MqttSubscribePayloadTopic(this.topic, [this.option]);
+
+  /// The topic
+  MqttSubscriptionTopic topic;
+
+  /// The Subscription option
+  MqttSubscriptionOption option = MqttSubscriptionOption();
+}
+
 /// The payload of a subscribe message  contains a list of topic filters indicating the
 /// topics to which the client wants to subscribe. Each topic filter is followed by a
 /// subscription options value.
@@ -29,61 +43,65 @@ class MqttSubscribePayload implements MqttIPayload {
   /// Message header
   MqttHeader header;
 
-  /// The collection of subscriptions, Key is the topic, Value is the qos
-  Map<String, MqttQos> subscriptions = <String, MqttQos>{};
+  // The list of subscriptions.
+  final _subscriptions = <MqttSubscribePayloadTopic>[];
+
+  // UTF8 encoder
+  final _enc = MqttUtf8Encoding();
+
+  // Serialize the topics.
+  typed.Uint8Buffer _serialize() {
+    final buffer = typed.Uint8Buffer();
+    for (final topic in _subscriptions) {
+      buffer.addAll(_enc.toUtf8(topic.topic.rawTopic));
+      buffer.add(topic.option.serialize());
+    }
+    return buffer;
+  }
 
   /// Writes the payload to the supplied stream.
   @override
   void writeTo(MqttByteBuffer payloadStream) {
-    subscriptions.forEach((String key, MqttQos value) {
-      payloadStream.writeMqttStringM(key);
-      payloadStream.writeByte(value.index);
-    });
+    payloadStream.addAll(_serialize());
   }
 
   /// Creates a payload from the specified header stream.
+  /// Not implemented, the subscribe message is send only.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    var payloadBytesRead = 0;
-    final payloadLength = header.messageSize - variableHeader.length;
-    // Read all the topics and qos subscriptions from the message payload
-    while (payloadBytesRead < payloadLength) {
-      final topic = payloadStream.readMqttStringM();
-      final qos = MqttUtilities.getQosLevel(payloadStream.readByte());
-      payloadBytesRead +=
-          topic.length + 3; // +3 = Mqtt string length bytes + qos byte
-      addSubscription(topic, qos);
-    }
+    throw UnimplementedError(
+        'MqttSubscribePayload::writeTo - not implemented, mesage is send only');
   }
 
   /// Gets the length of the payload in bytes when written to a stream.
   @override
-  int getWriteLength() {
-    var length = 0;
-    final enc = MqttUtf8Encoding();
-    subscriptions.forEach((String key, MqttQos value) {
-      length += enc.byteCount(key);
-      length += 1;
-    });
-    return length;
-  }
+  int getWriteLength() => _serialize().length;
 
   /// Adds a new subscription to the collection of subscriptions.
-  void addSubscription(String topic, MqttQos qos) {
-    subscriptions[topic] = qos;
+  void addSubscription(MqttSubscriptionTopic topic,
+      [MqttSubscriptionOption option]) {
+    final subTopic = MqttSubscribePayloadTopic(topic, option);
+    _subscriptions.add(subTopic);
   }
 
   /// Clears the subscriptions.
   void clearSubscriptions() {
-    subscriptions.clear();
+    _subscriptions.clear();
   }
+
+  /// Check validity, there must be at least one subscription topic before the
+  /// subscription message can be sent.
+  bool get isValid => _subscriptions.isNotEmpty;
+
+  ///
+  /// Number of topic subscriptions
+  int get count => _subscriptions.length;
 
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('Payload: Subscription [{${subscriptions.length}}]');
-    subscriptions.forEach((String key, MqttQos value) {
-      sb.writeln('{{ Topic={$key}, Qos={$value} }}');
+    _subscriptions.forEach((final topic) {
+      sb.writeln('{{Topic = {$topic.topic}, Option = {$topic.option}');
     });
     return sb.toString();
   }

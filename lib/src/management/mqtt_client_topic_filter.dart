@@ -17,7 +17,7 @@ part of mqtt5_client;
 class MqttClientTopicFilter {
   /// Construction
   MqttClientTopicFilter(this._topic, this._clientUpdates) {
-    _subscriptionTopic = SubscriptionTopic(_topic);
+    _subscriptionTopic = MqttSubscriptionTopic(_topic);
     _clientUpdates.listen(_topicIn);
     _updates =
         StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
@@ -26,7 +26,7 @@ class MqttClientTopicFilter {
 
   final String _topic;
 
-  SubscriptionTopic _subscriptionTopic;
+  MqttSubscriptionTopic _subscriptionTopic;
 
   /// The topic on which to filter
   String get topic => _topic;

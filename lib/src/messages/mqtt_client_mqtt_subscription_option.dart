@@ -39,8 +39,8 @@ class MqttSubscriptionOption {
   /// point after the subscribe.
   MqttRetainHandling retainHandling = MqttRetainHandling.sendRetained;
 
-  /// Writes a subscription option to the supplied message stream.
-  void writeTo(MqttByteBuffer stream) {
+  /// Serialize
+  int serialize() {
     final maximumQos = this.maximumQos.index;
     final noLocal = (this.noLocal ? 1 : 0) << 2;
     final retainAsPublished = (this.retainAsPublished ? 1 : 0) << 3;
@@ -49,7 +49,11 @@ class MqttSubscriptionOption {
     // Bits 6 and 7 of the subscription options byte are reserved for future use
     // and must be set to 0.
     byte &= 0x3f;
-    stream.writeByte(byte);
+    return byte;
+  }
+  /// Writes a subscription option to the supplied message stream.
+  void writeTo(MqttByteBuffer stream) {
+    stream.writeByte(serialize());
   }
 
   /// Write length

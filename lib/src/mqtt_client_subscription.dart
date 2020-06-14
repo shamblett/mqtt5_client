@@ -17,7 +17,7 @@ class Subscription extends Object
   DateTime createdTime;
 
   /// The Topic that is subscribed to.
-  SubscriptionTopic topic;
+  MqttSubscriptionTopic topic;
 
   /// The QOS level of the topics subscription
   MqttQos qos;

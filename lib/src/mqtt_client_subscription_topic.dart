@@ -9,9 +9,9 @@ part of mqtt5_client;
 
 /// Implementation of a Subscription topic that performs additional validations
 /// of topics that are subscribed to.
-class SubscriptionTopic extends MqttTopic {
+class MqttSubscriptionTopic extends MqttTopic {
   /// Creates a new instance of a rawTopic from a topic string.
-  SubscriptionTopic(String rawTopic)
+  MqttSubscriptionTopic(String rawTopic)
       : super(rawTopic, <dynamic>[
           MqttTopic.validateMinLength,
           MqttTopic.validateMaxLength,

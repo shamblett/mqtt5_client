@@ -94,7 +94,7 @@ class SubscriptionsManager {
   /// If the subscription cannot be created null is returned.
   Subscription createNewSubscription(String topic, MqttQos qos) {
     try {
-      final subscriptionTopic = SubscriptionTopic(topic);
+      final subscriptionTopic = MqttSubscriptionTopic(topic);
       // Get an ID that represents the subscription. We will use this
       // same ID for unsubscribe as well.
       final msgId = messageIdentifierDispenser.getNextMessageIdentifier();

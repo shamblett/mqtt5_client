@@ -62,18 +62,18 @@ class MqttSubscribeMessage extends MqttMessage {
   /// If you want to change the Qos level follow this call with a
   /// call to AtTopic(MqttQos).
   MqttSubscribeMessage toTopic(String topic) {
-    _lastTopic = topic;
-    payload.addSubscription(topic, MqttQos.atMostOnce);
-    return this;
+    //lastTopic = topic;
+    //payload.addSubscription(topic, MqttQos.atMostOnce);
+    //return this;
   }
 
   /// Sets the Qos level of the last topic added to the subscription
   /// list via a call to ToTopic(string).
   MqttSubscribeMessage atQos(MqttQos qos) {
-    if (payload.subscriptions.containsKey(_lastTopic)) {
-      payload.subscriptions[_lastTopic] = qos;
-    }
-    return this;
+    //if (payload.subscriptions.containsKey(_lastTopic)) {
+      //payload.subscriptions[_lastTopic] = qos;
+    //}
+    //return this;
   }
 
   /// Sets the message identifier on the subscribe message.
