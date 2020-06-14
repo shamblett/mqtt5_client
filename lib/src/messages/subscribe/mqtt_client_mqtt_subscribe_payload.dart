@@ -12,7 +12,11 @@ part of mqtt5_client;
 /// Comprises a topic and its associated topic option.
 class MqttSubscribePayloadTopic {
   /// Construction
-  MqttSubscribePayloadTopic(this.topic, [this.option]);
+  MqttSubscribePayloadTopic(this.topic, [MqttSubscriptionOption option]) {
+    if (option != null) {
+      this.option = option;
+    }
+  }
 
   /// The topic
   MqttSubscriptionTopic topic;
@@ -52,6 +56,9 @@ class MqttSubscribePayload implements MqttIPayload {
   // Serialize the topics.
   typed.Uint8Buffer _serialize() {
     final buffer = typed.Uint8Buffer();
+    if (!isValid) {
+      return buffer;
+    }
     for (final topic in _subscriptions) {
       buffer.addAll(_enc.toUtf8(topic.topic.rawTopic));
       buffer.add(topic.option.serialize());
@@ -62,6 +69,9 @@ class MqttSubscribePayload implements MqttIPayload {
   /// Writes the payload to the supplied stream.
   @override
   void writeTo(MqttByteBuffer payloadStream) {
+    if (!isValid) {
+      return;
+    }
     payloadStream.addAll(_serialize());
   }
 

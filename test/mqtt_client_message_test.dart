@@ -2284,6 +2284,54 @@ void main() {
         ]);
       });
     });
+    group('Subscribe Message', () {
+      test('Subscribe Payload - Empty', () {
+        final payload = MqttSubscribePayload();
+        expect(payload.isValid, isFalse);
+        expect(payload.getWriteLength(), 0);
+        expect(payload.count, 0);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        stream.writeByte(1);
+        payload.writeTo(stream);
+        expect(stream.length, 1);
+      });
+      test('Subscribe Payload - Topics', () {
+        final payload = MqttSubscribePayload();
+        final topic1 = MqttSubscriptionTopic('topic1');
+        final option1 = MqttSubscriptionOption();
+        option1.maximumQos = MqttQos.atLeastOnce;
+        payload.addSubscription(topic1, option1);
+        final topic2 = MqttSubscriptionTopic('topic2');
+        payload.addSubscription(topic2);
+        expect(payload.isValid, isTrue);
+        expect(payload.getWriteLength(), 18);
+        expect(payload.count, 2);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        payload.writeTo(stream);
+        expect(stream.buffer, [
+          0,
+          6,
+          116,
+          111,
+          112,
+          105,
+          99,
+          49,
+          9,
+          0,
+          6,
+          116,
+          111,
+          112,
+          105,
+          99,
+          50,
+          8
+        ]);
+      });
+    });
   });
 
   group('Messages', () {
