@@ -20,26 +20,19 @@ class MqttSubscribeMessage extends MqttMessage {
     header = MqttHeader().asType(MqttMessageType.subscribe);
     // Qos at least once must be set for a subscribe message
     header.qos = MqttQos.atLeastOnce;
-    variableHeader = MqttSubscribeVariableHeader();
-    payload = MqttSubscribePayload();
+    _variableHeader = MqttSubscribeVariableHeader();
+    _payload = MqttSubscribePayload();
   }
 
-  /// Initializes a new instance of the MqttSubscribeMessage class.
-  MqttSubscribeMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
-    this.header = header;
-    this.header.qos = MqttQos.atLeastOnce;
-    readFrom(messageStream);
-  }
+  MqttSubscribeVariableHeader _variableHeader;
 
-  /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message.
-  MqttSubscribeVariableHeader variableHeader;
+  /// Gets the variable header contents.
+  MqttSubscribeVariableHeader get variableHeader => _variableHeader;
 
-  /// Gets or sets the payload of the Mqtt Message.
-  MqttSubscribePayload payload;
+  MqttSubscribePayload _payload;
 
-  String _lastTopic;
+  /// Gets the payload contents.
+  MqttSubscribePayload get payload => _payload;
 
   /// Writes the message to the supplied stream.
   @override
@@ -51,41 +44,56 @@ class MqttSubscribeMessage extends MqttMessage {
   }
 
   /// Reads a message from the supplied stream.
+  /// Not implemented, message is send only.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    variableHeader = MqttSubscribeVariableHeader.fromByteBuffer(messageStream);
-    payload = MqttSubscribePayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+    throw UnimplementedError(
+        'MqttSubscribeMessage::readFrom - not implemented, message is send only');
   }
 
-  /// Adds a new subscription topic with the AtMostOnce Qos Level.
-  /// If you want to change the Qos level follow this call with a
-  /// call to AtTopic(MqttQos).
+  /// Is valid, if not valid the subscription message cannot be sent to
+  /// the broker.
+  bool get isValid => _payload.isValid;
+
+  /// Write length
+  int getWriteLength() {
+    if (!isValid) {
+      return 0;
+    }
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    writeTo(stream);
+    return stream.length;
+  }
+
+  /// Adds a new subscription topic with the default Qos level.
   MqttSubscribeMessage toTopic(String topic) {
-    //lastTopic = topic;
-    //payload.addSubscription(topic, MqttQos.atMostOnce);
-    //return this;
-  }
-
-  /// Sets the Qos level of the last topic added to the subscription
-  /// list via a call to ToTopic(string).
-  MqttSubscribeMessage atQos(MqttQos qos) {
-    //if (payload.subscriptions.containsKey(_lastTopic)) {
-      //payload.subscriptions[_lastTopic] = qos;
-    //}
-    //return this;
-  }
-
-  /// Sets the message identifier on the subscribe message.
-  MqttSubscribeMessage withMessageIdentifier(int messageIdentifier) {
-    variableHeader.messageIdentifier = messageIdentifier;
+    final subTopic = MqttSubscriptionTopic(topic);
+    _payload.addSubscription(subTopic);
     return this;
   }
 
-  /// Sets the message up to request acknowledgement from the
-  /// broker for each topic subscription.
-  MqttSubscribeMessage expectAcknowledgement() {
-    header.withQos(MqttQos.atLeastOnce);
+  /// Adds a new subscription topic with the specified Qos level[MqttQos].
+  MqttSubscribeMessage toTopicWithQos(String topic, MqttQos withQos) {
+    final subTopic = MqttSubscriptionTopic(topic);
+    final option = MqttSubscriptionOption();
+    option.maximumQos = withQos;
+    _payload.addSubscription(subTopic, option);
+    return this;
+  }
+
+  /// Adds a new subscription with the specified subscription option[MqttSubscriptionOption].
+  MqttSubscribeMessage toTopicWithOption(
+      String topic, MqttSubscriptionOption option) {
+    final subTopic = MqttSubscriptionTopic(topic);
+    _payload.addSubscription(subTopic, option);
+    return this;
+  }
+
+  /// Adds a new subscription with a prebuilt topic and option.
+  MqttSubscribeMessage toTopicPrebuilt(
+      MqttSubscriptionTopic subTopic, MqttSubscriptionOption option) {
+    _payload.addSubscription(subTopic, option);
     return this;
   }
 

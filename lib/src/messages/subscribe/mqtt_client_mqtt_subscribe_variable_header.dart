@@ -13,11 +13,6 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   /// Initializes a new instance of the MqttSubscribeVariableHeader class.
   MqttSubscribeVariableHeader();
 
-  /// Initializes a new instance of the MqttSubscribeVariableHeader class.
-  MqttSubscribeVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
-    readFrom(headerStream);
-  }
-
   /// The message identifier
   int messageIdentifier = 0;
 

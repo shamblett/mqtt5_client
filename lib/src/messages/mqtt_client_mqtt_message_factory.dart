@@ -39,7 +39,6 @@ class MqttMessageFactory {
             MqttPublishReleaseMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.subscribe:
-        message = MqttSubscribeMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.subscribeAck:
         message = MqttSubscribeAckMessage.fromByteBuffer(header, messageStream);

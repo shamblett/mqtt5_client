@@ -35,12 +35,6 @@ class MqttSubscribePayload implements MqttIPayload {
   /// Initializes a new instance of the MqttSubscribePayload class.
   MqttSubscribePayload();
 
-  /// Initializes a new instance of the MqttSubscribePayload class.
-  MqttSubscribePayload.fromByteBuffer(
-      this.header, this.variableHeader, MqttByteBuffer payloadStream) {
-    readFrom(payloadStream);
-  }
-
   /// Variable header
   MqttIVariableHeader variableHeader;
 

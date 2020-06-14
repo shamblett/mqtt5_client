@@ -105,10 +105,8 @@ class SubscriptionsManager {
       sub.createdTime = DateTime.now();
       pendingSubscriptions[sub.messageIdentifier] = sub;
       // Build a subscribe message for the caller and send it off to the broker.
-      final msg = MqttSubscribeMessage()
-          .withMessageIdentifier(sub.messageIdentifier)
-          .toTopic(sub.topic.rawTopic)
-          .atQos(sub.qos);
+      final msg =
+          MqttSubscribeMessage().toTopicWithQos(sub.topic.rawTopic, qos);
       connectionHandler.sendMessage(msg);
       return sub;
     } on Exception catch (e) {
