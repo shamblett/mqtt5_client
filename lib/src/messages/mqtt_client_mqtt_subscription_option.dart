@@ -51,6 +51,7 @@ class MqttSubscriptionOption {
     byte &= 0x3f;
     return byte;
   }
+
   /// Writes a subscription option to the supplied message stream.
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(serialize());

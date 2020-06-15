@@ -75,6 +75,20 @@ class SubscriptionsManager {
     return cn ??= createNewSubscription(topic, qos);
   }
 
+  /// Registers a new prebuilt subscription with the subscription manager.
+  Subscription registerPrebuiltSubscription(MqttSubscribeMessage message) {
+    if (message.isValid) {
+      var cn = tryGetExistingSubscription(
+          message.payload.subscriptions[0].topic.rawTopic);
+      return cn ??= createNewSubscription(
+          message.payload.subscriptions[0].topic.rawTopic,
+          message.payload.subscriptions[0].option.maximumQos);
+    } else {
+      throw ArgumentError(
+          'SubscriptionsManager::registerPrebuiltSubscription - subscription is invalid');
+    }
+  }
+
   /// Gets a view on the existing observable, if the subscription
   /// already exists.
   Subscription tryGetExistingSubscription(String topic) {

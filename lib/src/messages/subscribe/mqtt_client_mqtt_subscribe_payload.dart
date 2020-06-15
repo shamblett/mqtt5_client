@@ -43,6 +43,7 @@ class MqttSubscribePayload implements MqttIPayload {
 
   // The list of subscriptions.
   final _subscriptions = <MqttSubscribePayloadTopic>[];
+  List<MqttSubscribePayloadTopic> get subscriptions => _subscriptions;
 
   // UTF8 encoder
   final _enc = MqttUtf8Encoding();

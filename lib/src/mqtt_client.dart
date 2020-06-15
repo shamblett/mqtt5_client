@@ -274,6 +274,17 @@ class MqttClient {
     return subscriptionsManager.registerSubscription(topic, qosLevel);
   }
 
+  /// Initiates a topic subscription request to the connected broker
+  /// with a strongly typed data processor callback.
+  /// The prebuilt subscription message
+  /// Returns the subscription or null on failure
+  Subscription subscribePrebuilt(MqttSubscribeMessage message) {
+    if (connectionStatus.state != MqttConnectionState.connected) {
+      throw ConnectionException(connectionHandler?.connectionStatus?.state);
+    }
+    return subscriptionsManager.registerPrebuiltSubscription(message);
+  }
+
   /// Publishes a message to the message broker.
   /// Returns the message identifer assigned to the message.
   /// Raises InvalidTopicException if the topic supplied violates the
