@@ -2918,8 +2918,6 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        print(stream.buffer);
-        print(buffer.length);
         expect(message.getWriteLength(), message.header.messageSize + 2);
       });
     });

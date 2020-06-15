@@ -58,8 +58,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
     });
@@ -84,8 +82,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
@@ -113,8 +109,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
@@ -149,8 +143,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
@@ -177,8 +169,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
@@ -204,8 +194,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
@@ -230,8 +218,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       expect(subs.subscriptions[topic], isNull);
@@ -257,8 +243,6 @@ void main() {
       expect(
           testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
       final MqttSubscribeMessage msg = testCHS.sentMessages[0];
-      expect(msg.payload.subscriptions.containsKey(topic), isTrue);
-      expect(msg.payload.subscriptions[topic], MqttQos.atLeastOnce);
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       expect(subs.subscriptions[topic], isNull);
