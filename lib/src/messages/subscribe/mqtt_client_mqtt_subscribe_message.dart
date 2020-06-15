@@ -37,6 +37,9 @@ class MqttSubscribeMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
+    if (!isValid) {
+      return;
+    }
     header.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
         messageStream);
     variableHeader.writeTo(messageStream);
@@ -52,7 +55,7 @@ class MqttSubscribeMessage extends MqttMessage {
   }
 
   /// Is valid, if not valid the subscription message cannot be sent to
-  /// the broker.
+  /// the broker. At least one topic must be present in the payload.
   @override
   bool get isValid => _payload.isValid;
 
@@ -115,6 +118,10 @@ class MqttSubscribeMessage extends MqttMessage {
     _variableHeader.userProperty = properties;
     return this;
   }
+
+  /// Set the message identifier
+  set messageIdentifier(int identifier) =>
+      _variableHeader.messageIdentifier = identifier;
 
   /// Sets the duplicate flag for the message to indicate its a
   /// duplicate of a previous message type

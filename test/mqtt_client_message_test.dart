@@ -2883,30 +2883,50 @@ void main() {
     });
 
     group('Subscribe', () {
-      test('Deserialisation - Single topic', () {});
-      test('Deserialisation - Multi topic', () {});
-      test('Deserialisation - Single topic at least once Qos', () {});
-      test('Deserialisation - Multi topic at least once Qos', () {});
-      test('Deserialisation - Single topic exactly once Qos', () {});
-      test('Deserialisation - Multi topic exactly once Qos', () {});
-      test('Serialisation - Single topic', () {});
-      test('Serialisation - multi topic', () {});
-      test('Add subscription over existing subscription', () {});
-      test('Clear subscription', () {});
+      test('Serialisation - Defaults', () {
+        final message = MqttSubscribeMessage();
+        expect(message.header.qos, MqttQos.atLeastOnce);
+        expect(message.isValid, isFalse);
+        expect(message.getWriteLength(), 0);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        stream.writeShort(0x3030);
+        message.writeTo(stream);
+        expect(stream.position, 2);
+      });
+      test('Serialisation - Multi Topic With Properties', () {
+        final option = MqttSubscriptionOption();
+        option.retainHandling = MqttRetainHandling.sendRetained;
+        option.noLocal = true;
+        final subTopic = MqttSubscriptionTopic('Topic4');
+        final user1 = MqttUserProperty();
+        user1.pairName = 'User 1 Name';
+        user1.pairValue = 'User 1 value';
+        final user2 = MqttUserProperty();
+        user2.pairName = 'User 2 Name';
+        user2.pairValue = 'User 2 value';
+        final message = MqttSubscribeMessage()
+            .toTopic('Topic1')
+            .toTopicWithQos('Topic2', MqttQos.atMostOnce)
+            .toTopicWithOption('Topic3', option)
+            .toTopicPrebuilt(subTopic, option)
+            .withSubscriptionIdentifier(0xa0)
+            .withUserProperty(user1)
+            .withUserProperties([user2]);
+        message.messageIdentifier = 20;
+        expect(message.isValid, isTrue);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        print(stream.buffer);
+        print(buffer.length);
+        expect(message.getWriteLength(), message.header.messageSize + 2);
+      });
     });
 
     group('Subscribe Ack', () {
       test('Deserialisation - Single Qos at most once', () {});
-      test('Deserialisation - Single Qos at least once', () {});
-      test('Deserialisation - Single Qos exactly once', () {});
-      test('Deserialisation - Single Qos failure', () {});
-      test('Deserialisation - Single Qos reserved1', () {});
       test('Deserialisation - Multi Qos', () {});
-      test('Serialisation - Single Qos at most once', () {});
-      test('Serialisation - Single Qos at least once', () {});
-      test('Serialisation - Single Qos exactly once', () {});
-      test('Serialisation - Multi QOS', () {});
-      test('Serialisation - Clear grants', () {});
     });
 
     group('Unsubscribe', () {
