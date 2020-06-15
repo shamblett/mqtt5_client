@@ -20,7 +20,7 @@ class MqttSubscribeAckPayload extends MqttIPayload {
   }
 
   /// Variable header
-  MqttVariableHeader variableHeader;
+  MqttSubscribeAckVariableHeader variableHeader;
 
   /// Message header
   MqttHeader header;

@@ -48,12 +48,6 @@ class MqttSubscribeAckMessage extends MqttMessage {
         header, variableHeader, messageStream);
   }
 
-  /// Sets the message identifier on the subscribe message.
-  MqttSubscribeAckMessage withMessageIdentifier(int messageIdentifier) {
-    variableHeader.messageIdentifier = messageIdentifier;
-    return this;
-  }
-
   ///  Adds a Qos grant to the message.
   MqttSubscribeAckMessage addQosGrant(MqttQos qosGranted) {
     payload.addGrant(qosGranted);
