@@ -53,6 +53,7 @@ class MqttSubscribeMessage extends MqttMessage {
 
   /// Is valid, if not valid the subscription message cannot be sent to
   /// the broker.
+  @override
   bool get isValid => _payload.isValid;
 
   /// Write length
@@ -94,6 +95,24 @@ class MqttSubscribeMessage extends MqttMessage {
   MqttSubscribeMessage toTopicPrebuilt(
       MqttSubscriptionTopic subTopic, MqttSubscriptionOption option) {
     _payload.addSubscription(subTopic, option);
+    return this;
+  }
+
+  /// Subscription identifier
+  MqttSubscribeMessage withSubscriptionIdentifier(int identifier) {
+    _variableHeader.subscriptionIdentifier = identifier;
+    return this;
+  }
+
+  /// User property
+  MqttSubscribeMessage withUserProperty(MqttUserProperty property) {
+    _variableHeader.userProperty = [property];
+    return this;
+  }
+
+  /// User properties
+  MqttSubscribeMessage withUserProperties(List<MqttUserProperty> properties) {
+    _variableHeader.userProperty = properties;
     return this;
   }
 

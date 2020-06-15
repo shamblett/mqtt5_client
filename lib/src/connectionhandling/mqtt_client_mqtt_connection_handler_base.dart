@@ -132,6 +132,11 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
   @override
   void sendMessage(MqttMessage message) {
     MqttLogger.log('MqttConnectionHandlerBase::sendMessage - $message');
+    // Check for validity
+    if (!message.isValid) {
+      throw ArgumentError(
+          'MqttConnectionHandlerBase::sendMessage - message cannot be sent, not valid');
+    }
     if ((connectionStatus.state == MqttConnectionState.connected) ||
         (connectionStatus.state == MqttConnectionState.connecting)) {
       final buff = typed.Uint8Buffer();

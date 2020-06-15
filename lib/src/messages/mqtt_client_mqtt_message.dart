@@ -71,6 +71,9 @@ class MqttMessage {
   /// Reads a message from the supplied stream.
   void readFrom(MqttByteBuffer messageStream) {}
 
+  /// Is valid
+  bool get isValid => true;
+
   @override
   String toString() {
     final sb = StringBuffer();
