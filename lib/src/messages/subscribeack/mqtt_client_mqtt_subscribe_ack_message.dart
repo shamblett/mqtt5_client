@@ -50,7 +50,7 @@ class MqttSubscribeAckMessage extends MqttMessage {
 
   ///  Adds a Qos grant to the message.
   MqttSubscribeAckMessage addQosGrant(MqttQos qosGranted) {
-    payload.addGrant(qosGranted);
+    //payload.addGrant(qosGranted);
     return this;
   }
 

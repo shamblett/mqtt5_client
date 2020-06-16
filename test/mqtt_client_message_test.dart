@@ -2160,8 +2160,7 @@ void main() {
         buffer.add('e'.codeUnitAt(0));
         buffer.add('f'.codeUnitAt(0));
         final stream = MqttByteBuffer(buffer);
-        final header = MqttSubscribeAckVariableHeader();
-        header.readFrom(stream);
+        final header = MqttSubscribeAckVariableHeader.fromByteBuffer(stream);
         expect(header.messageIdentifier, 10);
         expect(header.userProperty[0].pairName, 'abc');
         expect(header.userProperty[0].pairValue, 'def');

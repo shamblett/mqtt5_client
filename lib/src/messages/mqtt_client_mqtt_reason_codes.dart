@@ -270,6 +270,73 @@ const Map<int, MqttPublishReasonCode> _mqttPublishReasonCodeValues =
 MqttEnumHelper<MqttPublishReasonCode> mqttPublishReasonCode =
     MqttEnumHelper<MqttPublishReasonCode>(_mqttPublishReasonCodeValues);
 
+/// Subscribe message processing reason codes.
+enum MqttSubscribeReasonCode {
+  /// The subscription is accepted and the maximum QoS sent will be QoS 0.
+  /// This might be a lower QoS than was requested.
+  grantedQos0,
+
+  /// The subscription is accepted and the maximum QoS sent will be QoS 1.
+  /// This might be a lower QoS than was requested.
+  grantedQos1,
+
+  /// The subscription is accepted and any received QoS will be
+  /// sent to this subscription.
+  grantedQos2,
+
+  /// The subscription is not accepted and the broker either does not wish to reveal
+  /// the reason or none of the other reason codes apply.
+  unspecifiedError,
+
+  /// The subscribe is valid but the broker does not accept it.
+  implementationSpecificError,
+
+  /// The client is not authorized to make this subscription.
+  notAuthorized,
+
+  /// The topic filter is correctly formed but is not allowed
+  /// for this client.
+  topicFilterInvalid,
+
+  /// The specified packet(message) identifier is already in use.
+  packetIdentifierInUse,
+
+  /// An implementation or administrative imposed limit has been exceeded.
+  quotaExceeded,
+
+  /// The broker does not support shared subscriptions for this client.
+  sharedSubscriptionsNotSupported,
+
+  /// The broker does not support subscription identifiers;
+  /// the subscription is not accepted.
+  subscriptionIdentifiersNotSupported,
+
+  /// The broker does not support wildcard Subscriptions;
+  /// the subscription is not accepted.
+  wildcardSubscriptionsNotSupported
+}
+
+/// MQTT subscribereason code support
+const Map<int, MqttSubscribeReasonCode> _mqttSubscribeReasonCodeValues =
+    <int, MqttSubscribeReasonCode>{
+  0x00: MqttSubscribeReasonCode.grantedQos0,
+  0x01: MqttSubscribeReasonCode.grantedQos1,
+  0x02: MqttSubscribeReasonCode.grantedQos2,
+  0x80: MqttSubscribeReasonCode.unspecifiedError,
+  0x83: MqttSubscribeReasonCode.implementationSpecificError,
+  0x87: MqttSubscribeReasonCode.notAuthorized,
+  0x8f: MqttSubscribeReasonCode.topicFilterInvalid,
+  0x91: MqttSubscribeReasonCode.packetIdentifierInUse,
+  0x97: MqttSubscribeReasonCode.quotaExceeded,
+  0x9e: MqttSubscribeReasonCode.sharedSubscriptionsNotSupported,
+  0xa1: MqttSubscribeReasonCode.subscriptionIdentifiersNotSupported,
+  0xa2: MqttSubscribeReasonCode.wildcardSubscriptionsNotSupported
+};
+
+/// MQTT dubscribe reason code helper
+MqttEnumHelper<MqttSubscribeReasonCode> mqttSubscribeReasonCode =
+    MqttEnumHelper<MqttSubscribeReasonCode>(_mqttSubscribeReasonCodeValues);
+
 /// Utilities class
 class MqttReasonCodeUtilities {
   /// Is the reason code an error. True if an error code or is not set.

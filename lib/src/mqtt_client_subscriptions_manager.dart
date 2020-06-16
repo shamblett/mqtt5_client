@@ -171,13 +171,14 @@ class SubscriptionsManager {
 
     // Check the Qos, we can get a failure indication(value 0x80) here if the
     // topic cannot be subscribed to.
-    if (subAck.payload.qosGrants[0] == MqttQos.failure) {
-      subscriptions.remove(topic);
-      if (onSubscribeFail != null) {
-        onSubscribeFail(topic);
-        return false;
-      }
-    }
+    // TODO
+//    if (subAck.payload.qosGrants[0] == MqttQos.failure) {
+//      subscriptions.remove(topic);
+//      if (onSubscribeFail != null) {
+//        onSubscribeFail(topic);
+//        return false;
+//      }
+//    }
     // Success, call the subscribed callback
     if (onSubscribed != null) {
       onSubscribed(topic);

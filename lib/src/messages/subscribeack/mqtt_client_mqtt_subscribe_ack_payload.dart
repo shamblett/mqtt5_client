@@ -7,8 +7,8 @@
 
 part of mqtt5_client;
 
-/// Class that contains details related to an MQTT Subscribe Ack
-/// messages payload.
+/// The payload contains a list of reason codes. Each reason code corresponds to a
+/// topic filter in the subscribe message being acknowledged.
 class MqttSubscribeAckPayload extends MqttIPayload {
   /// Initializes a new instance of the MqttSubscribeAckPayload class.
   MqttSubscribeAckPayload();
@@ -19,56 +19,49 @@ class MqttSubscribeAckPayload extends MqttIPayload {
     readFrom(payloadStream);
   }
 
-  /// Variable header
-  MqttSubscribeAckVariableHeader variableHeader;
+  int _length = 0;
+
+  /// Receive length
+  int get length => _length;
 
   /// Message header
   MqttHeader header;
 
-  /// The collection of Qos grants, Key is the topic, Value is the qos
-  List<MqttQos> qosGrants = <MqttQos>[];
+  /// Variable header
+  MqttSubscribeAckVariableHeader variableHeader;
+
+  /// Reason codes, one for each topic subscribed
+  final _reasonCodes = <MqttSubscribeReasonCode>[];
 
   /// Writes the payload to the supplied stream.
+  /// Not impemented, message is receive only.
   @override
   void writeTo(MqttByteBuffer payloadStream) {
-    for (final value in qosGrants) {
-      payloadStream.writeByte(value.index);
-    }
+    throw UnimplementedError(
+        'MqttSubscribeAckPayload::writeTo - not implemented, message is receive only');
   }
 
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    var payloadBytesRead = 0;
     final payloadLength = header.messageSize - variableHeader.length;
-    // Read the qos grants from the message payload
-    while (payloadBytesRead < payloadLength) {
-      final granted = MqttUtilities.getQosLevel(payloadStream.readByte());
-      payloadBytesRead++;
-      addGrant(granted);
+    for (var i = 0; i < payloadLength; i++) {
+      _reasonCodes
+          .add(mqttSubscribeReasonCode.fromInt(payloadStream.readByte()));
+      _length += 1;
     }
   }
 
   /// Gets the length of the payload in bytes when written to a stream.
+  /// // Always 0, message is receive only
   @override
-  int getWriteLength() => qosGrants.length;
-
-  /// Adds a new QosGrant to the collection of QosGrants
-  void addGrant(MqttQos grantedQos) {
-    qosGrants.add(grantedQos);
-  }
-
-  /// Clears the grants.
-  void clearGrants() {
-    qosGrants.clear();
-  }
+  int getWriteLength() => 0;
 
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('Payload: Qos grants [{${qosGrants.length}}]');
-    for (final value in qosGrants) {
-      sb.writeln('{{ Grant={$value} }}');
+    for (final value in _reasonCodes) {
+      sb.writeln('Reason Code = ${mqttSubscribeReasonCode.asString(value)}');
     }
     return sb.toString();
   }
