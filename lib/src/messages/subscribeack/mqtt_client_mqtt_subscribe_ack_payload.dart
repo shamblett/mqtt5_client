@@ -32,6 +32,7 @@ class MqttSubscribeAckPayload extends MqttIPayload {
 
   /// Reason codes, one for each topic subscribed
   final _reasonCodes = <MqttSubscribeReasonCode>[];
+  List<MqttSubscribeReasonCode> get reasonCodes => _reasonCodes;
 
   /// Writes the payload to the supplied stream.
   /// Not impemented, message is receive only.

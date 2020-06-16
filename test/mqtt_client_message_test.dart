@@ -2375,6 +2375,27 @@ void main() {
         ]);
       });
     });
+    group('Subscribe Ack Message', () {
+      test('Subscribe Ack Payload', () {
+        final messageHeader = MqttHeader();
+        messageHeader.messageSize = 3;
+        final varHeader = MqttSubscribeAckVariableHeader();
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x00);
+        buffer.add(0x8f);
+        buffer.add(0x97);
+        final stream = MqttByteBuffer(buffer);
+        final payload = MqttSubscribeAckPayload.fromByteBuffer(
+            messageHeader, varHeader, stream);
+        expect(payload.getWriteLength(), 0);
+        expect(payload.length, 3);
+        expect(payload.reasonCodes[0], MqttSubscribeReasonCode.grantedQos0);
+        expect(
+            payload.reasonCodes[1], MqttSubscribeReasonCode.topicFilterInvalid);
+        expect(payload.reasonCodes[2], MqttSubscribeReasonCode.quotaExceeded);
+        expect(stream.position, 3);
+      });
+    });
   });
 
   group('Messages', () {
