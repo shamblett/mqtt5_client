@@ -98,7 +98,7 @@ class MqttSubscribeAckVariableHeader implements MqttIVariableHeader {
   /// Message identifier
   void readMessageIdentifier(MqttByteBuffer stream) {
     messageIdentifier = stream.readShort();
-    length += 2;
+    _length += 2;
   }
 
   @override

@@ -2125,6 +2125,50 @@ void main() {
         expect(header.userProperty[0].pairValue, 'User 1 value');
       });
     });
+    group('Subscribe Ack Message', () {
+      test('Variable Header Subscribe Ack - Defaults', () {
+        final header = MqttSubscribeAckVariableHeader();
+        expect(header.messageIdentifier, 0);
+        expect(header.userProperty, isEmpty);
+        expect(header.reasonString, isNull);
+        expect(header.getWriteLength(), 0);
+        expect(header.length, 0);
+      });
+      test('Variable Header Subscribe Ack - Deserialize - All', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x0a);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        final stream = MqttByteBuffer(buffer);
+        final header = MqttSubscribeAckVariableHeader();
+        header.readFrom(stream);
+        expect(header.messageIdentifier, 10);
+        expect(header.userProperty[0].pairName, 'abc');
+        expect(header.userProperty[0].pairValue, 'def');
+        expect(header.reasonString, 'reason');
+        expect(header.length, 0x17);
+      });
+    });
   });
 
   group('Payload', () {
