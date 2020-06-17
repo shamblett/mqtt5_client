@@ -31,7 +31,8 @@ class MqttSubscribeAckVariableHeader implements MqttIVariableHeader {
   final _propertySet = MqttPropertyContainer();
 
   /// The message identifier
-  int messageIdentifier = 0;
+  int _messageIdentifier = 0;
+  int get messageIdentifier => _messageIdentifier;
 
   /// Reason String.
   ///
@@ -97,7 +98,7 @@ class MqttSubscribeAckVariableHeader implements MqttIVariableHeader {
 
   /// Message identifier
   void readMessageIdentifier(MqttByteBuffer stream) {
-    messageIdentifier = stream.readShort();
+    _messageIdentifier = stream.readShort();
     _length += 2;
   }
 

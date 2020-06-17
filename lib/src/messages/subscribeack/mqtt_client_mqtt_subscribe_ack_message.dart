@@ -7,13 +7,18 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Subscribe Ack Message.
+/// A subscribe acknowledgement message is sent by the broker to the client
+/// to confirm receipt and processing of a subscribe message.
+///
+/// A subscribe acknowledgement message contains a list of reason codes, that specify
+/// the maximum QoS level that was granted or the error which was found for
+/// each Subscription that was requested by the subscribe message.
 class MqttSubscribeAckMessage extends MqttMessage {
   /// Initializes a new instance of the MqttSubscribeAckMessage class.
   MqttSubscribeAckMessage() {
     header = MqttHeader().asType(MqttMessageType.subscribeAck);
-    variableHeader = MqttSubscribeAckVariableHeader();
-    payload = MqttSubscribeAckPayload();
+    _variableHeader = MqttSubscribeAckVariableHeader();
+    _payload = MqttSubscribeAckPayload();
   }
 
   /// Initializes a new instance of the MqttSubscribeAckMessage class.
@@ -23,35 +28,42 @@ class MqttSubscribeAckMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message.
-  MqttSubscribeAckVariableHeader variableHeader;
+  /// Variable Header
+  MqttSubscribeAckVariableHeader _variableHeader;
+  MqttSubscribeAckVariableHeader get variableHeader => _variableHeader;
 
-  /// Gets or sets the payload of the Mqtt Message.
-  MqttSubscribeAckPayload payload;
+  /// Payload
+  MqttSubscribeAckPayload _payload;
+  MqttSubscribeAckPayload get payload => _payload;
+
+  /// The message identifier
+  int get messageIdentifier => _variableHeader.messageIdentifier;
+
+  /// Reason codes, one for each topic subscribed
+  List<MqttSubscribeReasonCode> get reasonCodes => _payload.reasonCodes;
+
+  /// Reason String.
+  String get reasonString => _variableHeader.reasonString;
+
+  /// User Property.
+  List<MqttUserProperty> get userProperty => _variableHeader.userProperty;
 
   /// Writes the message to the supplied stream.
+  /// Not implemented, message is receive only.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
-        messageStream);
-    variableHeader.writeTo(messageStream);
-    payload.writeTo(messageStream);
+    throw UnimplementedError(
+        'MqttSubscribeAckMessage::writeTo - not implemented, message is receive only');
   }
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    variableHeader =
+    _variableHeader =
         MqttSubscribeAckVariableHeader.fromByteBuffer(messageStream);
-    payload = MqttSubscribeAckPayload.fromByteBuffer(
+    _payload = MqttSubscribeAckPayload.fromByteBuffer(
         header, variableHeader, messageStream);
-  }
-
-  ///  Adds a Qos grant to the message.
-  MqttSubscribeAckMessage addQosGrant(MqttQos qosGranted) {
-    //payload.addGrant(qosGranted);
-    return this;
+    messageStream.shrink();
   }
 
   @override

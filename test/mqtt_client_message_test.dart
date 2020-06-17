@@ -2987,8 +2987,51 @@ void main() {
     });
 
     group('Subscribe Ack', () {
-      test('Deserialisation - Single Qos at most once', () {});
-      test('Deserialisation - Multi Qos', () {});
+      test('Subscribe Ack - Deserialisation', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x1a);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x0a);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        buffer.add(0x8f);
+        buffer.add(0x97);
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        expect(stream.length, 0);
+        expect(baseMessage, const TypeMatcher<MqttSubscribeAckMessage>());
+        expect(baseMessage.header.messageType, MqttMessageType.subscribeAck);
+        expect(baseMessage.header.messageSize, 26);
+        final MqttSubscribeAckMessage bm = baseMessage;
+        expect(bm.messageIdentifier, 10);
+        expect(bm.userProperty[0].pairName, 'abc');
+        expect(bm.userProperty[0].pairValue, 'def');
+        expect(bm.reasonString, 'reason');
+        expect(bm.reasonCodes[0], MqttSubscribeReasonCode.grantedQos0);
+        expect(bm.reasonCodes[1], MqttSubscribeReasonCode.topicFilterInvalid);
+        expect(bm.reasonCodes[2], MqttSubscribeReasonCode.quotaExceeded);
+      });
     });
 
     group('Unsubscribe', () {

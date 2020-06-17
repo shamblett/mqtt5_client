@@ -54,7 +54,7 @@ class MqttSubscribeAckPayload extends MqttIPayload {
   }
 
   /// Gets the length of the payload in bytes when written to a stream.
-  /// // Always 0, message is receive only
+  /// Always 0, message is receive only
   @override
   int getWriteLength() => 0;
 

@@ -85,8 +85,7 @@ void main() {
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
-      final subAckMsg =
-          MqttSubscribeAckMessage().addQosGrant(MqttQos.atLeastOnce);
+      final subAckMsg = MqttSubscribeAckMessage();
       final ret = subs.confirmSubscription(subAckMsg);
       expect(ret, isTrue);
       expect(subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.active);
@@ -111,8 +110,7 @@ void main() {
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
-      final subAckMsg =
-          MqttSubscribeAckMessage().addQosGrant(MqttQos.atLeastOnce);
+      final subAckMsg = MqttSubscribeAckMessage();
       final ret = subs.confirmSubscription(subAckMsg);
       expect(ret, isFalse);
       expect(
@@ -144,7 +142,7 @@ void main() {
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
-      final subAckMsg = MqttSubscribeAckMessage().addQosGrant(MqttQos.failure);
+      final subAckMsg = MqttSubscribeAckMessage();
       final ret = subs.confirmSubscription(subAckMsg);
       expect(ret, isFalse);
       expect(subs.getSubscriptionsStatus(topic),
@@ -168,8 +166,7 @@ void main() {
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
-      final subAckMsg =
-          MqttSubscribeAckMessage().addQosGrant(MqttQos.atLeastOnce);
+      final subAckMsg = MqttSubscribeAckMessage();
       final ret = subs.confirmSubscription(subAckMsg);
       expect(ret, isTrue);
       expect(subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.active);
@@ -192,8 +189,7 @@ void main() {
       expect(msg.variableHeader.messageIdentifier, 1);
       expect(msg.header.qos, MqttQos.atLeastOnce);
       // Confirm the subscription
-      final subAckMsg =
-          MqttSubscribeAckMessage().addQosGrant(MqttQos.atLeastOnce);
+      final subAckMsg = MqttSubscribeAckMessage();
       subs.confirmSubscription(subAckMsg);
       expect(subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.active);
       expect(subs.subscriptions['abc_badTopic'], isNull);
@@ -241,8 +237,7 @@ void main() {
       expect(msg.header.qos, MqttQos.atLeastOnce);
       expect(subs.subscriptions[topic], isNull);
       // Confirm the subscription
-      final subAckMsg =
-          MqttSubscribeAckMessage().addQosGrant(MqttQos.atLeastOnce);
+      final subAckMsg = MqttSubscribeAckMessage();
       subs.confirmSubscription(subAckMsg);
       expect(subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.active);
       // Unsubscribe
