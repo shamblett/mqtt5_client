@@ -7,7 +7,8 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT Unsubscribe Message.
+/// An unsubscribe message is sent by the client to the broker,
+/// to unsubscribe from topics.
 class MqttUnsubscribeMessage extends MqttMessage {
   /// Initializes a new instance of the MqttUnsubscribeMessage class.
   MqttUnsubscribeMessage() {
@@ -47,12 +48,11 @@ class MqttUnsubscribeMessage extends MqttMessage {
   }
 
   /// Reads a message from the supplied stream.
+  /// Not implemented, message is send only.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    variableHeader =
-        MqttUnsubscribeVariableHeader.fromByteBuffer(messageStream);
-    payload = MqttUnsubscribePayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+    throw UnimplementedError(
+        'MqttUnsubscribeMessage::readFrom - not implemented, message is send only');
   }
 
   /// Adds a topic to the list of topics to unsubscribe from.
