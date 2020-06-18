@@ -2168,6 +2168,62 @@ void main() {
         expect(header.length, 0x17);
       });
     });
+    group('Unsubscribe Message', () {
+      test('Variable Header Unsubscribe - Defaults', () {
+        final header = MqttUnsubscribeVariableHeader();
+        expect(header.messageIdentifier, 0);
+        expect(header.userProperty, isEmpty);
+        expect(header.getWriteLength(), 3);
+        expect(header.length, 0);
+      });
+      test('Variable Header Unsubscribe - User properties', () {
+        final header = MqttUnsubscribeVariableHeader();
+        header.messageIdentifier = 10;
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        properties.add(user1);
+        header.userProperty = properties;
+        final buffer = typed.Uint8Buffer();
+        expect(header.getWriteLength(), 31);
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(stream.buffer, [
+          0,
+          10,
+          28,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+      });
+    });
   });
 
   group('Payload', () {
