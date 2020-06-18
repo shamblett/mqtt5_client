@@ -18,7 +18,9 @@ class MqttUnsubscribePayload extends MqttIPayload {
 
   /// Writes the payload to the supplied stream.
   @override
-  void writeTo(MqttByteBuffer payloadStream) {}
+  void writeTo(MqttByteBuffer payloadStream) {
+    payloadStream.write(_serialize());
+  }
 
   /// Creates a payload from the specified header stream.
   /// Not implemented, message is send only
@@ -56,9 +58,12 @@ class MqttUnsubscribePayload extends MqttIPayload {
   }
 
   /// Clears the subscriptions.
-  void clearSubscriptions() {
+  void clear() {
     _subscriptions.clear();
   }
+
+  /// Is valid, there must be at least one topic
+  bool get isValid => _subscriptions.isNotEmpty;
 
   @override
   String toString() {

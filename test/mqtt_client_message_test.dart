@@ -2452,6 +2452,41 @@ void main() {
         expect(stream.position, 3);
       });
     });
+    group('Unsubscribe Message', () {
+      test('Unsubscribe Payload', () {
+        final payload = MqttUnsubscribePayload();
+        expect(payload.isValid, isFalse);
+        expect(payload.getWriteLength(), 0);
+        payload.addStringSubscription('topic1');
+        expect(payload.isValid, isTrue);
+        payload.addTopicSubscription(MqttSubscriptionTopic('topic2'));
+        expect(payload.getWriteLength(), 16);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        payload.writeTo(stream);
+        expect(stream.buffer, [
+          0,
+          6,
+          116,
+          111,
+          112,
+          105,
+          99,
+          49,
+          0,
+          6,
+          116,
+          111,
+          112,
+          105,
+          99,
+          50
+        ]);
+        payload.clear();
+        expect(payload.isValid, isFalse);
+        expect(payload.getWriteLength(), 0);
+      });
+    });
   });
 
   group('Messages', () {
@@ -3091,12 +3126,27 @@ void main() {
     });
 
     group('Unsubscribe', () {
-      test('Deserialisation - Single topic', () {});
-      test('Deserialisation - Multi topic', () {});
-      test('Serialisation - Single topic', () {});
-      test('Serialisation V311 - Single topic', () {});
-      test('Serialisation - multi topic', () {});
-      test('Clear subscription', () {});
+      test('Serialisation', () {
+        final subTopic = MqttSubscriptionTopic('topic2');
+        final user1 = MqttUserProperty();
+        user1.pairName = 'User 1 Name';
+        user1.pairValue = 'User 1 value';
+        final user2 = MqttUserProperty();
+        user2.pairName = 'User 2 Name';
+        user2.pairValue = 'User 2 value';
+        final message = MqttUnsubscribeMessage()
+            .withMessageIdentifier(10)
+            .withUserProperty(user1)
+            .withUserProperties([user2])
+            .fromStringTopic('topic1')
+            .fromTopic(subTopic);
+        expect(message.isValid, isTrue);
+        expect(message.header.messageType, MqttMessageType.unsubscribe);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(message.getWriteLength(), message.header.messageSize + 2);
+      });
     });
 
     group('Unsubscribe Ack', () {

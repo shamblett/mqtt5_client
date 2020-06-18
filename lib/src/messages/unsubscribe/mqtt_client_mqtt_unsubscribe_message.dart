@@ -13,34 +13,21 @@ class MqttUnsubscribeMessage extends MqttMessage {
   /// Initializes a new instance of the MqttUnsubscribeMessage class.
   MqttUnsubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.unsubscribe);
-    variableHeader = MqttUnsubscribeVariableHeader();
-    payload = MqttUnsubscribePayload();
   }
 
-  /// Initializes a new instance of the MqttUnsubscribeMessage class.
-  MqttUnsubscribeMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
-    this.header = header;
-    readFrom(messageStream);
-  }
+  final _variableHeader = MqttUnsubscribeVariableHeader();
 
-  /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message.
-  MqttUnsubscribeVariableHeader variableHeader;
+  /// Gets the variable header.
+  MqttUnsubscribeVariableHeader get variableHeader => _variableHeader;
 
-  /// Gets or sets the payload of the Mqtt Message.
-  MqttUnsubscribePayload payload;
+  final _payload = MqttUnsubscribePayload();
+
+  /// Gets the payload.
+  MqttUnsubscribePayload get payload => _payload;
 
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    // If the protocol is V3.1.1 the following header fields
-    // must be set as below as in this protocol they are reserved.
-    if (MqttClientProtocol.version == MqttClientConstants.mqttProtocolVersion) {
-      header.duplicate = false;
-      header.qos = MqttQos.atLeastOnce;
-      header.retain = false;
-    }
     header.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
         messageStream);
     variableHeader.writeTo(messageStream);
@@ -53,6 +40,17 @@ class MqttUnsubscribeMessage extends MqttMessage {
   void readFrom(MqttByteBuffer messageStream) {
     throw UnimplementedError(
         'MqttUnsubscribeMessage::readFrom - not implemented, message is send only');
+  }
+
+  /// Write length
+  int getWriteLength() {
+    if (!isValid) {
+      return 0;
+    }
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    writeTo(stream);
+    return stream.length;
   }
 
   /// Adds a raw topic to the list of topics to unsubscribe from.
@@ -73,17 +71,15 @@ class MqttUnsubscribeMessage extends MqttMessage {
     return this;
   }
 
-  /// Sets the message up to request acknowledgement from the
-  /// broker for each topic subscription.
-  MqttUnsubscribeMessage expectAcknowledgement() {
-    header.withQos(MqttQos.atLeastOnce);
+  /// User property
+  MqttUnsubscribeMessage withUserProperty(MqttUserProperty property) {
+    _variableHeader.userProperty = [property];
     return this;
   }
 
-  /// Sets the duplicate flag for the message to indicate its a
-  /// duplicate of a previous message type with the same message identifier.
-  MqttUnsubscribeMessage isDuplicate() {
-    header.isDuplicate();
+  /// User properties
+  MqttUnsubscribeMessage withUserProperties(List<MqttUserProperty> properties) {
+    _variableHeader.userProperty = properties;
     return this;
   }
 
