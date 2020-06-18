@@ -246,8 +246,6 @@ void main() {
           testCHS.sentMessages[1], const TypeMatcher<MqttUnsubscribeMessage>());
       final MqttUnsubscribeMessage unSub = testCHS.sentMessages[1];
       expect(unSub.variableHeader.messageIdentifier, 2);
-      expect(unSub.payload.subscriptions.length, 1);
-      expect(unSub.payload.subscriptions[0], topic);
       expect(subs.pendingUnsubscriptions.length, 1);
       expect(subs.pendingUnsubscriptions[2], topic);
       // Unsubscribe ack

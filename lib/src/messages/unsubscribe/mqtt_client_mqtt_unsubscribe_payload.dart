@@ -7,72 +7,64 @@
 
 part of mqtt5_client;
 
-/// Class that contains details related to an MQTT Unsubscribe messages payload
+/// The payload for the unsubscribe message contains the list of
+/// topic filters that the client wishes to unsubscribe from
 class MqttUnsubscribePayload extends MqttIPayload {
   /// Initializes a new instance of the MqttUnsubscribePayload class.
   MqttUnsubscribePayload();
 
-  /// Initializes a new instance of the MqttUnsubscribePayload class.
-  MqttUnsubscribePayload.fromByteBuffer(
-      this.header, this.variableHeader, MqttByteBuffer payloadStream) {
-    readFrom(payloadStream);
-  }
-
-  /// Variable header
-  MqttVariableHeader variableHeader;
-
-  /// Message header
-  MqttHeader header;
-
-  /// The collection of subscriptions.
-  List<String> subscriptions = <String>[];
+  // The subscribe topics to unsubscribe
+  final _subscriptions = <MqttSubscriptionTopic>[];
 
   /// Writes the payload to the supplied stream.
   @override
-  void writeTo(MqttByteBuffer payloadStream) {
-    subscriptions.forEach(payloadStream.writeMqttStringM);
-  }
+  void writeTo(MqttByteBuffer payloadStream) {}
 
   /// Creates a payload from the specified header stream.
+  /// Not implemented, message is send only
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    var payloadBytesRead = 0;
-    final payloadLength = header.messageSize - variableHeader.length;
-    // Read all the topics and qos subscriptions from the message payload
-    while (payloadBytesRead < payloadLength) {
-      final topic = payloadStream.readMqttStringM();
-      payloadBytesRead += topic.length + 2; // +2 = Mqtt string length bytes
-      addSubscription(topic);
+    throw UnimplementedError(
+        'MqttUnsubscribePayload::readFrom - unimplemented, message is send only');
+  }
+
+  // Serialize
+  typed.Uint8Buffer _serialize() {
+    final buffer = typed.Uint8Buffer();
+    if (_subscriptions.isEmpty) {
+      return buffer;
     }
+    final stream = MqttByteBuffer(buffer);
+    for (final topic in _subscriptions) {
+      stream.writeMqttStringM(topic.rawTopic);
+    }
+    return buffer;
   }
 
   /// Gets the length of the payload in bytes when written to a stream.
   @override
-  int getWriteLength() {
-    var length = 0;
-    final enc = MqttUtf8Encoding();
-    for (final subscription in subscriptions) {
-      length += enc.byteCount(subscription);
-    }
-    return length;
+  int getWriteLength() => _serialize().length;
+
+  /// Adds a new subscription string to the collection of subscriptions.
+  void addStringSubscription(String topic) {
+    _subscriptions.add(MqttSubscriptionTopic(topic));
   }
 
-  /// Adds a new subscription to the collection of subscriptions.
-  void addSubscription(String topic) {
-    subscriptions.add(topic);
+  /// Adds a new subscription topic to the collection of subscriptions.
+  void addTopicSubscription(MqttSubscriptionTopic topic) {
+    _subscriptions.add((topic));
   }
 
   /// Clears the subscriptions.
   void clearSubscriptions() {
-    subscriptions.clear();
+    _subscriptions.clear();
   }
 
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('Payload: Unsubscription [{${subscriptions.length}}]');
-    for (final subscription in subscriptions) {
-      sb.writeln('{{ Topic={$subscription}}');
+    for (final subscription in _subscriptions) {
+      sb.writeln('Subscription = $subscription');
     }
     return sb.toString();
   }

@@ -145,7 +145,7 @@ class SubscriptionsManager {
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(
             messageIdentifierDispenser.getNextMessageIdentifier())
-        .fromTopic(topic);
+        .fromStringTopic(topic);
     connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         topic;

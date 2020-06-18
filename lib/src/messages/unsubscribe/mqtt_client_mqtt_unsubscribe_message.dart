@@ -55,9 +55,15 @@ class MqttUnsubscribeMessage extends MqttMessage {
         'MqttUnsubscribeMessage::readFrom - not implemented, message is send only');
   }
 
+  /// Adds a raw topic to the list of topics to unsubscribe from.
+  MqttUnsubscribeMessage fromStringTopic(String topic) {
+    payload.addStringSubscription(topic);
+    return this;
+  }
+
   /// Adds a topic to the list of topics to unsubscribe from.
-  MqttUnsubscribeMessage fromTopic(String topic) {
-    payload.addSubscription(topic);
+  MqttUnsubscribeMessage fromTopic(MqttSubscriptionTopic topic) {
+    payload.addTopicSubscription(topic);
     return this;
   }
 
