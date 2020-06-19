@@ -7,7 +7,9 @@
 
 part of mqtt5_client;
 
-/// Implementation of an MQTT ping Request Message.
+/// Sent by a broker to the client in response to a ping request message.
+///
+/// This message is used in keep alive processing.
 class MqttPingResponseMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPingResponseMessage class.
   MqttPingResponseMessage() {
@@ -17,6 +19,20 @@ class MqttPingResponseMessage extends MqttMessage {
   /// Initializes a new instance of the MqttPingResponseMessage class.
   MqttPingResponseMessage.fromHeader(MqttHeader header) {
     this.header = header;
+  }
+
+  /// Writes the message to the supplied stream.
+  /// Not implemented, message is receive only.
+  @override
+  void writeTo(MqttByteBuffer messageStream) {
+    throw UnimplementedError(
+        'MqttPingRequestMessage::readFrom - not implemented, message is receive only');
+  }
+
+  /// Read from a message stream.
+  @override
+  void readFrom(MqttByteBuffer stream) {
+    super.readFrom(stream);
   }
 
   @override

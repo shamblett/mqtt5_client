@@ -2671,13 +2671,28 @@ void main() {
     });
 
     group('Ping Request', () {
-      test('Deserialisation', () {});
-      test('Serialisation', () {});
+      test('Serialisation', () {
+        final message = MqttPingRequestMessage();
+        expect(message.isValid, isTrue);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer[0], 0xc0);
+        expect(stream.buffer[1], 0);
+      });
     });
 
     group('Ping Response', () {
-      test('Deserialisation', () {});
-      test('Serialisation', () {});
+      test('Deserialisation', () {
+        final sampleMessage = typed.Uint8Buffer(2);
+        sampleMessage[0] = 0xd0;
+        sampleMessage[1] = 0x00;
+        final byteBuffer = MqttByteBuffer(sampleMessage);
+        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        expect(baseMessage, const TypeMatcher<MqttPingResponseMessage>());
+        final MqttPingResponseMessage message = baseMessage;
+        expect(message.header.messageType, MqttMessageType.pingResponse);
+      });
     });
 
     group('Publish', () {
