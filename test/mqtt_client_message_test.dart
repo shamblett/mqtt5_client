@@ -2224,6 +2224,49 @@ void main() {
         ]);
       });
     });
+    group('Unsubscribe Ack Message', () {
+      test('Variable Header Unubscribe Ack - Defaults', () {
+        final header = MqttUnsubscribeAckVariableHeader();
+        expect(header.messageIdentifier, 0);
+        expect(header.userProperty, isEmpty);
+        expect(header.reasonString, isNull);
+        expect(header.getWriteLength(), 0);
+        expect(header.length, 0);
+      });
+      test('Variable Header Unsubscribe Ack - Deserialize - All', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x0a);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        final stream = MqttByteBuffer(buffer);
+        final header = MqttUnsubscribeAckVariableHeader.fromByteBuffer(stream);
+        expect(header.messageIdentifier, 10);
+        expect(header.userProperty[0].pairName, 'abc');
+        expect(header.userProperty[0].pairValue, 'def');
+        expect(header.reasonString, 'reason');
+        expect(header.length, 0x17);
+      });
+    });
   });
 
   group('Payload', () {
@@ -2485,6 +2528,27 @@ void main() {
         payload.clear();
         expect(payload.isValid, isFalse);
         expect(payload.getWriteLength(), 0);
+      });
+    });
+    group('Unsubscribe Ack Message', () {
+      test('Unsubscribe Ack Payload', () {
+        final messageHeader = MqttHeader();
+        messageHeader.messageSize = 3;
+        final varHeader = MqttUnsubscribeAckVariableHeader();
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x00);
+        buffer.add(0x8f);
+        buffer.add(0x97);
+        final stream = MqttByteBuffer(buffer);
+        final payload = MqttUnsubscribeAckPayload.fromByteBuffer(
+            messageHeader, varHeader, stream);
+        expect(payload.getWriteLength(), 0);
+        expect(payload.length, 3);
+        expect(payload.reasonCodes[0], MqttSubscribeReasonCode.grantedQos0);
+        expect(
+            payload.reasonCodes[1], MqttSubscribeReasonCode.topicFilterInvalid);
+        expect(payload.reasonCodes[2], MqttSubscribeReasonCode.quotaExceeded);
+        expect(stream.position, 3);
       });
     });
   });
@@ -3150,8 +3214,51 @@ void main() {
     });
 
     group('Unsubscribe Ack', () {
-      test('Deserialisation - Valid payload', () {});
-      test('Serialisation - Valid payload', () {});
+      test('Unsubscribe Ack - Deserialisation', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0xb0);
+        buffer.add(0x1a);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x0a);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        buffer.add(0x8f);
+        buffer.add(0x97);
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        expect(stream.length, 0);
+        expect(baseMessage, const TypeMatcher<MqttUnsubscribeAckMessage>());
+        expect(baseMessage.header.messageType, MqttMessageType.unsubscribeAck);
+        expect(baseMessage.header.messageSize, 26);
+        final MqttUnsubscribeAckMessage bm = baseMessage;
+        expect(bm.messageIdentifier, 10);
+        expect(bm.userProperty[0].pairName, 'abc');
+        expect(bm.userProperty[0].pairValue, 'def');
+        expect(bm.reasonString, 'reason');
+        expect(bm.reasonCodes[0], MqttSubscribeReasonCode.grantedQos0);
+        expect(bm.reasonCodes[1], MqttSubscribeReasonCode.topicFilterInvalid);
+        expect(bm.reasonCodes[2], MqttSubscribeReasonCode.quotaExceeded);
+      });
     });
 
     group('Unimplemented', () {

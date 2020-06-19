@@ -249,7 +249,7 @@ void main() {
       expect(subs.pendingUnsubscriptions.length, 1);
       expect(subs.pendingUnsubscriptions[2], topic);
       // Unsubscribe ack
-      final unsubAck = MqttUnsubscribeAckMessage().withMessageIdentifier(2);
+      final unsubAck = MqttUnsubscribeAckMessage();
       subs.confirmUnsubscribe(unsubAck);
       expect(subs.getSubscriptionsStatus(topic),
           MqttSubscriptionStatus.doesNotExist);
