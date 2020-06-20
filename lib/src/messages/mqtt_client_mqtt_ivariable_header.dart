@@ -15,7 +15,7 @@ part of mqtt5_client;
 /// Variable Header is common in several message types.
 abstract class MqttIVariableHeader {
   /// The length of the variable header in bytes
-  int length;
+  int get length;
 
   /// Serialize to a byte buffer stream
   void writeTo(MqttByteBuffer stream);

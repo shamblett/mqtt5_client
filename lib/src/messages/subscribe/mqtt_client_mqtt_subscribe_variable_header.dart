@@ -24,8 +24,6 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   /// To get the write length us [getWriteLength]
   @override
   int get length => 0;
-  @override
-  set length(int length) {}
 
   /// Subscription Identifier
   ///

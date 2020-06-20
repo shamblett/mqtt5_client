@@ -40,8 +40,6 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   /// To get the write length us [getWriteLength]
   @override
   int get length => _length;
-  @override
-  set length(int length) {}
 
   /// Reason String.
   ///

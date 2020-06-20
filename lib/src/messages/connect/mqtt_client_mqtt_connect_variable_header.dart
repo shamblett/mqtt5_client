@@ -20,8 +20,6 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// this is always the write length.
   @override
   int get length => getWriteLength();
-  @override
-  set length(int length) {}
 
   /// Protocol name
   final _protocolName = MqttClientProtocol.name;

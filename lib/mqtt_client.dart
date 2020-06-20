@@ -90,8 +90,6 @@ part 'src/utility/mqtt_client_payload_builder.dart';
 
 part 'src/messages/mqtt_client_mqtt_header.dart';
 
-part 'src/messages/mqtt_client_mqtt_variable_header.dart';
-
 part 'src/messages/mqtt_client_mqtt_ivariable_header.dart';
 
 part 'src/messages/mqtt_client_mqtt_message.dart';

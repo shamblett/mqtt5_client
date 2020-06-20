@@ -24,8 +24,6 @@ class MqttSubscribeAckVariableHeader implements MqttIVariableHeader {
   /// Receive length
   @override
   int get length => _length;
-  @override
-  set length(int length) {}
 
   // Properties
   final _propertySet = MqttPropertyContainer();
