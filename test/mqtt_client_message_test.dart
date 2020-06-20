@@ -2267,6 +2267,222 @@ void main() {
         expect(header.length, 0x17);
       });
     });
+    group('Disconnect Message', () {
+      test('Variable Header Disconnect - Defaults', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.disconnect;
+        final header = MqttDisconnectVariableHeader(mHeader);
+        expect(header.reasonCode, MqttDisconnectReasonCode.notSet);
+        expect(header.sessionExpiryInterval, 0);
+        expect(header.userProperty, isEmpty);
+        expect(header.reasonString, isNull);
+        expect(header.serverReference, isNull);
+        expect(header.getWriteLength(), 2);
+        expect(header.length, 0);
+      });
+      test('Variable Header Disconnect - Defaults - success', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.disconnect;
+        final header = MqttDisconnectVariableHeader(mHeader);
+        header.reasonCode = MqttDisconnectReasonCode.normalDisconnection;
+        expect(header.sessionExpiryInterval, 0);
+        expect(header.userProperty, isEmpty);
+        expect(header.reasonString, isNull);
+        expect(header.serverReference, isNull);
+        expect(header.getWriteLength(), 0);
+        expect(header.length, 0);
+      });
+      test('Variable Header Disconnect - Serialize', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.disconnect;
+        final header = MqttDisconnectVariableHeader(mHeader);
+        header.reasonCode = MqttDisconnectReasonCode.quotaExceeded;
+        header.sessionExpiryInterval = 10;
+        header.serverReference = 'Server Reference';
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        properties.add(user1);
+        header.userProperty = properties;
+        header.reasonString = 'Reason String';
+        expect(header.getWriteLength(), 70);
+        expect(header.length, 0);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(stream.buffer, [
+          151,
+          68,
+          17,
+          0,
+          0,
+          0,
+          10,
+          28,
+          0,
+          16,
+          83,
+          101,
+          114,
+          118,
+          101,
+          114,
+          32,
+          82,
+          101,
+          102,
+          101,
+          114,
+          101,
+          110,
+          99,
+          101,
+          31,
+          0,
+          13,
+          82,
+          101,
+          97,
+          115,
+          111,
+          110,
+          32,
+          83,
+          116,
+          114,
+          105,
+          110,
+          103,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+      });
+      test('Variable Header Disconnect - Deserialize - success', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.disconnect;
+        mHeader.messageSize = 0;
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttDisconnectVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.reasonCode, MqttDisconnectReasonCode.normalDisconnection);
+      });
+      test('Variable Header Disconnect - Deserialize - full', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.disconnect;
+        mHeader.messageSize = 72;
+        final buffer = typed.Uint8Buffer();
+        buffer.addAll([
+          151,
+          68,
+          17,
+          0,
+          0,
+          0,
+          10,
+          28,
+          0,
+          16,
+          83,
+          101,
+          114,
+          118,
+          101,
+          114,
+          32,
+          82,
+          101,
+          102,
+          101,
+          114,
+          101,
+          110,
+          99,
+          101,
+          31,
+          0,
+          13,
+          82,
+          101,
+          97,
+          115,
+          111,
+          110,
+          32,
+          83,
+          116,
+          114,
+          105,
+          110,
+          103,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+        final stream = MqttByteBuffer(buffer);
+        final header =
+            MqttDisconnectVariableHeader.fromByteBuffer(mHeader, stream);
+        expect(header.length, 70);
+        expect(header.reasonCode, MqttDisconnectReasonCode.quotaExceeded);
+        expect(header.sessionExpiryInterval, 10);
+        expect(header.serverReference, 'Server Reference');
+        expect(header.userProperty[0].pairName, 'User 1 name');
+        expect(header.userProperty[0].pairValue, 'User 1 value');
+        expect(header.reasonString, 'Reason String');
+      });
+    });
   });
 
   group('Payload', () {
@@ -2654,7 +2870,8 @@ void main() {
         expect(message.header.messageType, MqttMessageType.connectAck);
         expect(message.header.messageSize, 9);
         expect(message.variableHeader.connectAckFlags.sessionPresent, isFalse);
-        expect(message.variableHeader.reasonCode, MqttConnectReasonCode.success);
+        expect(
+            message.variableHeader.reasonCode, MqttConnectReasonCode.success);
         expect(
             MqttReasonCodeUtilities.isError(
                 mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),

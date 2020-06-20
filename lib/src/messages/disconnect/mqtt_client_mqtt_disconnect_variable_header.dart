@@ -22,7 +22,7 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Standard header
   MqttHeader header;
 
-  final _length = 0;
+  int _length = 0;
 
   /// The length of the variable header as received.
   /// To get the write length use[getWriteLength].
@@ -122,15 +122,15 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   void readFrom(MqttByteBuffer variableHeaderStream) {
     if (header.messageSize > 1) {
       readReasonCode(variableHeaderStream);
+      _length += 1;
       // Properties
       variableHeaderStream.shrink();
       _propertySet.readFrom(variableHeaderStream);
-      length += _propertySet.getWriteLength();
+      _length += _propertySet.getWriteLength();
       _processProperties();
       variableHeaderStream.shrink();
     } else {
-      reasonCode =
-          mqttDisconnectReasonCode.fromInt(variableHeaderStream.readByte());
+      reasonCode = MqttDisconnectReasonCode.normalDisconnection;
     }
   }
 
