@@ -101,7 +101,7 @@ class SynchronousMqttServerConnectionHandler
       if (!autoReconnectInProgress) {
         MqttLogger.log(
             'SynchronousMqttServerConnectionHandler::internalConnect failed');
-        if (connectionStatus.reasonCode == MqttConectReasonCode.notSet) {
+        if (connectionStatus.reasonCode == MqttConnectReasonCode.notSet) {
           throw NoConnectionException('The maximum allowed connection attempts '
               '({$maxConnectionAttempts}) were exceeded. '
               'The broker is not responding to the connection request message '

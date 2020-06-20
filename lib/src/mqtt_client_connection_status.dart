@@ -13,7 +13,7 @@ class MqttClientConnectionStatus {
   MqttConnectionState state = MqttConnectionState.disconnected;
 
   /// Reason Code
-  MqttConectReasonCode reasonCode = MqttConectReasonCode.notSet;
+  MqttConnectReasonCode reasonCode = MqttConnectReasonCode.notSet;
 
   /// Reason String
   String reasonString;

@@ -1175,8 +1175,8 @@ void main() {
         final message1 = MqttConnectAckVariableHeader.fromByteBuffer(stream);
         expect(message.connectAckFlags.sessionPresent, isFalse);
         expect(message1.connectAckFlags.sessionPresent, isFalse);
-        expect(message.reasonCode, MqttConectReasonCode.notSet);
-        expect(message1.reasonCode, MqttConectReasonCode.notSet);
+        expect(message.reasonCode, MqttConnectReasonCode.notSet);
+        expect(message1.reasonCode, MqttConnectReasonCode.notSet);
         expect(message.sessionExpiryInterval, 0);
         expect(message1.sessionExpiryInterval, 0);
         expect(message.receiveMaximum, 65535);
@@ -1298,7 +1298,7 @@ void main() {
         final stream = MqttByteBuffer(buffer);
         final message = MqttConnectAckVariableHeader.fromByteBuffer(stream);
         expect(message.connectAckFlags.sessionPresent, isTrue);
-        expect(message.reasonCode, MqttConectReasonCode.success);
+        expect(message.reasonCode, MqttConnectReasonCode.success);
         expect(message.sessionExpiryInterval, 30);
         expect(message.receiveMaximum, 1024);
         expect(message.maximumQos, 1);
@@ -2627,7 +2627,7 @@ void main() {
         expect(message.header.messageSize, 3);
         expect(message.variableHeader.connectAckFlags.sessionPresent, isTrue);
         expect(message.variableHeader.reasonCode,
-            MqttConectReasonCode.unspecifiedError);
+            MqttConnectReasonCode.unspecifiedError);
         expect(
             MqttReasonCodeUtilities.isError(
                 mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),
@@ -2654,7 +2654,7 @@ void main() {
         expect(message.header.messageType, MqttMessageType.connectAck);
         expect(message.header.messageSize, 9);
         expect(message.variableHeader.connectAckFlags.sessionPresent, isFalse);
-        expect(message.variableHeader.reasonCode, MqttConectReasonCode.success);
+        expect(message.variableHeader.reasonCode, MqttConnectReasonCode.success);
         expect(
             MqttReasonCodeUtilities.isError(
                 mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),

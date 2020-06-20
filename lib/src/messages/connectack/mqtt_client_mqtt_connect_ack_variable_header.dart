@@ -24,8 +24,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
   /// Reason Code
-  MqttConectReasonCode _reasonCode = MqttConectReasonCode.notSet;
-  MqttConectReasonCode get reasonCode => _reasonCode;
+  MqttConnectReasonCode _reasonCode = MqttConnectReasonCode.notSet;
+  MqttConnectReasonCode get reasonCode => _reasonCode;
 
   /// The property set
   final _propertySet = MqttPropertyContainer();

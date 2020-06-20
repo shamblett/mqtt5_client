@@ -15,135 +15,78 @@ part of mqtt5_client;
 /// Reason Code values of 0x80 or greater indicate failure.
 
 /// Connect message processing reason codes.
-enum MqttConectReasonCode {
-  /// Success/Normal disconnection/Granted QoS 0
+enum MqttConnectReasonCode {
+  /// The connection is accepted.
   success,
 
-  /// Granted QoS 1
-  grantedQos1,
-
-  /// Granted QoS 2
-  grantedQos2,
-
-  /// Disconnect with Will Message
-  disconnectWithWillMessage,
-
-  /// No matching subscribers
-  noMatchingSubscribers,
-
-  /// No subscription existed
-  noSubscriptionExisted,
-
-  /// Continue authentication
-  continueAuthentication,
-
-  /// Re-authenticate
-  reauthenticate,
-
-  /// Unspecified error
+  /// The broker does not wish to reveal the reason for the failure,
+  /// or none of the other reason codes apply.
   unspecifiedError,
 
-  /// Malformed Packet
+  /// Data within the connect message could not be correctly parsed.
   malformedPacket,
 
-  /// Protocol Error
+  /// Data in the connect message does not conform to this specification.
   protocolError,
 
-  /// Implementation specific error
+  /// The connect message is valid but is not accepted by this broker.
   implementationSpecificError,
 
-  /// Unsupported Protocol Version
+  /// The broker does not support the version of the MQTT protocol
+  /// requested by the client.
   unsupportedProtocolVersion,
 
-  /// client Identifier not valid
+  /// The client identifier is a valid string but is not allowed by the broker.
   clientIdentifierNotValid,
 
-  /// Bad User Name or Password
+  /// The broker does not accept the user name or password specified
+  /// by the client
   badUsernameOrPassword,
 
-  /// Not authorized
+  /// The client is not authorized to connect.
   notAuthorized,
 
-  /// broker unavailable
+  /// The MQTT broker is not available.
   serverUnavailable,
 
-  /// broker busy
+  /// The broker is busy. Try again later.
   serverBusy,
 
-  /// Banned
+  /// This client has been banned by administrative action.
+  /// Contact the server administrator.
   banned,
 
-  /// broker shutting down
-  serverShuttingDown,
-
-  /// Bad authentication method
+  /// The authentication method is not supported or does not match
+  /// the authentication method currently in use.
   badAuthenticationMethod,
 
-  /// Keep Alive timeout
-  keepAliveTimeout,
-
-  /// Session taken over
-  sessionTakenOver,
-
-  /// Topic Filter invalid
-  topicFilterInvalid,
-
-  /// Topic Name invalid
+  /// The will topic name is not malformed, but is not accepted by this broker.
   topicNameInvalid,
 
-  /// Packet Identifier in use
-  messageIdentifierInUse,
+  /// The connect packet(message) exceeded the maximum permissible size.
+  packetTooLarge,
 
-  /// Packet Identifier not found
-  messageIdentifierNotFound,
-
-  /// Receive Maximum exceeded
-  receiveMaximumExceeded,
-
-  /// Topic Alias invalid
-  topicAliasInvalid,
-
-  /// Packet too large
-  messageTooLarge,
-
-  /// Message rate too high
-  messageRateTooHigh,
-
-  /// Quota exceeded
+  /// An implementation or administrative imposed limit has been exceeded.
   quotaExceeded,
 
-  /// Administrative action
-  administrativeAction,
-
-  /// Payload format invalid
+  /// The will payload does not match the specified payload format indicator.
   payloadFormatInvalid,
 
-  /// Retain not supported
+  /// The broker does not support retained messages, and will
+  /// retain was set to true.
   retainNotSupported,
 
-  /// QoS not supported
+  /// The broker does not support the QoS set in will QoS.
   qosNotSupported,
 
-  /// Use another server
-  useAnotherbroker,
+  /// The client should temporarily use another broker.
+  useAnotherServer,
 
-  /// broker moved
+  /// The client should permanently use another broker.
   serverMoved,
 
-  /// Shared Subscriptions not supported
-  sharedSubscriptionsNotSupported,
-
-  /// connection rate exceeded
+  /// The connection rate limit has been exceeded.
   connectionRateExceeded,
-
-  /// Maximum connect time
-  maximumConnectTime,
-
-  /// Subscription Identifiers not supported
-  subscriptionIdentifiersNotSupported,
-
-  /// Wildcard Subscriptions not supported
-  wildcardSubscriptionsNotSupported,
 
   /// Not set indication, not part of the MQTT specification,
   /// used by the client to indicate a field has not yet been set.
@@ -151,57 +94,36 @@ enum MqttConectReasonCode {
 }
 
 /// MQTT connect reason code support
-const Map<int, MqttConectReasonCode> _mqttConnectReasonCodeValues =
-    <int, MqttConectReasonCode>{
-  0x00: MqttConectReasonCode.success,
-  0x01: MqttConectReasonCode.grantedQos1,
-  0x02: MqttConectReasonCode.grantedQos2,
-  0x04: MqttConectReasonCode.disconnectWithWillMessage,
-  0x10: MqttConectReasonCode.noMatchingSubscribers,
-  0x11: MqttConectReasonCode.noSubscriptionExisted,
-  0x18: MqttConectReasonCode.continueAuthentication,
-  0x19: MqttConectReasonCode.reauthenticate,
-  0x80: MqttConectReasonCode.unspecifiedError,
-  0x81: MqttConectReasonCode.malformedPacket,
-  0x82: MqttConectReasonCode.protocolError,
-  0x83: MqttConectReasonCode.implementationSpecificError,
-  0x84: MqttConectReasonCode.unsupportedProtocolVersion,
-  0x85: MqttConectReasonCode.clientIdentifierNotValid,
-  0x86: MqttConectReasonCode.badUsernameOrPassword,
-  0x87: MqttConectReasonCode.notAuthorized,
-  0x88: MqttConectReasonCode.serverUnavailable,
-  0x89: MqttConectReasonCode.serverBusy,
-  0x8a: MqttConectReasonCode.banned,
-  0x8b: MqttConectReasonCode.serverShuttingDown,
-  0x8c: MqttConectReasonCode.badAuthenticationMethod,
-  0x8d: MqttConectReasonCode.keepAliveTimeout,
-  0x8e: MqttConectReasonCode.sessionTakenOver,
-  0x8f: MqttConectReasonCode.topicFilterInvalid,
-  0x90: MqttConectReasonCode.topicNameInvalid,
-  0x91: MqttConectReasonCode.messageIdentifierInUse,
-  0x92: MqttConectReasonCode.messageIdentifierNotFound,
-  0x93: MqttConectReasonCode.receiveMaximumExceeded,
-  0x94: MqttConectReasonCode.topicAliasInvalid,
-  0x95: MqttConectReasonCode.messageTooLarge,
-  0x96: MqttConectReasonCode.messageRateTooHigh,
-  0x97: MqttConectReasonCode.quotaExceeded,
-  0x98: MqttConectReasonCode.administrativeAction,
-  0x99: MqttConectReasonCode.payloadFormatInvalid,
-  0x9a: MqttConectReasonCode.retainNotSupported,
-  0x9b: MqttConectReasonCode.qosNotSupported,
-  0x9c: MqttConectReasonCode.useAnotherbroker,
-  0x9d: MqttConectReasonCode.serverMoved,
-  0x9e: MqttConectReasonCode.sharedSubscriptionsNotSupported,
-  0x9f: MqttConectReasonCode.connectionRateExceeded,
-  0xa0: MqttConectReasonCode.maximumConnectTime,
-  0xa1: MqttConectReasonCode.subscriptionIdentifiersNotSupported,
-  0xa2: MqttConectReasonCode.wildcardSubscriptionsNotSupported,
-  0xff: MqttConectReasonCode.notSet
+const Map<int, MqttConnectReasonCode> _mqttConnectReasonCodeValues =
+    <int, MqttConnectReasonCode>{
+  0x00: MqttConnectReasonCode.success,
+  0x80: MqttConnectReasonCode.unspecifiedError,
+  0x81: MqttConnectReasonCode.malformedPacket,
+  0x82: MqttConnectReasonCode.protocolError,
+  0x83: MqttConnectReasonCode.implementationSpecificError,
+  0x84: MqttConnectReasonCode.unsupportedProtocolVersion,
+  0x85: MqttConnectReasonCode.clientIdentifierNotValid,
+  0x86: MqttConnectReasonCode.badUsernameOrPassword,
+  0x87: MqttConnectReasonCode.notAuthorized,
+  0x88: MqttConnectReasonCode.serverUnavailable,
+  0x89: MqttConnectReasonCode.serverBusy,
+  0x8a: MqttConnectReasonCode.banned,
+  0x8c: MqttConnectReasonCode.badAuthenticationMethod,
+  0x90: MqttConnectReasonCode.topicNameInvalid,
+  0x95: MqttConnectReasonCode.packetTooLarge,
+  0x97: MqttConnectReasonCode.quotaExceeded,
+  0x99: MqttConnectReasonCode.payloadFormatInvalid,
+  0x9a: MqttConnectReasonCode.retainNotSupported,
+  0x9b: MqttConnectReasonCode.qosNotSupported,
+  0x9c: MqttConnectReasonCode.useAnotherServer,
+  0x9d: MqttConnectReasonCode.serverMoved,
+  0x9f: MqttConnectReasonCode.connectionRateExceeded,
+  0xff: MqttConnectReasonCode.notSet
 };
 
 /// MQTT connect reason code helper
-MqttEnumHelper<MqttConectReasonCode> mqttConnectReasonCode =
-    MqttEnumHelper<MqttConectReasonCode>(_mqttConnectReasonCodeValues);
+MqttEnumHelper<MqttConnectReasonCode> mqttConnectReasonCode =
+    MqttEnumHelper<MqttConnectReasonCode>(_mqttConnectReasonCodeValues);
 
 /// Publish message processing reason codes.
 enum MqttPublishReasonCode {
@@ -340,9 +262,156 @@ const Map<int, MqttSubscribeReasonCode> _mqttSubscribeReasonCodeValues =
   0xa2: MqttSubscribeReasonCode.wildcardSubscriptionsNotSupported
 };
 
-/// MQTT dubscribe reason code helper
+/// MQTT subscribe reason code helper
 MqttEnumHelper<MqttSubscribeReasonCode> mqttSubscribeReasonCode =
     MqttEnumHelper<MqttSubscribeReasonCode>(_mqttSubscribeReasonCodeValues);
+
+/// Disconnect message processing reason codes.
+enum MqttDisconnectReasonCode {
+  /// Close the connection normally. Do not send the will message.
+  normalDisconnection,
+
+  /// The client wishes to disconnect but requires that the broker also
+  /// publishes its will message.
+  disconnectWithWillMessage,
+
+  /// The connection is closed but the sender either does not wish to reveal the reason,
+  /// or none of the other reason codes apply.
+  unspecifiedError,
+
+  /// The received packet does not conform to this specification.
+  malformedPacket,
+
+  /// An unexpected or out of order packet was received.
+  protocolError,
+
+  /// The message received is valid but cannot be processed by this implementation.
+  implementationSpecificError,
+
+  /// The request is not authorized.
+  notAuthorized,
+
+  /// The broker is busy and cannot continue processing requests from this client.
+  serverBusy,
+
+  /// The broker is shutting down.
+  serverShuttingDown,
+
+  /// The connection is closed because no packet has been received for
+  /// 1.5 times the keep alive time.
+  keepAliveTimeout,
+
+  /// Another connection using the same client ID has connected causing
+  /// this connection to be closed.
+  sessionTakenOver,
+
+  /// The topic filter is correctly formed, but is not accepted
+  /// by this broker.
+  topicFilterInvalid,
+
+  /// The topic name is correctly formed, but is not accepted by this
+  /// client or broker.
+  topicNameInvalid,
+
+  /// The client or broker has received more than receive maximum publication
+  /// for which it has not sent a publish acnowlwdge or publish complete message.
+  receiveMaximumExceeded,
+
+  /// The client or broker has received a publish message containing a topic
+  /// alias which is greater than the maximum topic alias it sent in the
+  /// connect or connect acknowledge message.
+  topicAliasInvalid,
+
+  /// The packet(message) size is greater than maximum message size for this
+  /// client or broker.
+  packetTooLarge,
+
+  /// The received data rate is too high.
+  messageRateTooHigh,
+
+  /// An implementation or administrative imposed limit has been exceeded.
+  quotaExceeded,
+
+  /// The Connection is closed due to an administrative action.
+  administrativeAction,
+
+  /// The payload format does not match the one specified by the
+  /// payload format indicator.
+  payloadFormatInvalid,
+
+  /// The broker does not support retained messages.
+  retainNotSupported,
+
+  /// The client specified a QoS greater than the QoS specified in a
+  /// maximum QoS in the connection acknowledge message.
+  qosNotSupported,
+
+  /// The client should temporarily change its broker.
+  useAnotherServer,
+
+  /// The broker is moved and the client should permanently change its broker location.
+  serverMoved,
+
+  /// The broker does not support shared subscriptions.
+  sharedSubscriptionsNotSupported,
+
+  /// This connection is closed because the connection rate is too high.
+  connectionRateExceeded,
+
+  /// The maximum connection time authorized for this connection has been exceeded.
+  maximumConnectTime,
+
+  /// The broker does not support subscription identifiers;
+  /// the subscription is not accepted.
+  subscriptionIdentifiersNotSupported,
+
+  /// The broker does not support Wildcard Subscriptions;
+  /// the subscription is not accepted.
+  wildcardSubscriptionsNotSupported,
+
+  /// Not set indication, not part of the MQTT specification,
+  /// used by the client to indicate a field has not yet been set.
+  notSet
+}
+
+/// MQTT disconnect reason code support
+const Map<int, MqttDisconnectReasonCode> _mqttDisconnectReasonCodeValues =
+    <int, MqttDisconnectReasonCode>{
+  0x00: MqttDisconnectReasonCode.normalDisconnection,
+  0x04: MqttDisconnectReasonCode.disconnectWithWillMessage,
+  0x80: MqttDisconnectReasonCode.unspecifiedError,
+  0x81: MqttDisconnectReasonCode.malformedPacket,
+  0x82: MqttDisconnectReasonCode.protocolError,
+  0x83: MqttDisconnectReasonCode.implementationSpecificError,
+  0x87: MqttDisconnectReasonCode.notAuthorized,
+  0x89: MqttDisconnectReasonCode.serverBusy,
+  0x8b: MqttDisconnectReasonCode.serverShuttingDown,
+  0x8d: MqttDisconnectReasonCode.keepAliveTimeout,
+  0x8e: MqttDisconnectReasonCode.sessionTakenOver,
+  0x8f: MqttDisconnectReasonCode.topicFilterInvalid,
+  0x90: MqttDisconnectReasonCode.topicNameInvalid,
+  0x93: MqttDisconnectReasonCode.receiveMaximumExceeded,
+  0x94: MqttDisconnectReasonCode.topicAliasInvalid,
+  0x95: MqttDisconnectReasonCode.packetTooLarge,
+  0x96: MqttDisconnectReasonCode.messageRateTooHigh,
+  0x97: MqttDisconnectReasonCode.quotaExceeded,
+  0x98: MqttDisconnectReasonCode.administrativeAction,
+  0x99: MqttDisconnectReasonCode.payloadFormatInvalid,
+  0x9a: MqttDisconnectReasonCode.retainNotSupported,
+  0x9b: MqttDisconnectReasonCode.qosNotSupported,
+  0x9c: MqttDisconnectReasonCode.useAnotherServer,
+  0x9d: MqttDisconnectReasonCode.serverMoved,
+  0x9e: MqttDisconnectReasonCode.sharedSubscriptionsNotSupported,
+  0x9f: MqttDisconnectReasonCode.connectionRateExceeded,
+  0xa0: MqttDisconnectReasonCode.maximumConnectTime,
+  0xa1: MqttDisconnectReasonCode.subscriptionIdentifiersNotSupported,
+  0xa2: MqttDisconnectReasonCode.wildcardSubscriptionsNotSupported,
+  0xff: MqttDisconnectReasonCode.notSet
+};
+
+/// MQTT diconnect reason code helper
+MqttEnumHelper<MqttDisconnectReasonCode> mqttDisconnectReasonCode =
+    MqttEnumHelper<MqttDisconnectReasonCode>(_mqttDisconnectReasonCodeValues);
 
 /// Utilities class
 class MqttReasonCodeUtilities {

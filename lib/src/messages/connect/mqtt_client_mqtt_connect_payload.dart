@@ -50,7 +50,7 @@ class MqttConnectPayload implements MqttIPayload {
   ///
   /// If the broker rejects the ClientID it MAY respond to the Connect message
   /// with a Connect Acknowledgement message [MqttConnectAckMessage] using
-  /// Reason Code client Identifier not valid [MqttConectReasonCode.clientIdentifierNotValid].
+  /// Reason Code client Identifier not valid [MqttConnectReasonCode.clientIdentifierNotValid].
   String clientIdentifier = '';
 
   /// Will topic.
