@@ -114,6 +114,8 @@ part 'src/messages/connectack/mqtt_client_mqtt_connect_ack_flags.dart';
 
 part 'src/messages/disconnect/mqtt_client_mqtt_disconnect_message.dart';
 
+part 'src/messages/disconnect/mqtt_client_mqtt_disconnect_variable_header.dart';
+
 part 'src/messages/pingrequest/mqtt_client_mqtt_ping_request_message.dart';
 
 part 'src/messages/pingresponse/mqtt_client_mqtt_ping_response_message.dart';

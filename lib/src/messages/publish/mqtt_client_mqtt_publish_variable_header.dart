@@ -7,7 +7,6 @@
 
 part of mqtt5_client;
 
-/// Implementation of the variable header for an MQTT Publish message.
 /// The Variable Header of the Publish message contains the following fields in the
 /// order: Topic Name, Packet Identifier, and Properties.
 class MqttPublishVariableHeader implements MqttIVariableHeader {
@@ -281,8 +280,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('TopicName = $topicName');
-    sb.writeln('MessageIdentifier = $messageIdentifier');
+    sb.writeln('Topic Name = $topicName');
+    sb.writeln('Message Identifier = $messageIdentifier');
     sb.writeln('Payload Format Indicator = $payloadFormatIndicator');
     sb.writeln('Message Expiry Interval = $messageExpiryInterval');
     sb.writeln('Topic Alias = $topicAlias');
