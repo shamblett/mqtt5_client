@@ -2883,8 +2883,137 @@ void main() {
     });
 
     group('Disconnect', () {
-      test('Deserialisation', () {});
-      test('Serialisation', () {});
+      test('Disconnect Message - Deserialisation - success', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0xe0);
+        buffer.add(0x00);
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        expect(baseMessage, const TypeMatcher<MqttDisconnectMessage>());
+        final MqttDisconnectMessage message = baseMessage;
+        expect(message.header.messageType, MqttMessageType.disconnect);
+        expect(message.header.messageSize, 0);
+        expect(
+            message.reasonCode, MqttDisconnectReasonCode.normalDisconnection);
+        expect(message.isValid, isTrue);
+      });
+      test('Disconnect Message - Deserialisation - full', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0xe0);
+        buffer.add(0x46);
+        buffer.addAll([
+          151,
+          68,
+          17,
+          0,
+          0,
+          0,
+          10,
+          28,
+          0,
+          16,
+          83,
+          101,
+          114,
+          118,
+          101,
+          114,
+          32,
+          82,
+          101,
+          102,
+          101,
+          114,
+          101,
+          110,
+          99,
+          101,
+          31,
+          0,
+          13,
+          82,
+          101,
+          97,
+          115,
+          111,
+          110,
+          32,
+          83,
+          116,
+          114,
+          105,
+          110,
+          103,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        expect(baseMessage, const TypeMatcher<MqttDisconnectMessage>());
+        final MqttDisconnectMessage message = baseMessage;
+        expect(message.header.messageType, MqttMessageType.disconnect);
+        expect(message.header.messageSize, 70);
+        expect(message.reasonCode, MqttDisconnectReasonCode.quotaExceeded);
+        expect(message.sessionExpiryInterval, 10);
+        expect(message.serverReference, 'Server Reference');
+        expect(message.userProperties[0].pairName, 'User 1 name');
+        expect(message.userProperties[0].pairValue, 'User 1 value');
+        expect(message.reasonString, 'Reason String');
+        expect(message.isValid, isTrue);
+      });
+      test('Disconnect Message - Serialisation - Success', () {
+        final message = MqttDisconnectMessage()
+            .withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer[0], 0xe0);
+        expect(stream.buffer[1], 0);
+        expect(message.isValid, isTrue);
+      });
+      test('Disconnect Message - Serialisation - Full', () {
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        final message = MqttDisconnectMessage()
+            .withReasonCode(MqttDisconnectReasonCode.quotaExceeded)
+            .withSessionExpiryInterval(10)
+            .withServerReference('Server Reference')
+            .withUserProperties([user1]).withReasonString('Reason String');
+
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer[0], 0xe0);
+        expect(stream.buffer[1], 70);
+        expect(message.isValid, isTrue);
+      });
     });
 
     group('Ping Request', () {
