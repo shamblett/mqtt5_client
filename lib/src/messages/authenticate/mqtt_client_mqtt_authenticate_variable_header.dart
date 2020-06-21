@@ -148,7 +148,7 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   @override
   int getWriteLength() {
     var headerLength = 0;
-    if ( isValid ) {
+    if (isValid) {
       headerLength += _propertySet.getWriteLength() + 1;
     }
     return headerLength;

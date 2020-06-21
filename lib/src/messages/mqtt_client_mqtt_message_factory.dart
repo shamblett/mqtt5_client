@@ -58,6 +58,9 @@ class MqttMessageFactory {
       case MqttMessageType.disconnect:
         message = MqttDisconnectMessage.fromByteBuffer(header, messageStream);
         break;
+      case MqttMessageType.auth:
+        message = MqttAuthenticateMessage.fromByteBuffer(header, messageStream);
+        break;
       default:
         throw InvalidHeaderException(
             'The Message Type specified ($header.messageType) is not a valid '

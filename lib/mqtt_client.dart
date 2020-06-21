@@ -94,6 +94,8 @@ part 'src/messages/mqtt_client_mqtt_ivariable_header.dart';
 
 part 'src/messages/mqtt_client_mqtt_message.dart';
 
+part 'src/messages/authenticate/mqtt_client_mqtt_authenticate_message.dart';
+
 part 'src/messages/authenticate/mqtt_client_mqtt_authenticate_variable_header.dart';
 
 part 'src/messages/connect/mqtt_client_mqtt_connect_flags.dart';

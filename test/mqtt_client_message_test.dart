@@ -3214,6 +3214,135 @@ void main() {
       });
     });
 
+    group('Authenticate', () {
+      test('Authenticate Message - Deserialisation - success', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0xf0);
+        buffer.add(0x00);
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        expect(baseMessage, const TypeMatcher<MqttAuthenticateMessage>());
+        final MqttAuthenticateMessage message = baseMessage;
+        expect(message.header.messageType, MqttMessageType.auth);
+        expect(message.header.messageSize, 0);
+        expect(message.reasonCode, MqttAuthenticateReasonCode.success);
+        expect(message.isValid, isFalse);
+        expect(message.variableHeader.length, 0);
+      });
+      test('Authenticate Message - Deserialisation - full', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0xf0);
+        buffer.add(0x3e);
+        buffer.addAll([
+          24,
+          60,
+          21,
+          0,
+          6,
+          109,
+          101,
+          116,
+          104,
+          111,
+          100,
+          22,
+          0,
+          4,
+          1,
+          2,
+          3,
+          4,
+          31,
+          0,
+          13,
+          82,
+          101,
+          97,
+          115,
+          111,
+          110,
+          32,
+          83,
+          116,
+          114,
+          105,
+          110,
+          103,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        expect(baseMessage, const TypeMatcher<MqttAuthenticateMessage>());
+        final MqttAuthenticateMessage message = baseMessage;
+        expect(message.header.messageType, MqttMessageType.auth);
+        expect(message.header.messageSize, 62);
+        expect(message.reasonCode,
+            MqttAuthenticateReasonCode.continueAuthentication);
+        expect(message.authenticationMethod, 'method');
+        expect(message.userProperties[0].pairName, 'User 1 name');
+        expect(message.userProperties[0].pairValue, 'User 1 value');
+        expect(message.reasonString, 'Reason String');
+        expect(message.authenticationData, [1, 2, 3, 4]);
+        expect(message.isValid, isTrue);
+
+        expect(message.isValid, isTrue);
+      });
+      test('Authenticate Message - Serialisation - Success', () {
+        final message = MqttAuthenticateMessage()
+            .withReasonCode(MqttAuthenticateReasonCode.success);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer[0], 0xf0);
+        expect(stream.buffer[1], 0);
+        expect(message.isValid, isFalse);
+      });
+      test('Authenticate Message - Serialisation - Full', () {
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        final message = MqttAuthenticateMessage()
+            .withReasonCode(MqttAuthenticateReasonCode.success)
+            .withAuthenticationMethod('method')
+            .withAuthenticationData(typed.Uint8Buffer()..addAll([1, 2, 3, 4]))
+            .withUserProperties([user1]).withReasonString('Reason String');
+
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer[0], 0xf0);
+        expect(stream.buffer[1], 62);
+        expect(message.isValid, isTrue);
+      });
+    });
+
     group('Ping Request', () {
       test('Serialisation', () {
         final message = MqttPingRequestMessage();
@@ -3823,7 +3952,7 @@ void main() {
     group('Unimplemented', () {
       test('Deserialisation - Invalid payload', () {
         final sampleMessage = <int>[
-          0xFF,
+          0x00,
           0x02,
           0x00,
           0x04,
