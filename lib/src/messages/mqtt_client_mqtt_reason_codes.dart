@@ -409,9 +409,39 @@ const Map<int, MqttDisconnectReasonCode> _mqttDisconnectReasonCodeValues =
   0xff: MqttDisconnectReasonCode.notSet
 };
 
-/// MQTT diconnect reason code helper
+/// MQTT disconnect reason code helper
 MqttEnumHelper<MqttDisconnectReasonCode> mqttDisconnectReasonCode =
     MqttEnumHelper<MqttDisconnectReasonCode>(_mqttDisconnectReasonCodeValues);
+
+/// Authentication message processing reason codes.
+enum MqttAuthenticateReasonCode {
+  /// Authentication is successful
+  success,
+
+  /// Continue the authentication with another step.
+  continueAuthentication,
+
+  /// Initiate a re-authentication.
+  reAuthenticate,
+
+  /// Not set indication, not part of the MQTT specification,
+  /// used by the client to indicate a field has not yet been set.
+  notSet
+}
+
+/// MQTT authenticate reason code support
+const Map<int, MqttAuthenticateReasonCode> _mqttAuthenticateReasonCodeValues =
+    <int, MqttAuthenticateReasonCode>{
+  0x00: MqttAuthenticateReasonCode.success,
+  0x18: MqttAuthenticateReasonCode.continueAuthentication,
+  0x19: MqttAuthenticateReasonCode.reAuthenticate,
+  0x0ff: MqttAuthenticateReasonCode.notSet
+};
+
+// MQTT authenticate reason code helper
+MqttEnumHelper<MqttAuthenticateReasonCode> mqttAuthenticateReasonCode =
+    MqttEnumHelper<MqttAuthenticateReasonCode>(
+        _mqttAuthenticateReasonCodeValues);
 
 /// Utilities class
 class MqttReasonCodeUtilities {
