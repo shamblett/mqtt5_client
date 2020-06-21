@@ -138,7 +138,7 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   /// Writes the variable header to the supplied stream.
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    if (reasonCode != MqttAuthenticateReasonCode.success) {
+    if (isValid) {
       writeReasonCode(variableHeaderStream);
       _propertySet.writeTo(variableHeaderStream);
     }
@@ -148,7 +148,7 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   @override
   int getWriteLength() {
     var headerLength = 0;
-    if (reasonCode != MqttAuthenticateReasonCode.success) {
+    if ( isValid ) {
       headerLength += _propertySet.getWriteLength() + 1;
     }
     return headerLength;

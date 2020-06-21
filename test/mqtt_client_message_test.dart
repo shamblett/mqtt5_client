@@ -2483,6 +2483,204 @@ void main() {
         expect(header.reasonString, 'Reason String');
       });
     });
+    group('Authenticate Message', () {
+      test('Variable Header Authenticate - Defaults', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.auth;
+        final header = MqttAuthenticateVariableHeader(mHeader);
+        expect(header.reasonCode, MqttAuthenticateReasonCode.notSet);
+        expect(header.authenticationMethod, isNull);
+        expect(header.userProperty, isEmpty);
+        expect(header.reasonString, isNull);
+        expect(header.authenticationData, isEmpty);
+        expect(header.getWriteLength(), 0);
+        expect(header.length, 0);
+        expect(header.isValid, isFalse);
+        header.reasonCode = MqttAuthenticateReasonCode.success;
+        expect(header.isValid, isFalse);
+        expect(header.getWriteLength(), 0);
+        header.authenticationMethod = 'method';
+        expect(header.isValid, isTrue);
+        expect(header.getWriteLength(), 11);
+      });
+      test('Variable Header Authenticate - Serialize', () {
+        final mHeader = MqttHeader();
+        mHeader.messageType = MqttMessageType.auth;
+        final header = MqttAuthenticateVariableHeader(mHeader);
+        header.reasonCode = MqttAuthenticateReasonCode.continueAuthentication;
+        header.authenticationMethod = 'method';
+        header.authenticationData = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
+        var properties = <MqttUserProperty>[];
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        properties.add(user1);
+        header.userProperty = properties;
+        header.reasonString = 'Reason String';
+        expect(header.isValid, isTrue);
+        expect(header.getWriteLength(), 62);
+        expect(header.length, 0);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        header.writeTo(stream);
+        expect(stream.buffer, [
+          24,
+          60,
+          21,
+          0,
+          6,
+          109,
+          101,
+          116,
+          104,
+          111,
+          100,
+          22,
+          0,
+          4,
+          1,
+          2,
+          3,
+          4,
+          31,
+          0,
+          13,
+          82,
+          101,
+          97,
+          115,
+          111,
+          110,
+          32,
+          83,
+          116,
+          114,
+          105,
+          110,
+          103,
+          38,
+          0,
+          11,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          110,
+          97,
+          109,
+          101,
+          0,
+          12,
+          85,
+          115,
+          101,
+          114,
+          32,
+          49,
+          32,
+          118,
+          97,
+          108,
+          117,
+          101
+        ]);
+      });
+    });
+    test('Variable Header Authenticate - Deserialize - success', () {
+      final mHeader = MqttHeader();
+      mHeader.messageType = MqttMessageType.auth;
+      mHeader.messageSize = 0;
+      final buffer = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buffer);
+      final header =
+          MqttAuthenticateVariableHeader.fromByteBuffer(mHeader, stream);
+      expect(header.reasonCode, MqttAuthenticateReasonCode.success);
+    });
+    test('Variable Header Authenticate - Deserialize - full', () {
+      final mHeader = MqttHeader();
+      mHeader.messageType = MqttMessageType.auth;
+      mHeader.messageSize = 62;
+      final buffer = typed.Uint8Buffer();
+      buffer.addAll([
+        24,
+        60,
+        21,
+        0,
+        6,
+        109,
+        101,
+        116,
+        104,
+        111,
+        100,
+        22,
+        0,
+        4,
+        1,
+        2,
+        3,
+        4,
+        31,
+        0,
+        13,
+        82,
+        101,
+        97,
+        115,
+        111,
+        110,
+        32,
+        83,
+        116,
+        114,
+        105,
+        110,
+        103,
+        38,
+        0,
+        11,
+        85,
+        115,
+        101,
+        114,
+        32,
+        49,
+        32,
+        110,
+        97,
+        109,
+        101,
+        0,
+        12,
+        85,
+        115,
+        101,
+        114,
+        32,
+        49,
+        32,
+        118,
+        97,
+        108,
+        117,
+        101
+      ]);
+      final stream = MqttByteBuffer(buffer);
+      final header =
+          MqttAuthenticateVariableHeader.fromByteBuffer(mHeader, stream);
+      expect(header.length, 62);
+      expect(
+          header.reasonCode, MqttAuthenticateReasonCode.continueAuthentication);
+      expect(header.authenticationMethod, 'method');
+      expect(header.userProperty[0].pairName, 'User 1 name');
+      expect(header.userProperty[0].pairValue, 'User 1 value');
+      expect(header.reasonString, 'Reason String');
+      expect(header.authenticationData, [1, 2, 3, 4]);
+      expect(header.isValid, isTrue);
+    });
   });
 
   group('Payload', () {
