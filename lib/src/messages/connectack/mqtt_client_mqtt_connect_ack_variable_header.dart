@@ -7,8 +7,6 @@
 
 part of mqtt5_client;
 
-/// Implementation of the variable header for an MQTT ConnectAck message.
-///
 /// The Variable Header of the Connect Acknowledgement message contains the following fields
 /// in the order: Connect Acknowledge Flags, Connect Reason Code, and Properties.
 class MqttConnectAckVariableHeader implements MqttIVariableHeader {

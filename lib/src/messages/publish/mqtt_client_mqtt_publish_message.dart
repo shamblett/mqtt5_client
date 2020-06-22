@@ -7,8 +7,6 @@
 
 part of mqtt5_client;
 
-/// Implementation of the MQTT Publish Message.
-///
 /// A Publish message is sent to a broker to transport an application message.
 ///
 /// Various fields are used in the construction of this message, for more details on

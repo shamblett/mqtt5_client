@@ -7,8 +7,6 @@
 
 part of mqtt5_client;
 
-/// Implementation of the variable header for an MQTT Connect message.
-///
 /// The Variable Header for the connect Packet contains the following fields
 /// in this order: Protocol Name, Protocol Level, Connect Flags,
 /// Keep Alive, and Properties.
