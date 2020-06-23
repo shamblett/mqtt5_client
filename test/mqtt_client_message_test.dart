@@ -4,7 +4,7 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
-import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 

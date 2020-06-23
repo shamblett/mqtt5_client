@@ -6,8 +6,8 @@
  */
 
 import 'dart:async';
-import 'package:mqtt5_client/mqtt_client.dart';
-import 'package:mqtt5_client/mqtt_browser_client.dart';
+import 'package:mqtt5_client/mqtt5_client.dart';
+import 'package:mqtt5_client/mqtt5_browser_client.dart';
 
 /// An annotated simple subscribe/publish usage example for mqtt_browser_client. Please read in with reference
 /// to the MQTT specification. The example is runnable.

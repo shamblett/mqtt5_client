@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:mqtt5_client/mqtt_client.dart';
+import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:path/path.dart' as path;
 import 'package:typed_data/typed_data.dart' as typed;
 

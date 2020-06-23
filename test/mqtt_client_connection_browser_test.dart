@@ -5,8 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
-import 'package:mqtt5_client/mqtt_client.dart';
-import 'package:mqtt5_client/mqtt_browser_client.dart';
+import 'package:mqtt5_client/mqtt5_client.dart';
+import 'package:mqtt5_client/mqtt5_browser_client.dart';
 import 'package:test/test.dart';
 
 @TestOn('browser')

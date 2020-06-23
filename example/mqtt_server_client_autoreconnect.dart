@@ -7,8 +7,8 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:mqtt5_client/mqtt_client.dart';
-import 'package:mqtt5_client/mqtt_server_client.dart';
+import 'package:mqtt5_client/mqtt5_client.dart';
+import 'package:mqtt5_client/mqtt5_server_client.dart';
 
 /// An annotated simple subscribe/publish usage example for mqtt_server_client. Please read in with reference
 /// to the MQTT specification. The example is runnable, also refer to test/mqtt_client_broker_test...dart
