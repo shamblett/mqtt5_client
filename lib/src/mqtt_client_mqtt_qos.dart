@@ -19,7 +19,7 @@ enum MqttQos {
   atLeastOnce,
 
   /// QOS Level 2 - Message will be delivered once, and only once.
-  /// Message will be retried until it is successfully sent.
+  /// Message will be retried until it is successfully delivered.
   exactlyOnce,
 
   /// Reserved by the MQTT Spec. Currently unused from here on until the fail

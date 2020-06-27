@@ -200,7 +200,17 @@ part 'src/messages/properties/mqtt_client_variable_byte_integer_property.dart';
 
 part 'src/messages/properties/mqtt_client_user_property.dart';
 
-part 'src/messages/mqtt_client_mqtt_reason_codes.dart';
+part 'src/messages/reasoncodes/mqtt_client_mqtt_authentication_reason_code.dart';
+
+part 'src/messages/reasoncodes/mqtt_client_mqtt_connect_reason_code.dart';
+
+part 'src/messages/reasoncodes/mqtt_client_mqtt_disconnect_reason_code.dart';
+
+part 'src/messages/reasoncodes/mqtt_client_mqtt_publish_reason_code.dart';
+
+part 'src/messages/reasoncodes/mqtt_client_mqtt_subscribe_reason_code.dart';
+
+part 'src/messages/reasoncodes/mqtt_client_mqtt_reason_code_utilities.dart';
 
 part 'src/management/mqtt_client_topic_filter.dart';
 
