@@ -7,10 +7,10 @@
 
 part of mqtt5_client;
 
-/// The message available event raised by the Connection class
-class MessageAvailable {
+/// The message available event.
+class MqttMessageAvailable {
   /// Constructor
-  MessageAvailable(this._message);
+  MqttMessageAvailable(this._message);
 
   /// The message associated with the event
   final MqttMessage _message;
@@ -19,10 +19,10 @@ class MessageAvailable {
   MqttMessage get message => _message;
 }
 
-/// Message recieved class for publishing
-class MessageReceived {
+/// Message recieved for publishing event.
+class MqttMessageReceived {
   /// Constructor
-  MessageReceived(this._topic, this._message);
+  MqttMessageReceived(this._topic, this._message);
 
   /// The message associated with the event
   final MqttMessage _message;
@@ -38,9 +38,9 @@ class MessageReceived {
 }
 
 /// Auto reconnect event
-class AutoReconnect {
+class MqttAutoReconnect {
   /// Constructor
-  AutoReconnect({userReconnect = false}) {
+  MqttAutoReconnect({userReconnect = false}) {
     userRequested = userReconnect;
   }
 

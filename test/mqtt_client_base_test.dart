@@ -31,11 +31,11 @@ void main() {
           'nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'
           'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm'
           'llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll';
-      final exception = MqttClientIdentifierException(clid);
+      final exception = MqttIdentifierException(clid);
       expect(
           exception.toString(),
           'mqtt-client::ClientIdentifierException: Client id $clid is too long at ${clid.length}, '
-          'Maximum ClientIdentifier length is ${MqttClientConstants.maxClientIdentifierLength}');
+          'Maximum ClientIdentifier length is ${MqttConstants.maxClientIdentifierLength}');
     });
     test('Connection', () {
       const state = MqttConnectionState.disconnected;
@@ -756,8 +756,8 @@ void main() {
   group('Utility', () {
     test('Protocol', () {
       expect(
-          MqttClientProtocol.version, MqttClientConstants.mqttProtocolVersion);
-      expect(MqttClientProtocol.name, MqttClientConstants.mqttProtocolName);
+          MqttProtocol.version, MqttConstants.mqttProtocolVersion);
+      expect(MqttProtocol.name, MqttConstants.mqttProtocolName);
     });
     test('Byte Buffer', () {
       final uBuff = typed.Uint8Buffer(10);
@@ -819,13 +819,13 @@ void main() {
 
   group('Payload builder', () {
     test('Construction', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       expect(builder.payload, isNotNull);
       expect(builder.length, 0);
     });
 
     test('Add buffer', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       final buffer = typed.Uint8Buffer()..addAll(<int>[1, 2, 3]);
       builder.addBuffer(buffer);
       expect(builder.length, 3);
@@ -833,21 +833,21 @@ void main() {
     });
 
     test('Add byte', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addByte(129);
       expect(builder.length, 1);
       expect(builder.payload.toList(), <int>[129]);
     });
 
     test('Add byte - overflow', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addByte(300);
       expect(builder.length, 1);
       expect(builder.payload.toList(), <int>[44]);
     });
 
     test('Add bool', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addBool(val: true);
       expect(builder.length, 1);
       expect(builder.payload.toList(), <int>[1]);
@@ -857,35 +857,35 @@ void main() {
     });
 
     test('Add half', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addHalf(18000);
       expect(builder.length, 2);
       expect(builder.payload.toList(), <int>[0x50, 0x46]);
     });
 
     test('Add half - overflow', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addHalf(65539);
       expect(builder.length, 2);
       expect(builder.payload.toList(), <int>[0x3, 0x00]);
     });
 
     test('Add word', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addWord(123456789);
       expect(builder.length, 4);
       expect(builder.payload.toList(), <int>[0x15, 0xCD, 0x5B, 0x07]);
     });
 
     test('Add word - overflow', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addWord(4294967298);
       expect(builder.length, 4);
       expect(builder.payload.toList(), <int>[0x2, 0x00, 0x00, 0x00]);
     });
 
     test('Add int', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addInt(123456789030405);
       expect(builder.length, 8);
       expect(builder.payload.toList(),
@@ -893,28 +893,28 @@ void main() {
     });
 
     test('Add string', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addString('Hello');
       expect(builder.length, 5);
       expect(builder.payload.toList(), <int>[72, 101, 108, 108, 111]);
     });
 
     test('Add unicode string', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addUTF16String('\u{1D11E}');
       expect(builder.length, 4);
       expect(builder.payload.toList(), <int>[0x34, 0xD8, 0x1E, 0xDD]);
     });
 
     test('Add emoji', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addUTF16String('😁');
       expect(builder.length, 4);
       expect(builder.payload.toList(), <int>[0x3D, 0xD8, 0x1, 0xDE]);
     });
 
     test('Add arabic', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       const arabic = 'سلام';
       builder.addUTF16String(arabic);
       expect(builder.length, 8);
@@ -923,7 +923,7 @@ void main() {
     });
 
     test('Add arabic string', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       const arabic = 'این یک پیام تستی هستش';
       builder.addString(arabic);
       expect(builder.length, 38);
@@ -970,7 +970,7 @@ void main() {
     });
 
     test('Add UTF8 string', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addUTF8String(json
           .encode(<String, String>{'type': 'msgText', 'data': 'تست 😀 😁 '}));
       expect(builder.length, 45);
@@ -1024,14 +1024,14 @@ void main() {
     });
 
     test('Add half double', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addHalfDouble(10000.5);
       expect(builder.length, 4);
       expect(builder.payload.toList(), <int>[0, 66, 28, 70]);
     });
 
     test('Add double', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addDouble(1.5e43);
       expect(builder.length, 8);
       expect(
@@ -1039,7 +1039,7 @@ void main() {
     });
 
     test('Clear', () {
-      final builder = MqttClientPayloadBuilder();
+      final builder = MqttPayloadBuilder();
       builder.addString('Hello');
       expect(builder.length, 5);
       builder.clear();

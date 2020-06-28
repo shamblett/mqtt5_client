@@ -76,11 +76,11 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
 
   /// Connection status
   @override
-  MqttClientConnectionStatus connectionStatus = MqttClientConnectionStatus();
+  MqttConnectionStatus connectionStatus = MqttConnectionStatus();
 
   /// Connect to the specific Mqtt Connection.
   @override
-  Future<MqttClientConnectionStatus> connect(
+  Future<MqttConnectionStatus> connect(
       String server, int port, MqttConnectMessage message) async {
     // Save the parameters for auto reconnect.
     this.server = server;
@@ -98,12 +98,12 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
 
   /// Connect to the specific Mqtt Connection internally.
   @protected
-  Future<MqttClientConnectionStatus> internalConnect(
+  Future<MqttConnectionStatus> internalConnect(
       String hostname, int port, MqttConnectMessage message);
 
   /// Auto reconnect
   @protected
-  void autoReconnect(AutoReconnect reconnectEvent) async {
+  void autoReconnect(MqttAutoReconnect reconnectEvent) async {
     // If already in progress exit
     if (autoReconnectInProgress) {
       return;
@@ -115,7 +115,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     }
     // Disconnect and call internal connect indefinitely
     connection.disconnect(auto: true);
-    connectionStatus = MqttClientConnectionStatus();
+    connectionStatus = MqttConnectionStatus();
     autoReconnectInProgress = true;
     connection.onDisconnected = null;
     while (connectionStatus.state != MqttConnectionState.connected) {
@@ -189,7 +189,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Handles the Message Available event of the connection control for
   /// handling non connection messages.
   @protected
-  void messageAvailable(MessageAvailable event) {
+  void messageAvailable(MqttMessageAvailable event) {
     final callback = messageProcessorRegistry[event.message.header.messageType];
     callback(event.message);
   }

@@ -48,9 +48,9 @@ class MqttHeader {
   int get messageSize => _messageSize;
 
   set messageSize(int value) {
-    if (value < 0 || value > MqttClientConstants.maxMessageSize) {
+    if (value < 0 || value > MqttConstants.maxMessageSize) {
       throw MqttInvalidPayloadSizeException(
-          value, MqttClientConstants.maxMessageSize);
+          value, MqttConstants.maxMessageSize);
     }
     _messageSize = value;
   }

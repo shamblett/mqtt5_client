@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Records the status of the last connection attempt
-class MqttClientConnectionStatus {
+class MqttConnectionStatus {
   /// Connection state
   MqttConnectionState state = MqttConnectionState.disconnected;
 

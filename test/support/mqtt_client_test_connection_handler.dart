@@ -71,9 +71,9 @@ class TestConnectionHandlerNoSend extends MqttServerConnectionHandler {
   bool Function(dynamic certificate) onBadCertificate;
 
   @override
-  Future<MqttClientConnectionStatus> internalConnect(
+  Future<MqttConnectionStatus> internalConnect(
       String hostname, int port, MqttConnectMessage message) {
-    final completer = Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttConnectionStatus>();
     return completer.future;
   }
 
@@ -146,9 +146,9 @@ class TestConnectionHandlerSend extends MqttServerConnectionHandler {
   List<MqttMessage> sentMessages = <MqttMessage>[];
 
   @override
-  Future<MqttClientConnectionStatus> internalConnect(
+  Future<MqttConnectionStatus> internalConnect(
       String hostname, int port, MqttConnectMessage message) {
-    final completer = Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttConnectionStatus>();
     return completer.future;
   }
 

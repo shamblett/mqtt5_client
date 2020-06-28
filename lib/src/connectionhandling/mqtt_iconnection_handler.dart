@@ -13,7 +13,7 @@ typedef MessageCallbackFunction = bool Function(MqttMessage message);
 /// The connection handler interface class
 abstract class MqttIConnectionHandler {
   /// The connection status
-  MqttClientConnectionStatus get connectionStatus;
+  MqttConnectionStatus get connectionStatus;
 
   /// Successful connection callback
   ConnectCallback onConnected;
@@ -50,7 +50,7 @@ abstract class MqttIConnectionHandler {
   /// The broker server to connect to
   /// The port to connect to
   /// The connect message to use to initiate the connection
-  Future<MqttClientConnectionStatus> connect(
+  Future<MqttConnectionStatus> connect(
       String server, int port, MqttConnectMessage message);
 
   /// Register the specified callback to receive messages of a specific type.

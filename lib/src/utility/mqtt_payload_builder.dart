@@ -8,9 +8,9 @@
 part of mqtt5_client;
 
 /// Utility class to assist with the build in of message topic payloads.
-class MqttClientPayloadBuilder {
+class MqttPayloadBuilder {
   /// Construction
-  MqttClientPayloadBuilder() {
+  MqttPayloadBuilder() {
     _payload = typed.Uint8Buffer();
   }
 

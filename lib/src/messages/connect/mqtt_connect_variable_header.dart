@@ -20,10 +20,10 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   int get length => getWriteLength();
 
   /// Protocol name
-  final _protocolName = MqttClientProtocol.name;
+  final _protocolName = MqttProtocol.name;
 
   /// Protocol version
-  final _protocolVersion = MqttClientProtocol.version;
+  final _protocolVersion = MqttProtocol.version;
 
   /// Connect flags
   ///

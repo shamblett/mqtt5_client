@@ -45,9 +45,9 @@ void main() {
     });
 
     test('Web Protocol string', () {
-      var protocols = MqttClientConstants.protocolsMultipleDefault;
+      var protocols = MqttConstants.protocolsMultipleDefault;
       expect(protocols.join(' ').trim(), 'mqtt mqttv3.1 mqttv3.11');
-      protocols = MqttClientConstants.protocolsSingleDefault;
+      protocols = MqttConstants.protocolsSingleDefault;
       expect(protocols.join(' ').trim(), 'mqtt');
       protocols = <String>[];
       expect(protocols.join(' ').trim(), '');

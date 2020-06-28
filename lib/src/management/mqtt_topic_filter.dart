@@ -14,9 +14,9 @@ part of mqtt5_client;
 /// that of the client. Note this class will only filter valid receive topics
 /// so if you filter on wildcard topics for instance, which you should only
 /// subscribe to,  it  will always generate a no match.
-class MqttClientTopicFilter {
+class MqttTopicFilter {
   /// Construction
-  MqttClientTopicFilter(this._topic, this._clientUpdates) {
+  MqttTopicFilter(this._topic, this._clientUpdates) {
     _subscriptionTopic = MqttSubscriptionTopic(_topic);
     _clientUpdates.listen(_topicIn);
     _updates =

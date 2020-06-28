@@ -20,12 +20,12 @@ class MqttServerWsConnection extends MqttServerConnection {
   }
 
   /// The websocket subprotocol list
-  List<String> protocols = MqttClientConstants.protocolsMultipleDefault;
+  List<String> protocols = MqttConstants.protocolsMultipleDefault;
 
   /// Connect
   @override
-  Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final completer = Completer<MqttClientConnectionStatus>();
+  Future<MqttConnectionStatus> connect(String server, int port) {
+    final completer = Completer<MqttConnectionStatus>();
     // Add the port if present
     Uri uri;
     try {

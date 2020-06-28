@@ -105,7 +105,7 @@ class MqttServerWs2Connection extends MqttServerConnection {
   }
 
   /// The websocket subprotocol list
-  List<String> protocols = MqttClientConstants.protocolsMultipleDefault;
+  List<String> protocols = MqttConstants.protocolsMultipleDefault;
 
   /// The security context for secure usage
   SecurityContext context;
@@ -114,8 +114,8 @@ class MqttServerWs2Connection extends MqttServerConnection {
 
   /// Connect
   @override
-  Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final completer = Completer<MqttClientConnectionStatus>();
+  Future<MqttConnectionStatus> connect(String server, int port) {
+    final completer = Completer<MqttConnectionStatus>();
     MqttLogger.log('MqttWs2Connection::connect');
     Uri uri;
     try {

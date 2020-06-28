@@ -134,7 +134,7 @@ Future<int> main() async {
   /// Use the payload builder rather than a raw buffer
   /// Our known topic to publish to
   const pubTopic = 'Dart/Mqtt_client/testtopic';
-  final builder = MqttClientPayloadBuilder();
+  final builder = MqttPayloadBuilder();
   builder.addString('Hello from mqtt_client');
 
   /// Subscribe to it

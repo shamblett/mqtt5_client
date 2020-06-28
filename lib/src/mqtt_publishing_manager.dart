@@ -33,9 +33,9 @@ part of mqtt5_client;
 ///         Sender --> Publish --> Receiver --> PublishReceived --> Sender --> PublishRelease --> Reciever --> PublishComplete --> Sender
 ///                                                                                                   | v
 ///                                                                                            Message Processor
-class PublishingManager implements IPublishingManager {
+class MqttPublishingManager implements MqttIPublishingManager {
   /// Initializes a new instance of the PublishingManager class.
-  PublishingManager(this.connectionHandler, this._clientEventBus) {
+  MqttPublishingManager(this.connectionHandler, this._clientEventBus) {
     connectionHandler.registerForMessage(
         MqttMessageType.publishAck, handlePublishAcknowledgement);
     connectionHandler.registerForMessage(
@@ -49,8 +49,8 @@ class PublishingManager implements IPublishingManager {
   }
 
   /// Handles dispensing of message ids for messages published to a topic.
-  MessageIdentifierDispenser messageIdentifierDispenser =
-      MessageIdentifierDispenser();
+  MqttMessageIdentifierDispenser messageIdentifierDispenser =
+      MqttMessageIdentifierDispenser();
 
   /// Stores messages that have been pubished but not yet acknowledged.
   Map<int, MqttPublishMessage> publishedMessages = <int, MqttPublishMessage>{};
@@ -72,7 +72,7 @@ class PublishingManager implements IPublishingManager {
 
   /// Raised when a message has been recieved by the client and the relevant QOS handshake is complete.
   @override
-  MessageReceived publishEvent;
+  MqttMessageReceived publishEvent;
 
   /// The event bus
   final events.EventBus _clientEventBus;
@@ -135,12 +135,12 @@ class PublishingManager implements IPublishingManager {
       if (pubMsg.header.qos == MqttQos.atMostOnce) {
         // QOS AtMostOnce 0 require no response.
         // Send the message for processing to whoever is waiting.
-        _clientEventBus.fire(MessageReceived(topic, msg));
+        _clientEventBus.fire(MqttMessageReceived(topic, msg));
         _notifyPublish(msg);
       } else if (pubMsg.header.qos == MqttQos.atLeastOnce) {
         // QOS AtLeastOnce 1 requires an acknowledgement
         // Send the message for processing to whoever is waiting.
-        _clientEventBus.fire(MessageReceived(topic, msg));
+        _clientEventBus.fire(MqttMessageReceived(topic, msg));
         _notifyPublish(msg);
         final ackMsg = MqttPublishAckMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
@@ -174,7 +174,7 @@ class PublishingManager implements IPublishingManager {
       if (pubMsg != null) {
         // Send the message for processing to whoever is waiting.
         final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
-        _clientEventBus.fire(MessageReceived(topic, pubMsg));
+        _clientEventBus.fire(MqttMessageReceived(topic, pubMsg));
         final compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
         connectionHandler.sendMessage(compMsg);

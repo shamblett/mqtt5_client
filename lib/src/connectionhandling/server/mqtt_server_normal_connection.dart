@@ -21,8 +21,8 @@ class MqttServerNormalConnection extends MqttServerConnection {
 
   /// Connect - overridden
   @override
-  Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final completer = Completer<MqttClientConnectionStatus>();
+  Future<MqttConnectionStatus> connect(String server, int port) {
+    final completer = Completer<MqttConnectionStatus>();
     try {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {

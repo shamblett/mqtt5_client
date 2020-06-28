@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Library wide constants
-class MqttClientConstants {
+class MqttConstants {
   /// The Maximum allowed message size as defined by the MQTT v3 Spec (256MB).
   static const int maxMessageSize = 268435455;
 

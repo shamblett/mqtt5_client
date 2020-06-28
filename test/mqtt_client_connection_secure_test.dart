@@ -20,7 +20,7 @@ import 'support/mqtt_client_mockbroker.dart';
 // Mock classes
 class MockCH extends Mock implements MqttServerConnectionHandler {
   @override
-  MqttClientConnectionStatus connectionStatus = MqttClientConnectionStatus();
+  MqttConnectionStatus connectionStatus = MqttConnectionStatus();
 }
 
 class MockKA extends Mock implements MqttConnectionKeepAlive {

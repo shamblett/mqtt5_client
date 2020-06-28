@@ -8,14 +8,14 @@
 part of mqtt5_client;
 
 /// Message identifier handling
-class MessageIdentifierDispenser {
+class MqttMessageIdentifierDispenser {
   /// Factory constructor
-  factory MessageIdentifierDispenser() => _singleton;
+  factory MqttMessageIdentifierDispenser() => _singleton;
 
-  MessageIdentifierDispenser._internal();
+  MqttMessageIdentifierDispenser._internal();
 
-  static final MessageIdentifierDispenser _singleton =
-      MessageIdentifierDispenser._internal();
+  static final MqttMessageIdentifierDispenser _singleton =
+      MqttMessageIdentifierDispenser._internal();
 
   /// Maximum message identifier
   static const int maxMessageIdentifier = 32768;

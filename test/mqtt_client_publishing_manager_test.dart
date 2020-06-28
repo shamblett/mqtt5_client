@@ -27,20 +27,20 @@ final TestConnectionHandlerSend testCHS = TestConnectionHandlerSend();
 void main() {
   group('Message Identifier', () {
     test('Numbering starts at 1', () {
-      final dispenser = MessageIdentifierDispenser();
+      final dispenser = MqttMessageIdentifierDispenser();
       expect(dispenser.getNextMessageIdentifier(), 1);
     });
     test('Numbering increments by 1', () {
-      final dispenser = MessageIdentifierDispenser();
+      final dispenser = MqttMessageIdentifierDispenser();
       final first = dispenser.getNextMessageIdentifier();
       final second = dispenser.getNextMessageIdentifier();
       expect(second, first + 1);
     });
     test('Numbering overflows back to 1', () {
-      final dispenser = MessageIdentifierDispenser();
+      final dispenser = MqttMessageIdentifierDispenser();
       dispenser.reset();
       for (var i = 0;
-          i == MessageIdentifierDispenser.maxMessageIdentifier;
+          i == MqttMessageIdentifierDispenser.maxMessageIdentifier;
           i++) {
         dispenser.getNextMessageIdentifier();
       }
@@ -108,7 +108,7 @@ void main() {
     test('Publish at least once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -133,7 +133,7 @@ void main() {
     test('Publish at least once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
       buff[1] = 'e'.codeUnitAt(0);
@@ -156,7 +156,7 @@ void main() {
     test('Publish at exactly once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -178,7 +178,7 @@ void main() {
     test('Publish consecutive topics', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
       buff[1] = 'e'.codeUnitAt(0);
@@ -193,7 +193,7 @@ void main() {
     test('Publish at least once and ack', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -210,7 +210,7 @@ void main() {
     test('Publish exactly once, release and complete', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -232,7 +232,7 @@ void main() {
     test('Publish recieved at most once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
       data[0] = 0;
@@ -250,7 +250,7 @@ void main() {
     test('Publish recieved at least once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
       data[0] = 0;
@@ -269,7 +269,7 @@ void main() {
     test('Publish recieved exactly once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
       data[0] = 0;
@@ -288,7 +288,7 @@ void main() {
     test('Release recieved exactly once', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
       data[0] = 0;
@@ -312,11 +312,11 @@ void main() {
     test('Publish exactly once, interleaved scenario 1', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
-      final payload1 = MqttClientPayloadBuilder();
+      final payload1 = MqttPayloadBuilder();
       payload1.addString('test1');
-      final payload2 = MqttClientPayloadBuilder();
+      final payload2 = MqttPayloadBuilder();
       payload2.addString('test2');
       final msgId1 = pm.publish(MqttPublicationTopic('topic1'),
           MqttQos.exactlyOnce, payload1.payload);
@@ -346,11 +346,11 @@ void main() {
     test('Publish exactly once, interleaved scenario 2', () {
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-      final pm = PublishingManager(testCHS, clientEventBus);
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
-      final payload1 = MqttClientPayloadBuilder();
+      final payload1 = MqttPayloadBuilder();
       payload1.addString('test1');
-      final payload2 = MqttClientPayloadBuilder();
+      final payload2 = MqttPayloadBuilder();
       payload2.addString('test2');
 
       // Publish 1

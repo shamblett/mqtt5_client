@@ -17,14 +17,14 @@ class MqttSynchronousServerConnectionHandler
     @required int maxConnectionAttempts,
   }) : super(maxConnectionAttempts: maxConnectionAttempts) {
     this.clientEventBus = clientEventBus;
-    clientEventBus.on<AutoReconnect>().listen(autoReconnect);
+    clientEventBus.on<MqttAutoReconnect>().listen(autoReconnect);
     registerForMessage(MqttMessageType.connectAck, connectAckProcessor);
-    clientEventBus.on<MessageAvailable>().listen(messageAvailable);
+    clientEventBus.on<MqttMessageAvailable>().listen(messageAvailable);
   }
 
   /// Synchronously connect to the specific Mqtt Connection.
   @override
-  Future<MqttClientConnectionStatus> internalConnect(
+  Future<MqttConnectionStatus> internalConnect(
       String hostname, int port, MqttConnectMessage connectMessage) async {
     var connectionAttempts = 0;
     MqttLogger.log(

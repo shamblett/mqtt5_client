@@ -13,29 +13,29 @@ typedef SubscribeFailCallback = void Function(String topic);
 typedef UnsubscribeCallback = void Function(String topic);
 
 /// A class that can manage the topic subscription process.
-class SubscriptionsManager {
+class MqttSubscriptionManager {
   ///  Creates a new instance of a SubscriptionsManager that uses the
   ///  specified connection to manage subscriptions.
-  SubscriptionsManager(
+  MqttSubscriptionManager(
       this.connectionHandler, this.publishingManager, this._clientEventBus) {
     connectionHandler.registerForMessage(
         MqttMessageType.subscribeAck, confirmSubscription);
     connectionHandler.registerForMessage(
         MqttMessageType.unsubscribeAck, confirmUnsubscribe);
     // Start listening for published messages
-    _clientEventBus.on<MessageReceived>().listen(publishMessageReceived);
+    _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
   }
 
   /// Dispenser used for keeping track of subscription ids
-  MessageIdentifierDispenser messageIdentifierDispenser =
-      MessageIdentifierDispenser();
+  MqttMessageIdentifierDispenser messageIdentifierDispenser =
+      MqttMessageIdentifierDispenser();
 
   /// List of confirmed subscriptions, keyed on the topic name.
-  Map<String, Subscription> subscriptions = <String, Subscription>{};
+  Map<String, MqttSubscription> subscriptions = <String, MqttSubscription>{};
 
   /// A list of subscriptions that are pending acknowledgement, keyed
   /// on the message identifier.
-  Map<int, Subscription> pendingSubscriptions = <int, Subscription>{};
+  Map<int, MqttSubscription> pendingSubscriptions = <int, MqttSubscription>{};
 
   /// A list of unsubscribe requests waiting for an unsubscribe ack message.
   /// Index is the message identifier of the unsubscribe message
@@ -46,7 +46,7 @@ class SubscriptionsManager {
   MqttIConnectionHandler connectionHandler;
 
   /// Publishing manager used for passing on published messages to subscribers.
-  PublishingManager publishingManager;
+  MqttPublishingManager publishingManager;
 
   /// Subscribe and Unsubscribe callbacks
   SubscribeCallback onSubscribed;
@@ -70,13 +70,13 @@ class SubscriptionsManager {
       get subscriptionNotifier => _subscriptionNotifier;
 
   /// Registers a new subscription with the subscription manager.
-  Subscription registerSubscription(String topic, MqttQos qos) {
+  MqttSubscription registerSubscription(String topic, MqttQos qos) {
     var cn = tryGetExistingSubscription(topic);
     return cn ??= createNewSubscription(topic, qos);
   }
 
   /// Registers a new prebuilt subscription with the subscription manager.
-  Subscription registerPrebuiltSubscription(MqttSubscribeMessage message) {
+  MqttSubscription registerPrebuiltSubscription(MqttSubscribeMessage message) {
     if (message.isValid) {
       var cn = tryGetExistingSubscription(
           message.payload.subscriptions[0].topic.rawTopic);
@@ -91,7 +91,7 @@ class SubscriptionsManager {
 
   /// Gets a view on the existing observable, if the subscription
   /// already exists.
-  Subscription tryGetExistingSubscription(String topic) {
+  MqttSubscription tryGetExistingSubscription(String topic) {
     final retSub = subscriptions[topic];
     if (retSub == null) {
       // Search the pending subscriptions
@@ -106,13 +106,13 @@ class SubscriptionsManager {
 
   /// Creates a new subscription for the specified topic.
   /// If the subscription cannot be created null is returned.
-  Subscription createNewSubscription(String topic, MqttQos qos) {
+  MqttSubscription createNewSubscription(String topic, MqttQos qos) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       // Get an ID that represents the subscription. We will use this
       // same ID for unsubscribe as well.
       final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
-      final sub = Subscription();
+      final sub = MqttSubscription();
       sub.topic = subscriptionTopic;
       sub.qos = qos;
       sub.messageIdentifier = msgId;
@@ -134,7 +134,7 @@ class SubscriptionsManager {
   }
 
   /// Publish message received
-  void publishMessageReceived(MessageReceived event) {
+  void publishMessageReceived(MqttMessageReceived event) {
     final topic = event.topic;
     final msg = MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
     subscriptionNotifier.notifyChange(msg);
@@ -206,7 +206,7 @@ class SubscriptionsManager {
     if (subscriptions.containsKey(topic)) {
       status = MqttSubscriptionStatus.active;
     }
-    pendingSubscriptions.forEach((int key, Subscription value) {
+    pendingSubscriptions.forEach((int key, MqttSubscription value) {
       if (value.topic.rawTopic == topic) {
         status = MqttSubscriptionStatus.pending;
       }

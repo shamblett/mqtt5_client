@@ -8,10 +8,10 @@
 part of mqtt5_client;
 
 /// Protocol selection helper class, protocol defaults V5
-class MqttClientProtocol {
+class MqttProtocol {
   /// Version
-  static int version = MqttClientConstants.mqttProtocolVersion;
+  static int version = MqttConstants.mqttProtocolVersion;
 
   /// Name
-  static String name = MqttClientConstants.mqttProtocolName;
+  static String name = MqttConstants.mqttProtocolName;
 }
