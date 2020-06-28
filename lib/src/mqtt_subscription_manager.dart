@@ -12,41 +12,46 @@ typedef SubscribeCallback = void Function(String topic);
 typedef SubscribeFailCallback = void Function(String topic);
 typedef UnsubscribeCallback = void Function(String topic);
 
-/// A class that can manage the topic subscription process.
+/// A class that manages the topic subscription process.
 class MqttSubscriptionManager {
   ///  Creates a new instance of a SubscriptionsManager that uses the
   ///  specified connection to manage subscriptions.
-  MqttSubscriptionManager(
-      this.connectionHandler, this.publishingManager, this._clientEventBus) {
-    connectionHandler.registerForMessage(
+  MqttSubscriptionManager(this._connectionHandler, this._clientEventBus) {
+    _connectionHandler.registerForMessage(
         MqttMessageType.subscribeAck, confirmSubscription);
-    connectionHandler.registerForMessage(
+    _connectionHandler.registerForMessage(
         MqttMessageType.unsubscribeAck, confirmUnsubscribe);
     // Start listening for published messages
     _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
   }
 
+  final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
+
   /// Dispenser used for keeping track of subscription ids
-  MqttMessageIdentifierDispenser messageIdentifierDispenser =
-      MqttMessageIdentifierDispenser();
+  MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
+      _messageIdentifierDispenser;
+
+  final _subscriptions = <String, MqttSubscription>{};
 
   /// List of confirmed subscriptions, keyed on the topic name.
-  Map<String, MqttSubscription> subscriptions = <String, MqttSubscription>{};
+  Map<String, MqttSubscription> get subscriptions => _subscriptions;
+
+  final _pendingSubscriptions = <int, List<MqttSubscription>>{};
 
   /// A list of subscriptions that are pending acknowledgement, keyed
   /// on the message identifier.
-  Map<int, MqttSubscription> pendingSubscriptions = <int, MqttSubscription>{};
+  Map<int, List<MqttSubscription>> get pendingSubscriptions =>
+      _pendingSubscriptions;
+
+  final _pendingUnsubscriptions = <int, String>{};
 
   /// A list of unsubscribe requests waiting for an unsubscribe ack message.
   /// Index is the message identifier of the unsubscribe message
-  Map<int, String> pendingUnsubscriptions = <int, String>{};
+  Map<int, String> get pendingUnsubscriptions => _pendingUnsubscriptions;
 
   /// The connection handler that we use to subscribe to subscription
   /// acknowledgements.
-  MqttIConnectionHandler connectionHandler;
-
-  /// Publishing manager used for passing on published messages to subscribers.
-  MqttPublishingManager publishingManager;
+  final _connectionHandler;
 
   /// Subscribe and Unsubscribe callbacks
   SubscribeCallback onSubscribed;
@@ -71,42 +76,42 @@ class MqttSubscriptionManager {
 
   /// Registers a new subscription with the subscription manager.
   MqttSubscription registerSubscription(String topic, MqttQos qos) {
-    var cn = tryGetExistingSubscription(topic);
-    return cn ??= createNewSubscription(topic, qos);
+    var cn = _tryGetExistingSubscription(topic);
+    return cn ??= _createNewSubscription(topic, qos);
   }
 
   /// Registers a new prebuilt subscription with the subscription manager.
-  MqttSubscription registerPrebuiltSubscription(MqttSubscribeMessage message) {
+  /// Note the message identifier of the subscription, if set, will be overwritten by
+  /// this method.
+  void registerPrebuiltSubscription(MqttSubscribeMessage message) {
     if (message.isValid) {
-      var cn = tryGetExistingSubscription(
-          message.payload.subscriptions[0].topic.rawTopic);
-      return cn ??= createNewSubscription(
-          message.payload.subscriptions[0].topic.rawTopic,
-          message.payload.subscriptions[0].option.maximumQos);
+      _createNewPrebuiltSubscription(message);
     } else {
       throw ArgumentError(
-          'SubscriptionsManager::registerPrebuiltSubscription - subscription is invalid');
+          'MqttSubscriptionManager::registerPrebuiltSubscription - subscription is invalid');
     }
   }
 
   /// Gets a view on the existing observable, if the subscription
   /// already exists.
-  MqttSubscription tryGetExistingSubscription(String topic) {
+  MqttSubscription _tryGetExistingSubscription(String topic) {
     final retSub = subscriptions[topic];
     if (retSub == null) {
       // Search the pending subscriptions
-      for (final sub in pendingSubscriptions.values) {
-        if (sub.topic.rawTopic == topic) {
-          return sub;
+      for (final subList in pendingSubscriptions.values) {
+        for (final sub in subList) {
+          if (sub.topic.rawTopic == topic) {
+            return sub;
+          }
         }
       }
     }
     return retSub;
   }
 
-  /// Creates a new subscription for the specified topic.
+  /// Creates a new subscription for the specified topic and Qos.
   /// If the subscription cannot be created null is returned.
-  MqttSubscription createNewSubscription(String topic, MqttQos qos) {
+  MqttSubscription _createNewSubscription(String topic, MqttQos qos) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       // Get an ID that represents the subscription. We will use this
@@ -117,17 +122,45 @@ class MqttSubscriptionManager {
       sub.qos = qos;
       sub.messageIdentifier = msgId;
       sub.createdTime = DateTime.now();
-      pendingSubscriptions[sub.messageIdentifier] = sub;
+      pendingSubscriptions[sub.messageIdentifier].add(sub);
       // Build a subscribe message for the caller and send it off to the broker.
       final msg =
           MqttSubscribeMessage().toTopicWithQos(sub.topic.rawTopic, qos);
-      connectionHandler.sendMessage(msg);
+      msg.messageIdentifier = msgId;
+      _connectionHandler.sendMessage(msg);
       return sub;
     } on Exception catch (e) {
-      MqttLogger.log('Subscriptionsmanager::createNewSubscription '
+      MqttLogger.log('MqttSubscriptionManager::createNewSubscription '
           'exception raised, text is $e');
       if (onSubscribeFail != null) {
         onSubscribeFail(topic);
+      }
+      return null;
+    }
+  }
+
+  /// Creates a new prebuilt subscription for the specified subscription message.
+  void _createNewPrebuiltSubscription(MqttSubscribeMessage message) {
+    try {
+      // Get an ID that represents the subscription. We will use this
+      // same ID for unsubscribe as well.
+      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+      message.messageIdentifier = msgId;
+      for (final subscription in message.payload.subscriptions) {
+        final sub = MqttSubscription();
+        sub.topic = subscription.topic;
+        sub.qos = subscription.option.maximumQos;
+        sub.messageIdentifier = msgId;
+        sub.createdTime = DateTime.now();
+        pendingSubscriptions[sub.messageIdentifier].add(sub);
+      }
+      // Send the subscribe message to the broker.
+      _connectionHandler.sendMessage(message);
+    } on Exception catch (e) {
+      MqttLogger.log('MqttSubscriptionManager::_createNewPrebuiltSubscription '
+          'exception raised, text is $e');
+      if (onSubscribeFail != null) {
+        onSubscribeFail('prebuilt no topic');
       }
       return null;
     }
@@ -146,7 +179,7 @@ class MqttSubscriptionManager {
         .withMessageIdentifier(
             messageIdentifierDispenser.getNextMessageIdentifier())
         .fromStringTopic(topic);
-    connectionHandler.sendMessage(unsubscribeMsg);
+    _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         topic;
   }
@@ -154,36 +187,39 @@ class MqttSubscriptionManager {
   /// Confirms a subscription has been made with the broker.
   /// Marks the sub as confirmed in the subs storage.
   /// Returns true on successful subscription, false on fail.
+  /// Note if any subscriptions fail a fail will be returned.
   bool confirmSubscription(MqttMessage msg) {
     final MqttSubscribeAckMessage subAck = msg;
-    String topic;
+    final reasonCodes = subAck.reasonCodes;
+    var ok = true;
+    var reasonCodeIndex = 0;
     if (pendingSubscriptions
         .containsKey(subAck.variableHeader.messageIdentifier)) {
-      topic = pendingSubscriptions[subAck.variableHeader.messageIdentifier]
-          .topic
-          .rawTopic;
-      subscriptions[topic] =
-          pendingSubscriptions[subAck.variableHeader.messageIdentifier];
+      for (final pendingTopic
+          in pendingSubscriptions[subAck.variableHeader.messageIdentifier]) {
+        final topic = pendingTopic.topic.rawTopic;
+        // Check for a successful subscribe
+        if (!MqttReasonCodeUtilities.isError(
+            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex]))) {
+          subscriptions[topic] = pendingTopic;
+          if (onSubscribed != null) {
+            onSubscribed(topic);
+          }
+        } else {
+          subscriptions.remove(topic);
+          if (onSubscribeFail != null) {
+            onSubscribeFail(topic);
+          }
+          ok = false;
+        }
+        reasonCodeIndex++;
+      }
       pendingSubscriptions.remove(subAck.variableHeader.messageIdentifier);
     } else {
       return false;
     }
 
-    // Check the Qos, we can get a failure indication(value 0x80) here if the
-    // topic cannot be subscribed to.
-    // TODO
-//    if (subAck.payload.qosGrants[0] == MqttQos.failure) {
-//      subscriptions.remove(topic);
-//      if (onSubscribeFail != null) {
-//        onSubscribeFail(topic);
-//        return false;
-//      }
-//    }
-    // Success, call the subscribed callback
-    if (onSubscribed != null) {
-      onSubscribed(topic);
-    }
-    return true;
+    return ok;
   }
 
   /// Cleans up after an unsubscribe message is received from the broker.
@@ -206,11 +242,13 @@ class MqttSubscriptionManager {
     if (subscriptions.containsKey(topic)) {
       status = MqttSubscriptionStatus.active;
     }
-    pendingSubscriptions.forEach((int key, MqttSubscription value) {
-      if (value.topic.rawTopic == topic) {
-        status = MqttSubscriptionStatus.pending;
+    for (final topics in pendingSubscriptions.values) {
+      for (final subTopic in topics) {
+        if (subTopic.topic.rawTopic == topic) {
+          status = MqttSubscriptionStatus.pending;
+        }
       }
-    });
+    }
     return status;
   }
 }

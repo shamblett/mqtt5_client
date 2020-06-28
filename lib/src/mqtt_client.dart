@@ -110,8 +110,7 @@ class MqttClient {
       ? connectionHandler.connectionStatus.state
       : MqttConnectionState.disconnected;
 
-  final MqttConnectionStatus _connectionStatus =
-      MqttConnectionStatus();
+  final MqttConnectionStatus _connectionStatus = MqttConnectionStatus();
 
   /// Gets the current connection status of the Mqtt Client.
   /// This is the connection state as above also with the broker return code.
@@ -216,9 +215,10 @@ class MqttClient {
     connectionHandler.onConnected = onConnected;
     connectionHandler.onAutoReconnect = onAutoReconnect;
     //
-    publishingManager = MqttPublishingManager(connectionHandler, clientEventBus);
-    subscriptionsManager = MqttSubscriptionManager(
-        connectionHandler, publishingManager, clientEventBus);
+    publishingManager =
+        MqttPublishingManager(connectionHandler, clientEventBus);
+    subscriptionsManager =
+        MqttSubscriptionManager(connectionHandler, clientEventBus);
     subscriptionsManager.onSubscribed = onSubscribed;
     subscriptionsManager.onUnsubscribed = onUnsubscribed;
     subscriptionsManager.onSubscribeFail = onSubscribeFail;
@@ -277,12 +277,11 @@ class MqttClient {
   /// Initiates a topic subscription request to the connected broker
   /// with a strongly typed data processor callback.
   /// The prebuilt subscription message
-  /// Returns the subscription or null on failure
-  MqttSubscription subscribePrebuilt(MqttSubscribeMessage message) {
+  void subscribePrebuilt(MqttSubscribeMessage message) {
     if (connectionStatus.state != MqttConnectionState.connected) {
       throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
-    return subscriptionsManager.registerPrebuiltSubscription(message);
+    subscriptionsManager.registerPrebuiltSubscription(message);
   }
 
   /// Publishes a message to the message broker.

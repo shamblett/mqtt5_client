@@ -55,9 +55,11 @@ class MqttSubscribeMessage extends MqttMessage {
   }
 
   /// Is valid, if not valid the subscription message cannot be sent to
-  /// the broker. At least one topic must be present in the payload.
+  /// the broker. At least one topic must be present in the payload and the
+  /// message identifier must be set.
   @override
-  bool get isValid => _payload.isValid;
+  bool get isValid =>
+      _payload.isValid && _variableHeader.messageIdentifier != 0;
 
   /// Write length
   int getWriteLength() {
