@@ -23,7 +23,7 @@ class MqttConnectionBase {
 
   /// The read wrapper
   @protected
-  ReadWrapper readWrapper;
+  MqttReadWrapper readWrapper;
 
   ///The read buffer
   @protected

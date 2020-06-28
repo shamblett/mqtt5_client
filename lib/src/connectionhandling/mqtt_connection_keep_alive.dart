@@ -19,7 +19,7 @@ typedef PongCallback = void Function();
 class MqttConnectionKeepAlive {
   /// Initializes a new instance of the MqttConnectionKeepAlive class.
   MqttConnectionKeepAlive(
-      IMqttConnectionHandler connectionHandler, int keepAliveSeconds) {
+      MqttIConnectionHandler connectionHandler, int keepAliveSeconds) {
     _connectionHandler = connectionHandler;
     keepAlivePeriod = keepAliveSeconds * 1000;
     // Register for message handling of ping request and response messages.
@@ -39,7 +39,7 @@ class MqttConnectionKeepAlive {
   Timer pingTimer;
 
   /// The connection handler
-  IMqttConnectionHandler _connectionHandler;
+  MqttIConnectionHandler _connectionHandler;
 
   /// Used to synchronise shutdown and ping operations.
   bool _shutdownPadlock = false;

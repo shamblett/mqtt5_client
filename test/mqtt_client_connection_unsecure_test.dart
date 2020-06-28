@@ -22,7 +22,7 @@ class MockCH extends Mock implements MqttServerConnectionHandler {
 }
 
 class MockKA extends Mock implements MqttConnectionKeepAlive {
-  MockKA(IMqttConnectionHandler connectionHandler, int keepAliveSeconds) {
+  MockKA(MqttIConnectionHandler connectionHandler, int keepAliveSeconds) {
     ka = MqttConnectionKeepAlive(connectionHandler, keepAliveSeconds);
   }
 
@@ -76,7 +76,7 @@ void main() {
   group('Synchronous MqttConnectionHandler', () {
     test('Connect to bad host name', () async {
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -97,7 +97,7 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -115,7 +115,7 @@ void main() {
     test('Connect no connect ack', () async {
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -123,7 +123,7 @@ void main() {
         await ch.connect(mockBrokerAddress, mockBrokerPort,
             MqttConnectMessage().withClientIdentifier(testClientId));
       } on Exception catch (e) {
-        expect(e is NoConnectionException, isTrue);
+        expect(e is MqttNoConnectionException, isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.notSet);
@@ -140,7 +140,7 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -161,7 +161,7 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -199,7 +199,7 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );

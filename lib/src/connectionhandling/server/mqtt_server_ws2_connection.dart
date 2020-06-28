@@ -124,12 +124,12 @@ class MqttServerWs2Connection extends MqttServerConnection {
       final message =
           'MqttWsConnection::The URI supplied for the WS2 connection '
           'is not valid - $server';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     if (uri.scheme != 'wss') {
       final message = 'MqttWsConnection::The URI supplied for the WS2 has an '
           'incorrect scheme - $server';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     if (port != null) {
       uri = uri.replace(port: port);
@@ -146,7 +146,7 @@ class MqttServerWs2Connection extends MqttServerConnection {
           client = WebSocket.fromUpgradedSocket(
               _DetachedSocket(socket, _subscription),
               serverSide: false);
-          readWrapper = ReadWrapper();
+          readWrapper = MqttReadWrapper();
           messageStream = MqttByteBuffer(typed.Uint8Buffer());
           MqttLogger.log('MqttWs2Connection::connect - start listening');
           _startListening();
@@ -160,18 +160,18 @@ class MqttServerWs2Connection extends MqttServerConnection {
       final message = 'MqttWs2Connection::The connection to the message broker '
           '{$server}:{$port} could not be made. Error is ${e.toString()}';
       completer.completeError(e);
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     } on HandshakeException catch (e) {
       final message =
           'MqttWs2Connection::Handshake exception to the message broker '
           '{$server}:{$port}. Error is ${e.toString()}';
       completer.completeError(e);
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     } on TlsException catch (e) {
       final message =
           'MqttWs2Connection::TLS exception raised on secure connection. '
           'Error is ${e.toString()}';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     return completer.future;
   }
@@ -204,7 +204,7 @@ class MqttServerWs2Connection extends MqttServerConnection {
     }, onDone: () {
       _subscription.cancel();
       const message = 'MqttWs2Connection::TLS connection unexpectedly closed';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     });
     return c.future;
   }
@@ -220,13 +220,13 @@ bool _parseResponse(String resp, String key) {
   }
   final lines = _response.substring(0, bodyOffset).split('\n');
   if (lines.isEmpty) {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server returned invalid response');
   }
   // split apart the status line
   final status = lines[0].split(' ');
   if (status.length < 3) {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server returned malformed status line');
   }
   // make a map of the headers
@@ -235,7 +235,7 @@ bool _parseResponse(String resp, String key) {
   for (final l in lines) {
     final space = l.indexOf(' ');
     if (space < 0) {
-      throw NoConnectionException(
+      throw MqttNoConnectionException(
           'MqttWs2Connection::server returned malformed header line');
     }
     headers[l.substring(0, space - 1).toLowerCase()] = l.substring(space + 1);
@@ -252,27 +252,27 @@ bool _parseResponse(String resp, String key) {
   // if we make it to here we have read all we are going to read.
   // now lets see if we like what we found.
   if (status[1] != '101') {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server refused to upgrade, response = '
         '${status[1]} - ${status[2]} - $body');
   }
 
   if (!headers.containsKey('connection') ||
       headers['connection'].toLowerCase() != 'upgrade') {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server returned improper connection header line');
   }
   if (!headers.containsKey('upgrade') ||
       headers['upgrade'].toLowerCase() != 'websocket') {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server returned improper upgrade header line');
   }
   if (!headers.containsKey('sec-websocket-protocol')) {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server failed to return protocol header');
   }
   if (!headers.containsKey('sec-websocket-accept')) {
-    throw NoConnectionException(
+    throw MqttNoConnectionException(
         'MqttWs2Connection::server failed to return accept header');
   }
   // We build up the accept in the same way the server should
@@ -284,7 +284,7 @@ bool _parseResponse(String resp, String key) {
   final sha1Bytes = sha1.convert(utf8.encode(key + acceptSalt));
   final encodedSha1Bytes = base64.encode(sha1Bytes.bytes);
   if (encodedSha1Bytes != headers['sec-websocket-accept']) {
-    throw NoConnectionException('MqttWs2Connection::handshake mismatch');
+    throw MqttNoConnectionException('MqttWs2Connection::handshake mismatch');
   }
   return false;
 }

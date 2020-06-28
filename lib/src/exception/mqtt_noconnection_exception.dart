@@ -8,9 +8,9 @@
 part of mqtt5_client;
 
 /// Exception thrown when the client fails to connect
-class NoConnectionException implements Exception {
+class MqttNoConnectionException implements Exception {
   /// Construct
-  NoConnectionException(String message) {
+  MqttNoConnectionException(String message) {
     _message = 'mqtt-client::NoConnectionException: $message';
   }
 

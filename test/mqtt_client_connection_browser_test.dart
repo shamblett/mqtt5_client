@@ -26,7 +26,7 @@ void main() {
         client.logging(on: true);
         await client.connect();
       } on Exception catch (e) {
-        expect(e is NoConnectionException, true);
+        expect(e is MqttNoConnectionException, true);
         expect(
             e.toString(),
             'mqtt-client::NoConnectionException: '
@@ -41,7 +41,7 @@ void main() {
         client.logging(on: true);
         await client.connect();
       } on Exception catch (e) {
-        expect(e is NoConnectionException, true);
+        expect(e is MqttNoConnectionException, true);
         expect(
             e.toString(),
             'mqtt-client::NoConnectionException: '
@@ -63,7 +63,7 @@ void main() {
       var ok = false;
       try {
         await client.connect();
-      } on NoConnectionException {
+      } on MqttNoConnectionException {
         print('>>>>> TEST OK - No connection exception thrown');
         ok = true;
       }
@@ -103,7 +103,7 @@ void main() {
         }
         expect(connectionOK, isTrue);
         expect(callbackOk, isTrue);
-      } on NoConnectionException {
+      } on MqttNoConnectionException {
         print(
             '>>>>> TEST NOT OK - No connection exception thrown, is the local WS broker running?');
         ok = false;
@@ -155,7 +155,7 @@ void main() {
             client.disconnect();
           }
         }
-      } on NoConnectionException {
+      } on MqttNoConnectionException {
         print(
             '>>>>> TEST NOT OK - No connection exception thrown, cannot connect to Mosquitto');
         ok = false;

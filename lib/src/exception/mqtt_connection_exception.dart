@@ -8,9 +8,9 @@
 part of mqtt5_client;
 
 /// Exception thrown when the connection state is incorrect.
-class ConnectionException implements Exception {
+class MqttConnectionException implements Exception {
   /// Construct
-  ConnectionException(MqttConnectionState state) {
+  MqttConnectionException(MqttConnectionState state) {
     _message = 'mqtt-client::ConnectionException: The connection must be in '
         'the Connected state in order to perform this operation.';
     if (null != state) {

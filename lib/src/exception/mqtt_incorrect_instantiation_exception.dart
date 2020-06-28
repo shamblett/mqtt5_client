@@ -8,9 +8,9 @@
 part of mqtt5_client;
 
 /// Exception thrown when a browser or server client is instantiated incorrectly.
-class IncorrectInstantiationException implements Exception {
+class MqttIncorrectInstantiationException implements Exception {
   /// Construct
-  IncorrectInstantiationException() {
+  MqttIncorrectInstantiationException() {
     _message =
         'mqtt-client::ClientIncorrectInstantiationException: Incorrect instantiation, do not'
         'instantiate MqttClient directly, use MqttServerClient or MqttBrowserClient';

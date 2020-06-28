@@ -28,7 +28,7 @@ void main() {
     test('Invalid URL', () async {
       try {
         final clientEventBus = events.EventBus();
-        final ch = SynchronousMqttServerConnectionHandler(
+        final ch = MqttSynchronousServerConnectionHandler(
           clientEventBus,
           maxConnectionAttempts: 3,
         );
@@ -36,7 +36,7 @@ void main() {
         await ch.connect(mockBrokerAddressWsBad, mockBrokerPortWs,
             MqttConnectMessage().withClientIdentifier(testClientId));
       } on Exception catch (e) {
-        expect(e is NoConnectionException, true);
+        expect(e is MqttNoConnectionException, true);
         expect(
             e.toString(),
             'mqtt-client::NoConnectionException: '
@@ -56,7 +56,7 @@ void main() {
     test('Invalid URL - bad scheme', () async {
       try {
         final clientEventBus = events.EventBus();
-        final ch = SynchronousMqttServerConnectionHandler(
+        final ch = MqttSynchronousServerConnectionHandler(
           clientEventBus,
           maxConnectionAttempts: 3,
         );
@@ -64,7 +64,7 @@ void main() {
         await ch.connect(mockBrokerAddressWsNoScheme, mockBrokerPortWs,
             MqttConnectMessage().withClientIdentifier(testClientId));
       } on Exception catch (e) {
-        expect(e is NoConnectionException, true);
+        expect(e is MqttNoConnectionException, true);
         expect(
             e.toString(),
             'mqtt-client::NoConnectionException: '
@@ -95,7 +95,7 @@ void main() {
 
       await brokerWs.start();
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );

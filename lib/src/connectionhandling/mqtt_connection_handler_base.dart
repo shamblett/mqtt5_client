@@ -9,7 +9,7 @@ part of mqtt5_client;
 
 ///  This class provides shared connection functionality
 ///  to serverand browser connection handler implementations.
-abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
+abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
   MqttConnectionHandlerBase({@required this.maxConnectionAttempts});
 

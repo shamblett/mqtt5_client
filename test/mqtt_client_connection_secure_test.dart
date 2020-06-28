@@ -24,7 +24,7 @@ class MockCH extends Mock implements MqttServerConnectionHandler {
 }
 
 class MockKA extends Mock implements MqttConnectionKeepAlive {
-  MockKA(IMqttConnectionHandler connectionHandler, int keepAliveSeconds) {
+  MockKA(MqttIConnectionHandler connectionHandler, int keepAliveSeconds) {
     ka = MqttConnectionKeepAlive(connectionHandler, keepAliveSeconds);
   }
 
@@ -77,7 +77,7 @@ void main() {
   group('Synchronous MqttConnectionHandler', () {
     test('Connect to bad host name', () async {
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -98,7 +98,7 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -149,7 +149,7 @@ void main() {
 
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -187,7 +187,7 @@ void main() {
       broker.pemName = 'self_signed';
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );
@@ -212,7 +212,7 @@ void main() {
       broker.pemName = 'self_signed';
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = SynchronousMqttServerConnectionHandler(
+      final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
       );

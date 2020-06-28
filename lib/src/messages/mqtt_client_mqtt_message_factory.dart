@@ -62,7 +62,7 @@ class MqttMessageFactory {
         message = MqttAuthenticateMessage.fromByteBuffer(header, messageStream);
         break;
       default:
-        throw InvalidHeaderException(
+        throw MqttInvalidHeaderException(
             'The Message Type specified ($header.messageType) is not a valid '
             'MQTT Message type or currently not supported.');
     }

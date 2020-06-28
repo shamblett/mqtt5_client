@@ -62,7 +62,7 @@ class PublishingManager implements IPublishingManager {
   Map<Type, Object> dataConverters = <Type, Object>{};
 
   /// The current connection handler.
-  IMqttConnectionHandler connectionHandler;
+  MqttIConnectionHandler connectionHandler;
 
   final StreamController<MqttPublishMessage> _published =
       StreamController<MqttPublishMessage>.broadcast();

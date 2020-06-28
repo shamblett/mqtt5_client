@@ -43,7 +43,7 @@ class SubscriptionsManager {
 
   /// The connection handler that we use to subscribe to subscription
   /// acknowledgements.
-  IMqttConnectionHandler connectionHandler;
+  MqttIConnectionHandler connectionHandler;
 
   /// Publishing manager used for passing on published messages to subscribers.
   PublishingManager publishingManager;

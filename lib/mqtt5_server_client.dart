@@ -17,11 +17,11 @@ import 'package:meta/meta.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 import 'mqtt5_client.dart';
 
-part 'src/connectionhandling/server/mqtt_client_mqtt_server_connection_handler.dart';
-part 'src/connectionhandling/server/mqtt_client_mqtt_server_normal_connection.dart';
-part 'src/connectionhandling/server/mqtt_client_mqtt_server_secure_connection.dart';
-part 'src/connectionhandling/server/mqtt_client_mqtt_server_ws2_connection.dart';
-part 'src/connectionhandling/server/mqtt_client_mqtt_server_ws_connection.dart';
-part 'src/connectionhandling/server/mqtt_client_synchronous_mqtt_server_connection_handler.dart';
-part 'src/connectionhandling/server/mqtt_client_mqtt_server_connection.dart';
+part 'src/connectionhandling/server/mqtt_server_connection_handler.dart';
+part 'src/connectionhandling/server/mqtt_server_normal_connection.dart';
+part 'src/connectionhandling/server/mqtt_server_secure_connection.dart';
+part 'src/connectionhandling/server/mqtt_server_ws2_connection.dart';
+part 'src/connectionhandling/server/mqtt_server_ws_connection.dart';
+part 'src/connectionhandling/server/mqtt_synchronous_server_connection_handler.dart';
+part 'src/connectionhandling/server/mqtt_server_connection.dart';
 part 'src/mqtt_server_client.dart';

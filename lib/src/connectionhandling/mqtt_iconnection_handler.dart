@@ -11,7 +11,7 @@ part of mqtt5_client;
 typedef MessageCallbackFunction = bool Function(MqttMessage message);
 
 /// The connection handler interface class
-abstract class IMqttConnectionHandler {
+abstract class MqttIConnectionHandler {
   /// The connection status
   MqttClientConnectionStatus get connectionStatus;
 

@@ -24,29 +24,29 @@ part 'src/mqtt_client_protocol.dart';
 
 part 'src/mqtt_client_events.dart';
 
-part 'src/exception/mqtt_client_client_identifier_exception.dart';
+part 'src/exception/mqtt_client_identifier_exception.dart';
 
-part 'src/exception/mqtt_client_connection_exception.dart';
+part 'src/exception/mqtt_connection_exception.dart';
 
-part 'src/exception/mqtt_client_noconnection_exception.dart';
+part 'src/exception/mqtt_noconnection_exception.dart';
 
-part 'src/exception/mqtt_client_invalid_header_exception.dart';
+part 'src/exception/mqtt_invalid_header_exception.dart';
 
-part 'src/exception/mqtt_client_invalid_message_exception.dart';
+part 'src/exception/mqtt_invalid_message_exception.dart';
 
-part 'src/exception/mqtt_client_invalid_payload_size_exception.dart';
+part 'src/exception/mqtt_invalid_payload_size_exception.dart';
 
-part 'src/exception/mqtt_client_invalid_topic_exception.dart';
+part 'src/exception/mqtt_invalid_topic_exception.dart';
 
-part 'src/exception/mqtt_client_incorrect_instantiation_exception.dart';
+part 'src/exception/mqtt_incorrect_instantiation_exception.dart';
 
-part 'src/connectionhandling/mqtt_client_connection_state.dart';
+part 'src/connectionhandling/mqtt_connection_state.dart';
 
-part 'src/connectionhandling/mqtt_client_mqtt_connection_base.dart';
+part 'src/connectionhandling/mqtt_connection_base.dart';
 
-part 'src/connectionhandling/mqtt_client_mqtt_connection_handler_base.dart';
+part 'src/connectionhandling/mqtt_connection_handler_base.dart';
 
-part 'src/connectionhandling/mqtt_client_imqtt_connection_handler.dart';
+part 'src/connectionhandling/mqtt_iconnection_handler.dart';
 
 part 'src/mqtt_client_topic.dart';
 
@@ -74,13 +74,13 @@ part 'src/mqtt_client_subscriptions_manager.dart';
 
 part 'src/mqtt_client_message_identifier_dispenser.dart';
 
-part 'src/encoding/mqtt_client_mqtt_utf8_encoding.dart';
+part 'src/encoding/mqtt_utf8_encoding.dart';
 
-part 'src/encoding/mqtt_client_mqtt_variable_byte_integer_encoding.dart';
+part 'src/encoding/mqtt_variable_byte_integer_encoding.dart';
 
-part 'src/encoding/mqtt_client_mqtt_binary_data_encoding.dart';
+part 'src/encoding/mqtt_binary_data_encoding.dart';
 
-part 'src/encoding/mqtt_client_mqtt_string_pair.dart';
+part 'src/encoding/mqtt_string_pair.dart';
 
 part 'src/utility/mqtt_client_byte_buffer.dart';
 
@@ -94,19 +94,19 @@ part 'src/messages/mqtt_client_mqtt_ivariable_header.dart';
 
 part 'src/messages/mqtt_client_mqtt_message.dart';
 
-part 'src/messages/authenticate/mqtt_client_mqtt_authenticate_message.dart';
+part 'src/messages/authenticate/mqtt_authenticate_message.dart';
 
-part 'src/messages/authenticate/mqtt_client_mqtt_authenticate_variable_header.dart';
+part 'src/messages/authenticate/mqtt_authenticate_variable_header.dart';
 
-part 'src/messages/connect/mqtt_client_mqtt_connect_flags.dart';
+part 'src/messages/connect/mqtt_connect_flags.dart';
 
-part 'src/messages/connect/mqtt_client_mqtt_connect_payload.dart';
+part 'src/messages/connect/mqtt_connect_payload.dart';
 
-part 'src/messages/connect/mqtt_client_mqtt_connect_variable_header.dart';
+part 'src/messages/connect/mqtt_connect_variable_header.dart';
 
-part 'src/messages/connect/mqtt_client_mqtt_connect_message.dart';
+part 'src/messages/connect/mqtt_connect_message.dart';
 
-part 'src/messages/connect/mqtt_client_mqtt_will_properties.dart';
+part 'src/messages/connect/mqtt_will_properties.dart';
 
 part 'src/messages/connectack/mqtt_client_mqtt_connect_ack_variable_header.dart';
 
@@ -218,6 +218,6 @@ part 'src/utility/mqtt_client_utilities.dart';
 
 part 'src/utility/mqtt_client_enum_helper.dart';
 
-part 'src/connectionhandling/mqtt_client_mqtt_connection_keep_alive.dart';
+part 'src/connectionhandling/mqtt_connection_keep_alive.dart';
 
-part 'src/connectionhandling/mqtt_client_read_wrapper.dart';
+part 'src/connectionhandling/mqtt_read_wrapper.dart';

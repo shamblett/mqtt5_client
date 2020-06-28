@@ -201,7 +201,7 @@ class MqttClient {
       [String username, String password]) async {
     // Protect against an incorrect instantiation
     if (!instantiationCorrect) {
-      throw IncorrectInstantiationException();
+      throw MqttIncorrectInstantiationException();
     }
     checkCredentials(username, password);
     // Set the authentication parameters in the connection
@@ -269,7 +269,7 @@ class MqttClient {
   /// Returns the subscription or null on failure
   Subscription subscribe(String topic, MqttQos qosLevel) {
     if (connectionStatus.state != MqttConnectionState.connected) {
-      throw ConnectionException(connectionHandler?.connectionStatus?.state);
+      throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
     return subscriptionsManager.registerSubscription(topic, qosLevel);
   }
@@ -280,7 +280,7 @@ class MqttClient {
   /// Returns the subscription or null on failure
   Subscription subscribePrebuilt(MqttSubscribeMessage message) {
     if (connectionStatus.state != MqttConnectionState.connected) {
-      throw ConnectionException(connectionHandler?.connectionStatus?.state);
+      throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
     return subscriptionsManager.registerPrebuiltSubscription(message);
   }
@@ -294,14 +294,14 @@ class MqttClient {
       {bool retain = false, List<MqttUserProperty> userProperties}) {
     if (connectionHandler?.connectionStatus?.state !=
         MqttConnectionState.connected) {
-      throw ConnectionException(connectionHandler?.connectionStatus?.state);
+      throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
     try {
       final pubTopic = MqttPublicationTopic(topic);
       return publishingManager.publish(pubTopic, qualityOfService, data,
           retain: retain, userProperties: userProperties);
     } on Exception catch (e) {
-      throw InvalidTopicException(e.toString(), topic);
+      throw MqttInvalidTopicException(e.toString(), topic);
     }
   }
 

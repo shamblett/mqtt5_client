@@ -38,7 +38,7 @@ class MqttServerSecureConnection extends MqttServerConnection {
           .then((SecureSocket socket) {
         MqttLogger.log('MqttSecureConnection::connect - securing socket');
         client = socket;
-        readWrapper = ReadWrapper();
+        readWrapper = MqttReadWrapper();
         messageStream = MqttByteBuffer(typed.Uint8Buffer());
         MqttLogger.log('MqttSecureConnection::connect - start listening');
         _startListening();
@@ -52,17 +52,17 @@ class MqttServerSecureConnection extends MqttServerConnection {
           'MqttSecureConnection::The connection to the message broker '
           '{$server}:{$port} could not be made. Error is ${e.toString()}';
       completer.completeError(e);
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     } on HandshakeException catch (e) {
       final message =
           'MqttSecureConnection::Handshake exception to the message broker '
           '{$server}:{$port}. Error is ${e.toString()}';
       completer.completeError(e);
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     } on TlsException catch (e) {
       final message = 'MqttSecureConnection::TLS exception raised on secure '
           'connection. Error is ${e.toString()}';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     return completer.future;
   }

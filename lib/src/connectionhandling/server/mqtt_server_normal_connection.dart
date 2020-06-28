@@ -27,7 +27,7 @@ class MqttServerNormalConnection extends MqttServerConnection {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {
         client = socket;
-        readWrapper = ReadWrapper();
+        readWrapper = MqttReadWrapper();
         messageStream = MqttByteBuffer(typed.Uint8Buffer());
         _startListening();
         completer.complete();
@@ -39,7 +39,7 @@ class MqttServerNormalConnection extends MqttServerConnection {
       completer.completeError(e);
       final message = 'MqttNormalConnection::The connection to the message '
           'broker {$server}:{$port} could not be made.';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     return completer.future;
   }

@@ -8,10 +8,10 @@
 part of mqtt5_client;
 
 /// State and logic used to read from the underlying network stream.
-class ReadWrapper {
+class MqttReadWrapper {
   /// Creates a new ReadWrapper that wraps the state used to read
   /// a message from a stream.
-  ReadWrapper() {
+  MqttReadWrapper() {
     messageBytes = <int>[];
   }
 

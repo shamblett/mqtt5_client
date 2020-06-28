@@ -31,7 +31,7 @@ void main() {
           'nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'
           'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm'
           'llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll';
-      final exception = ClientIdentifierException(clid);
+      final exception = MqttClientIdentifierException(clid);
       expect(
           exception.toString(),
           'mqtt-client::ClientIdentifierException: Client id $clid is too long at ${clid.length}, '
@@ -39,33 +39,33 @@ void main() {
     });
     test('Connection', () {
       const state = MqttConnectionState.disconnected;
-      final exception = ConnectionException(state);
+      final exception = MqttConnectionException(state);
       expect(
           exception.toString(),
           'mqtt-client::ConnectionException: The connection must be in the Connected state in '
           'order to perform this operation. Current state is disconnected');
     });
     test('No Connection', () {
-      final exception = NoConnectionException('the message');
+      final exception = MqttNoConnectionException('the message');
       expect(exception.toString(),
           'mqtt-client::NoConnectionException: the message');
     });
     test('Invalid Header', () {
       const message = 'Corrupt Header Packet';
-      final exception = InvalidHeaderException(message);
+      final exception = MqttInvalidHeaderException(message);
       expect(exception.toString(),
           'mqtt-client::InvalidHeaderException: $message');
     });
     test('Invalid Message', () {
       const message = 'Corrupt Message Packet';
-      final exception = InvalidMessageException(message);
+      final exception = MqttInvalidMessageException(message);
       expect(exception.toString(),
           'mqtt-client::InvalidMessageException: $message');
     });
     test('Invalid Payload Size', () {
       const size = 2000;
       const max = 1000;
-      final exception = InvalidPayloadSizeException(size, max);
+      final exception = MqttInvalidPayloadSizeException(size, max);
       expect(
           exception.toString(),
           'mqtt-client::InvalidPayloadSizeException: The size of the payload ($size bytes) must '
@@ -74,12 +74,12 @@ void main() {
     test('Invalid Topic', () {
       const message = 'Too long';
       const topic = 'kkkk-yyyy';
-      final exception = InvalidTopicException(message, topic);
+      final exception = MqttInvalidTopicException(message, topic);
       expect(exception.toString(),
           'mqtt-client::InvalidTopicException: Topic $topic is $message');
     });
     test('Invalid Instantiation', () {
-      final exception = IncorrectInstantiationException();
+      final exception = MqttIncorrectInstantiationException();
       expect(
           exception.toString(),
           'mqtt-client::ClientIncorrectInstantiationException: Incorrect instantiation, do not'
@@ -1097,7 +1097,7 @@ void main() {
       try {
         var client = MqttClient('aaaa', 'bbbb');
         await client.connect();
-      } on IncorrectInstantiationException {
+      } on MqttIncorrectInstantiationException {
         ok = true;
       }
       expect(ok, isTrue);

@@ -34,13 +34,13 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       final message =
           'MqttBrowserWsConnection::connect - The URI supplied for the WS '
           'connection is not valid - $server';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     if (uri.scheme != 'ws' && uri.scheme != 'wss') {
       final message =
           'MqttBrowserWsConnection::connect - The URI supplied for the WS has '
           'an incorrect scheme - $server';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     if (port != null) {
       uri = uri.replace(port: port);
@@ -80,7 +80,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       final message =
           'MqttBrowserWsConnection::connect - The connection to the message broker '
           '{$uriString} could not be made.';
-      throw NoConnectionException(message);
+      throw MqttNoConnectionException(message);
     }
     MqttLogger.log('MqttBrowserWsConnection::connect - connection is waiting');
     return completer.future;

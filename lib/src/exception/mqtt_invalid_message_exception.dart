@@ -7,11 +7,11 @@
 
 part of mqtt5_client;
 
-/// Exception thrown when processing a header that is invalid in some way.
-class InvalidHeaderException implements Exception {
+/// Exception thrown when processing a Message that is invalid in some way.
+class MqttInvalidMessageException implements Exception {
   /// Construct
-  InvalidHeaderException(String text) {
-    _message = 'mqtt-client::InvalidHeaderException: $text';
+  MqttInvalidMessageException(String text) {
+    _message = 'mqtt-client::InvalidMessageException: $text';
   }
 
   String _message;
