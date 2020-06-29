@@ -96,10 +96,18 @@ class MqttSubscribeMessage extends MqttMessage {
     return this;
   }
 
-  /// Adds a new subscription with a prebuilt topic and option.
-  MqttSubscribeMessage toTopicPrebuilt(
-      MqttSubscriptionTopic subTopic, MqttSubscriptionOption option) {
-    _payload.addSubscription(subTopic, option);
+  /// Adds a new subscription with the specified subscription
+  MqttSubscribeMessage toSubscription(MqttSubscription subscription) {
+    _payload.addSubscription(subscription.topic, subscription.option);
+    return this;
+  }
+
+  /// Adds a new subscription with the specified subscription list
+  MqttSubscribeMessage toSubscriptionList(
+      List<MqttSubscription> subscriptions) {
+    for (final subscription in subscriptions) {
+      _payload.addSubscription(subscription.topic, subscription.option);
+    }
     return this;
   }
 

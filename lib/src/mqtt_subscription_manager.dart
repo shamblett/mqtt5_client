@@ -27,7 +27,8 @@ class MqttSubscriptionManager {
 
   final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
 
-  /// Dispenser used for keeping track of subscription ids
+  /// Dispenser used for keeping track of subscription ids and generating
+  /// message identifiers.
   MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
       _messageIdentifierDispenser;
 
@@ -43,11 +44,12 @@ class MqttSubscriptionManager {
   Map<int, List<MqttSubscription>> get pendingSubscriptions =>
       _pendingSubscriptions;
 
-  final _pendingUnsubscriptions = <int, String>{};
+  final _pendingUnsubscriptions = <int, List<MqttSubscription>>{};
 
   /// A list of unsubscribe requests waiting for an unsubscribe ack message.
-  /// Index is the message identifier of the unsubscribe message
-  Map<int, String> get pendingUnsubscriptions => _pendingUnsubscriptions;
+  /// Index is the message identifier of the unsubscribe message.
+  Map<int, List<MqttSubscription>> get pendingUnsubscriptions =>
+      _pendingUnsubscriptions;
 
   /// The connection handler that we use to subscribe to subscription
   /// acknowledgements.
@@ -74,21 +76,51 @@ class MqttSubscriptionManager {
   observe.ChangeNotifier<MqttReceivedMessage<MqttMessage>>
       get subscriptionNotifier => _subscriptionNotifier;
 
-  /// Registers a new subscription with the subscription manager.
-  MqttSubscription registerSubscription(String topic, MqttQos qos) {
+  /// Registers a new subscription with the subscription manager from a topic
+  /// and a maximum Qos.
+  /// Returns the subscription subscribed to.
+  /// // TODO user properties.
+  MqttSubscription registerSubscriptionTopic(String topic, MqttQos qos) {
     var cn = _tryGetExistingSubscription(topic);
     return cn ??= _createNewSubscription(topic, qos);
   }
 
-  /// Registers a new prebuilt subscription with the subscription manager.
-  /// Note the message identifier of the subscription, if set, will be overwritten by
-  /// this method.
-  void registerPrebuiltSubscription(MqttSubscribeMessage message) {
-    if (message.isValid) {
-      _createNewPrebuiltSubscription(message);
-    } else {
-      throw ArgumentError(
-          'MqttSubscriptionManager::registerPrebuiltSubscription - subscription is invalid');
+  /// Registers a new subscription with the subscription manager from a
+  /// subscription.
+  /// Returns the subscription subscribed to.
+  MqttSubscription registerSubscription(MqttSubscription subscription) {
+    var cn = _tryGetExistingSubscription(subscription.topic.rawTopic);
+    return cn ??= _createNewSubscription(
+        subscription.topic.rawTopic, subscription.maximumQos);
+  }
+
+  /// Registers a new subscription with the subscription manager from a
+  /// list of subscriptions.
+  /// Returns the actual subscriptions subscribed to.
+  List<MqttSubscription> registerSubscriptionList(
+      List<MqttSubscription> subscriptions) {
+    final subscriptionsToCreate = <MqttSubscription>[];
+    for (final subscription in subscriptions) {
+      var cn = _tryGetExistingSubscription(subscription.topic.rawTopic);
+      cn ??= subscription;
+      subscriptionsToCreate.add(cn);
+    }
+    // Build a subscription message and send it.
+    try {
+      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+      pendingSubscriptions[msgId] = subscriptionsToCreate;
+      final msg =
+          MqttSubscribeMessage().toSubscriptionList(subscriptionsToCreate);
+      msg.messageIdentifier = msgId;
+      _connectionHandler.sendMessage(msg);
+      return subscriptionsToCreate;
+    } on Exception catch (e) {
+      MqttLogger.log('MqttSubscriptionManager::registerSubscriptionList'
+          'exception raised, text is $e');
+      if (onSubscribeFail != null) {
+        onSubscribeFail('');
+      }
+      return null;
     }
   }
 
@@ -114,10 +146,8 @@ class MqttSubscriptionManager {
   MqttSubscription _createNewSubscription(String topic, MqttQos qos) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
-      // Get an ID that represents the subscription. We will use this
-      // same ID for unsubscribe as well.
-      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
+      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
       pendingSubscriptions[msgId].add(sub);
       // Build a subscribe message for the caller and send it off to the broker.
       final msg =
@@ -130,30 +160,6 @@ class MqttSubscriptionManager {
           'exception raised, text is $e');
       if (onSubscribeFail != null) {
         onSubscribeFail(topic);
-      }
-      return null;
-    }
-  }
-
-  /// Creates a new prebuilt subscription for the specified subscription message.
-  void _createNewPrebuiltSubscription(MqttSubscribeMessage message) {
-    try {
-      // Get an ID that represents the subscription. We will use this
-      // same ID for unsubscribe as well.
-      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
-      message.messageIdentifier = msgId;
-      for (final subscription in message.payload.subscriptions) {
-        final sub = MqttSubscription.withMaximumQos(
-            subscription.topic, subscription.option.maximumQos);
-        pendingSubscriptions[msgId].add(sub);
-      }
-      // Send the subscribe message to the broker.
-      _connectionHandler.sendMessage(message);
-    } on Exception catch (e) {
-      MqttLogger.log('MqttSubscriptionManager::_createNewPrebuiltSubscription '
-          'exception raised, text is $e');
-      if (onSubscribeFail != null) {
-        onSubscribeFail('prebuilt no topic');
       }
       return null;
     }

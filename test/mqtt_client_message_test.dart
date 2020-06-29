@@ -3805,7 +3805,6 @@ void main() {
         final option = MqttSubscriptionOption();
         option.retainHandling = MqttRetainHandling.sendRetained;
         option.noLocal = true;
-        final subTopic = MqttSubscriptionTopic('Topic4');
         final user1 = MqttUserProperty();
         user1.pairName = 'User 1 Name';
         user1.pairValue = 'User 1 value';
@@ -3816,7 +3815,6 @@ void main() {
             .toTopic('Topic1')
             .toTopicWithQos('Topic2', MqttQos.atMostOnce)
             .toTopicWithOption('Topic3', option)
-            .toTopicPrebuilt(subTopic, option)
             .withSubscriptionIdentifier(0xa0)
             .withUserProperty(user1)
             .withUserProperties([user2]);

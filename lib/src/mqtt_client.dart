@@ -265,23 +265,36 @@ class MqttClient {
   /// Initiates a topic subscription request to the connected broker
   /// with a strongly typed data processor callback.
   /// The topic to subscribe to.
-  /// The qos level the message was published at.
+  /// The maximum Qos level.
   /// Returns the subscription or null on failure
   MqttSubscription subscribe(String topic, MqttQos qosLevel) {
     if (connectionStatus.state != MqttConnectionState.connected) {
       throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
-    return subscriptionsManager.registerSubscription(topic, qosLevel);
+    return subscriptionsManager.registerSubscriptionTopic(topic, qosLevel);
   }
 
   /// Initiates a topic subscription request to the connected broker
   /// with a strongly typed data processor callback.
-  /// The prebuilt subscription message
-  void subscribePrebuilt(MqttSubscribeMessage message) {
+  /// The subscription to subscribe to.
+  /// Returns the subscription or null on failure
+  MqttSubscription subscribeWithSubscription(MqttSubscription subscription) {
     if (connectionStatus.state != MqttConnectionState.connected) {
       throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
-    subscriptionsManager.registerPrebuiltSubscription(message);
+    return subscriptionsManager.registerSubscription(subscription);
+  }
+
+  /// Initiates a topic subscription request to the connected broker
+  /// with a strongly typed data processor callback.
+  /// The list of subscriptions to subscribe to.
+  /// Returns the subscriptions or null on failure
+  List<MqttSubscription> subscribeWithSubscriptionList(
+      List<MqttSubscription> subscriptions) {
+    if (connectionStatus.state != MqttConnectionState.connected) {
+      throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
+    }
+    return subscriptionsManager.registerSubscriptionList(subscriptions);
   }
 
   /// Publishes a message to the message broker.
