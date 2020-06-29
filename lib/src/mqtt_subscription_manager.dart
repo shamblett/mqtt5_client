@@ -117,12 +117,8 @@ class MqttSubscriptionManager {
       // Get an ID that represents the subscription. We will use this
       // same ID for unsubscribe as well.
       final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
-      final sub = MqttSubscription();
-      sub.topic = subscriptionTopic;
-      sub.qos = qos;
-      sub.messageIdentifier = msgId;
-      sub.createdTime = DateTime.now();
-      pendingSubscriptions[sub.messageIdentifier].add(sub);
+      final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
+      pendingSubscriptions[msgId].add(sub);
       // Build a subscribe message for the caller and send it off to the broker.
       final msg =
           MqttSubscribeMessage().toTopicWithQos(sub.topic.rawTopic, qos);
@@ -147,12 +143,9 @@ class MqttSubscriptionManager {
       final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
       message.messageIdentifier = msgId;
       for (final subscription in message.payload.subscriptions) {
-        final sub = MqttSubscription();
-        sub.topic = subscription.topic;
-        sub.qos = subscription.option.maximumQos;
-        sub.messageIdentifier = msgId;
-        sub.createdTime = DateTime.now();
-        pendingSubscriptions[sub.messageIdentifier].add(sub);
+        final sub = MqttSubscription.withMaximumQos(
+            subscription.topic, subscription.option.maximumQos);
+        pendingSubscriptions[msgId].add(sub);
       }
       // Send the subscribe message to the broker.
       _connectionHandler.sendMessage(message);

@@ -63,7 +63,10 @@ enum MqttSubscribeReasonCode {
 
   /// The broker does not support wildcard Subscriptions;
   /// the subscription is not accepted.
-  wildcardSubscriptionsNotSupported
+  wildcardSubscriptionsNotSupported,
+
+  /// Not set indicator, not part of the MQTT specification
+  notSet
 }
 
 /// MQTT subscribe reason code support
@@ -81,7 +84,8 @@ const Map<int, MqttSubscribeReasonCode> _mqttSubscribeReasonCodeValues =
   0x97: MqttSubscribeReasonCode.quotaExceeded,
   0x9e: MqttSubscribeReasonCode.sharedSubscriptionsNotSupported,
   0xa1: MqttSubscribeReasonCode.subscriptionIdentifiersNotSupported,
-  0xa2: MqttSubscribeReasonCode.wildcardSubscriptionsNotSupported
+  0xa2: MqttSubscribeReasonCode.wildcardSubscriptionsNotSupported,
+  0xff: MqttSubscribeReasonCode.notSet
 };
 
 /// MQTT subscribe reason code helper
