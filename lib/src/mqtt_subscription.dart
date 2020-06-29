@@ -18,10 +18,10 @@ class MqttSubscription extends Object
   }
 
   /// With a maximum qos
-  MqttSubscription.withMaximumQos(MqttSubscriptionTopic topic, MqttQos qos) {
-    final option = MqttSubscriptionOption();
+  MqttSubscription.withMaximumQos(this.topic, MqttQos qos) {
+    option = MqttSubscriptionOption();
     option.maximumQos = qos;
-    MqttSubscription(topic, option);
+    createdTime = DateTime.now();
   }
 
   /// The time the subscription was created.

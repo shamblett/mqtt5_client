@@ -24,6 +24,60 @@ final TestConnectionHandlerNoSend testCHNS = TestConnectionHandlerNoSend();
 final TestConnectionHandlerSend testCHS = TestConnectionHandlerSend();
 
 void main() {
+  group('Subscription Class', () {
+    test('Default Construction', () {
+      final subscription = MqttSubscription(MqttSubscriptionTopic('a/topic'));
+      expect(subscription.topic.rawTopic, 'a/topic');
+      expect(subscription.maximumQos, MqttQos.atMostOnce);
+      expect(
+          subscription.createdTime.millisecondsSinceEpoch <=
+              DateTime.now().millisecondsSinceEpoch,
+          isTrue);
+      expect(subscription.option, isNotNull);
+      expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
+      subscription.maximumQos = MqttQos.exactlyOnce;
+      expect(subscription.maximumQos, MqttQos.exactlyOnce);
+    });
+    test('Default Construction With Option', () {
+      final option = MqttSubscriptionOption();
+      option.noLocal = true;
+      option.maximumQos = MqttQos.atLeastOnce;
+      final subscription =
+          MqttSubscription(MqttSubscriptionTopic('a/topic'), option);
+      expect(subscription.topic.rawTopic, 'a/topic');
+      expect(subscription.maximumQos, MqttQos.atLeastOnce);
+      expect(
+          subscription.createdTime.millisecondsSinceEpoch <=
+              DateTime.now().millisecondsSinceEpoch,
+          isTrue);
+      expect(subscription.option, isNotNull);
+      expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
+      expect(subscription.option.noLocal, isTrue);
+    });
+    test('Default Construction With Maximum Qos', () {
+      final subscription = MqttSubscription.withMaximumQos(
+          MqttSubscriptionTopic('a/topic'), MqttQos.atMostOnce);
+      expect(subscription.topic.rawTopic, 'a/topic');
+      expect(subscription.maximumQos, MqttQos.atMostOnce);
+      expect(
+          subscription.createdTime.millisecondsSinceEpoch <=
+              DateTime.now().millisecondsSinceEpoch,
+          isTrue);
+      expect(subscription.option, isNotNull);
+      expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
+    });
+    test('Equality', () {
+      final subscription1 = MqttSubscription.withMaximumQos(
+          MqttSubscriptionTopic('a/topic'), MqttQos.atMostOnce);
+      final subscription2 = MqttSubscription.withMaximumQos(
+          MqttSubscriptionTopic('a/topic'), MqttQos.atLeastOnce);
+      final subscription3 = MqttSubscription.withMaximumQos(
+          MqttSubscriptionTopic('a/nother/topic'), MqttQos.atLeastOnce);
+      expect(subscription1 == subscription2, isTrue);
+      expect(subscription1 == subscription3, isFalse);
+    });
+  });
+
   group('Manager', () {
     test('Invalid topic returns null subscription', () {
       var cbCalled = false;
