@@ -191,8 +191,8 @@ class MqttSubscriptionManager {
     subscriptionNotifier.notifyChange(msg);
   }
 
-  /// Unsubscribe from a string topic
-  void unsubscribeStringTopic(String topic) {
+  /// Unsubscribe from a string topic.
+  void unsubscribeTopic(String topic) {
     if (topic == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::unsubscribeStringTopic - topic is null');

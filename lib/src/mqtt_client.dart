@@ -328,7 +328,7 @@ class MqttClient {
 
   /// Unsubscribe from a topic.
   void unsubscribeStringTopic(String topic) {
-    subscriptionsManager.unsubscribeStringTopic(topic);
+    subscriptionsManager.unsubscribeTopic(topic);
   }
 
   /// Unsubscribe from a subscription.
