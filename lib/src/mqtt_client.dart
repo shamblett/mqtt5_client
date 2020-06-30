@@ -271,7 +271,7 @@ class MqttClient {
     if (connectionStatus.state != MqttConnectionState.connected) {
       throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
-    return subscriptionsManager.registerSubscriptionTopic(topic, qosLevel);
+    return subscriptionsManager.subscribeSubscriptionTopic(topic, qosLevel);
   }
 
   /// Initiates a topic subscription request to the connected broker
@@ -282,19 +282,22 @@ class MqttClient {
     if (connectionStatus.state != MqttConnectionState.connected) {
       throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
-    return subscriptionsManager.registerSubscription(subscription);
+    return subscriptionsManager.subscribeSubscription(subscription);
   }
 
   /// Initiates a topic subscription request to the connected broker
   /// with a strongly typed data processor callback.
   /// The list of subscriptions to subscribe to.
+  /// Note that user properties are set on a per message basis not a per
+  /// subscription basis, if you wish to send user properties then set
+  /// them on the first subscription in the list.
   /// Returns the subscriptions or null on failure
   List<MqttSubscription> subscribeWithSubscriptionList(
       List<MqttSubscription> subscriptions) {
     if (connectionStatus.state != MqttConnectionState.connected) {
       throw MqttConnectionException(connectionHandler?.connectionStatus?.state);
     }
-    return subscriptionsManager.registerSubscriptionList(subscriptions);
+    return subscriptionsManager.subscribeSubscriptionList(subscriptions);
   }
 
   /// Publishes a message to the message broker.
@@ -323,14 +326,31 @@ class MqttClient {
   int publishUserMessage(MqttPublishMessage message) =>
       publishingManager.publishUserMessage(message);
 
-  /// Unsubscribe from a topic
-  void unsubscribe(String topic) {
-    subscriptionsManager.unsubscribe(topic);
+  /// Unsubscribe from a topic.
+  void unsubscribeStringTopic(String topic) {
+    subscriptionsManager.unsubscribeStringTopic(topic);
   }
 
+  /// Unsubscribe from a subscription.
+  void unsubscribeSubscription(MqttSubscription subscription) {
+    subscriptionsManager.unsubscribeSubscription(subscription);
+  }
+
+  /// Unsubscribe from a subscription list.
+  /// Note that user properties are set on a per message basis not a per
+  /// subscription basis, if you wish to send user properties then set
+  /// them on the first subscription in the list.
+  void unsubscribeSubscriptionList(List<MqttSubscription> subscriptions) {
+    subscriptionsManager.unsubscribeSubscriptionList(subscriptions);
+  }
+
+  /// Gets the current status of a subscription topic.
+  MqttSubscriptionStatus getSubscriptionTopicStatus(String topic) =>
+      subscriptionsManager.getSubscriptionTopicStatus(topic);
+
   /// Gets the current status of a subscription.
-  MqttSubscriptionStatus getSubscriptionsStatus(String topic) =>
-      subscriptionsManager.getSubscriptionsStatus(topic);
+  MqttSubscriptionStatus getSubscriptionStatus(MqttSubscription subscription) =>
+      subscriptionsManager.getSubscriptionStatus(subscription);
 
   /// Disconnect from the broker.
   /// This is a hard disconnect, a disconnect message is sent to the

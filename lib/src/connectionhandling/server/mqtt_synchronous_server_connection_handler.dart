@@ -102,12 +102,14 @@ class MqttSynchronousServerConnectionHandler
         MqttLogger.log(
             'SynchronousMqttServerConnectionHandler::internalConnect failed');
         if (connectionStatus.reasonCode == MqttConnectReasonCode.notSet) {
-          throw MqttNoConnectionException('The maximum allowed connection attempts '
+          throw MqttNoConnectionException(
+              'The maximum allowed connection attempts '
               '({$maxConnectionAttempts}) were exceeded. '
               'The broker is not responding to the connection request message '
               '(Missing Connection Acknowledgement?');
         } else {
-          throw MqttNoConnectionException('The maximum allowed connection attempts '
+          throw MqttNoConnectionException(
+              'The maximum allowed connection attempts '
               '({$maxConnectionAttempts}) were exceeded. '
               'The broker is not responding to the connection request message correctly'
               'The reason code is ${mqttConnectReasonCode.asString(connectionStatus.reasonCode)}');

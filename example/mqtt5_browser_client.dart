@@ -139,7 +139,7 @@ Future<int> main() async {
 
   /// Finally, unsubscribe and exit gracefully
   print('EXAMPLE::Unsubscribing');
-  client.unsubscribe(topic);
+  client.unsubscribeStringTopic(topic);
 
   /// Wait for the unsubscribe message from the broker if you wish.
   await MqttUtilities.asyncSleep(2);
@@ -149,8 +149,8 @@ Future<int> main() async {
 }
 
 /// The subscribed callback
-void onSubscribed(String topic) {
-  print('EXAMPLE::Subscription confirmed for topic $topic');
+void onSubscribed(MqttSubscription subscription) {
+  print('EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
 }
 
 /// The unsolicited disconnect callback

@@ -93,7 +93,7 @@ void main() {
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
       subs.onSubscribeFail = subCallback;
-      final ret = subs.registerSubscription(topic, qos);
+      final ret = subs.subscribeSubscription(topic, qos);
       expect(ret, isNull);
       expect(cbCalled, isTrue);
     });
@@ -104,7 +104,7 @@ void main() {
       const topic = 'testtopic';
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -127,7 +127,7 @@ void main() {
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
       subs.onSubscribed = subCallback;
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -151,7 +151,7 @@ void main() {
       const topic = 'testtopic';
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -182,7 +182,7 @@ void main() {
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
       subs.onSubscribeFail = subFailCallback;
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -205,7 +205,7 @@ void main() {
       const topic = 'testtopic';
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -227,7 +227,7 @@ void main() {
       const topic = 'testtopic';
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -248,7 +248,7 @@ void main() {
       const topic = 'testtopic';
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
       expect(
@@ -271,7 +271,7 @@ void main() {
       const topic = 'testtopic';
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       subs.onUnsubscribed = unsubCallback;
       expect(
           subs.getSubscriptionsStatus(topic), MqttSubscriptionStatus.pending);
@@ -338,7 +338,7 @@ void main() {
 
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-      subs.registerSubscription(topic, qos);
+      subs.subscribeSubscription(topic, qos);
       // Start listening
       st = subs.subscriptionNotifier.changes.listen(t1);
       // Publish messages on the topic

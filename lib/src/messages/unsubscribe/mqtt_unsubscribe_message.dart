@@ -65,6 +65,15 @@ class MqttUnsubscribeMessage extends MqttMessage {
     return this;
   }
 
+  /// Adds a new unsubscription with the specified subscription list
+  MqttUnsubscribeMessage fromSubscriptionList(
+      List<MqttSubscription> subscriptions) {
+    for (final subscription in subscriptions) {
+      _payload.addTopicSubscription(subscription.topic);
+    }
+    return this;
+  }
+
   /// Sets the message identifier on the subscribe message.
   MqttUnsubscribeMessage withMessageIdentifier(int messageIdentifier) {
     variableHeader.messageIdentifier = messageIdentifier;

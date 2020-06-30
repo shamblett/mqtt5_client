@@ -16,6 +16,12 @@ class MqttMessageFactory {
     MqttMessage message;
     switch (header.messageType) {
       case MqttMessageType.connect:
+      case MqttMessageType.pingRequest:
+      case MqttMessageType.subscribe:
+      case MqttMessageType.unsubscribe:
+        // Send only messages should not be decoded from a byte stream, i.e. received.
+        MqttLogger.log(
+            'MqttMessage::getMessage - ERROR send only message received, returning null');
         break;
       case MqttMessageType.connectAck:
         message = MqttConnectAckMessage.fromByteBuffer(header, messageStream);
@@ -38,19 +44,12 @@ class MqttMessageFactory {
         message =
             MqttPublishReleaseMessage.fromByteBuffer(header, messageStream);
         break;
-      case MqttMessageType.subscribe:
-        break;
       case MqttMessageType.subscribeAck:
         message = MqttSubscribeAckMessage.fromByteBuffer(header, messageStream);
-        break;
-      case MqttMessageType.unsubscribe:
-        break;
         break;
       case MqttMessageType.unsubscribeAck:
         message =
             MqttUnsubscribeAckMessage.fromByteBuffer(header, messageStream);
-        break;
-      case MqttMessageType.pingRequest:
         break;
       case MqttMessageType.pingResponse:
         message = MqttPingResponseMessage.fromHeader(header);

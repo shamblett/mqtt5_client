@@ -158,8 +158,9 @@ Future<int> main() async {
 }
 
 /// The subscribed callback
-void onSubscribed(String topic) {
-  print('EXAMPLE::Subscription confirmed for topic $topic');
+/// The subscribed callback
+void onSubscribed(MqttSubscription subscription) {
+  print('EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
 }
 
 /// The unsolicited disconnect callback
