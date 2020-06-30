@@ -158,8 +158,6 @@ class TestConnectionHandlerSend extends MqttServerConnectionHandler {
 
   @override
   void sendMessage(MqttMessage message) {
-    print(
-        'TestConnectionHandlerNoSend::send, message is ${message.toString()}');
     sentMessages.add(message);
   }
 }

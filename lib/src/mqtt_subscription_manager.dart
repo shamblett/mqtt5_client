@@ -114,11 +114,13 @@ class MqttSubscriptionManager {
       throw ArgumentError(
           'MqttSubscriptionManager::subscribeSubscriptionList - subscription list is null');
     }
+    // Don't recreate a subscription we already have.
     final subscriptionsToCreate = <MqttSubscription>[];
     for (final subscription in subscriptions) {
       var cn = _tryGetExistingSubscription(subscription.topic.rawTopic);
-      cn ??= subscription;
-      subscriptionsToCreate.add(cn);
+      if (cn == null) {
+        subscriptionsToCreate.add(subscription);
+      }
     }
     if (subscriptionsToCreate.isEmpty) {
       // No subscriptions created.
@@ -169,7 +171,7 @@ class MqttSubscriptionManager {
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
       sub.userProperties = userProperties;
       final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
-      pendingSubscriptions[msgId].add(sub);
+      pendingSubscriptions[msgId] = <MqttSubscription>[]..add(sub);
       // Build a subscribe message for the caller and send it to the broker.
       final msg = MqttSubscribeMessage()
           .toTopicWithQos(sub.topic.rawTopic, qos)

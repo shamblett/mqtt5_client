@@ -51,10 +51,12 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   final _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
   set userProperty(List<MqttUserProperty> properties) {
-    for (var userProperty in properties) {
-      _propertySet.add(userProperty);
+    if (properties != null) {
+      for (var userProperty in properties) {
+        _propertySet.add(userProperty);
+      }
+      _userProperty.addAll(properties);
     }
-    _userProperty.addAll(properties);
   }
 
   /// Creates a variable header from the specified header stream.
