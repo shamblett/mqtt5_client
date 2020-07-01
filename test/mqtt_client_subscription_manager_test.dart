@@ -81,7 +81,7 @@ void main() {
     });
   });
 
-  group('Subscription Manager - Subscribe', () {
+  group('Subscription Manager - Common', () {
     group('Construction', () {
       test('Default Construction', () {
         testCHS.sentMessages.clear();
@@ -97,6 +97,7 @@ void main() {
             MqttSubscriptionStatus.doesNotExist);
       });
     });
+
     group('Null parameters', () {
       test('Null Parameters - Subscribe', () {
         testCHS.sentMessages.clear();
@@ -147,6 +148,9 @@ void main() {
         }
       });
     });
+  });
+
+  group('Subscription Manager - Subscribe', () {
     group('Subscribe Functionality - Pending', () {
       test('Topic Subscription request creates pending subscription', () {
         testCHS.sentMessages.clear();
@@ -278,6 +282,7 @@ void main() {
         expect(subs.pendingSubscriptions[1], isNotNull);
       });
     });
+
     group('Subscribe Functionality - Acknowledge', () {
       test('Acknowledged subscription request creates active subscription', () {
         var cbCalled = false;
@@ -484,7 +489,112 @@ void main() {
             MqttSubscriptionStatus.doesNotExist);
         expect(subs.pendingSubscriptions.length, 0);
       });
+      test(
+          'Acknowledged but one failed subscription in list request removes pending subscription',
+          () {
+        var cbCalled = 0;
+        var cbFailCalled = false;
+        void subCallback(MqttSubscription subscription) {
+          if (subscription.topic.rawTopic == 'testtopic1') {
+            cbCalled++;
+          } else if (subscription.topic.rawTopic == 'testtopic3') {
+            cbCalled++;
+          } else {
+            fail(
+                'Acknowledged but one failed subscription in list request removes pending subscription - failed topic name received ${subscription.topic.rawTopic}');
+          }
+        }
+
+        void subFailCallback(MqttSubscription subscription) {
+          expect(subscription.topic.rawTopic, 'testtopic2');
+          expect(
+              subscription.reasonCode, MqttSubscribeReasonCode.notAuthorized);
+          cbFailCalled = true;
+        }
+
+        testCHS.sentMessages.clear();
+        final clientEventBus = events.EventBus();
+        const topic1 = 'testtopic1';
+        const qos1 = MqttQos.atLeastOnce;
+        const topic2 = 'testtopic2';
+        const qos2 = MqttQos.atMostOnce;
+        const topic3 = 'testtopic3';
+        const qos3 = MqttQos.atLeastOnce;
+        final subscription1 = MqttSubscription(MqttSubscriptionTopic(topic1),
+            MqttSubscriptionOption()..maximumQos = qos1);
+        final subscription2 = MqttSubscription(MqttSubscriptionTopic(topic2),
+            MqttSubscriptionOption()..maximumQos = qos2);
+        final subscription3 = MqttSubscription(MqttSubscriptionTopic(topic3),
+            MqttSubscriptionOption()..maximumQos = qos3);
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.messageIdentifierDispenser.reset();
+        subs.onSubscribeFail = subFailCallback;
+        subs.onSubscribed = subCallback;
+        subs.subscribeSubscriptionList(
+            [subscription1, subscription2, subscription3]);
+        expect(subs.getSubscriptionTopicStatus(topic1),
+            MqttSubscriptionStatus.pending);
+        expect(subs.getSubscriptionTopicStatus(topic2),
+            MqttSubscriptionStatus.pending);
+        expect(subs.getSubscriptionTopicStatus(topic3),
+            MqttSubscriptionStatus.pending);
+        expect(
+            testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
+        final MqttSubscribeMessage msg = testCHS.sentMessages[0];
+        expect(msg.variableHeader.messageIdentifier, 1);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x1a);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        buffer.add(0x87); // Payload
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream);
+        final MqttSubscribeAckMessage subAckMsg = baseMessage;
+        final ret = subs.confirmSubscription(subAckMsg);
+        expect(ret, isFalse);
+        expect(cbCalled, 2);
+        expect(cbFailCalled, isTrue);
+        expect(subs.subscriptions.length, 2);
+        expect(subs.getSubscriptionTopicStatus(topic2),
+            MqttSubscriptionStatus.doesNotExist);
+        expect(subs.pendingSubscriptions.length, 0);
+      });
     });
+  });
+
+  group('Subscription Manager - Unsubscribe', () {
+    group('Unsubscribe Functionality - Pending', () {
+      test(
+          'Topic unsubscription request creates pending unsubscription', () {});
+    });
+  });
+
+  group('Subscription Manager - Other', () {
     test('Change notification', () {
       var recCount = 0;
       const topic = 'testtopic';

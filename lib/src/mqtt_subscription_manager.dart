@@ -65,7 +65,7 @@ class MqttSubscriptionManager {
   SubscribeFailCallback onSubscribeFail;
 
   /// The event bus
-  final events.EventBus _clientEventBus;
+  final _clientEventBus;
 
   /// Observable change notifier for all subscribed topics
   final observe.ChangeNotifier<MqttReceivedMessage<MqttMessage>>
