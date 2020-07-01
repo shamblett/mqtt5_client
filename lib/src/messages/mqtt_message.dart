@@ -26,9 +26,7 @@ class MqttMessage {
   MqttMessage();
 
   /// Initializes a new instance of the MqttMessage class.
-  MqttMessage.fromHeader(MqttHeader header) {
-    header = header;
-  }
+  MqttMessage.fromHeader(this.header);
 
   /// The header of the MQTT Message. Contains metadata about the message
   MqttHeader header;

@@ -4,7 +4,6 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
-import 'dart:async';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 import 'package:test/test.dart';
@@ -1162,51 +1161,59 @@ void main() {
 
   group('Subscription Manager - Other', () {
     test('Change notification', () {
-      var recCount = 0;
       const topic = 'testtopic';
-      StreamSubscription<List<MqttReceivedMessage<MqttMessage>>> st;
       // The subscription receive callback
       void subRec(List<MqttReceivedMessage<MqttMessage>> c) {
         expect(c[0].topic, topic);
-        print('Change notification:: topic is $topic');
-        expect(c[0].payload, const TypeMatcher<MqttPublishMessage>());
-        final MqttPublishMessage recMess = c[0].payload;
-        if (recCount == 0) {
-          expect(recMess.variableHeader.messageIdentifier, 1);
-          final pt =
-              MqttUtilities.bytesToStringAsString(recMess.payload.message);
-          expect(pt, 'dead');
-          print('Change notification:: payload is $pt');
-          expect(recMess.header.qos, MqttQos.atLeastOnce);
-          recCount++;
-        } else {
-          expect(recMess.variableHeader.messageIdentifier, 2);
-          final pt =
-              MqttUtilities.bytesToStringAsString(recMess.payload.message);
-          expect(pt, 'meat');
-          print('Change notification:: payload is $pt');
-          expect(recMess.header.qos, MqttQos.atMostOnce);
-          //Stop listening
-          st.cancel();
-        }
       }
 
       // Wrap the callback
-      final dynamic t1 = expectAsync1(subRec, count: 2);
+      final dynamic t1 = expectAsync1(subRec, count: 1);
       testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
-
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+      subs.messageIdentifierDispenser.reset();
       subs.subscribeSubscriptionTopic(topic, qos);
+      // Confirm the subscription
+      final buffer = typed.Uint8Buffer();
+      buffer.add(0x90);
+      buffer.add(0x18);
+      buffer.add(0x00); // Message identifier
+      buffer.add(0x01);
+      buffer.add(0x14); // Property length
+      buffer.add(0x1f); // Reason String
+      buffer.add(0x00);
+      buffer.add(0x06);
+      buffer.add('r'.codeUnitAt(0));
+      buffer.add('e'.codeUnitAt(0));
+      buffer.add('a'.codeUnitAt(0));
+      buffer.add('s'.codeUnitAt(0));
+      buffer.add('o'.codeUnitAt(0));
+      buffer.add('n'.codeUnitAt(0));
+      buffer.add(0x26); // User property
+      buffer.add(0x00);
+      buffer.add(0x03);
+      buffer.add('a'.codeUnitAt(0));
+      buffer.add('b'.codeUnitAt(0));
+      buffer.add('c'.codeUnitAt(0));
+      buffer.add(0x00);
+      buffer.add(0x03);
+      buffer.add('d'.codeUnitAt(0));
+      buffer.add('e'.codeUnitAt(0));
+      buffer.add('f'.codeUnitAt(0));
+      buffer.add(0x00); // Payload
+      final stream = MqttByteBuffer(buffer);
+      final baseMessage = MqttMessage.createFrom(stream);
+      final MqttSubscribeAckMessage subAckMsg = baseMessage;
+      subs.confirmSubscription(subAckMsg);
       // Start listening
-      st = subs.subscriptionNotifier.changes.listen(t1);
-      // Publish messages on the topic
-      final buff = typed.Uint8Buffer(4);
-      buff[0] = 'd'.codeUnitAt(0);
-      buff[1] = 'e'.codeUnitAt(0);
-      buff[2] = 'a'.codeUnitAt(0);
-      buff[3] = 'd'.codeUnitAt(0);
+      subs.subscriptionNotifier.changes.listen(t1);
+      // Receive the message event.
+      final header = MqttHeader().asType(MqttMessageType.publish);
+      final msg = MqttMessage.fromHeader(header);
+      final rec = MqttMessageReceived(MqttPublicationTopic(topic), msg);
+      subs.publishMessageReceived(rec);
     });
   });
 }

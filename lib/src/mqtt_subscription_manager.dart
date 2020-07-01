@@ -189,8 +189,12 @@ class MqttSubscriptionManager {
   /// Publish message received
   void publishMessageReceived(MqttMessageReceived event) {
     final topic = event.topic;
-    final msg = MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
-    subscriptionNotifier.notifyChange(msg);
+    if (getSubscriptionTopicStatus(topic.rawTopic) ==
+        MqttSubscriptionStatus.active) {
+      final msg =
+          MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
+      subscriptionNotifier.notifyChange(msg);
+    }
   }
 
   /// Unsubscribe from a string topic.
