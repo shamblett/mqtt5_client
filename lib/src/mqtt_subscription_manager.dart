@@ -199,13 +199,15 @@ class MqttSubscriptionManager {
       throw ArgumentError(
           'MqttSubscriptionManager::unsubscribeStringTopic - topic is null');
     }
+    final subscriptionTopic = MqttSubscriptionTopic(topic);
+    final sub = MqttSubscription(subscriptionTopic);
+    final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     final unsubscribeMsg = MqttUnsubscribeMessage()
-        .withMessageIdentifier(
-            messageIdentifierDispenser.getNextMessageIdentifier())
+        .withMessageIdentifier(msgId)
         .fromStringTopic(topic);
     _connectionHandler.sendMessage(unsubscribeMsg);
-    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier]
-        .add(MqttSubscription(MqttSubscriptionTopic(topic)));
+    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
+        <MqttSubscription>[]..add(sub);
   }
 
   /// Unsubscribe from a subscription.
@@ -220,8 +222,8 @@ class MqttSubscriptionManager {
         .fromTopic(subscription.topic)
         .withUserProperties(subscription.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);
-    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier]
-        .add(subscription);
+    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
+        <MqttSubscription>[]..add(subscription);
   }
 
   /// Unsubscribe from a subscription list.

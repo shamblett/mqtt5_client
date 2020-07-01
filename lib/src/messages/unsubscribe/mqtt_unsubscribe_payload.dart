@@ -13,8 +13,10 @@ class MqttUnsubscribePayload extends MqttIPayload {
   /// Initializes a new instance of the MqttUnsubscribePayload class.
   MqttUnsubscribePayload();
 
-  // The subscribe topics to unsubscribe
   final _subscriptions = <MqttSubscriptionTopic>[];
+
+  /// The subscribe topics to unsubscribe.
+  List<MqttSubscriptionTopic> get subscriptions => _subscriptions;
 
   /// Writes the payload to the supplied stream.
   @override
