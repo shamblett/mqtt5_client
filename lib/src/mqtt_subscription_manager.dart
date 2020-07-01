@@ -289,8 +289,7 @@ class MqttSubscriptionManager {
   /// Confirms an unsubscription has been made with the broker.
   /// Removes the subscription.
   /// Returns true on successful unsubscription confirm, false on fail.
-  /// Note if any unsubscriptions fail a fail will be returned but the
-  /// subscription will still be removed.
+  /// The active subscription is not removed if the unsubscription for the topic fails.
   bool confirmUnsubscribe(MqttMessage msg) {
     final MqttUnsubscribeAckMessage unSubAck = msg;
     final reasonCodes = unSubAck.reasonCodes;
@@ -302,11 +301,11 @@ class MqttSubscriptionManager {
         final topic = pendingTopic.topic.rawTopic;
         pendingTopic.reasonCode = unSubAck.reasonCodes[reasonCodeIndex];
         pendingTopic.userProperties = unSubAck.userProperty;
-        subscriptions.remove(topic);
         // Check for a successful unsubscribe
         if (!MqttReasonCodeUtilities.isError(
             mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex]))) {
           if (onUnsubscribed != null) {
+            subscriptions.remove(topic);
             onUnsubscribed(pendingTopic);
           }
         } else {
