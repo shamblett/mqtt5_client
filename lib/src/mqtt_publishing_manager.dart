@@ -21,48 +21,62 @@ part of mqtt5_client;
 ///         QOS 2 ExactlyOnce(2) is a bit more complicated as it provides the facility for guaranteed delivery of the message
 ///         exactly one time, no more, no less.
 ///
-///         Each of these have different message flow between the sender and receiver.</para>
+///         Each of these have different message flow between the sender and receiver.
 ///         QOS 0 - AtMostOnce
 ///           Sender --> Publish --> Receiver
+///
 ///         QOS 1 - AtLeastOnce
 ///           Sender --> Publish --> Receiver --> PublishAck --> Sender
 ///                                      |
 ///                                      v
 ///                               Message Processor
+///
 ///         QOS 2 - ExactlyOnce
 ///         Sender --> Publish --> Receiver --> PublishReceived --> Sender --> PublishRelease --> Reciever --> PublishComplete --> Sender
-///                                                                                                   | v
+///                                                                                                   |
+///                                                                                                   v
 ///                                                                                            Message Processor
+///
 class MqttPublishingManager implements MqttIPublishingManager {
   /// Initializes a new instance of the PublishingManager class.
-  MqttPublishingManager(this.connectionHandler, this._clientEventBus) {
-    connectionHandler.registerForMessage(
+  MqttPublishingManager(this._connectionHandler, this._clientEventBus) {
+    _connectionHandler.registerForMessage(
         MqttMessageType.publishAck, handlePublishAcknowledgement);
-    connectionHandler.registerForMessage(
+    _connectionHandler.registerForMessage(
         MqttMessageType.publish, handlePublish);
-    connectionHandler.registerForMessage(
+    _connectionHandler.registerForMessage(
         MqttMessageType.publishComplete, handlePublishComplete);
-    connectionHandler.registerForMessage(
+    _connectionHandler.registerForMessage(
         MqttMessageType.publishRelease, handlePublishRelease);
-    connectionHandler.registerForMessage(
+    _connectionHandler.registerForMessage(
         MqttMessageType.publishReceived, handlePublishReceived);
   }
 
-  /// Handles dispensing of message ids for messages published to a topic.
-  MqttMessageIdentifierDispenser messageIdentifierDispenser =
-      MqttMessageIdentifierDispenser();
+  final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
+
+  /// Generates message identifiers for messages.
+  MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
+      _messageIdentifierDispenser;
+
+  final _publishedMessages = <int, MqttPublishMessage>{};
 
   /// Stores messages that have been pubished but not yet acknowledged.
-  Map<int, MqttPublishMessage> publishedMessages = <int, MqttPublishMessage>{};
+  /// Key is the message identifier.
+  Map<int, MqttPublishMessage> get publishedMessages => _publishedMessages;
+
+  final _receivedMessages = <int, MqttPublishMessage>{};
 
   /// Stores messages that have been received from a broker with qos level 2 (Exactly Once).
-  Map<int, MqttPublishMessage> receivedMessages = <int, MqttPublishMessage>{};
+  /// Key is the message identifier.
+  Map<int, MqttPublishMessage> get receivedMessages => _receivedMessages;
+
+  final _dataConverters = <Type, Object>{};
 
   /// Stores a cache of data converters used when publishing data to a broker.
-  Map<Type, Object> dataConverters = <Type, Object>{};
+  Map<Type, Object> get dataConvertors => _dataConverters;
 
-  /// The current connection handler.
-  MqttIConnectionHandler connectionHandler;
+  // The current connection handler.
+  final _connectionHandler;
 
   final StreamController<MqttPublishMessage> _published =
       StreamController<MqttPublishMessage>.broadcast();
@@ -70,7 +84,8 @@ class MqttPublishingManager implements MqttIPublishingManager {
   /// The stream on which all confirmed published messages are added to
   StreamController<MqttPublishMessage> get published => _published;
 
-  /// Raised when a message has been recieved by the client and the relevant QOS handshake is complete.
+  /// Raised when a message has been recieved by the client and the
+  /// relevant QOS handshake is complete.
   @override
   MqttMessageReceived publishEvent;
 
@@ -78,6 +93,7 @@ class MqttPublishingManager implements MqttIPublishingManager {
   final events.EventBus _clientEventBus;
 
   /// Publish a message to the broker on the specified topic at the specified Qos.
+  /// with optional retain flag and user properties.
   /// Returns the message identifier assigned to the message.
   @override
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
@@ -92,30 +108,32 @@ class MqttPublishingManager implements MqttIPublishingManager {
         .publishData(data);
     // Retain
     msg.setRetain(state: retain);
-    // QOS level 1 or 2 messages need to be saved so we can do the ack processes
+    // QOS level 1 or 2 messages need to be saved so we can do the ack processes.
     if (qualityOfService == MqttQos.atLeastOnce ||
         qualityOfService == MqttQos.exactlyOnce) {
       publishedMessages[msgId] = msg;
     }
-    connectionHandler.sendMessage(msg);
+    _connectionHandler.sendMessage(msg);
     return msgId;
   }
 
   /// Publish a user supplied publish message.
+  /// Note that if a message identifier is supplied in the message it will be
+  /// overridden by this method.
   @override
   int publishUserMessage(MqttPublishMessage message) {
     final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+    // QOS level 1 or 2 messages need to be saved so we can do the ack processes.
     message.withMessageIdentifier(msgId);
     if (message.header.qos == MqttQos.atLeastOnce ||
         message.header.qos == MqttQos.exactlyOnce) {
       publishedMessages[msgId] = message;
     }
-    connectionHandler.sendMessage(message);
+    _connectionHandler.sendMessage(message);
     return msgId;
   }
 
   /// Handles the receipt of publish acknowledgement messages.
-  /// This callback simply removes it from the list of published messages.
   bool handlePublishAcknowledgement(MqttMessage msg) {
     final MqttPublishAckMessage ackMsg = msg;
     // If we're expecting an ack for the message, remove it from the list of pubs awaiting ack.
@@ -144,7 +162,7 @@ class MqttPublishingManager implements MqttIPublishingManager {
         _notifyPublish(msg);
         final ackMsg = MqttPublishAckMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
-        connectionHandler.sendMessage(ackMsg);
+        _connectionHandler.sendMessage(ackMsg);
       } else if (pubMsg.header.qos == MqttQos.exactlyOnce) {
         // QOS ExactlyOnce means we can't give it away yet, we need to do a handshake
         // to make sure the broker knows we got it, and we know he knows we got it.
@@ -156,7 +174,7 @@ class MqttPublishingManager implements MqttIPublishingManager {
         }
         final pubRecv = MqttPublishReceivedMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
-        connectionHandler.sendMessage(pubRecv);
+        _connectionHandler.sendMessage(pubRecv);
       }
     } on Exception {
       publishSuccess = false;
@@ -177,7 +195,7 @@ class MqttPublishingManager implements MqttIPublishingManager {
         _clientEventBus.fire(MqttMessageReceived(topic, pubMsg));
         final compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
-        connectionHandler.sendMessage(compMsg);
+        _connectionHandler.sendMessage(compMsg);
       }
     } on Exception {
       publishSuccess = false;
@@ -207,7 +225,7 @@ class MqttPublishingManager implements MqttIPublishingManager {
         .containsKey(recvMsg.variableHeader.messageIdentifier)) {
       final relMsg = MqttPublishReleaseMessage()
           .withMessageIdentifier(recvMsg.variableHeader.messageIdentifier);
-      connectionHandler.sendMessage(relMsg);
+      _connectionHandler.sendMessage(relMsg);
     }
     return true;
   }

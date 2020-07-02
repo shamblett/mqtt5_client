@@ -24,6 +24,30 @@ class MessageSerializationHelper {
 }
 
 void main() {
+  group('Message Identifier', () {
+    test('Numbering starts at 1', () {
+      final dispenser = MqttMessageIdentifierDispenser();
+      expect(dispenser.getNextMessageIdentifier(), 1);
+    });
+    test('Numbering increments by 1', () {
+      final dispenser = MqttMessageIdentifierDispenser();
+      final first = dispenser.getNextMessageIdentifier();
+      final second = dispenser.getNextMessageIdentifier();
+      expect(second, first + 1);
+    });
+    test('Numbering overflows back to 1', () {
+      final dispenser = MqttMessageIdentifierDispenser();
+      dispenser.reset();
+      for (var i = 0;
+          i == MqttMessageIdentifierDispenser.maxMessageIdentifier;
+          i++) {
+        dispenser.getNextMessageIdentifier();
+      }
+      // One more call should overflow us and reset us back to 1.
+      expect(dispenser.getNextMessageIdentifier(), 1);
+    });
+  });
+
   group('Header', () {
     /// Test helper method to call Get Remaining Bytes with a specific value
     typed.Uint8Buffer callGetRemainingBytesWithValue(int value) {

@@ -134,10 +134,12 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   List<MqttUserProperty> _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
   set userProperty(List<MqttUserProperty> properties) {
-    for (var userProperty in properties) {
-      _propertySet.add(userProperty);
+    if (properties != null) {
+      for (var userProperty in properties) {
+        _propertySet.add(userProperty);
+      }
+      _userProperty.addAll(properties);
     }
-    _userProperty.addAll(properties);
   }
 
   /// Subscription Identifier
