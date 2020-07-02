@@ -320,9 +320,11 @@ class MqttClient {
     }
   }
 
-  /// Publishes a user supplied message to the message broker.
+  /// Publishes a user supplied publish message to the message broker.
+  /// This allows the user to custom build the publish message as is needed.
   /// The user is responsible for the integrity of the publishing message.
-  /// Returns the message identifer assigned to the message.
+  /// Returns the message identifier assigned to the message. Note that
+  /// any supplied message identifier will be overridden by this method.
   int publishUserMessage(MqttPublishMessage message) =>
       publishingManager.publishUserMessage(message);
 
