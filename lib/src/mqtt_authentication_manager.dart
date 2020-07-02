@@ -58,15 +58,20 @@ class MqttAuthenticationManager {
     MqttLogger.log(
         'MqttAuthenticationManager::reauthenticate - started, timeout is ${waitTimeInSeconds ?? 'indefinite'}');
     if (waitTimeInSeconds == 0) {
-      return _authenticated.stream.first;
+      await _authenticated.stream.listen((final rxMessage) {
+        completer.complete(rxMessage);
+      });
     } else {
       final timeoutMsg = MqttAuthenticateMessage();
       timeoutMsg.timeout = true;
-      return _authenticated.stream.timeout(Duration(seconds: waitTimeInSeconds),
+      await _authenticated.stream.timeout(Duration(seconds: waitTimeInSeconds),
           onTimeout: (_) {
-        return timeoutMsg;
-      }).first;
+        completer.complete(timeoutMsg);
+      }).listen((final rxMessage) {
+        completer.complete(rxMessage);
+      });
     }
+    return completer.future;
   }
 
   /// Add the message to the authentication stream.

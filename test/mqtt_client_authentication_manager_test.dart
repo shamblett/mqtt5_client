@@ -26,26 +26,35 @@ void main() {
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
-    await authManager.authenticated.stream.listen((final rxmessage) {
-      expect(rxmessage.authenticationMethod, 'Auth method');
+    await authManager.authenticated.stream.listen((final rxMessage) {
+      expect(rxMessage.authenticationMethod, 'Auth method');
+      expect(rxMessage.timeout, isFalse);
     });
     authManager.handleAuthentication(message);
   }, timeout: Timeout.factor(0.1));
 
-  test('Reauthenticate - No timeout', () async {
+  test('Reauthenticate - Timeout No Message', () async {
     final authManager = MqttAuthenticationManager(testCHS);
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
-    authManager.authenticated.stream.listen((event) { print('Listener');});
-    authManager.handleAuthentication(message);
-    print('Outer');
     final rxmessage =
-        await authManager.reauthenticate(message, waitTimeInSeconds: 1);
-    print('Inner');
-    expect(rxmessage.authenticationMethod, 'Auth method');
-    expect(rxmessage.timeout, isFalse);
+        await authManager.reauthenticate(message, waitTimeInSeconds: 5);
+    expect(rxmessage.timeout, isTrue);
+    expect(rxmessage.authenticationMethod, isNull);
+  }, timeout: Timeout.factor(0.5));
+
+  test('Reauthenticate - Timeout With Message', () async {
+    final authManager = MqttAuthenticationManager(testCHS);
+    final message = MqttAuthenticateMessage()
+        .withAuthenticationMethod('Auth method')
+        .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
+    expect(message.isValid, isTrue);
+    final rxmessage =
+        await authManager.reauthenticate(message, waitTimeInSeconds: 0);
     authManager.handleAuthentication(message);
+    expect(rxmessage.timeout, isTrue);
+    expect(rxmessage.authenticationMethod, isNull);
   }, timeout: Timeout.factor(0.1));
 }
