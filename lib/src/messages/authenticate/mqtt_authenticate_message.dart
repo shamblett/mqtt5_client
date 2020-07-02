@@ -65,8 +65,9 @@ class MqttAuthenticateMessage extends MqttMessage {
 
   /// Time out indication.
   ///
-  /// Uused in the re-authentication sequence to indicate the message has been
+  /// Used in the re-authentication sequence to indicate the message has been
   /// produced as a result of a timeout.
+  /// If this is true on sending an authenticate message validation will fail.
   bool timeout = false;
 
   /// Gets the reason code of the message.
@@ -117,7 +118,7 @@ class MqttAuthenticateMessage extends MqttMessage {
 
   /// Is valid
   @override
-  bool get isValid => variableHeader.isValid;
+  bool get isValid => variableHeader.isValid && !timeout;
 
   @override
   String toString() {

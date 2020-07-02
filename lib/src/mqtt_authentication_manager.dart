@@ -21,11 +21,10 @@ class MqttAuthenticationManager {
   // The current connection handler.
   final _connectionHandler;
 
-  final StreamController<MqttAuthenticateMessage> _authenticated =
-      StreamController<MqttAuthenticateMessage>.broadcast();
+  final _authenticated = StreamController<MqttAuthenticateMessage>.broadcast();
 
   /// The stream on which all received authenticate messages are added to
-  Stream<MqttAuthenticateMessage> get authenticated => _authenticated.stream;
+  StreamController<MqttAuthenticateMessage> get authenticated => _authenticated;
 
   /// Handles the receipt of authentication messages from a message broker.
   bool handleAuthentication(MqttMessage msg) {
@@ -47,28 +46,31 @@ class MqttAuthenticationManager {
   ///
   /// Sends the supplied authentication message and waits for the a response from the broker.
   /// Use this if you wish to re-authenticate without listening for authenticate messages.
-  /// This method will wait indefinitely unless a timeout is specified.
+  /// This method will wait a default 30 seconds unless another timeout value is specified.
+  /// If a timeout value of 0 is supplied the method will wait indefinitely.
+  ///
   /// If the re-authenticate times out an authenticate message is returned with the timeout
   /// indicator set.
   Future<MqttAuthenticateMessage> reauthenticate(MqttAuthenticateMessage msg,
-      {int waitTimeInSeconds}) {
+      {int waitTimeInSeconds = 30}) async {
+    final completer = Completer<MqttAuthenticateMessage>();
     send(msg);
     MqttLogger.log(
         'MqttAuthenticationManager::reauthenticate - started, timeout is ${waitTimeInSeconds ?? 'indefinite'}');
-    if (waitTimeInSeconds == null) {
-      return authenticated.first;
+    if (waitTimeInSeconds == 0) {
+      return _authenticated.stream.first;
     } else {
       final timeoutMsg = MqttAuthenticateMessage();
       timeoutMsg.timeout = true;
-      return authenticated.first.timeout(Duration(seconds: waitTimeInSeconds),
-          onTimeout: () => timeoutMsg);
+      return _authenticated.stream.timeout(Duration(seconds: waitTimeInSeconds),
+          onTimeout: (_) {
+        return timeoutMsg;
+      }).first;
     }
   }
 
   /// Add the message to the authentication stream.
   void _notifyAuthenticate(MqttAuthenticateMessage message) {
-    if (_authenticated.hasListener) {
-      _authenticated.add(message);
-    }
+    _authenticated.add(message);
   }
 }
