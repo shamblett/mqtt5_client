@@ -66,7 +66,7 @@ part 'src/mqtt_received_message.dart';
 
 part 'src/mqtt_publishing_manager.dart';
 
-part 'src/mqtt_ipublishing_manager.dart';
+part 'src/mqtt_authentication_manager.dart';
 
 part 'src/mqtt_subscription.dart';
 

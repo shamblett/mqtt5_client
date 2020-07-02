@@ -37,7 +37,7 @@ part of mqtt5_client;
 ///                                                                                                   v
 ///                                                                                            Message Processor
 ///
-class MqttPublishingManager implements MqttIPublishingManager {
+class MqttPublishingManager {
   /// Initializes a new instance of the PublishingManager class.
   MqttPublishingManager(this._connectionHandler, this._clientEventBus) {
     _connectionHandler.registerForMessage(
@@ -86,7 +86,6 @@ class MqttPublishingManager implements MqttIPublishingManager {
 
   /// Raised when a message has been recieved by the client and the
   /// relevant QOS handshake is complete.
-  @override
   MqttMessageReceived publishEvent;
 
   /// The event bus
@@ -95,7 +94,6 @@ class MqttPublishingManager implements MqttIPublishingManager {
   /// Publish a message to the broker on the specified topic at the specified Qos.
   /// with optional retain flag and user properties.
   /// Returns the message identifier assigned to the message.
-  @override
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
       typed.Uint8Buffer data,
       {bool retain = false, List<MqttUserProperty> userProperties}) {
@@ -120,7 +118,6 @@ class MqttPublishingManager implements MqttIPublishingManager {
   /// Publish a user supplied publish message.
   /// Note that if a message identifier is supplied in the message it will be
   /// overridden by this method.
-  @override
   int publishUserMessage(MqttPublishMessage message) {
     final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     // QOS level 1 or 2 messages need to be saved so we can do the ack processes.
