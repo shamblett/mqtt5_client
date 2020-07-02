@@ -63,6 +63,12 @@ class MqttAuthenticateMessage extends MqttMessage {
     return this;
   }
 
+  /// Time out indication.
+  ///
+  /// Uused in the re-authentication sequence to indicate the message has been
+  /// produced as a result of a timeout.
+  bool timeout = false;
+
   /// Gets the reason code of the message.
   MqttAuthenticateReasonCode get reasonCode => _variableHeader.reasonCode;
 

@@ -88,8 +88,8 @@ class MqttPublishingManager {
   /// relevant QOS handshake is complete.
   MqttMessageReceived publishEvent;
 
-  /// The event bus
-  final events.EventBus _clientEventBus;
+  // The event bus
+  final _clientEventBus;
 
   /// Publish a message to the broker on the specified topic at the specified Qos.
   /// with optional retain flag and user properties.

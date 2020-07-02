@@ -3252,6 +3252,7 @@ void main() {
         expect(message.reasonCode, MqttAuthenticateReasonCode.success);
         expect(message.isValid, isFalse);
         expect(message.variableHeader.length, 0);
+        expect(message.timeout, isFalse);
       });
       test('Authenticate Message - Deserialisation - full', () {
         final buffer = typed.Uint8Buffer();
@@ -3335,8 +3336,7 @@ void main() {
         expect(message.reasonString, 'Reason String');
         expect(message.authenticationData, [1, 2, 3, 4]);
         expect(message.isValid, isTrue);
-
-        expect(message.isValid, isTrue);
+        expect(message.timeout, isFalse);
       });
       test('Authenticate Message - Serialisation - Success', () {
         final message = MqttAuthenticateMessage()
@@ -3364,6 +3364,7 @@ void main() {
         expect(stream.buffer[0], 0xf0);
         expect(stream.buffer[1], 62);
         expect(message.isValid, isTrue);
+        expect(message.timeout, isFalse);
       });
     });
 
