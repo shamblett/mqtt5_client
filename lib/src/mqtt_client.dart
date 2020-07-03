@@ -103,6 +103,18 @@ class MqttClient {
   Stream<MqttPublishMessage> get published =>
       publishingManager != null ? publishingManager.published.stream : null;
 
+  /// Handles everything to do with authentication messages.
+  @protected
+  MqttAuthenticationManager authenticationManager;
+
+  /// Authenticate message stream. A received authenticate message is
+  /// added to this stream.
+  /// Attach listeners only after connect has been called.
+  Stream<MqttAuthenticateMessage> get authentication =>
+      authenticationManager != null
+          ? authenticationManager.authenticated.stream
+          : null;
+
   /// Gets the current connection state of the Mqtt Client.
   /// Will be removed, use connectionStatus
   @Deprecated('Use ConnectionStatus, not this')
@@ -214,9 +226,9 @@ class MqttClient {
     connectionHandler.onDisconnected = internalDisconnect;
     connectionHandler.onConnected = onConnected;
     connectionHandler.onAutoReconnect = onAutoReconnect;
-    //
     publishingManager =
         MqttPublishingManager(connectionHandler, clientEventBus);
+    authenticationManager = MqttAuthenticationManager(connectionHandler);
     subscriptionsManager =
         MqttSubscriptionManager(connectionHandler, clientEventBus);
     subscriptionsManager.onSubscribed = onSubscribed;
@@ -355,6 +367,7 @@ class MqttClient {
       subscriptionsManager.getSubscriptionStatus(subscription);
 
   /// Disconnect from the broker.
+  ///
   /// This is a hard disconnect, a disconnect message is sent to the
   /// broker and the client is then reset to its pre-connection state,
   /// i.e all subscriptions are deleted, on subsequent reconnection the
@@ -369,7 +382,22 @@ class MqttClient {
     _disconnect(unsolicited: false);
   }
 
-  /// Internal disconnect
+  /// Re-authenticate.
+  ///
+  /// Sends the supplied authentication message and waits for the a response from the broker.
+  /// Use this if you wish to re-authenticate without listening for authenticate messages.
+  /// This method will wait a default 30 seconds unless another timeout value is specified.
+  ///
+  /// If the re-authenticate times out an authenticate message is returned with the timeout
+  /// indicator set.
+  Future<MqttAuthenticateMessage> reauthenticate(MqttAuthenticateMessage msg,
+      {int waitTimeInSeconds = 30}) {
+    return authenticationManager.reauthenticate(msg,
+        waitTimeInSeconds: waitTimeInSeconds);
+  }
+
+  /// Internal disconnect.
+  ///
   /// This is always passed to the connection handler to allow the
   /// client to close itself down correctly on disconnect.
   @protected
@@ -400,6 +428,8 @@ class MqttClient {
     }
     publishingManager?.published?.close();
     publishingManager = null;
+    authenticationManager?.authenticated?.close();
+    authenticationManager = null;
     subscriptionsManager = null;
     keepAlive?.stop();
     keepAlive = null;

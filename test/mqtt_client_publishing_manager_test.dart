@@ -25,7 +25,6 @@ final TestConnectionHandlerNoSend testCHNS = TestConnectionHandlerNoSend();
 final TestConnectionHandlerSend testCHS = TestConnectionHandlerSend();
 
 void main() {
-
   group('Message registration', () {
     // Group wide
     final con = MockCON();

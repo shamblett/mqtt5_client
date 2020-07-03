@@ -755,8 +755,7 @@ void main() {
 
   group('Utility', () {
     test('Protocol', () {
-      expect(
-          MqttProtocol.version, MqttConstants.mqttProtocolVersion);
+      expect(MqttProtocol.version, MqttConstants.mqttProtocolVersion);
       expect(MqttProtocol.name, MqttConstants.mqttProtocolName);
     });
     test('Byte Buffer', () {

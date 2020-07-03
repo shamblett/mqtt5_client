@@ -4,19 +4,13 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
+import 'dart:async';
+
 import 'package:mqtt5_client/mqtt5_client.dart';
-import 'package:mqtt5_client/mqtt5_server_client.dart';
 import 'package:test/test.dart';
-import 'package:mockito/mockito.dart';
 import 'support/mqtt_client_test_connection_handler.dart';
 
 @TestOn('vm')
-
-// Mock classes
-class MockCH extends Mock implements MqttServerConnectionHandler {}
-
-class MockCON extends Mock implements MqttServerNormalConnection {}
-
 final TestConnectionHandlerSend testCHS = TestConnectionHandlerSend();
 
 void main() {
@@ -40,21 +34,30 @@ void main() {
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
     final rxmessage =
-        await authManager.reauthenticate(message, waitTimeInSeconds: 5);
+        await authManager.reauthenticate(message, waitTimeInSeconds: 2);
     expect(rxmessage.timeout, isTrue);
     expect(rxmessage.authenticationMethod, isNull);
-  }, timeout: Timeout.factor(0.5));
+  }, timeout: Timeout.factor(0.1));
 
   test('Reauthenticate - Timeout With Message', () async {
+    testCHS.sentMessages.clear();
     final authManager = MqttAuthenticationManager(testCHS);
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
+    Timer(
+        Duration(seconds: 1), () => authManager.handleAuthentication(message));
     final rxmessage =
-        await authManager.reauthenticate(message, waitTimeInSeconds: 0);
+        await authManager.reauthenticate(message, waitTimeInSeconds: 2);
     authManager.handleAuthentication(message);
-    expect(rxmessage.timeout, isTrue);
-    expect(rxmessage.authenticationMethod, isNull);
+    expect(rxmessage.timeout, isFalse);
+    expect(rxmessage.authenticationMethod, 'Auth method');
+    expect(testCHS.sentMessages.length, 1);
+    expect(testCHS.sentMessages[0].header.messageType, MqttMessageType.auth);
+    final bm = testCHS.sentMessages[0] as MqttAuthenticateMessage;
+    expect(bm.authenticationMethod, 'Auth method');
+    expect(bm.timeout, isFalse);
+    expect(bm.isValid, isTrue);
   }, timeout: Timeout.factor(0.1));
 }

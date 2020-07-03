@@ -47,35 +47,32 @@ class MqttAuthenticationManager {
   /// Sends the supplied authentication message and waits for the a response from the broker.
   /// Use this if you wish to re-authenticate without listening for authenticate messages.
   /// This method will wait a default 30 seconds unless another timeout value is specified.
-  /// If a timeout value of 0 is supplied the method will wait indefinitely.
   ///
   /// If the re-authenticate times out an authenticate message is returned with the timeout
   /// indicator set.
   Future<MqttAuthenticateMessage> reauthenticate(MqttAuthenticateMessage msg,
-      {int waitTimeInSeconds = 30}) async {
+      {int waitTimeInSeconds = 30}) {
     final completer = Completer<MqttAuthenticateMessage>();
     send(msg);
     MqttLogger.log(
         'MqttAuthenticationManager::reauthenticate - started, timeout is ${waitTimeInSeconds ?? 'indefinite'}');
-    if (waitTimeInSeconds == 0) {
-      await _authenticated.stream.listen((final rxMessage) {
-        completer.complete(rxMessage);
-      });
-    } else {
-      final timeoutMsg = MqttAuthenticateMessage();
-      timeoutMsg.timeout = true;
-      await _authenticated.stream.timeout(Duration(seconds: waitTimeInSeconds),
-          onTimeout: (_) {
-        completer.complete(timeoutMsg);
-      }).listen((final rxMessage) {
-        completer.complete(rxMessage);
-      });
-    }
+    final timeoutMsg = MqttAuthenticateMessage();
+    timeoutMsg.timeout = true;
+    var subscription;
+    subscription = _authenticated.stream
+        .timeout(Duration(seconds: waitTimeInSeconds), onTimeout: (_) {
+      completer.complete(timeoutMsg);
+    }).listen((final rxMessage) {
+      subscription.cancel();
+      completer.complete(rxMessage);
+    });
     return completer.future;
   }
 
   /// Add the message to the authentication stream.
   void _notifyAuthenticate(MqttAuthenticateMessage message) {
-    _authenticated.add(message);
+    if (_authenticated.hasListener) {
+      _authenticated.add(message);
+    }
   }
 }
