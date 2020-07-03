@@ -51,6 +51,10 @@ class MqttBrowserConnection extends MqttConnectionBase {
       return;
     }
 
+    MqttLogger.log(
+        'MqttBrowserConnection::_ondata - adding incoming data, data length is ${data.length}, '
+        'message stream length is ${messageStream.length}, '
+        'message stream position is ${messageStream.position}');
     messageStream.addAll(data);
 
     while (messageStream.isMessageAvailable()) {

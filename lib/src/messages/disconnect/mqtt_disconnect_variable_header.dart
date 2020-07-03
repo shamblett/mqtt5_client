@@ -166,7 +166,7 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
     final sb = StringBuffer();
     sb.writeln(
         'Reason Code  = ${mqttDisconnectReasonCode.asString(reasonCode)}');
-    sb.writeln('Properties = ${_propertySet.toString()}');
+    sb.write('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }
 }

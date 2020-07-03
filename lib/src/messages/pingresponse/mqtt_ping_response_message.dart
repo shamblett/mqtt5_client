@@ -21,6 +21,13 @@ class MqttPingResponseMessage extends MqttMessage {
     this.header = header;
   }
 
+  /// Initializes a new instance of the MqttPingResponseMessage class.
+  MqttPingResponseMessage.fromByteBuffer(
+      MqttHeader header, MqttByteBuffer stream) {
+    this.header = header;
+    readFrom(stream);
+  }
+
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.
   @override
@@ -33,6 +40,7 @@ class MqttPingResponseMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer stream) {
     super.readFrom(stream);
+    stream.shrink();
   }
 
   @override

@@ -21,6 +21,7 @@ class MqttPublishAckMessage extends MqttMessage {
     this.header = header;
     _variableHeader =
         MqttPublishAckVariableHeader.fromByteBuffer(header, messageStream);
+    messageStream.shrink();
   }
 
   MqttPublishAckVariableHeader _variableHeader;

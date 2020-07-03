@@ -61,8 +61,11 @@ class MqttUnsubscribeAckPayload extends MqttIPayload {
   @override
   String toString() {
     final sb = StringBuffer();
+    if (_reasonCodes.isEmpty) {
+      sb.writeln('No reason codes received');
+    }
     for (final value in _reasonCodes) {
-      sb.writeln('Reason Code = ${mqttSubscribeReasonCode.asString(value)}');
+      sb.writeln(' Reason Code = ${mqttSubscribeReasonCode.asString(value)}');
     }
     return sb.toString();
   }

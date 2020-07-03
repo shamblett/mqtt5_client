@@ -20,6 +20,9 @@ class MqttPublishPayload implements MqttIPayload {
     readFrom(payloadStream);
   }
 
+  /// Receive length
+  int length = 0;
+
   /// Message header
   MqttHeader header;
 
@@ -32,8 +35,9 @@ class MqttPublishPayload implements MqttIPayload {
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    final messageBytes = header.messageSize - variableHeader.getWriteLength();
+    final messageBytes = header.messageSize - variableHeader.length;
     message = payloadStream.read(messageBytes);
+    length += messageBytes;
   }
 
   /// Writes the payload to the supplied stream.

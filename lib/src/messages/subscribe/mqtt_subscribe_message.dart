@@ -145,8 +145,8 @@ class MqttSubscribeMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.write(super.toString());
-    sb.writeln(variableHeader.toString());
-    sb.writeln(payload.toString());
+    sb.write(variableHeader);
+    sb.write(payload);
     return sb.toString();
   }
 }

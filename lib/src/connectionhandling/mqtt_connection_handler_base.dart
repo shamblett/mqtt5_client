@@ -131,7 +131,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Sends a message to the broker through the current connection.
   @override
   void sendMessage(MqttMessage message) {
-    MqttLogger.log('MqttConnectionHandlerBase::sendMessage - SENDING MESSAGE -> $message');
+    MqttLogger.log(
+        'MqttConnectionHandlerBase::sendMessage - SENDING MESSAGE -> $message');
     // Check for validity
     if (!message.isValid) {
       throw ArgumentError(
@@ -186,12 +187,13 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     sentMessageCallbacks.remove(sentMsgCallback);
   }
 
-  /// Handles the Message Available event of the connection control for
-  /// handling non connection messages.
+  /// Handles the Message Available event.
   @protected
   void messageAvailable(MqttMessageAvailable event) {
     final callback = messageProcessorRegistry[event.message.header.messageType];
-    callback(event.message);
+    if (callback != null) {
+      callback(event.message);
+    }
   }
 
   /// Disconnects
@@ -200,7 +202,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     MqttLogger.log('SynchronousMqttServerConnectionHandler::disconnect');
     if (connectionStatus.state == MqttConnectionState.connected) {
       // Send a disconnect message to the broker
-      sendMessage(MqttDisconnectMessage());
+      sendMessage(MqttDisconnectMessage()
+          .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
     }
     // Disconnect
     _performConnectionDisconnect();

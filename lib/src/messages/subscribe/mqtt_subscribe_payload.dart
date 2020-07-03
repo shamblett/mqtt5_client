@@ -106,7 +106,7 @@ class MqttSubscribePayload implements MqttIPayload {
   String toString() {
     final sb = StringBuffer();
     _subscriptions.forEach((final topic) {
-      sb.writeln('{{Topic = {$topic.topic}, Option = {$topic.option}');
+      sb.write('Topic = ${topic.topic}, Option = ${topic.option}');
     });
     return sb.toString();
   }

@@ -44,6 +44,7 @@ class MqttPublishMessage extends MqttMessage {
         MqttPublishVariableHeader.fromByteBuffer(header, messageStream);
     payload = MqttPublishPayload.fromByteBuffer(
         header, variableHeader, messageStream);
+    messageStream.shrink();
   }
 
   /// Writes the message to the supplied stream.

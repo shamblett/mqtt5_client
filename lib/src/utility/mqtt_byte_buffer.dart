@@ -90,7 +90,7 @@ class MqttByteBuffer {
   /// by the number of bytes read.
   typed.Uint8Buffer read(int count) {
     if ((length < count) || (_position + count) > length) {
-      throw Exception('mqtt_client::ByteBuffer: The buffer did not have '
+      throw Exception('MqttByteBuffer::read: The buffer did not have '
           'enough bytes for the read operation '
           'length $length, count $count, position $_position, buffer $buffer');
     }
@@ -168,6 +168,15 @@ class MqttByteBuffer {
     final length = enc.length(stringBuff);
     stringBuff.addAll(buffer.read(length));
     return enc.fromUtf8(stringBuff);
+  }
+
+  /// Clears the underlying buffer
+  void clear() {
+    if (_position != 0) {
+      throw StateError(
+          'MqttByteBuffer::clear - attempt to clear a byte buffer where postion is not zero, it is $_position');
+    }
+    buffer?.clear();
   }
 
   @override

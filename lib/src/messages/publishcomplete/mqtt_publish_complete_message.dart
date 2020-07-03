@@ -22,6 +22,7 @@ class MqttPublishCompleteMessage extends MqttMessage {
     this.header = header;
     variableHeader =
         MqttPublishCompleteVariableHeader.fromByteBuffer(header, messageStream);
+    messageStream.shrink();
   }
 
   /// Gets or sets the variable header contents. Contains extended

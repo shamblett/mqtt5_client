@@ -52,7 +52,7 @@ class MqttMessageFactory {
             MqttUnsubscribeAckMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.pingResponse:
-        message = MqttPingResponseMessage.fromHeader(header);
+        message = MqttPingResponseMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.disconnect:
         message = MqttDisconnectMessage.fromByteBuffer(header, messageStream);

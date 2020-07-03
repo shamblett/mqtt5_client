@@ -168,7 +168,6 @@ Future<int> main() async {
 }
 
 /// The subscribed callback
-/// The subscribed callback
 void onSubscribed(MqttSubscription subscription) {
   print(
       'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
@@ -181,7 +180,7 @@ void onDisconnected() {
       MqttDisconnectionOrigin.solicited) {
     print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
   }
-  exit(-1);
+  exit(0);
 }
 
 /// The successful connect callback

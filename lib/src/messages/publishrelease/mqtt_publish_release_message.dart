@@ -24,6 +24,7 @@ class MqttPublishReleaseMessage extends MqttMessage {
     this.header = header;
     variableHeader =
         MqttPublishReleaseVariableHeader.fromByteBuffer(header, messageStream);
+    messageStream.shrink();
   }
 
   /// Gets or sets the variable header contents. Contains extended

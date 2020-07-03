@@ -37,13 +37,16 @@ class MqttServerConnection extends MqttConnectionBase {
 
   /// OnData listener callback
   void _onData(dynamic data) {
-    MqttLogger.log('MqttConnection::_onData');
+    MqttLogger.log('MqttServerConnection::_onData');
     // Protect against 0 bytes but should never happen.
     if (data.length == 0) {
       MqttLogger.log('MqttServerConnection::_ondata - Error - 0 byte message');
       return;
     }
-
+    MqttLogger.log(
+        'MqttServerConnection::_ondata - adding incoming data, data length is ${data.length},'
+        ' message stream length is ${messageStream.length}, '
+        'message stream position is ${messageStream.position}');
     messageStream.addAll(data);
 
     while (messageStream.isMessageAvailable()) {
@@ -66,7 +69,10 @@ class MqttServerConnection extends MqttConnectionBase {
         return;
       }
       if (messageIsValid) {
-        MqttLogger.log('MqttServerConnection::_onData - MESSAGE RECEIVED -> $msg');
+        MqttLogger.log(
+            'MqttServerConnection::_onData - MESSAGE RECEIVED -> $msg');
+        // If we have received a valid message we must clear the stream.
+        messageStream.clear();
         if (!clientEventBus.streamController.isClosed) {
           clientEventBus.fire(MqttMessageAvailable(msg));
           MqttLogger.log('MqttServerConnection::_onData - message processed');

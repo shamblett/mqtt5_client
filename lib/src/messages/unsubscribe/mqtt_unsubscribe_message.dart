@@ -13,6 +13,8 @@ class MqttUnsubscribeMessage extends MqttMessage {
   /// Initializes a new instance of the MqttUnsubscribeMessage class.
   MqttUnsubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.unsubscribe);
+    // Qos of at least once has to be specified for this message.
+    header.qos = MqttQos.atLeastOnce;
   }
 
   final _variableHeader = MqttUnsubscribeVariableHeader();

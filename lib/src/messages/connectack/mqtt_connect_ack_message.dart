@@ -94,6 +94,7 @@ class MqttConnectAckMessage extends MqttMessage {
     super.readFrom(messageStream);
     _variableHeader =
         MqttConnectAckVariableHeader.fromByteBuffer(messageStream);
+    messageStream.shrink();
   }
 
   /// Writes a message to the supplied stream. Not implemented for this message.

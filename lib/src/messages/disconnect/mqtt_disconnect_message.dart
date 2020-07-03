@@ -116,7 +116,7 @@ class MqttDisconnectMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.writeln(super.toString());
-    sb.writeln('${variableHeader.toString()}');
+    sb.write('${variableHeader.toString()}');
     return sb.toString();
   }
 }

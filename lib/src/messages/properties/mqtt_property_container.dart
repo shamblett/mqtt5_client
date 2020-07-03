@@ -131,11 +131,15 @@ class MqttPropertyContainer {
   @override
   String toString() {
     final sb = StringBuffer();
-    for (var property in _container.values) {
-      sb.writeln(property);
-    }
-    for (var property in _userProperties) {
-      sb.writeln(property);
+    if (_container.isEmpty) {
+      sb.write('No properties set');
+    } else {
+      for (var property in _container.values) {
+        sb.writeln(property);
+      }
+      for (var property in _userProperties) {
+        sb.writeln(property);
+      }
     }
     return sb.toString();
   }

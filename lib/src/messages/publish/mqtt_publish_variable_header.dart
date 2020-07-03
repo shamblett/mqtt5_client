@@ -226,9 +226,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     // Properties
     variableHeaderStream.shrink();
     _propertySet.readFrom(variableHeaderStream);
-    _length += _propertySet.getWriteLength();
     _processProperties();
     variableHeaderStream.shrink();
+    _length += _propertySet.getWriteLength();
   }
 
   /// Writes the variable header to the supplied stream.
@@ -286,7 +286,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     sb.writeln('Message Expiry Interval = $messageExpiryInterval');
     sb.writeln('Topic Alias = $topicAlias');
     sb.writeln('Response Topic = $responseTopic');
-    sb.writeln('Subscription Identifier = $subscriptionIdentifier');
+    sb.writeln('Subscription Identifier(s) = $subscriptionIdentifier');
     sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }
