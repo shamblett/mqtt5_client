@@ -170,7 +170,8 @@ class MqttPublishingManager {
           receivedMessages[pubMsg.variableHeader.messageIdentifier] = pubMsg;
         }
         final pubRecv = MqttPublishReceivedMessage()
-            .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
+            .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier)
+            .withReasonCode(MqttPublishReasonCode.success);
         _connectionHandler.sendMessage(pubRecv);
       }
     } on Exception {
@@ -191,7 +192,8 @@ class MqttPublishingManager {
         final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
         _clientEventBus.fire(MqttMessageReceived(topic, pubMsg));
         final compMsg = MqttPublishCompleteMessage()
-            .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
+            .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier)
+            .withReasonCode(MqttPublishReasonCode.success);
         _connectionHandler.sendMessage(compMsg);
       }
     } on Exception {
@@ -221,7 +223,8 @@ class MqttPublishingManager {
     if (publishedMessages
         .containsKey(recvMsg.variableHeader.messageIdentifier)) {
       final relMsg = MqttPublishReleaseMessage()
-          .withMessageIdentifier(recvMsg.variableHeader.messageIdentifier);
+          .withMessageIdentifier(recvMsg.variableHeader.messageIdentifier)
+          .withReasonCode(MqttPublishReasonCode.success);
       _connectionHandler.sendMessage(relMsg);
     }
     return true;

@@ -61,6 +61,10 @@ class MqttPublishReleaseMessage extends MqttMessage {
   /// User Property.
   List<MqttUserProperty> get userProperty => variableHeader.userProperty;
 
+  /// Is valid
+  @override
+  bool get isValid => variableHeader.reasonCode != MqttPublishReasonCode.notSet;
+
   @override
   String toString() {
     final sb = StringBuffer();
