@@ -107,7 +107,7 @@ class MqttConnectAckMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.write(super.toString());
-    sb.writeln(_variableHeader.toString());
+    sb.write(_variableHeader.toString());
     return sb.toString();
   }
 }

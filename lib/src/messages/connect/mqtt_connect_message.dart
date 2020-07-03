@@ -194,10 +194,9 @@ class MqttConnectMessage extends MqttMessage {
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln(super.toString());
-    sb.writeln('client Identifier = ${payload.clientIdentifier}');
+    sb.write(super.toString());
     sb.write('${_variableHeader.toString()}');
-    sb.writeln('${payload.toString()}');
+    sb.write('${payload.toString()}');
     return sb.toString();
   }
 }

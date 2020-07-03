@@ -65,7 +65,7 @@ Future<int> main() async {
   /// Create a connection message to use or use the default one. The default one sets the
   /// client identifier, any supplied username/password, the default keepalive interval(60s)
   /// and clean session, an example of a specific one below.
-  /// Add some user properties and pick these up in the connect acknowledgement.
+  /// Add some user properties, these may be available in the connect acknowledgement.
   final property = MqttUserProperty();
   property.pairName = 'Example name';
   property.pairValue = 'Example value';
@@ -88,14 +88,17 @@ Future<int> main() async {
 
   /// Check we are connected
   if (client.connectionStatus.state == MqttConnectionState.connected) {
-    print('EXAMPLE::Mqtt5 client connected');
+    print(
+        'EXAMPLE::Mqtt5 client connected, return code is ${client.connectionStatus.reasonCode.toString().split('.')[1]}');
 
-    /// Get our user properties from the connect acknowledge message.
     /// All returned properties in the connect acknowledge message are available.
-    print(
-        'EXAMPLE::Connected - user property name - ${client.connectionStatus.connectAckMessage.userProperty[0].pairName}');
-    print(
-        'EXAMPLE::Connected - user property value - ${client.connectionStatus.connectAckMessage.userProperty[0].pairValue}');
+    /// Get our user properties from the connect acknowledge message.
+    if (client.connectionStatus.connectAckMessage.userProperty.isNotEmpty) {
+      print(
+          'EXAMPLE::Connected - user property name - ${client.connectionStatus.connectAckMessage.userProperty[0].pairName}');
+      print(
+          'EXAMPLE::Connected - user property value - ${client.connectionStatus.connectAckMessage.userProperty[0].pairValue}');
+    }
   } else {
     /// Use status here rather than state if you also want the broker return code.
     print(

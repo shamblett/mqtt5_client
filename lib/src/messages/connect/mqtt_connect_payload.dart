@@ -117,7 +117,6 @@ class MqttConnectPayload implements MqttIPayload {
   @override
   String toString() {
     final sb = StringBuffer();
-    sb.writeln('client identifier is = $clientIdentifier');
     sb.writeln('Will topic = $willTopic');
     sb.write('User name = ');
     username != null ? sb.writeln('$username') : sb.writeln('not set');

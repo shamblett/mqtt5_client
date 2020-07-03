@@ -311,7 +311,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     sb.writeln('ProtocolVersion = $_protocolVersion');
     sb.writeln('ConnectFlags = ${connectFlags.toString()}');
     sb.writeln('KeepAlive = $keepAlive');
-    sb.writeln('Properties = ${_propertySet.toString()}');
+    sb.write('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }
 }

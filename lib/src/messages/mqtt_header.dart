@@ -162,7 +162,13 @@ class MqttHeader {
   }
 
   @override
-  String toString() =>
-      'Header: MessageType = $messageType, Duplicate = $duplicate, '
-      'Retain = $retain, Qos = ${qos.toString().split(".")[1]}, Size = $_messageSize';
+  String toString() {
+    final sb = StringBuffer();
+    sb.write('MessageType = $messageType');
+    sb.write(' Duplicate = $duplicate');
+    sb.write(' Retain = $retain');
+    sb.write(' Qos = ${qos.toString().split(".")[1]}');
+    sb.write(' Size = $_messageSize');
+    return sb.toString();
+  }
 }

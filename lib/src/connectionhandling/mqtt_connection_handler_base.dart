@@ -131,7 +131,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Sends a message to the broker through the current connection.
   @override
   void sendMessage(MqttMessage message) {
-    MqttLogger.log('MqttConnectionHandlerBase::sendMessage - $message');
+    MqttLogger.log('MqttConnectionHandlerBase::sendMessage - SENDING MESSAGE -> $message');
     // Check for validity
     if (!message.isValid) {
       throw ArgumentError(

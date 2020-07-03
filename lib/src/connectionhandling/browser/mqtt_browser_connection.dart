@@ -74,7 +74,7 @@ class MqttBrowserConnection extends MqttConnectionBase {
       }
       if (messageIsValid) {
         MqttLogger.log(
-            'MqttBrowserConnection::_onData - message received $msg');
+            'MqttBrowserConnection::_onData - MESSAGE RECEIVED -> $msg');
         if (!clientEventBus.streamController.isClosed) {
           clientEventBus.fire(MqttMessageAvailable(msg));
           MqttLogger.log('MqttBrowserConnection::_onData - message processed');
