@@ -237,6 +237,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
         connectionStatus.state = MqttConnectionState.connected;
         connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
         connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
+        connectionStatus.connectAckMessage = msg;
         // Call the connected callback if we have one
         if (onConnected != null) {
           onConnected();

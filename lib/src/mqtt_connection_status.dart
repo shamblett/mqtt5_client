@@ -21,6 +21,9 @@ class MqttConnectionStatus {
   /// Disconnection origin
   MqttDisconnectionOrigin disconnectionOrigin = MqttDisconnectionOrigin.none;
 
+  /// Connect acknowledgement message as received.
+  MqttConnectAckMessage connectAckMessage;
+
   @override
   String toString() {
     final s = state.toString().split('.')[1];
