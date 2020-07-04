@@ -10,28 +10,33 @@ import 'dart:io';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 
-/// An annotated simple subscribe/publish usage example for mqtt_server_client. Please read in with reference
-/// to the MQTT 5 specification. The example is runnable, also refer to test/Mqtt5_client_broker_test...dart
-/// files for separate subscribe/publish tests.
+/// An annotated simple subscribe/publish usage example for mqtt5_server_client. Please read in with reference
+/// to the MQTT 5 specification. The example is runnable against any suitable MQTT5 broker such as Mosquitto
+/// or Hive, Mosquitto is used in this example, please edit the hostname as required.
 
 /// First create a client, the client is constructed with a broker name, client identifier
 /// and port if needed. The client identifier (short ClientId) is an identifier of each MQTT
-/// client connecting to a MQTT broker. As the word identifier already suggests, it should be unique per broker.
-/// The broker uses it for identifying the client and the current state of the client. If you don’t need a state
-/// to be hold by the broker.
+/// client connecting to an MQTT broker. As the word identifier already suggests, it should be unique per client connection.
+/// The broker uses it for identifying the client and the current state(session) of the client.
 ///
 /// If a port is not specified the standard port of 1883 is used.
 ///
-/// If you want to use websockets rather than TCP see below.
+/// If you want to use websockets rather than TCP see below. A seperate example(mqtt5_server_client_secure.dart')
+/// shows how to set up and use secure sockets on the server.
 
-final client = MqttServerClient('localhost', '');
+/// Edit as needed.
+const hostName = 'test.mosquitto.org';
+
+final client = MqttServerClient(hostName, '');
 
 Future<int> main() async {
   /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
   /// for details.
+  ///
   /// To use websockets add the following lines -:
   /// client.useWebSocket = true;
-  /// client.port = 80;  ( or whatever your WS port is)
+  /// client.port = 80;  ( or whatever your WS port is).
+  ///
   /// There is also an alternate websocket implementation for specialist use, see useAlternateWebSocketImplementation
   /// Note do not set the secure flag if you are using wss, the secure flags is for TCP sockets only.
   /// You can also supply your own websocket protocol list or disable this feature using the websocketProtocols
@@ -66,6 +71,8 @@ Future<int> main() async {
   /// client identifier, any supplied username/password, the default keepalive interval(60s)
   /// and clean session, an example of a specific one below.
   /// Add some user properties, these may be available in the connect acknowledgement.
+  /// Note there are many otions selectable on this message, if you opt to use authentication please see
+  /// the example in mqtt5_server_client_authenticate.dart.
   final property = MqttUserProperty();
   property.pairName = 'Example name';
   property.pairValue = 'Example value';
@@ -77,19 +84,20 @@ Future<int> main() async {
   client.connectionMessage = connMess;
 
   /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
-  /// in some circumstances the broker will just disconnect us, see the spec about this, we however will
-  /// never send malformed messages.
+  /// its possible that in some circumstances the broker will just disconnect us, see the spec about this,
+  /// we however will never send malformed messages.
   try {
     await client.connect();
   } on Exception catch (e) {
     print('EXAMPLE::client exception - $e');
     client.disconnect();
+    exit(-1);
   }
 
-  /// Check we are connected
+  /// Check we are connected. connectionStatus always gives us this and other information.
   if (client.connectionStatus.state == MqttConnectionState.connected) {
     print(
-        'EXAMPLE::Mqtt5 client connected, return code is ${client.connectionStatus.reasonCode.toString().split('.')[1]}');
+        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus.reasonCode.toString().split('.')[1]}');
 
     /// All returned properties in the connect acknowledge message are available.
     /// Get our user properties from the connect acknowledge message.
@@ -100,7 +108,6 @@ Future<int> main() async {
           'EXAMPLE::Connected - user property value - ${client.connectionStatus.connectAckMessage.userProperty[0].pairValue}');
     }
   } else {
-    /// Use status here rather than state if you also want the broker return code.
     print(
         'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}');
     client.disconnect();
@@ -160,7 +167,7 @@ Future<int> main() async {
   print('EXAMPLE::Unsubscribing');
   client.unsubscribeStringTopic(topic);
 
-  /// Wait for the unsubscribe message from the broker if you wish.
+  /// Wait for the unsubscribe acknowledge message from the broker.
   await MqttUtilities.asyncSleep(2);
   print('EXAMPLE::Disconnecting');
   client.disconnect();
@@ -186,7 +193,7 @@ void onDisconnected() {
 /// The successful connect callback
 void onConnected() {
   print(
-      'EXAMPLE::OnConnected client callback - Client connection was sucessful');
+      'EXAMPLE::OnConnected client callback - Client connection was successful');
 }
 
 /// Pong callback
