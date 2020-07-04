@@ -4,7 +4,7 @@
 A server and browser based MQTT Version 5 client for Dart.
 
 The client is an MQTT Version 5 implementation supporting subscription/publishing at all QOS levels,
-autjentication, 
+authentication, 
 keep alive and synchronous connection. The client is designed to take as much MQTT protocol work
 off the user as possible, connection protocol is handled automatically as are the message exchanges needed
 to support the different QOS levels and the keep alive mechanism. This allows the user to concentrate on

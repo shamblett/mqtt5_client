@@ -39,7 +39,7 @@ class MqttServerConnection extends MqttConnectionBase {
   void _onData(dynamic data) {
     MqttLogger.log('MqttServerConnection::_onData');
     // Protect against 0 bytes but should never happen.
-    if (data.length == 0) {
+    if (data.isEmpty) {
       MqttLogger.log('MqttServerConnection::_ondata - Error - 0 byte message');
       return;
     }
