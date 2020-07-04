@@ -3100,7 +3100,7 @@ void main() {
             isFalse);
         expect(message.variableHeader.receiveMaximum, 10);
         expect(message.variableHeader.topicAliasMaximum, 5);
-        expect(byteBuffer.position, 11);
+        expect(byteBuffer.position, 0);
       });
     });
 
