@@ -33,7 +33,7 @@ class MqttMessageIdentifierDispenser {
   int get mid => _mid;
 
   /// Gets the next message identifier
-  int getNextMessageIdentifier() {
+  int get nextMessageIdentifier {
     _mid++;
     if (_mid == maxMessageIdentifier) {
       _mid = startMessageIdentifier;

@@ -97,7 +97,7 @@ class MqttPublishingManager {
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
       typed.Uint8Buffer data,
       {bool retain = false, List<MqttUserProperty> userProperties}) {
-    final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+    final msgId = messageIdentifierDispenser.nextMessageIdentifier;
     final msg = MqttPublishMessage()
         .toTopic(topic.toString())
         .withMessageIdentifier(msgId)
@@ -119,7 +119,7 @@ class MqttPublishingManager {
   /// Note that if a message identifier is supplied in the message it will be
   /// overridden by this method.
   int publishUserMessage(MqttPublishMessage message) {
-    final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+    final msgId = messageIdentifierDispenser.nextMessageIdentifier;
     // QOS level 1 or 2 messages need to be saved so we can do the ack processes.
     message.withMessageIdentifier(msgId);
     if (message.header.qos == MqttQos.atLeastOnce ||
@@ -187,15 +187,22 @@ class MqttPublishingManager {
     try {
       final pubMsg =
           receivedMessages.remove(pubRelMsg.variableHeader.messageIdentifier);
+      var compMsg;
       if (pubMsg != null) {
         // Send the message for processing to whoever is waiting.
         final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
         _clientEventBus.fire(MqttMessageReceived(topic, pubMsg));
-        final compMsg = MqttPublishCompleteMessage()
+        compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier)
             .withReasonCode(MqttPublishReasonCode.success);
-        _connectionHandler.sendMessage(compMsg);
+      } else {
+        // Message identifier not found.
+        compMsg = MqttPublishCompleteMessage()
+            .withMessageIdentifier(
+                messageIdentifierDispenser.nextMessageIdentifier)
+            .withReasonCode(MqttPublishReasonCode.packetIdentifierNotFound);
       }
+      _connectionHandler.sendMessage(compMsg);
     } on Exception {
       publishSuccess = false;
     }
@@ -220,13 +227,19 @@ class MqttPublishingManager {
   bool handlePublishReceived(MqttMessage msg) {
     final MqttPublishReceivedMessage recvMsg = msg;
     // If we've got a matching message, respond with a "ok release it for processing"
+    var relMsg;
     if (publishedMessages
         .containsKey(recvMsg.variableHeader.messageIdentifier)) {
-      final relMsg = MqttPublishReleaseMessage()
+      relMsg = MqttPublishReleaseMessage()
           .withMessageIdentifier(recvMsg.variableHeader.messageIdentifier)
           .withReasonCode(MqttPublishReasonCode.success);
-      _connectionHandler.sendMessage(relMsg);
+    } else {
+      relMsg = MqttPublishReleaseMessage()
+          .withMessageIdentifier(
+              messageIdentifierDispenser.nextMessageIdentifier)
+          .withReasonCode(MqttPublishReasonCode.packetIdentifierNotFound);
     }
+    _connectionHandler.sendMessage(relMsg);
     return true;
   }
 

@@ -130,7 +130,7 @@ class MqttSubscriptionManager {
     }
     // Build a subscription message and send it.
     try {
-      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+      final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = subscriptionsToCreate;
       final msg = MqttSubscribeMessage()
           .toSubscriptionList(subscriptionsToCreate)
@@ -170,7 +170,7 @@ class MqttSubscriptionManager {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
       sub.userProperties = userProperties;
-      final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+      final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = <MqttSubscription>[]..add(sub);
       // Build a subscribe message for the caller and send it to the broker.
       final msg = MqttSubscribeMessage()
@@ -205,7 +205,7 @@ class MqttSubscriptionManager {
     }
     final subscriptionTopic = MqttSubscriptionTopic(topic);
     final sub = MqttSubscription(subscriptionTopic);
-    final msgId = messageIdentifierDispenser.getNextMessageIdentifier();
+    final msgId = messageIdentifierDispenser.nextMessageIdentifier;
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(msgId)
         .fromStringTopic(topic);
@@ -221,8 +221,7 @@ class MqttSubscriptionManager {
           'MqttSubscriptionManager::unsubscribeSubscription - subscription is null');
     }
     final unsubscribeMsg = MqttUnsubscribeMessage()
-        .withMessageIdentifier(
-            messageIdentifierDispenser.getNextMessageIdentifier())
+        .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromTopic(subscription.topic)
         .withUserProperties(subscription.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);
@@ -240,8 +239,7 @@ class MqttSubscriptionManager {
           'MqttSubscriptionManager::unsubscribeSubscriptionList - subscription list is null');
     }
     final unsubscribeMsg = MqttUnsubscribeMessage()
-        .withMessageIdentifier(
-            messageIdentifierDispenser.getNextMessageIdentifier())
+        .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromSubscriptionList(subscriptions)
         .withUserProperties(subscriptions.first.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);

@@ -27,12 +27,12 @@ void main() {
   group('Message Identifier', () {
     test('Numbering starts at 1', () {
       final dispenser = MqttMessageIdentifierDispenser();
-      expect(dispenser.getNextMessageIdentifier(), 1);
+      expect(dispenser.nextMessageIdentifier, 1);
     });
     test('Numbering increments by 1', () {
       final dispenser = MqttMessageIdentifierDispenser();
-      final first = dispenser.getNextMessageIdentifier();
-      final second = dispenser.getNextMessageIdentifier();
+      final first = dispenser.nextMessageIdentifier;
+      final second = dispenser.nextMessageIdentifier;
       expect(second, first + 1);
     });
     test('Numbering overflows back to 1', () {
@@ -41,10 +41,10 @@ void main() {
       for (var i = 0;
           i == MqttMessageIdentifierDispenser.maxMessageIdentifier;
           i++) {
-        dispenser.getNextMessageIdentifier();
+        dispenser.nextMessageIdentifier;
       }
       // One more call should overflow us and reset us back to 1.
-      expect(dispenser.getNextMessageIdentifier(), 1);
+      expect(dispenser.nextMessageIdentifier, 1);
     });
   });
 
