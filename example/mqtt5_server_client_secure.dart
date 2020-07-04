@@ -11,17 +11,9 @@ import 'package:path/path.dart' as path;
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 
-/// An annotated simple subscribe/publish usage example for a secure mqtt_server_client. Please read in with reference
-/// to the MQTT specification. The example is runnable, also refer to test/mqtt_client_broker_test...dart
-/// files for separate subscribe/publish tests.
-
-/// First create a client, the client is constructed with a broker name, client identifier
-/// and port if needed. The client identifier (short ClientId) is an identifier of each MQTT
-/// client connecting to a MQTT broker. As the word identifier already suggests, it should be unique per broker.
-/// The broker uses it for identifying the client and the current state of the client. If you don’t need a state
-/// to be hold by the broker, in MQTT 3.1.1 you can set an empty ClientId, which results in a connection without any state.
-/// A condition is that clean session connect flag is true, otherwise the connection will be rejected.
-/// The client identifier can be a maximum length of 23 characters.
+/// An annotated usage example for a secure mqtt5_server_client. Please read in conjunction
+/// with the mqtt5_server_client.dart for a fuller explanation of the client configuration.
+/// This example is runnable and uses the Mosquitto broker.
 
 final client = MqttServerClient('test.mosquitto.org', '');
 
@@ -71,11 +63,7 @@ Future<int> main() async {
   /// and clean session, an example of a specific one below.
   final connMess = MqttConnectMessage()
       .withClientIdentifier('Mqtt_MyClientUniqueId')
-      .keepAliveFor(20) // Must agree with the keep alive set above or not set
-      .withWillTopic('willtopic') // If you set this you must set a will message
-      // TODO .withWillMessage('My Will message')
-      .startClean() // Non persistent session for testing
-      .withWillQos(MqttQos.atLeastOnce);
+      .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 

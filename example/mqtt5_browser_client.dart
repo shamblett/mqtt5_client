@@ -9,18 +9,19 @@ import 'dart:async';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_browser_client.dart';
 
-/// An annotated simple subscribe/publish usage example for mqtt_browser_client. Please read in with reference
-/// to the MQTT specification. The example is runnable.
-
+/// An annotated simple subscribe/publish usage example for mqtt5_browser_client. Please read in with reference
+/// to the MQTT 5 specification. The example is runnable.
+///
+/// Note that except for using the mqtt_browser_client and ws or wss endpoints this example is the same as that
+/// for the server client.
+///
 /// First create a client, the client is constructed with a broker name, client identifier
 /// and port if needed. The client identifier (short ClientId) is an identifier of each MQTT
-/// client connecting to a MQTT broker. As the word identifier already suggests, it should be unique per broker.
-/// The broker uses it for identifying the client and the current state of the client. If you don’t need a state
-/// to be hold by the broker, in MQTT 3.1.1 you can set an empty ClientId, which results in a connection without any state.
-/// A condition is that clean session connect flag is true, otherwise the connection will be rejected.
-/// The client identifier can be a maximum length of 23 characters. If a port is not specified the standard port
-/// of 1883 is used. Only web sockets are supported in the browser client.
-
+/// client connecting to an MQTT broker. As the word identifier already suggests, it should be unique per client connection.
+/// The broker uses it for identifying the client and the current state(session) of the client.
+///
+/// Only web sockets are supported in the browser client.
+///
 /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
 /// for details.
 final client = MqttBrowserClient('ws://test.mosquitto.org', '');
@@ -58,11 +59,7 @@ Future<int> main() async {
   /// and clean session, an example of a specific one below.
   final connMess = MqttConnectMessage()
       .withClientIdentifier('Mqtt_MyClientUniqueId')
-      .keepAliveFor(20) // Must agree with the keep alive set above or not set
-      .withWillTopic('willtopic') // If you set this you must set a will message
-      // TODO .withWillMessage('My Will message')
-      .startClean() // Non persistent session for testing
-      .withWillQos(MqttQos.atLeastOnce);
+      .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 
