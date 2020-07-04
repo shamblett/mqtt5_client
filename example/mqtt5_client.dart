@@ -7,7 +7,6 @@
 
 /// The mqtt5_client comprises a server client [MqttServerClient] and a browser
 /// client [MqttBrowserClient]. Example usage of these two clients are contained in this directory.
-/// Example usage for a server client using secure sockets is in the mqtt5_server_client_secure.dart file.
 ///
 /// Except for connection functionality the behavior of the clients wrt MQTT is the same.
 ///

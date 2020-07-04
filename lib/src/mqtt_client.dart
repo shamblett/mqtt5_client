@@ -396,6 +396,11 @@ class MqttClient {
         waitTimeInSeconds: waitTimeInSeconds);
   }
 
+  /// Send an authenticate message to the broker.
+  void sendAuthenticate(MqttAuthenticateMessage message ) {
+    authenticationManager.send(message);
+  }
+
   /// Internal disconnect.
   ///
   /// This is always passed to the connection handler to allow the
