@@ -14,7 +14,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 /// as long as you can break its connection to this process. You could wait for the first pong callback to print out
 /// (these are every 5 seconds) then stop/break connection to the server and reinstate it.
 ///
-final client = MqttServerClient('127.0.0.1', '');
+final client = MqttServerClient('test.mosquitto.org', '');
 
 Future<int> main() async {
   /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
@@ -60,11 +60,7 @@ Future<int> main() async {
   /// and clean session, an example of a specific one below.
   final connMess = MqttConnectMessage()
       .withClientIdentifier('Mqtt_MyClientUniqueId')
-      .keepAliveFor(5) // Must agree with the keep alive set above or not set
-      .withWillTopic('willtopic') // If you set this you must set a will message
-      // TODO .withWillMessage('My Will message')
-      .startClean() // Non persistent session for testing
-      .withWillQos(MqttQos.atLeastOnce);
+      .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 
@@ -98,8 +94,7 @@ Future<int> main() async {
   /// notifications of published updates to each subscribed topic.
   client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final MqttPublishMessage recMess = c[0].payload;
-    final pt =
-        MqttUtilities.bytesToStringAsString(recMess.payload.message);
+    final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message);
 
     /// The above may seem a little convoluted for users only interested in the
     /// payload, some users however may be interested in the received publish message,
@@ -152,8 +147,10 @@ Future<int> main() async {
 
 /// The subscribed callback
 void onSubscribed(MqttSubscription subscription) {
-  print('EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
+  print(
+      'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
 }
+
 /// The unsolicited disconnect callback
 void onAutoReconnect() {
   print(

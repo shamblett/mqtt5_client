@@ -132,7 +132,6 @@ void main() {
           .withClientIdentifier(testClientId)
           .keepAliveFor(10)
           .withWillTopic('willtopic')
-          // TODO .withWillMessage('My Will message')
           .startClean() // Non persistent session for testing
           .withWillQos(MqttQos.atLeastOnce);
       client.connectionMessage = connMess;

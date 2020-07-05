@@ -1,0 +1,68 @@
+2020-07-05 07:17:02,776 - [MQTT5DartClient] - Received CONNECT message (mqtt version: MQTTv5, client identifier: MQTT5DartClient, clean start: true, keep alive: 0, session expiry interval: 0, topic alias maximum: 0, receive maximum: 65535, maximum packet size: 268435460, request response information: false, request problem information: true, auth method: none, username: none, password: none, user properties: [name: Example name, value: Example value])
+2020-07-05 07:17:02,788 - [MQTT5DartClient] - Sent CONNACK message (session present: false, retain available: true, shared subscriptions available: true, subscription identifier available: true, wildcard subscriptions available: true, maximum packet size: 268435460, server receive maximum: 10, topic alias maximum: 5, reason code: 0, maximum QoS: EXACTLY_ONCE)
+2020-07-05 07:17:02,815 - [MQTT5DartClient] - Received SUBSCRIBE message (packet identifier: 1, topics: [topic: test/lol, QoS: 0, retain handling: 0, no local: false, retain as published: true], subscription identifier: -1)
+2020-07-05 07:17:02,820 - [MQTT5DartClient] - Sent SUBACK message (packet identifier: 1, reason codes: [0])
+2020-07-05 07:17:02,822 - [MQTT5DartClient] - Received SUBSCRIBE message (packet identifier: 2, topics: [topic: Dart/Mqtt5_client/testtopic, QoS: 2, retain handling: 0, no local: false, retain as published: true], subscription identifier: -1)
+2020-07-05 07:17:02,824 - [MQTT5DartClient] - Sent SUBACK message (packet identifier: 2, reason codes: [2])
+2020-07-05 07:17:02,826 - [MQTT5DartClient] - Received PUBLISH message (packet identifier: 3, topic: Dart/Mqtt5_client/testtopic, QoS: 2, retain: false, duplicate delivery: false)
+2020-07-05 07:17:02,828 - [MQTT5DartClient] - Sent PUBREC message (packet identifier: 3, reason code: 0)
+2020-07-05 07:17:02,831 - [MQTT5DartClient] - Sent PUBLISH message (packet identifier: 51, topic: Dart/Mqtt5_client/testtopic, QoS: 2, retain: false, duplicate delivery: false)
+2020-07-05 07:17:02,839 - [MQTT5DartClient] - Received PUBREC message (packet identifier: 51, reason code: 0)
+2020-07-05 07:17:02,840 - [MQTT5DartClient] - Sent PUBREL message (packet identifier: 51, reason code: 0)
+2020-07-05 07:17:02,845 - [MQTT5DartClient] - Received PUBCOMP message (packet identifier: 51, reason code: 0)
+2020-07-05 07:18:02,735 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:18:02,735 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:19:02,738 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:19:02,738 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:19:02,831 - [MQTT5DartClient] - Received UNSUBSCRIBE message (packet identifier: 4, topics: [test/lol])
+2020-07-05 07:19:02,841 - [MQTT5DartClient] - Sent UNSUBACK message (packet identifier: 4, reason codes: [0])
+2020-07-05 07:19:04,839 - [MQTT5DartClient] - Received DISCONNECT message (reason code: 0)
+2020-07-05 07:19:17,110 - [MQTT5DartClient] - Received CONNECT message (mqtt version: MQTTv5, client identifier: MQTT5DartClient, clean start: true, keep alive: 0, session expiry interval: 0, topic alias maximum: 0, receive maximum: 65535, maximum packet size: 268435460, request response information: false, request problem information: true, auth method: none, username: none, password: none)
+2020-07-05 07:19:17,125 - [MQTT5DartClient] - Sent CONNACK message (session present: false, retain available: true, shared subscriptions available: true, subscription identifier available: true, wildcard subscriptions available: true, maximum packet size: 268435460, server receive maximum: 10, topic alias maximum: 5, reason code: 0, maximum QoS: EXACTLY_ONCE)
+2020-07-05 07:19:17,157 - [MQTT5DartClient] - Received SUBSCRIBE message (packet identifier: 1, topics: [topic: SJHTopic1, QoS: 1, retain handling: 0, no local: false, retain as published: true], subscription identifier: -1)
+2020-07-05 07:19:17,162 - [MQTT5DartClient] - Sent SUBACK message (packet identifier: 1, reason codes: [1])
+2020-07-05 07:19:17,164 - [MQTT5DartClient] - Received SUBSCRIBE message (packet identifier: 2, topics: [topic: SJHTopic2, QoS: 1, retain handling: 0, no local: false, retain as published: true], subscription identifier: -1)
+2020-07-05 07:19:17,166 - [MQTT5DartClient] - Sent SUBACK message (packet identifier: 2, reason codes: [1])
+2020-07-05 07:19:17,167 - [MQTT5DartClient] - Received PUBLISH message (packet identifier: 3, topic: SJHTopic1, QoS: 1, retain: false, duplicate delivery: false)
+2020-07-05 07:19:17,167 - [MQTT5DartClient] - Received PUBLISH message (packet identifier: 4, topic: SJHTopic2, QoS: 1, retain: false, duplicate delivery: false)
+2020-07-05 07:19:17,175 - [MQTT5DartClient] - Sent PUBACK message (packet identifier: 3, reason code: 0)
+2020-07-05 07:19:17,175 - [MQTT5DartClient] - Sent PUBACK message (packet identifier: 4, reason code: 0)
+2020-07-05 07:19:17,176 - [MQTT5DartClient] - Sent PUBLISH message (packet identifier: 51, topic: SJHTopic1, QoS: 1, retain: false, duplicate delivery: false)
+2020-07-05 07:19:17,177 - [MQTT5DartClient] - Sent PUBLISH message (packet identifier: 52, topic: SJHTopic2, QoS: 1, retain: false, duplicate delivery: false)
+2020-07-05 07:19:17,185 - [MQTT5DartClient] - Received PUBACK message (packet identifier: 51, reason code: 0)
+2020-07-05 07:19:37,068 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:19:37,069 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:19:57,072 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:19:57,072 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:20:17,080 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:20:17,080 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:20:17,173 - [MQTT5DartClient] - Received UNSUBSCRIBE message (packet identifier: 5, topics: [SJHTopic1])
+2020-07-05 07:20:17,184 - [MQTT5DartClient] - Sent UNSUBACK message (packet identifier: 5, reason codes: [0])
+2020-07-05 07:20:17,186 - [MQTT5DartClient] - Received UNSUBSCRIBE message (packet identifier: 6, topics: [SJHTopic2])
+2020-07-05 07:20:17,187 - [MQTT5DartClient] - Sent UNSUBACK message (packet identifier: 6, reason codes: [0])
+2020-07-05 07:20:19,180 - [MQTT5DartClient] - Received DISCONNECT message (reason code: 0)
+2020-07-05 07:20:51,840 - [MQTT5DartClient] - Received CONNECT message (mqtt version: MQTTv5, client identifier: MQTT5DartClient, clean start: true, keep alive: 0, request response information: false, request problem information: true, auth method: none, username: none, password: none)
+2020-07-05 07:20:51,856 - [MQTT5DartClient] - Sent CONNACK message (session present: false, retain available: true, shared subscriptions available: true, subscription identifier available: true, wildcard subscriptions available: true, maximum packet size: 268435460, server receive maximum: 10, topic alias maximum: 5, reason code: 0, maximum QoS: EXACTLY_ONCE)
+2020-07-05 07:20:51,885 - [MQTT5DartClient] - Received SUBSCRIBE message (packet identifier: 1, topics: [topic: SJHTopic1, QoS: 2, retain handling: 0, no local: false, retain as published: true], subscription identifier: -1)
+2020-07-05 07:20:51,890 - [MQTT5DartClient] - Sent SUBACK message (packet identifier: 1, reason codes: [2])
+2020-07-05 07:20:51,892 - [MQTT5DartClient] - Received SUBSCRIBE message (packet identifier: 2, topics: [topic: SJHTopic2, QoS: 2, retain handling: 0, no local: false, retain as published: true], subscription identifier: -1)
+2020-07-05 07:20:51,893 - [MQTT5DartClient] - Sent SUBACK message (packet identifier: 2, reason codes: [2])
+2020-07-05 07:20:51,895 - [MQTT5DartClient] - Received PUBLISH message (packet identifier: 3, topic: SJHTopic1, QoS: 2, retain: false, duplicate delivery: false)
+2020-07-05 07:20:51,895 - [MQTT5DartClient] - Received PUBLISH message (packet identifier: 4, topic: SJHTopic2, QoS: 2, retain: false, duplicate delivery: false)
+2020-07-05 07:20:51,897 - [MQTT5DartClient] - Sent PUBREC message (packet identifier: 3, reason code: 0)
+2020-07-05 07:20:51,898 - [MQTT5DartClient] - Sent PUBREC message (packet identifier: 4, reason code: 0)
+2020-07-05 07:20:51,899 - [MQTT5DartClient] - Sent PUBLISH message (packet identifier: 51, topic: SJHTopic1, QoS: 2, retain: false, duplicate delivery: false)
+2020-07-05 07:20:51,899 - [MQTT5DartClient] - Sent PUBLISH message (packet identifier: 52, topic: SJHTopic2, QoS: 2, retain: false, duplicate delivery: false)
+2020-07-05 07:20:51,905 - [MQTT5DartClient] - Received PUBREL message (packet identifier: 3, reason code: 0)
+2020-07-05 07:20:51,905 - [MQTT5DartClient] - Sent PUBCOMP message (packet identifier: 3, reason code: 0)
+2020-07-05 07:21:11,796 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:21:11,797 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:21:31,798 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:21:31,798 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:21:51,806 - [MQTT5DartClient] - Received PINGREQ message
+2020-07-05 07:21:51,807 - [MQTT5DartClient] - Sent PINGRESP message
+2020-07-05 07:21:51,901 - [MQTT5DartClient] - Received UNSUBSCRIBE message (packet identifier: 5, topics: [SJHTopic1])
+2020-07-05 07:21:51,911 - [MQTT5DartClient] - Sent UNSUBACK message (packet identifier: 5, reason codes: [0])
+2020-07-05 07:21:51,913 - [MQTT5DartClient] - Received UNSUBSCRIBE message (packet identifier: 6, topics: [SJHTopic2])
+2020-07-05 07:21:51,913 - [MQTT5DartClient] - Sent UNSUBACK message (packet identifier: 6, reason codes: [0])
+2020-07-05 07:21:53,916 - [MQTT5DartClient] - Received DISCONNECT message (reason code: 0)

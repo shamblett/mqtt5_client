@@ -14,14 +14,18 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 ///
 /// A QOS1 publishing example, two QOS one topics are subscribed to and published in quick succession,
 /// tests QOS1 protocol handling.
+
+/// Edit as needed.
+const hostName = 'test.mosquitto.org';
+
 Future<int> main() async {
-  final client = MqttServerClient('test.mosquitto.org', '');
+  final client = MqttServerClient(hostName, '');
   client.logging(on: true);
   client.keepAlivePeriod = 20;
   client.onDisconnected = onDisconnected;
   client.onSubscribed = onSubscribed;
   final connMess = MqttConnectMessage()
-      .withClientIdentifier('Mqtt_MyClientUniqueIdQ1')
+      .withClientIdentifier('MQTT5DartClient')
       .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
@@ -51,7 +55,6 @@ Future<int> main() async {
   const topic2 = 'SJHTopic2'; // Not a wildcard topic
   client.subscribe(topic2, MqttQos.atLeastOnce);
 
-  // ignore: avoid_annotating_with_dynamic
   client.updates.listen((dynamic c) {
     final MqttPublishMessage recMess = c[0].payload;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message);

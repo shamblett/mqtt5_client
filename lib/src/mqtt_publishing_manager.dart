@@ -158,7 +158,8 @@ class MqttPublishingManager {
         _clientEventBus.fire(MqttMessageReceived(topic, msg));
         _notifyPublish(msg);
         final ackMsg = MqttPublishAckMessage()
-            .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier);
+            .withMessageIdentifier(pubMsg.variableHeader.messageIdentifier)
+            .withReasonCode(MqttPublishReasonCode.success);
         _connectionHandler.sendMessage(ackMsg);
       } else if (pubMsg.header.qos == MqttQos.exactlyOnce) {
         // QOS ExactlyOnce means we can't give it away yet, we need to do a handshake

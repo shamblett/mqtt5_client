@@ -97,8 +97,7 @@ Future<int> main() async {
   /// notifications of published updates to each subscribed topic.
   client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final MqttPublishMessage recMess = c[0].payload;
-    final pt =
-        MqttUtilities.bytesToStringAsString(recMess.payload.message);
+    final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message);
 
     /// The above may seem a little convoluted for users only interested in the
     /// payload, some users however may be interested in the received publish message,
@@ -151,7 +150,8 @@ Future<int> main() async {
 
 /// The subscribed callback
 void onSubscribed(MqttSubscription subscription) {
-  print('EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
+  print(
+      'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
 }
 
 /// The unsolicited disconnect callback

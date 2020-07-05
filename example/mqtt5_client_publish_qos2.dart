@@ -14,14 +14,18 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 ///
 /// A QOS2 publishing example, two QOS two topics are subscribed to and published in quick succession,
 /// tests QOS2 protocol handling.
+
+/// Edit as needed.
+const hostName = 'test.mosquitto.org';
+
 Future<int> main() async {
-  final client = MqttServerClient('test.mosquitto.org', '');
+  final client = MqttServerClient(hostName, '');
   client.logging(on: true);
   client.keepAlivePeriod = 20;
   client.onDisconnected = onDisconnected;
   client.onSubscribed = onSubscribed;
   final connMess = MqttConnectMessage()
-      .withClientIdentifier('Mqtt_MyClientUniqueIdQ2')
+      .withClientIdentifier('MQTT5DartClient')
       .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
