@@ -397,7 +397,7 @@ class MqttClient {
   }
 
   /// Send an authenticate message to the broker.
-  void sendAuthenticate(MqttAuthenticateMessage message ) {
+  void sendAuthenticate(MqttAuthenticateMessage message) {
     authenticationManager.send(message);
   }
 
