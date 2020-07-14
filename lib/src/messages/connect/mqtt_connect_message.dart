@@ -169,6 +169,10 @@ class MqttConnectMessage extends MqttMessage {
     return this;
   }
 
+  /// Indicates if an authentication method is set
+  bool get authenticationRequested =>
+      variableHeader.authenticationMethod.isNotEmpty;
+
   /// Sets the authentication details
   MqttConnectMessage authenticateAs(String username, String password) {
     if (username != null) {

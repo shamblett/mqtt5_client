@@ -43,6 +43,10 @@ abstract class MqttIConnectionHandler {
   /// with a message broker.
   MqttConnectionState disconnect();
 
+  /// Indicates if the connect message has an authentication method
+  /// i.e. authentication has been requested.
+  bool authenticationRequested;
+
   /// Closes a connection.
   void close();
 

@@ -29,6 +29,11 @@ class MqttSynchronousServerConnectionHandler
     var connectionAttempts = 0;
     MqttLogger.log(
         'SynchronousMqttServerConnectionHandler::internalConnect entered');
+    authenticationRequested = connectMessage.authenticationRequested;
+    if (authenticationRequested) {
+      MqttLogger.log(
+          'SynchronousMqttServerConnectionHandler::internalConnect - authentication requested');
+    }
     do {
       // Initiate the connection
       MqttLogger.log(
@@ -89,8 +94,18 @@ class MqttSynchronousServerConnectionHandler
           'SynchronousMqttServerConnectionHandler::internalConnect - '
           'pre sleep, state = $connectionStatus');
       // We're the sync connection handler so we need to wait for the
-      // brokers acknowledgement of the connections
+      // brokers acknowledgement of the connection.
       await connectTimer.sleep();
+      // If we are authenticating we must keep waiting for the connect
+      // acknowledgement to indicate the end of the authentication sequence.
+      if (authenticationRequested) {
+        do {
+          MqttLogger.log(
+              'SynchronousMqttServerConnectionHandler::internalConnect - awaiting end of authentication sequence');
+          connectTimer = MqttCancellableAsyncSleep(1000);
+          await connectTimer.sleep();
+        } while (connectionStatus.state != MqttConnectionState.connected);
+      }
       MqttLogger.log(
           'SynchronousMqttServerConnectionHandler::internalConnect - '
           'post sleep, state = $connectionStatus');

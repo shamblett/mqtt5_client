@@ -64,6 +64,11 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   @protected
   dynamic connection;
 
+  /// Indicates if the connect message has an authentication method
+  /// i.e. authentication has been requested.
+  @override
+  bool authenticationRequested = false;
+
   /// Registry of message processors
   @protected
   Map<MqttMessageType, MessageCallbackFunction> messageProcessorRegistry =
