@@ -71,8 +71,6 @@ class MqttAuthenticationManager {
 
   /// Add the message to the authentication stream.
   void _notifyAuthenticate(MqttAuthenticateMessage message) {
-    if (_authenticated.hasListener) {
-      _authenticated.add(message);
-    }
+    _authenticated.add(message);
   }
 }
