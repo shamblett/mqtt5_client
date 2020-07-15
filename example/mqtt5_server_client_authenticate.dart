@@ -38,6 +38,17 @@ Future<int> main() async {
       .withAuthenticationData(Uint8Buffer()..addAll([1, 2, 3, 4]));
   client.connectionMessage = connMess;
 
+  /// Authentication message exchange can occur between the sending of the connect message and reception of the
+  /// corresponding connect acknowledge message, to cater for this we must listen for incoming authentication messages,
+  /// pre connecting.
+  client.authentication.listen((final authMessage) {
+    print('EXAMPLE:: Authentication Message received - $authMessage');
+
+    /// Authentication message received, do what you need to do here, we simply tell the broker the sequence has ended.
+    authMessage.withReasonCode(MqttAuthenticateReasonCode.success);
+    client.sendAuthenticate(authMessage);
+  });
+
   /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
   /// its possible that in some circumstances the broker will just disconnect us, see the spec about this,
   /// we however will never send malformed messages.
@@ -49,17 +60,6 @@ Future<int> main() async {
     client.disconnect();
     exit(-1);
   }
-
-  /// Authentication message exchange can occur between the sending of the connect message and reception of the
-  /// corresponding connect acknowledge message, to cater for this we must listen for incoming authentication messages,
-  /// post connecting.
-  client.authentication.listen((final authMessage) {
-    print('EXAMPLE:: Authentication Message received - $authMessage');
-
-    /// Authentication message received, do what you need to do here, we simply tell the broker the sequence has ended.
-    authMessage.withReasonCode(MqttAuthenticateReasonCode.success);
-    client.sendAuthenticate(authMessage);
-  });
 
   /// Check we are connected. connectionStatus always gives us this and other information.
   if (client.connectionStatus.state == MqttConnectionState.connected) {

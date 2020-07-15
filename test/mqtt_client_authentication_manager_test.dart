@@ -15,7 +15,8 @@ final TestConnectionHandlerSend testCHS = TestConnectionHandlerSend();
 
 void main() {
   test('On Authentication Message Received', () async {
-    final authManager = MqttAuthenticationManager(testCHS);
+    final authManager = MqttAuthenticationManager();
+    authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
@@ -28,7 +29,8 @@ void main() {
   }, timeout: Timeout.factor(0.1));
 
   test('Reauthenticate - Timeout No Message', () async {
-    final authManager = MqttAuthenticationManager(testCHS);
+    final authManager = MqttAuthenticationManager();
+    authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
@@ -41,7 +43,8 @@ void main() {
 
   test('Reauthenticate - Timeout With Message', () async {
     testCHS.sentMessages.clear();
-    final authManager = MqttAuthenticationManager(testCHS);
+    final authManager = MqttAuthenticationManager();
+    authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);

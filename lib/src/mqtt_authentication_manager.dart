@@ -13,13 +13,14 @@ part of mqtt5_client;
 /// a connect message with authentication data and receiving a connect acknowledgement
 /// message and re-authentication.
 class MqttAuthenticationManager {
-  MqttAuthenticationManager(this._connectionHandler) {
+  dynamic _connectionHandler;
+
+  /// The current connection handler.
+  set connectionHandler(dynamic handler) {
+    _connectionHandler = handler;
     _connectionHandler.registerForMessage(
         MqttMessageType.auth, handleAuthentication);
   }
-
-  // The current connection handler.
-  final _connectionHandler;
 
   final _authenticated = StreamController<MqttAuthenticateMessage>.broadcast();
 
@@ -37,7 +38,7 @@ class MqttAuthenticationManager {
 
   /// Send an authenticate message
   void send(MqttAuthenticateMessage msg) {
-    _connectionHandler.sendMessage(msg);
+    _connectionHandler?.sendMessage(msg);
     MqttLogger.log(
         'MqttAuthenticationManager::send - Authentication message sent');
   }

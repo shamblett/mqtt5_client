@@ -105,7 +105,7 @@ class MqttClient {
 
   /// Handles everything to do with authentication messages.
   @protected
-  MqttAuthenticationManager authenticationManager;
+  MqttAuthenticationManager authenticationManager = MqttAuthenticationManager();
 
   /// Authenticate message stream. A received authenticate message is
   /// added to this stream.
@@ -228,7 +228,7 @@ class MqttClient {
     connectionHandler.onAutoReconnect = onAutoReconnect;
     publishingManager =
         MqttPublishingManager(connectionHandler, clientEventBus);
-    authenticationManager = MqttAuthenticationManager(connectionHandler);
+    authenticationManager.connectionHandler = connectionHandler;
     subscriptionsManager =
         MqttSubscriptionManager(connectionHandler, clientEventBus);
     subscriptionsManager.onSubscribed = onSubscribed;
