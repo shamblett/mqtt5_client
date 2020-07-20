@@ -54,6 +54,8 @@ Future<int> main() async {
   print('EXAMPLE:: <<<< SUBCRIBE 2 >>>>');
   const topic2 = 'SJHTopic2'; // Not a wildcard topic
   client.subscribe(topic2, MqttQos.atLeastOnce);
+  // Do not subscribe to this topic.
+  const topic3 = 'SJHTopic3';
 
   client.updates.listen((dynamic c) {
     final MqttPublishMessage recMess = c[0].payload;
@@ -70,6 +72,10 @@ Future<int> main() async {
   client.published.listen((MqttPublishMessage message) {
     print(
         'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
+    if (message.variableHeader.topicName == topic3) {
+      print(
+          'EXAMPLE::Published notification:: Non subscribed topic publication received');
+    }
   });
 
   final builder1 = MqttPayloadBuilder();
@@ -81,6 +87,11 @@ Future<int> main() async {
   builder2.addString('Hello from mqtt_client topic 2');
   print('EXAMPLE:: <<<< PUBLISH 2 >>>>');
   client.publishMessage(topic2, MqttQos.atLeastOnce, builder2.payload);
+
+  final builder3 = MqttPayloadBuilder();
+  builder3.addString('Hello from mqtt_client topic 3');
+  print('EXAMPLE:: <<<< PUBLISH 3 - NO SUBSCRIBE >>>>');
+  client.publishMessage(topic3, MqttQos.atLeastOnce, builder3.payload);
 
   print('EXAMPLE::Sleeping....');
   await MqttUtilities.asyncSleep(60);

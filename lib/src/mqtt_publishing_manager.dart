@@ -134,8 +134,9 @@ class MqttPublishingManager {
   bool handlePublishAcknowledgement(MqttMessage msg) {
     final MqttPublishAckMessage ackMsg = msg;
     // If we're expecting an ack for the message, remove it from the list of pubs awaiting ack.
-    if (publishedMessages.keys
-        .contains(ackMsg.variableHeader.messageIdentifier)) {
+    final messageIdentifier = ackMsg.variableHeader.messageIdentifier;
+    if (publishedMessages.keys.contains(messageIdentifier)) {
+      _notifyPublish(publishedMessages[messageIdentifier]);
       publishedMessages.remove(ackMsg.variableHeader.messageIdentifier);
     }
     return true;
@@ -216,11 +217,8 @@ class MqttPublishingManager {
     final MqttPublishCompleteMessage compMsg = msg;
     final publishMessage =
         publishedMessages.remove(compMsg.variableHeader.messageIdentifier);
-    if (publishMessage != null) {
-      _notifyPublish(publishMessage);
-      return true;
-    }
-    return false;
+    _notifyPublish(publishMessage);
+    return true;
   }
 
   /// Handles publish received messages during processing of QOS level 2 (Exactly once) messages.
@@ -246,7 +244,7 @@ class MqttPublishingManager {
 
   /// On publish complete add the message to the published stream if needed
   void _notifyPublish(MqttPublishMessage message) {
-    if (_published.hasListener) {
+    if (_published.hasListener && message != null) {
       _published.add(message);
     }
   }
