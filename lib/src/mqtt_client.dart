@@ -16,6 +16,9 @@ typedef ConnectCallback = void Function();
 /// The client auto reconnect callback type
 typedef AutoReconnectCallback = void Function();
 
+/// The client auto reconnect complete callback type
+typedef AutoReconnectCompleteCallback = void Function();
+
 /// A client class for interacting with MQTT Data Packets.
 /// Do not instantiate this class directly, instead instantiate
 /// either a [MqttClientServer] class or an [MqttBrowserClient] as needed.
@@ -60,6 +63,13 @@ class MqttClient {
   /// original connection parameters. This can be stopped only by calling
   /// [disconnect()] on the client.
   var autoReconnect = false;
+
+  /// Re subscribe on auto reconnect.
+  /// Auto reconnect will perform automatic re subscription of existing confirmed subscriptions
+  /// unless this is set to false.
+  /// In this case the caller must perform their own re subscriptions manually using [unsubscribe],
+  /// [subscribe] and [resubscribe] as needed from the appropriate callbacks.
+  bool resubscribeOnAutoReconnect = true;
 
   /// The Handler that is managing the connection to the remote server.
   @protected
@@ -270,7 +280,7 @@ class MqttClient {
 
     if (connectionStatus.state != MqttConnectionState.connected || force) {
       // Fire a manual auto reconnect request
-      clientEventBus.fire(MqttAutoReconnect(userReconnect: true));
+      clientEventBus.fire(MqttAutoReconnect(userRequested: true));
     }
   }
 
@@ -410,7 +420,7 @@ class MqttClient {
     if (autoReconnect) {
       if (!connectionHandler.autoReconnectInProgress) {
         // Fire an automatic auto reconnect request
-        clientEventBus.fire(MqttAutoReconnect(userReconnect: false));
+        clientEventBus.fire(MqttAutoReconnect(userRequested: false));
       } else {
         MqttLogger.log(
             'MqttClient::internalDisconnect - not invoking auto connect, already in progress');
