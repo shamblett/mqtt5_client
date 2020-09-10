@@ -23,6 +23,7 @@ class MqttSubscriptionManager {
         MqttMessageType.unsubscribeAck, confirmUnsubscribe);
     // Start listening for published messages
     _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
+    _clientEventBus.on<MqttResubscribe>().listen(_resubscribe);
   }
 
   final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
@@ -63,6 +64,9 @@ class MqttSubscriptionManager {
 
   /// Subscription failed callback
   SubscribeFailCallback onSubscribeFail;
+
+  /// Re subscribe on auto reconnect.
+  bool resubscribeOnAutoReconnect = true;
 
   /// The event bus
   final _clientEventBus;
@@ -247,6 +251,17 @@ class MqttSubscriptionManager {
         subscriptions;
   }
 
+  /// Re subscribe.
+  /// Unsubscribes all confirmed subscriptions and re subscribes them
+  /// without sending unsubscribe messages to the broker.
+  void resubscribe() {
+    for (final subscription in subscriptions.values) {
+      _createNewSubscription(
+          subscription.topic.rawTopic, subscription.maximumQos);
+    }
+    subscriptions.clear();
+  }
+
   /// Confirms a subscription has been made with the broker.
   /// Marks the subscription as confirmed.
   /// Returns true on successful subscription confirm, false on fail.
@@ -355,5 +370,24 @@ class MqttSubscriptionManager {
       }
     }
     return status;
+  }
+
+  // Re subscribe.
+  // Takes all active completed subscriptions and re subscribes them if
+  // [resubscribeOnAutoReconnect] is true.
+  // Automatically fired after auto reconnect has completed.
+  void _resubscribe(MqttResubscribe resubscribeEvent) {
+    if (resubscribeOnAutoReconnect) {
+      MqttLogger.log(
+          'MttSubscriptionManager::_resubscribe - resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}');
+      for (final subscription in subscriptions.values) {
+        _createNewSubscription(
+            subscription.topic.rawTopic, subscription.maximumQos);
+      }
+      subscriptions.clear();
+    } else {
+      MqttLogger.log('MttSubscriptionManager::_resubscribe - '
+          'NOT resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}, resubscribeOnAutoReconnect is false');
+    }
   }
 }
