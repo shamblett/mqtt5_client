@@ -88,10 +88,14 @@ Future<int> main() async {
   /// we however will never send malformed messages.
   try {
     await client.connect();
-  } on Exception catch (e) {
+  } on MqttNoConnectionException catch (e) {
+    // Raised by the client when connection fails.
     print('EXAMPLE::client exception - $e');
     client.disconnect();
-    exit(-1);
+  } on SocketException catch (e) {
+    // Raised by the socket layer
+    print('EXAMPLE::socket exception - $e');
+    client.disconnect();
   }
 
   /// Check we are connected. connectionStatus always gives us this and other information.
