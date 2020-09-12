@@ -76,6 +76,7 @@ class MqttCancellableAsyncSleep {
   /// Start the timer
   Future<void> sleep() {
     if (!_running) {
+      _completer = Completer<void>();
       _timer = Timer(Duration(milliseconds: _timeout), _timerCallback);
       _running = true;
     }
@@ -85,7 +86,6 @@ class MqttCancellableAsyncSleep {
   /// Cancel the timer
   void cancel() {
     if (_running) {
-      _completer = Completer<void>();
       _timer.cancel();
       _running = false;
       _completer.complete();
