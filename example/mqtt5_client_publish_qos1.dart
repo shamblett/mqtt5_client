@@ -20,7 +20,7 @@ const hostName = 'test.mosquitto.org';
 
 Future<int> main() async {
   final client = MqttServerClient(hostName, '');
-  client.logging(on: true);
+  client.logging(on: false);
   client.keepAlivePeriod = 20;
   client.onDisconnected = onDisconnected;
   client.onSubscribed = onSubscribed;
@@ -77,6 +77,10 @@ Future<int> main() async {
           'EXAMPLE::Published notification:: Non subscribed topic publication received');
     }
   });
+
+  print(
+      'EXAMPLE:: Sleeping to allow the subscription acknowledges to be received....');
+  await MqttUtilities.asyncSleep(10);
 
   final builder1 = MqttPayloadBuilder();
   builder1.addString('Hello from mqtt_client topic 1');
