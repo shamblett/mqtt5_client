@@ -14,9 +14,9 @@ import 'package:test/test.dart';
 Future<int> main() async {
   test('Should maintain subscriptions after autoReconnect', () async {
     final client = MqttServerClient.withPort(
-        'test.mosquitto.org', 'client-id-123456789', 1883);
+        'localhost', 'client-id-123456789', 1883);
     client.autoReconnect = true;
-    client.logging(on: false);
+    client.logging(on: true);
     const topic = 'xd/+';
 
     // Subscribe callback, we do the auto reconnect when we know we have subscribed
@@ -30,7 +30,7 @@ Future<int> main() async {
             (MqttPayloadBuilder()..addUTF8String('xd')).payload);
         return;
       }
-      if (topic == subTopic) {
+      if (topic == subTopic.topic.rawTopic) {
         print(
             'ISSUE: Received subscribe callback for our topic - auto reconnecting');
         client.doAutoReconnect(force: true);
@@ -60,7 +60,7 @@ Future<int> main() async {
         MqttPublishMessage message = e.payload;
         yield utf8.decode(message.payload.message);
       }
-    }).timeout(Duration(seconds: 7));
+    }).timeout(Duration(seconds: 25));
 
     expect(await stream.first, equals('xd'));
     print('ISSUE: Test complete');

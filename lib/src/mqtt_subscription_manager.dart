@@ -184,7 +184,7 @@ class MqttSubscriptionManager {
       _connectionHandler.sendMessage(msg);
       return sub;
     } on Exception catch (e) {
-      MqttLogger.log('MqttSubscriptionManager::createNewSubscription '
+      MqttLogger.log('MqttSubscriptionManager::_createNewSubscription '
           'exception raised, text is $e');
       return null;
     }

@@ -136,7 +136,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     if (reconnectEvent.wasConnected) {
       MqttLogger.log(
           'MqttConnectionHandlerBase::autoReconnect - was connected, sending disconnect');
-      sendMessage(MqttDisconnectMessage());
+      sendMessage(MqttDisconnectMessage()
+          .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
       connectionStatus.state = MqttConnectionState.disconnecting;
     }
     connection.disconnect(auto: true);
