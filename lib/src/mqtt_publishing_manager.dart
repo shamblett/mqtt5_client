@@ -150,6 +150,7 @@ class MqttPublishingManager {
   /// Handles the receipt of publish messages from a message broker.
   bool handlePublish(MqttMessage msg) {
     final MqttPublishMessage pubMsg = msg;
+    MqttLogger.log('MqttPublishingManager::handlePublish - entered');
     var publishSuccess = true;
     try {
       final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
@@ -187,7 +188,7 @@ class MqttPublishingManager {
     return publishSuccess;
   }
 
-  /// Handles the publish complete, for messages that are undergoing Qos ExactlyOnce processing.
+  /// Handles the publish release, for messages that are undergoing Qos ExactlyOnce processing.
   bool handlePublishRelease(MqttMessage msg) {
     MqttLogger.log('MqttPublishingManager::handlePublishRelease - entered');
     final MqttPublishReleaseMessage pubRelMsg = msg;
@@ -252,6 +253,8 @@ class MqttPublishingManager {
 
   /// On publish complete add the message to the published stream if needed
   void _notifyPublish(MqttPublishMessage message) {
+    MqttLogger.log(
+        'MqttPublishingManager::_notifyPublish - entered message ${message.header.qos.toString()}');
     if (_published.hasListener && message != null) {
       MqttLogger.log(
           'MqttPublishingManager::_notifyPublish - adding message ${message.header.qos.toString()}');

@@ -14,7 +14,7 @@ import 'package:test/test.dart';
 Future<int> main() async {
   test('Should maintain subscriptions after autoReconnect', () async {
     final client = MqttServerClient.withPort(
-        'localhost', 'client-id-123456789', 1883);
+        'test.mosquitto.org', 'client-id-123456789', 1883);
     client.autoReconnect = true;
     client.logging(on: true);
     const topic = 'xd/+';

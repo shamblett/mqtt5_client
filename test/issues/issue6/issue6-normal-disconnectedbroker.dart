@@ -32,7 +32,7 @@ Future<int> main() async {
             (MqttPayloadBuilder()..addUTF8String('xd')).payload);
         return;
       }
-      if (topic == subTopic) {
+      if (topic == subTopic.topic.rawTopic) {
         print(
             'ISSUE: Received subscribe callback for our topic - disconnect the broker');
         print(

@@ -28,7 +28,7 @@ Future<int> main() async {
           'mqtt-client::NoConnectionException: The maximum allowed connection attempts '
           '({3}) were exceeded. '
           'The broker is not responding to the connection request message '
-          'correctly The return code is MqttConnectReturnCode.notAuthorized');
+          'correctly The reason code is notAuthorized');
       exceptionOK = true;
     }
     expect(exceptionOK, isTrue);

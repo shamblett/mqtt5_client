@@ -51,11 +51,10 @@ Future<int> main() async {
 
     /// Security context
     final currDir =
-        '${path.current}${path.separator}test${path.separator}issues${path.separator}issue209${path.separator}';
+        '${path.current}${path.separator}test${path.separator}issues${path.separator}issue6${path.separator}';
     final context = SecurityContext.defaultContext;
-    final certPath = currDir + path.join('pem', 'mosquitto.org.crt');
-    context.setTrustedCertificates(certPath);
-    client.securityContext = context;
+    context.setTrustedCertificates(
+        currDir + path.join('pem', 'mosquitto.org.crt'));
     await client.connect();
     client.subscribe(topic, MqttQos.exactlyOnce);
 

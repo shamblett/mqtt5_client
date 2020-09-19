@@ -57,7 +57,8 @@ class MqttBrowserConnection extends MqttConnectionBase {
 
   /// OnData listener callback
   void _onData(dynamic byteData) {
-    MqttLogger.log('MqttBrowserConnection::_onData');
+    MqttLogger.log(
+        'MqttBrowserConnection::_onData - Message Received Started <<< ');
     // Protect against 0 bytes but should never happen.
     var data = Uint8List.view(byteData);
     if (data.isEmpty) {
@@ -109,6 +110,8 @@ class MqttBrowserConnection extends MqttConnectionBase {
         }
       }
     }
+    MqttLogger.log(
+        'MqttBrowserConnection::_onData - Message Received Ended <<< ');
   }
 
   /// Sends the message in the stream to the broker.

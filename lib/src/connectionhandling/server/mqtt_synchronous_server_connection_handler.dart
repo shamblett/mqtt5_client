@@ -136,7 +136,7 @@ class MqttSynchronousServerConnectionHandler
           throw MqttNoConnectionException(
               'The maximum allowed connection attempts '
               '({$maxConnectionAttempts}) were exceeded. '
-              'The broker is not responding to the connection request message correctly'
+              'The broker is not responding to the connection request message correctly '
               'The reason code is ${mqttConnectReasonCode.asString(connectionStatus.reasonCode)}');
         }
       }

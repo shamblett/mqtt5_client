@@ -193,12 +193,10 @@ class MqttSubscriptionManager {
   /// Publish message received
   void publishMessageReceived(MqttMessageReceived event) {
     final topic = event.topic;
-    if (getSubscriptionTopicStatus(topic.rawTopic) ==
-        MqttSubscriptionStatus.active) {
-      final msg =
-          MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
-      subscriptionNotifier.notifyChange(msg);
-    }
+    MqttLogger.log('MqttSubscriptionManager::publishMessageReceived '
+        'topic is $topic');
+    final msg = MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
+    subscriptionNotifier.notifyChange(msg);
   }
 
   /// Unsubscribe from a string topic.

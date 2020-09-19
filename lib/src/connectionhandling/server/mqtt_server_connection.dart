@@ -44,7 +44,8 @@ class MqttServerConnection extends MqttConnectionBase {
 
   /// OnData listener callback
   void _onData(dynamic data) {
-    MqttLogger.log('MqttServerConnection::_onData');
+    MqttLogger.log(
+        'MqttServerConnection::_onData - Message Received Started <<< ');
     // Protect against 0 bytes but should never happen.
     if (data.isEmpty) {
       MqttLogger.log('MqttServerConnection::_ondata - Error - 0 byte message');
@@ -94,6 +95,8 @@ class MqttServerConnection extends MqttConnectionBase {
         }
       }
     }
+    MqttLogger.log(
+        'MqttServerConnection::_onData - Message Received Ended <<< ');
   }
 
   /// Sends the message in the stream to the broker.

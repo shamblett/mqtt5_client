@@ -12,7 +12,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 
 /// An annotated simple subscribe/publish usage example for mqtt5_server_client. Please read in with reference
 /// to the MQTT 5 specification. The example is runnable against any suitable MQTT5 broker such as Mosquitto
-/// or Hive, a local Mosquitto broker is used in this example, please edit the hostname as required.
+/// or Hive, please edit the hostname as required.
 
 /// First create a client, the client is constructed with a broker name, client identifier
 /// and port if needed. The client identifier (short ClientId) is an identifier of each MQTT
@@ -25,7 +25,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 /// shows how to set up and use secure sockets on the server.
 
 /// Edit as needed.
-const hostName = 'localhost';
+const hostName = 'test.mosquitto.org';
 
 final client = MqttServerClient(hostName, '');
 const pubTopic = 'Dart/Mqtt5_client/testtopic';
