@@ -109,6 +109,7 @@ Future<int> main() async {
     /// The payload is a byte buffer, this will be specific to the topic
     print(
         'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+
     /// Indicate the notification is correct
     if (c[0].topic == pubTopic) {
       topicNotified = true;
