@@ -13,9 +13,12 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 
 /// An annotated usage example for a secure mqtt5_server_client. Please read in conjunction
 /// with the mqtt5_server_client.dart for a fuller explanation of the client configuration.
-/// This example is runnable and uses the Mosquitto broker.
+/// This example is runnable and uses a Mosquitto broker.
 
 final client = MqttServerClient('test.mosquitto.org', '');
+const pubTopic = 'Dart/Mqtt5_client/testtopic';
+bool topicNotified = false;
+final builder = MqttPayloadBuilder();
 
 Future<int> main() async {
   /// Set logging on if needed, defaults to off
@@ -106,7 +109,11 @@ Future<int> main() async {
     /// The payload is a byte buffer, this will be specific to the topic
     print(
         'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-    print('');
+
+    /// Indicate the notification is correct
+    if (c[0].topic == pubTopic) {
+      topicNotified = true;
+    }
   });
 
   /// If needed you can listen for published messages that have completed the publishing
@@ -117,14 +124,7 @@ Future<int> main() async {
         'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
   });
 
-  /// Lets publish to our topic
-  /// Use the payload builder rather than a raw buffer
-  /// Our known topic to publish to
-  const pubTopic = 'Dart/Mqtt_client/testtopic';
-  final builder = MqttPayloadBuilder();
-  builder.addString('Hello from mqtt_client');
-
-  /// Subscribe to it
+  ///  Subscribe to our topic, we will publish to it in the onSubscribed callback.
   print('EXAMPLE::Subscribing to the Dart/Mqtt_client/testtopic topic');
   client.subscribe(pubTopic, MqttQos.exactlyOnce);
 
@@ -152,6 +152,14 @@ Future<int> main() async {
 void onSubscribed(MqttSubscription subscription) {
   print(
       'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
+
+  /// Publish to our topic if it has been subscribed
+  if (subscription.topic.rawTopic == pubTopic) {
+    /// Use the payload builder rather than a raw buffer
+    builder.addString('Hello from mqtt5_client');
+    print('EXAMPLE::Publishing our topic now we are subscribed');
+    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
+  }
 }
 
 /// The unsolicited disconnect callback
@@ -159,7 +167,13 @@ void onDisconnected() {
   print('EXAMPLE::OnDisconnected client callback - Client disconnection');
   if (client.connectionStatus.disconnectionOrigin ==
       MqttDisconnectionOrigin.solicited) {
-    print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
+    if (topicNotified) {
+      print(
+          'EXAMPLE::OnDisconnected callback is solicited, topic has been notified - this is correct');
+    } else {
+      print(
+          'EXAMPLE::OnDisconnected callback is solicited, topic has NOT been notified - this is an ERROR');
+    }
   }
   exit(-1);
 }

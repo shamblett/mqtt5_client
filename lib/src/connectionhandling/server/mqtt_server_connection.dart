@@ -10,10 +10,10 @@ part of mqtt5_server_client;
 /// The MQTT client server connection base class
 class MqttServerConnection extends MqttConnectionBase {
   /// Default constructor
-  MqttServerConnection(var clientEventBus) : super(clientEventBus);
+  MqttServerConnection(clientEventBus) : super(clientEventBus);
 
   /// Initializes a new instance of the MqttConnection class.
-  MqttServerConnection.fromConnect(String server, int port, var clientEventBus)
+  MqttServerConnection.fromConnect(server, int port, clientEventBus)
       : super(clientEventBus) {
     connect(server, port);
   }
@@ -21,6 +21,13 @@ class MqttServerConnection extends MqttConnectionBase {
   /// Connect, must be overridden in connection classes
   @override
   Future<void> connect(String server, int port) {
+    final completer = Completer<void>();
+    return completer.future;
+  }
+
+  /// Connect for auto reconnect , must be overridden in connection classes
+  @override
+  Future<void> connectAuto(String server, int port) {
     final completer = Completer<void>();
     return completer.future;
   }
@@ -37,7 +44,8 @@ class MqttServerConnection extends MqttConnectionBase {
 
   /// OnData listener callback
   void _onData(dynamic data) {
-    MqttLogger.log('MqttServerConnection::_onData');
+    MqttLogger.log(
+        'MqttServerConnection::_onData - Message Received Started <<< ');
     // Protect against 0 bytes but should never happen.
     if (data.isEmpty) {
       MqttLogger.log('MqttServerConnection::_ondata - Error - 0 byte message');
@@ -74,14 +82,21 @@ class MqttServerConnection extends MqttConnectionBase {
         // If we have received a valid message we must clear the stream.
         messageStream.clear();
         if (!clientEventBus.streamController.isClosed) {
-          clientEventBus.fire(MqttMessageAvailable(msg));
-          MqttLogger.log('MqttServerConnection::_onData - message processed');
+          if (msg.header.messageType == MqttMessageType.connectAck) {
+            clientEventBus.fire(MqttConnectAckMessageAvailable(msg));
+          } else {
+            clientEventBus.fire(MqttMessageAvailable(msg));
+          }
+          MqttLogger.log(
+              'MqttServerConnection::_onData - message available event fired');
         } else {
           MqttLogger.log(
-              'MqttServerConnection::_onData - message not processed, disconnecting');
+              'MqttServerConnection::_onData - WARN - message available event not fired, event bus is closed');
         }
       }
     }
+    MqttLogger.log(
+        'MqttServerConnection::_onData - Message Received Ended <<< ');
   }
 
   /// Sends the message in the stream to the broker.

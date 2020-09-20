@@ -1,3 +1,10 @@
+# 2.0.0
+Issues 6<br>
+Note that auto reconnect will now automatically re subscribe
+any active confirmed subscriptions by default, if you do not want this
+behaviour see the documentation for the new resubscribeOnAutoReconnect
+setting.
+
 # 1.2.0
 Issue 4 and 5
 

@@ -19,10 +19,11 @@ class MqttServerNormalConnection extends MqttServerConnection {
     connect(server, port);
   }
 
-  /// Connect - overridden
+  /// Connect
   @override
   Future<MqttConnectionStatus> connect(String server, int port) {
     final completer = Completer<MqttConnectionStatus>();
+    MqttLogger.log('MqttNormalConnection::connect- entered');
     try {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {
@@ -38,6 +39,31 @@ class MqttServerNormalConnection extends MqttServerConnection {
     } on Exception catch (e) {
       completer.completeError(e);
       final message = 'MqttNormalConnection::The connection to the message '
+          'broker {$server}:{$port} could not be made.';
+      throw MqttNoConnectionException(message);
+    }
+    return completer.future;
+  }
+
+  /// Connect Auto
+  @override
+  Future<MqttConnectionStatus> connectAuto(String server, int port) {
+    final completer = Completer<MqttConnectionStatus>();
+    MqttLogger.log('MqttNormalConnection::connectAuto - entered');
+    try {
+      // Connect and save the socket.
+      Socket.connect(server, port).then((dynamic socket) {
+        client = socket;
+        _startListening();
+        completer.complete();
+      }).catchError((dynamic e) {
+        onError(e);
+        completer.completeError(e);
+      });
+    } on Exception catch (e) {
+      completer.completeError(e);
+      final message =
+          'MqttNormalConnection::ConnectAuto - The connection to the message '
           'broker {$server}:{$port} could not be made.';
       throw MqttNoConnectionException(message);
     }

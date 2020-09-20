@@ -97,6 +97,8 @@ class MqttPublishingManager {
   int publish(MqttPublicationTopic topic, MqttQos qualityOfService,
       typed.Uint8Buffer data,
       {bool retain = false, List<MqttUserProperty> userProperties}) {
+    MqttLogger.log(
+        'MqttPublishingManager::publish - entered with topic ${topic.rawTopic}');
     final msgId = messageIdentifierDispenser.nextMessageIdentifier;
     final msg = MqttPublishMessage()
         .toTopic(topic.toString())
@@ -119,6 +121,7 @@ class MqttPublishingManager {
   /// Note that if a message identifier is supplied in the message it will be
   /// overridden by this method.
   int publishUserMessage(MqttPublishMessage message) {
+    MqttLogger.log('MqttPublishingManager::publishUserMessage - entered');
     final msgId = messageIdentifierDispenser.nextMessageIdentifier;
     // QOS level 1 or 2 messages need to be saved so we can do the ack processes.
     message.withMessageIdentifier(msgId);
@@ -133,6 +136,8 @@ class MqttPublishingManager {
   /// Handles the receipt of publish acknowledgement messages.
   bool handlePublishAcknowledgement(MqttMessage msg) {
     final MqttPublishAckMessage ackMsg = msg;
+    MqttLogger.log(
+        'MqttPublishingManager::handlePublishAcknowledgement - entered');
     // If we're expecting an ack for the message, remove it from the list of pubs awaiting ack.
     final messageIdentifier = ackMsg.variableHeader.messageIdentifier;
     if (publishedMessages.keys.contains(messageIdentifier)) {
@@ -145,6 +150,7 @@ class MqttPublishingManager {
   /// Handles the receipt of publish messages from a message broker.
   bool handlePublish(MqttMessage msg) {
     final MqttPublishMessage pubMsg = msg;
+    MqttLogger.log('MqttPublishingManager::handlePublish - entered');
     var publishSuccess = true;
     try {
       final topic = MqttPublicationTopic(pubMsg.variableHeader.topicName);
@@ -182,8 +188,9 @@ class MqttPublishingManager {
     return publishSuccess;
   }
 
-  /// Handles the publish complete, for messages that are undergoing Qos ExactlyOnce processing.
+  /// Handles the publish release, for messages that are undergoing Qos ExactlyOnce processing.
   bool handlePublishRelease(MqttMessage msg) {
+    MqttLogger.log('MqttPublishingManager::handlePublishRelease - entered');
     final MqttPublishReleaseMessage pubRelMsg = msg;
     var publishSuccess = true;
     try {
@@ -214,6 +221,7 @@ class MqttPublishingManager {
   /// Handles a publish complete message received from a broker.
   /// Returns true if the message flow completed successfully, otherwise false.
   bool handlePublishComplete(MqttMessage msg) {
+    MqttLogger.log('MqttPublishingManager::handlePublishComplete - entered');
     final MqttPublishCompleteMessage compMsg = msg;
     final publishMessage =
         publishedMessages.remove(compMsg.variableHeader.messageIdentifier);
@@ -224,6 +232,7 @@ class MqttPublishingManager {
   /// Handles publish received messages during processing of QOS level 2 (Exactly once) messages.
   /// Returns true or false, depending on the success of message processing.
   bool handlePublishReceived(MqttMessage msg) {
+    MqttLogger.log('MqttPublishingManager::handlePublishReceived - entered');
     final MqttPublishReceivedMessage recvMsg = msg;
     // If we've got a matching message, respond with a "ok release it for processing"
     var relMsg;
@@ -244,7 +253,11 @@ class MqttPublishingManager {
 
   /// On publish complete add the message to the published stream if needed
   void _notifyPublish(MqttPublishMessage message) {
+    MqttLogger.log(
+        'MqttPublishingManager::_notifyPublish - entered message ${message.header.qos.toString()}');
     if (_published.hasListener && message != null) {
+      MqttLogger.log(
+          'MqttPublishingManager::_notifyPublish - adding message ${message.header.qos.toString()}');
       _published.add(message);
     }
   }

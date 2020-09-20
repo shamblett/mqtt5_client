@@ -19,9 +19,6 @@ class MockCH extends Mock implements MqttServerConnectionHandler {}
 
 class MockCON extends Mock implements MqttServerNormalConnection {}
 
-// Test classes
-final TestConnectionHandlerSend testCHS = TestConnectionHandlerSend();
-
 void main() {
   group('Subscription Class', () {
     test('Default Construction', () {
@@ -83,8 +80,8 @@ void main() {
   group('Subscription Manager - Common', () {
     group('Construction', () {
       test('Default Construction', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         expect(subs.subscriptions, isEmpty);
         expect(subs.pendingSubscriptions, isEmpty);
@@ -99,8 +96,8 @@ void main() {
 
     group('Null parameters', () {
       test('Null Parameters - Subscribe', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         var exceptionCalled = true;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         try {
@@ -123,8 +120,8 @@ void main() {
         }
       });
       test('Null Parameters - Unsubscribe', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         var exceptionCalled = true;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         try {
@@ -152,8 +149,8 @@ void main() {
   group('Subscription Manager - Subscribe', () {
     group('Subscribe Functionality - Pending', () {
       test('Topic Subscription request creates pending subscription', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -181,8 +178,8 @@ void main() {
         expect(subs.pendingSubscriptions[1], isNotNull);
       });
       test('Subscription request creates pending subscription', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -221,8 +218,8 @@ void main() {
         expect(subs.pendingSubscriptions[1], isNotNull);
       });
       test('Subscription List request creates pending subscriptions', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         final subscription1 = MqttSubscription(MqttSubscriptionTopic('topic1'),
             MqttSubscriptionOption()..maximumQos = MqttQos.atLeastOnce);
         final user1 = MqttUserProperty();
@@ -294,8 +291,8 @@ void main() {
           cbCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -358,8 +355,8 @@ void main() {
           cbCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -433,8 +430,8 @@ void main() {
           cbFailCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -511,8 +508,8 @@ void main() {
           cbFailCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic1 = 'testtopic1';
         const qos1 = MqttQos.atLeastOnce;
         const topic2 = 'testtopic2';
@@ -589,8 +586,8 @@ void main() {
   group('Subscription Manager - Unsubscribe', () {
     group('Unsubscribe Functionality - Pending', () {
       test('Topic unsubscription request creates pending unsubscription', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -640,8 +637,8 @@ void main() {
         expect(subs.pendingUnsubscriptions[2].first.topic.rawTopic, topic);
       });
       test('Unsubscription request creates pending unsubscription', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         final subscription = MqttSubscription(MqttSubscriptionTopic(topic));
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -700,8 +697,8 @@ void main() {
         expect(subs.pendingUnsubscriptions[2].first.topic.rawTopic, topic);
       });
       test('Unsubscription list request creates pending unsubscription', () {
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic1 = 'testtopic1';
         const topic2 = 'testtopic2';
         const topic3 = 'testtopic3';
@@ -785,8 +782,8 @@ void main() {
           cbCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -874,8 +871,8 @@ void main() {
           cbCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -963,8 +960,8 @@ void main() {
           cbCalled = true;
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -1056,8 +1053,8 @@ void main() {
           }
         }
 
-        testCHS.sentMessages.clear();
         final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus);
         const topic1 = 'testtopic1';
         const topic2 = 'testtopic2';
         const topic3 = 'testtopic3';
@@ -1169,8 +1166,8 @@ void main() {
 
       // Wrap the callback
       final dynamic t1 = expectAsync1(subRec, count: 1);
-      testCHS.sentMessages.clear();
       final clientEventBus = events.EventBus();
+      final testCHS = TestConnectionHandlerSend(clientEventBus);
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
       subs.messageIdentifierDispenser.reset();

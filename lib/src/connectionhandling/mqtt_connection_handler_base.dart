@@ -11,7 +11,8 @@ part of mqtt5_client;
 ///  to serverand browser connection handler implementations.
 abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
-  MqttConnectionHandlerBase({@required this.maxConnectionAttempts});
+  MqttConnectionHandlerBase(this.clientEventBus,
+      {@required this.maxConnectionAttempts});
 
   /// Successful connection callback.
   @override
@@ -24,6 +25,10 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Auto reconnect callback
   @override
   AutoReconnectCallback onAutoReconnect;
+
+  /// Auto reconnected callback
+  @override
+  AutoReconnectCompleteCallback onAutoReconnected;
 
   /// Auto reconnect in progress
   @override
@@ -79,6 +84,10 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   List<MessageCallbackFunction> sentMessageCallbacks =
       <MessageCallbackFunction>[];
 
+  /// We have had an initial connection
+  @protected
+  bool initialConnectionComplete = false;
+
   /// Connection status
   @override
   MqttConnectionStatus connectionStatus = MqttConnectionStatus();
@@ -90,6 +99,9 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     // Save the parameters for auto reconnect.
     this.server = server;
     this.port = port;
+    MqttLogger.log(
+        'MqttConnectionHandlerBase::connect - server $server, port $port');
+    // ignore: unnecessary_this
     // ignore: unnecessary_this
     this.connectionMessage = message;
     try {
@@ -109,35 +121,52 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Auto reconnect
   @protected
   void autoReconnect(MqttAutoReconnect reconnectEvent) async {
-    // If already in progress exit
-    if (autoReconnectInProgress) {
+    MqttLogger.log('MqttConnectionHandlerBase::autoReconnect entered');
+    // If already in progress exit and we were not connected return
+    if (autoReconnectInProgress && !reconnectEvent.wasConnected) {
       return;
     }
-
+    autoReconnectInProgress = true;
     // If the auto reconnect callback is set call it
     if (onAutoReconnect != null) {
       onAutoReconnect();
     }
-    // Disconnect and call internal connect indefinitely
-    connection.disconnect(auto: true);
-    connectionStatus = MqttConnectionStatus();
-    autoReconnectInProgress = true;
-    connection.onDisconnected = null;
-    while (connectionStatus.state != MqttConnectionState.connected) {
+
+    // If we are connected disconnect from the broker.
+    if (reconnectEvent.wasConnected) {
       MqttLogger.log(
-          'MqttConnectionHandlerBase::autoReconnect - attempting reconnection');
-      await internalConnect(server, port, connectionMessage);
+          'MqttConnectionHandlerBase::autoReconnect - was connected, sending disconnect');
+      sendMessage(MqttDisconnectMessage()
+          .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
+      connectionStatus.state = MqttConnectionState.disconnecting;
     }
-    autoReconnectInProgress = false;
+    connection.disconnect(auto: true);
+    connection.onDisconnected = null;
     MqttLogger.log(
-        'MqttConnectionHandler::autoReconnect - auto reconnect complete');
+        'MqttConnectionHandlerBase::autoReconnect - attempting reconnection');
+    connectionStatus = await connect(server, port, connectionMessage);
+    autoReconnectInProgress = false;
+    if (connectionStatus.state == MqttConnectionState.connected) {
+      // Fire the re subscribe event.
+      clientEventBus.fire(MqttResubscribe(fromAutoReconnect: true));
+      MqttLogger.log(
+          'MqttConnectionHandlerBase::autoReconnect - auto reconnect complete');
+      // If the auto reconnect callback is set call it
+      if (onAutoReconnected != null) {
+        onAutoReconnected();
+      }
+    } else {
+      MqttLogger.log(
+          'MqttConnectionHandlerBase::autoReconnect - auto reconnect failed - re trying');
+      clientEventBus.fire(MqttAutoReconnect());
+    }
   }
 
   /// Sends a message to the broker through the current connection.
   @override
   void sendMessage(MqttMessage message) {
     MqttLogger.log(
-        'MqttConnectionHandlerBase::sendMessage - SENDING MESSAGE -> $message');
+        'MqttConnectionHandlerBase::sendMessage - sending message started >>> -> $message');
     // Check for validity
     if (!message.isValid) {
       throw ArgumentError(
@@ -157,6 +186,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     } else {
       MqttLogger.log('MqttConnectionHandler::sendMessage - not connected');
     }
+    MqttLogger.log(
+        'MqttConnectionHandlerBase::sendMessage - sending message ended >>>');
   }
 
   /// Closes the connection to the Mqtt message broker.
@@ -192,19 +223,26 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     sentMessageCallbacks.remove(sentMsgCallback);
   }
 
-  /// Handles the Message Available event.
+  /// Handles the Message Available event of the connection control for
+  /// handling non connection messages.
   @protected
   void messageAvailable(MqttMessageAvailable event) {
-    final callback = messageProcessorRegistry[event.message.header.messageType];
+    final messageType = event.message.header.messageType;
+    MqttLogger.log(
+        'MqttConnectionHandlerBase::messageAvailable - message type is $messageType');
+    final callback = messageProcessorRegistry[messageType];
     if (callback != null) {
       callback(event.message);
+    } else {
+      MqttLogger.log(
+          'MqttConnectionHandlerBase::messageAvailable - WARN - no registered callback for this message type');
     }
   }
 
   /// Disconnects
   @override
   MqttConnectionState disconnect() {
-    MqttLogger.log('SynchronousMqttServerConnectionHandler::disconnect');
+    MqttLogger.log('MqttConnectionHandlerBase::disconnect');
     if (connectionStatus.state == MqttConnectionState.connected) {
       // Send a disconnect message to the broker
       sendMessage(MqttDisconnectMessage()
@@ -218,29 +256,28 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Disconnects the underlying connection object.
   @protected
   void _performConnectionDisconnect() {
+    MqttLogger.log(
+        'MqttConnectionHandlerBase::_performConnectionDisconnect entered');
     connectionStatus.state = MqttConnectionState.disconnected;
   }
 
   /// Processes the connect acknowledgement message.
   @protected
   bool connectAckProcessor(MqttMessage msg) {
-    MqttLogger.log(
-        'SynchronousMqttServerConnectionHandler::_connectAckProcessor');
+    MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor');
     try {
       final MqttConnectAckMessage ackMsg = msg;
       // Drop the connection if our connect request has been rejected.
       if (MqttReasonCodeUtilities.isError(
           mqttConnectReasonCode.asInt(ackMsg.variableHeader.reasonCode))) {
-        MqttLogger.log(
-            'SynchronousMqttServerConnectionHandler::_connectAckProcessor '
+        MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
             'connection rejected, reason code is ${mqttConnectReasonCode.asString(ackMsg.variableHeader.reasonCode)}');
         connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
         connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.
-        MqttLogger.log(
-            'SynchronousMqttServerConnectionHandler::_connectAckProcessor '
+        MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
             '- state = connected');
         connectionStatus.state = MqttConnectionState.connected;
         connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
@@ -255,9 +292,22 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
       _performConnectionDisconnect();
     }
     // Cancel the connect timer;
-    MqttLogger.log(
-        'SynchronousMqttServerConnectionHandler:: cancelling connect timer');
+    MqttLogger.log('MqttConnectionHandlerBase:: cancelling connect timer');
     connectTimer.cancel();
     return true;
+  }
+
+  /// Connect acknowledge recieved
+  void connectAckReceived(MqttConnectAckMessageAvailable event) {
+    connectAckProcessor(event.message);
+  }
+
+  /// Initialise the event listeners;
+  void initialiseListeners() {
+    clientEventBus.on<MqttAutoReconnect>().listen(autoReconnect);
+    clientEventBus.on<MqttMessageAvailable>().listen(messageAvailable);
+    clientEventBus
+        .on<MqttConnectAckMessageAvailable>()
+        .listen(connectAckReceived);
   }
 }

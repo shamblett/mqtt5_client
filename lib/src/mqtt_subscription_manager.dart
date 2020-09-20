@@ -23,6 +23,7 @@ class MqttSubscriptionManager {
         MqttMessageType.unsubscribeAck, confirmUnsubscribe);
     // Start listening for published messages
     _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
+    _clientEventBus.on<MqttResubscribe>().listen(_resubscribe);
   }
 
   final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
@@ -63,6 +64,9 @@ class MqttSubscriptionManager {
 
   /// Subscription failed callback
   SubscribeFailCallback onSubscribeFail;
+
+  /// Re subscribe on auto reconnect.
+  bool resubscribeOnAutoReconnect = true;
 
   /// The event bus
   final _clientEventBus;
@@ -180,7 +184,7 @@ class MqttSubscriptionManager {
       _connectionHandler.sendMessage(msg);
       return sub;
     } on Exception catch (e) {
-      MqttLogger.log('MqttSubscriptionManager::createNewSubscription '
+      MqttLogger.log('MqttSubscriptionManager::_createNewSubscription '
           'exception raised, text is $e');
       return null;
     }
@@ -189,12 +193,10 @@ class MqttSubscriptionManager {
   /// Publish message received
   void publishMessageReceived(MqttMessageReceived event) {
     final topic = event.topic;
-    if (getSubscriptionTopicStatus(topic.rawTopic) ==
-        MqttSubscriptionStatus.active) {
-      final msg =
-          MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
-      subscriptionNotifier.notifyChange(msg);
-    }
+    MqttLogger.log('MqttSubscriptionManager::publishMessageReceived '
+        'topic is $topic');
+    final msg = MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
+    subscriptionNotifier.notifyChange(msg);
   }
 
   /// Unsubscribe from a string topic.
@@ -245,6 +247,17 @@ class MqttSubscriptionManager {
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         subscriptions;
+  }
+
+  /// Re subscribe.
+  /// Unsubscribes all confirmed subscriptions and re subscribes them
+  /// without sending unsubscribe messages to the broker.
+  void resubscribe() {
+    for (final subscription in subscriptions.values) {
+      _createNewSubscription(
+          subscription.topic.rawTopic, subscription.maximumQos);
+    }
+    subscriptions.clear();
   }
 
   /// Confirms a subscription has been made with the broker.
@@ -355,5 +368,24 @@ class MqttSubscriptionManager {
       }
     }
     return status;
+  }
+
+  // Re subscribe.
+  // Takes all active completed subscriptions and re subscribes them if
+  // [resubscribeOnAutoReconnect] is true.
+  // Automatically fired after auto reconnect has completed.
+  void _resubscribe(MqttResubscribe resubscribeEvent) {
+    if (resubscribeOnAutoReconnect) {
+      MqttLogger.log(
+          'MttSubscriptionManager::_resubscribe - resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}');
+      for (final subscription in subscriptions.values) {
+        _createNewSubscription(
+            subscription.topic.rawTopic, subscription.maximumQos);
+      }
+      subscriptions.clear();
+    } else {
+      MqttLogger.log('MttSubscriptionManager::_resubscribe - '
+          'NOT resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}, resubscribeOnAutoReconnect is false');
+    }
   }
 }

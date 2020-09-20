@@ -38,10 +38,22 @@ Future<int> main() async {
   /// Set auto reconnect
   client.autoReconnect = true;
 
-  /// Add the unsolicited auto reconnect callback
+  /// If you do not want active confirmed subscriptions to be automatically re subscribed
+  /// by the auto connect sequence do the following, otherwise leave this defaulted.
+  client.resubscribeOnAutoReconnect = false;
+
+  /// Add an auto reconnect callback.
+  /// This is the 'pre' auto re connect callback, called before the sequence starts.
   client.onAutoReconnect = onAutoReconnect;
 
-  /// Add the successful connection callback
+  /// Add an auto reconnect callback.
+  /// This is the 'post' auto re connect callback, called after the sequence
+  /// has completed. Note that re subscriptions may be occurring when this callback
+  /// is invoked. See [resubscribeOnAutoReconnect] above.
+  client.onAutoReconnected = onAutoReconnected;
+
+  /// Add the successful connection callback if you need one.
+  /// This will be called after [onAutoReconnect] but before [onAutoReconnected]
   client.onConnected = onConnected;
 
   /// Add a subscribed callback, there is also an unsubscribed callback if you need it.
@@ -151,10 +163,16 @@ void onSubscribed(MqttSubscription subscription) {
       'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
 }
 
-/// The unsolicited disconnect callback
+// The pre auto re connect callback
 void onAutoReconnect() {
   print(
       'EXAMPLE::onAutoReconnect client callback - Client auto reconnection sequence will start');
+}
+
+/// The post auto re connect callback
+void onAutoReconnected() {
+  print(
+      'EXAMPLE::onAutoReconnected client callback - Client auto reconnection sequence has completed');
 }
 
 /// The successful connect callback
