@@ -99,7 +99,7 @@ Future<int> main() async {
   /// The client has a change notifier object(see the Observable class) which we then listen to to get
   /// notifications of published updates to each subscribed topic.
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-    final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
+    final recMess = c[0].payload as MqttPublishMessage;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
 
     /// The above may seem a little convoluted for users only interested in the

@@ -41,9 +41,8 @@ class MqttServerWsConnection extends MqttServerConnection {
           'an incorrect scheme - $server';
       throw MqttNoConnectionException(message);
     }
-    if (port != null) {
-      uri = uri.replace(port: port);
-    }
+    uri = uri.replace(port: port);
+
     final uriString = uri.toString();
     MqttLogger.log(
         'MqttWsConnection:: WS URL is $uriString, protocols are $protocols');
@@ -90,9 +89,8 @@ class MqttServerWsConnection extends MqttServerConnection {
           'an incorrect scheme - $server';
       throw MqttNoConnectionException(message);
     }
-    if (port != null) {
-      uri = uri.replace(port: port);
-    }
+    uri = uri.replace(port: port);
+
     final uriString = uri.toString();
     MqttLogger.log(
         'MqttWsConnection::connectAuto - WS URL is $uriString, protocols are $protocols');

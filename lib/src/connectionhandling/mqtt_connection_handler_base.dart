@@ -266,7 +266,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   bool connectAckProcessor(MqttMessage msg) {
     MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor');
     try {
-      final MqttConnectAckMessage ackMsg = msg as MqttConnectAckMessage;
+      final ackMsg = msg as MqttConnectAckMessage;
       // Drop the connection if our connect request has been rejected.
       if (MqttReasonCodeUtilities.isError(
           mqttConnectReasonCode.asInt(ackMsg.variableHeader!.reasonCode)!)) {

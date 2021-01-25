@@ -40,7 +40,8 @@ class MqttSubscribeMessage extends MqttMessage {
     if (!isValid) {
       return;
     }
-    header!.writeTo(variableHeader!.getWriteLength() + payload!.getWriteLength(),
+    header!.writeTo(
+        variableHeader!.getWriteLength() + payload!.getWriteLength(),
         messageStream);
     variableHeader!.writeTo(messageStream);
     payload!.writeTo(messageStream);

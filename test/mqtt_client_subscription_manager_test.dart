@@ -167,7 +167,7 @@ void main() {
         expect(testCHS.sentMessages.length, 1);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         expect(msg.payload!.subscriptions.length, 1);
         expect(msg.payload!.subscriptions[0].topic.rawTopic, topic);
@@ -202,7 +202,7 @@ void main() {
         expect(testCHS.sentMessages.length, 1);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         expect(msg.variableHeader!.userProperty, isNotNull);
         expect(msg.variableHeader!.userProperty.length, 1);
@@ -255,7 +255,7 @@ void main() {
         expect(testCHS.sentMessages.length, 1);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         expect(msg.payload!.subscriptions.length, 3);
         expect(msg.payload!.subscriptions[0].topic.rawTopic, 'topic1');
@@ -266,8 +266,8 @@ void main() {
         expect(msg.variableHeader!.userProperty[0].pairName, 'User 1 Name');
         expect(msg.variableHeader!.userProperty[0].pairValue, 'User 1 Value');
         expect(msg.payload!.subscriptions[1].topic.rawTopic, 'topic2');
-        expect(
-            msg.payload!.subscriptions[1].option.maximumQos, MqttQos.atMostOnce);
+        expect(msg.payload!.subscriptions[1].option.maximumQos,
+            MqttQos.atMostOnce);
         expect(msg.payload!.subscriptions[2].topic.rawTopic, 'topic3');
         expect(msg.payload!.subscriptions[2].option.maximumQos,
             MqttQos.exactlyOnce);
@@ -306,7 +306,7 @@ void main() {
             MqttSubscriptionStatus.pending);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         // Confirm the subscription
         final buffer = typed.Uint8Buffer();
@@ -338,7 +338,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         final ret = subs.confirmSubscription(subAckMsg);
         expect(ret, isTrue);
         expect(cbCalled, isTrue);
@@ -370,7 +370,7 @@ void main() {
             MqttSubscriptionStatus.pending);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         // Confirm the subscription
         final buffer = typed.Uint8Buffer();
@@ -402,7 +402,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         final ret = subs.confirmSubscription(subAckMsg);
         expect(ret, isFalse);
         expect(cbCalled, isFalse);
@@ -443,7 +443,7 @@ void main() {
             MqttSubscriptionStatus.pending);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         // Confirm the subscription
         final buffer = typed.Uint8Buffer();
@@ -475,7 +475,7 @@ void main() {
         buffer.add(0x87); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         final ret = subs.confirmSubscription(subAckMsg);
         expect(ret, isFalse);
         expect(cbCalled, isFalse);
@@ -536,7 +536,7 @@ void main() {
             MqttSubscriptionStatus.pending);
         expect(
             testCHS.sentMessages[0], const TypeMatcher<MqttSubscribeMessage>());
-        final MqttSubscribeMessage msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
         expect(msg.variableHeader!.messageIdentifier, 1);
         // Confirm the subscription
         final buffer = typed.Uint8Buffer();
@@ -570,7 +570,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         final ret = subs.confirmSubscription(subAckMsg);
         expect(ret, isFalse);
         expect(cbCalled, 2);
@@ -623,7 +623,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         subs.unsubscribeTopic(topic);
@@ -632,7 +632,7 @@ void main() {
         expect(testCHS.sentMessages.length, 2);
         expect(testCHS.sentMessages[1],
             const TypeMatcher<MqttUnsubscribeMessage>());
-        final MqttUnsubscribeMessage msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
+        final msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
         expect(msg.variableHeader.messageIdentifier, 2);
         expect(subs.pendingUnsubscriptions[2]!.first.topic.rawTopic, topic);
       });
@@ -674,7 +674,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         final user1 = MqttUserProperty();
@@ -687,7 +687,7 @@ void main() {
         expect(testCHS.sentMessages.length, 2);
         expect(testCHS.sentMessages[1],
             const TypeMatcher<MqttUnsubscribeMessage>());
-        final MqttUnsubscribeMessage msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
+        final msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
         expect(msg.variableHeader.messageIdentifier, 2);
         expect(msg.variableHeader.userProperty.length, 1);
         expect(msg.variableHeader.userProperty.first.pairName, 'User 1 Name');
@@ -741,7 +741,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         final user1 = MqttUserProperty();
@@ -755,7 +755,7 @@ void main() {
         expect(testCHS.sentMessages.length, 2);
         expect(testCHS.sentMessages[1],
             const TypeMatcher<MqttUnsubscribeMessage>());
-        final MqttUnsubscribeMessage msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
+        final msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
         expect(msg.variableHeader.messageIdentifier, 2);
         expect(msg.variableHeader.userProperty.length, 1);
         expect(msg.variableHeader.userProperty.first.pairName, 'User 1 Name');
@@ -820,7 +820,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         subs.unsubscribeTopic(topic);
@@ -854,7 +854,7 @@ void main() {
         ubuffer.add(0x00); // Payload
         final ustream = MqttByteBuffer(ubuffer);
         final ubaseMessage = MqttMessage.createFrom(ustream)!;
-        final MqttUnsubscribeAckMessage ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
         final uret = subs.confirmUnsubscribe(ubm);
         expect(uret, isTrue);
         expect(cbCalled, isTrue);
@@ -909,7 +909,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         subs.unsubscribeTopic(topic);
@@ -943,7 +943,7 @@ void main() {
         ubuffer.add(0x00); // Payload
         final ustream = MqttByteBuffer(ubuffer);
         final ubaseMessage = MqttMessage.createFrom(ustream)!;
-        final MqttUnsubscribeAckMessage ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
         final uret = subs.confirmUnsubscribe(ubm);
         expect(uret, isFalse);
         expect(cbCalled, isFalse);
@@ -998,7 +998,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         subs.unsubscribeTopic(topic);
@@ -1032,7 +1032,7 @@ void main() {
         ubuffer.add(0x87); // Payload
         final ustream = MqttByteBuffer(ubuffer);
         final ubaseMessage = MqttMessage.createFrom(ustream)!;
-        final MqttUnsubscribeAckMessage ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
         final uret = subs.confirmUnsubscribe(ubm);
         expect(uret, isFalse);
         expect(cbCalled, isFalse);
@@ -1098,7 +1098,7 @@ void main() {
         buffer.add(0x00); // Payload
         final stream = MqttByteBuffer(buffer);
         final baseMessage = MqttMessage.createFrom(stream)!;
-        final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
         subs.confirmSubscription(subAckMsg);
         // Unsubscribe
         final user1 = MqttUserProperty();
@@ -1140,7 +1140,7 @@ void main() {
         ubuffer.add(0x00); // Payload
         final ustream = MqttByteBuffer(ubuffer);
         final ubaseMessage = MqttMessage.createFrom(ustream)!;
-        final MqttUnsubscribeAckMessage ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
         final uret = subs.confirmUnsubscribe(ubm);
         expect(uret, isFalse);
         expect(cbCalled, 2);
@@ -1202,7 +1202,7 @@ void main() {
       buffer.add(0x00); // Payload
       final stream = MqttByteBuffer(buffer);
       final baseMessage = MqttMessage.createFrom(stream)!;
-      final MqttSubscribeAckMessage subAckMsg = baseMessage as MqttSubscribeAckMessage;
+      final subAckMsg = baseMessage as MqttSubscribeAckMessage;
       subs.confirmSubscription(subAckMsg);
       // Start listening
       subs.subscriptionNotifier.changes.listen(t1);

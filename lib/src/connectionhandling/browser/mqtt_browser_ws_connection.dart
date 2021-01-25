@@ -42,9 +42,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
           'an incorrect scheme - $server';
       throw MqttNoConnectionException(message);
     }
-    if (port != null) {
-      uri = uri.replace(port: port);
-    }
+    uri = uri.replace(port: port);
+
     final uriString = uri.toString();
     MqttLogger.log('MqttBrowserWsConnection::connect -  WS URL is $uriString');
     try {
@@ -106,9 +105,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
           'an incorrect scheme - $server';
       throw MqttNoConnectionException(message);
     }
-    if (port != null) {
-      uri = uri.replace(port: port);
-    }
+
+    uri = uri.replace(port: port);
     final uriString = uri.toString();
     MqttLogger.log(
         'MqttBrowserWsConnection::connectAuto -  WS URL is $uriString');

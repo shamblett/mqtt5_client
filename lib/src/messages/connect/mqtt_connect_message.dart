@@ -189,7 +189,8 @@ class MqttConnectMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header!.writeTo(_variableHeader!.getWriteLength() + payload.getWriteLength(),
+    header!.writeTo(
+        _variableHeader!.getWriteLength() + payload.getWriteLength(),
         messageStream);
     _variableHeader!.writeTo(messageStream);
     payload.writeTo(messageStream);

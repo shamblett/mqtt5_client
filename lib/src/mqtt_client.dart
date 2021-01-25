@@ -115,7 +115,8 @@ class MqttClient {
 
   /// Handles everything to do with authentication messages.
   @protected
-  MqttAuthenticationManager? authenticationManager = MqttAuthenticationManager();
+  MqttAuthenticationManager? authenticationManager =
+      MqttAuthenticationManager();
 
   /// Authenticate message stream. A received authenticate message is
   /// added to this stream.
@@ -220,7 +221,7 @@ class MqttClient {
 
   /// The stream on which all subscribed topic updates are published to
   Stream<List<MqttReceivedMessage<MqttMessage>>>? get updates =>
-      subscriptionsManager?.subscriptionNotifier?.changes;
+      subscriptionsManager?.subscriptionNotifier.changes;
 
   /// Comon client connection method.
   Future<MqttConnectionStatus?> connect(
@@ -420,8 +421,8 @@ class MqttClient {
   /// indicator set.
   Future<MqttAuthenticateMessage> reauthenticate(MqttAuthenticateMessage msg,
       {int waitTimeInSeconds = 30}) {
-    return authenticationManager!.reauthenticate(msg,
-        waitTimeInSeconds: waitTimeInSeconds);
+    return authenticationManager!
+        .reauthenticate(msg, waitTimeInSeconds: waitTimeInSeconds);
   }
 
   /// Send an authenticate message to the broker.
@@ -466,9 +467,9 @@ class MqttClient {
       connectionHandler?.disconnect();
       disconnectOrigin = MqttDisconnectionOrigin.solicited;
     }
-    publishingManager?.published?.close();
+    publishingManager?.published.close();
     publishingManager = null;
-    authenticationManager?.authenticated?.close();
+    authenticationManager?.authenticated.close();
     authenticationManager = null;
     subscriptionsManager = null;
     keepAlive?.stop();

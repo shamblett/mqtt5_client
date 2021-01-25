@@ -18,7 +18,7 @@ class _DetachedSocket extends Stream<Uint8List> implements Socket {
   @override
   StreamSubscription<Uint8List> listen(void Function(Uint8List event)? onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
-    _subscription
+    _subscription!
       ..onData(onData)
       ..onError(onError)
       ..onDone(onDone);
@@ -131,9 +131,7 @@ class MqttServerWs2Connection extends MqttServerConnection {
           'incorrect scheme - $server';
       throw MqttNoConnectionException(message);
     }
-    if (port != null) {
-      uri = uri.replace(port: port);
-    }
+    uri = uri.replace(port: port);
     final uriString = uri.toString();
     MqttLogger.log(
         'MqttServerWs2Connection:: WS URL is $uriString, protocols are $protocols');
@@ -144,7 +142,8 @@ class MqttServerWs2Connection extends MqttServerConnection {
         MqttLogger.log('MqttServerWs2Connection::connect - securing socket');
         _performWSHandshake(socket, uri).then((bool b) {
           client = WebSocket.fromUpgradedSocket(
-              _DetachedSocket(socket, _subscription as StreamSubscription<Uint8List>?),
+              _DetachedSocket(
+                  socket, _subscription as StreamSubscription<Uint8List>?),
               serverSide: false);
           readWrapper = MqttReadWrapper();
           messageStream = MqttByteBuffer(typed.Uint8Buffer());
@@ -197,9 +196,8 @@ class MqttServerWs2Connection extends MqttServerConnection {
           'incorrect scheme - $server';
       throw MqttNoConnectionException(message);
     }
-    if (port != null) {
-      uri = uri.replace(port: port);
-    }
+    uri = uri.replace(port: port);
+
     final uriString = uri.toString();
     MqttLogger.log(
         'MqttServerWs2Connection::connectAuto - WS URL is $uriString, protocols are $protocols');
@@ -211,7 +209,8 @@ class MqttServerWs2Connection extends MqttServerConnection {
             'MqttServerWs2Connection::connectAuto - securing socket');
         _performWSHandshake(socket, uri).then((bool b) {
           client = WebSocket.fromUpgradedSocket(
-              _DetachedSocket(socket, _subscription as StreamSubscription<Uint8List>?),
+              _DetachedSocket(
+                  socket, _subscription as StreamSubscription<Uint8List>?),
               serverSide: false);
           MqttLogger.log(
               'MqttServerWs2Connection::connectAuto - start listening');

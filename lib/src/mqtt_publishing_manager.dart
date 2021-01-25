@@ -135,7 +135,7 @@ class MqttPublishingManager {
 
   /// Handles the receipt of publish acknowledgement messages.
   bool handlePublishAcknowledgement(MqttMessage msg) {
-    final MqttPublishAckMessage ackMsg = msg as MqttPublishAckMessage;
+    final ackMsg = msg as MqttPublishAckMessage;
     MqttLogger.log(
         'MqttPublishingManager::handlePublishAcknowledgement - entered');
     // If we're expecting an ack for the message, remove it from the list of pubs awaiting ack.
@@ -149,7 +149,7 @@ class MqttPublishingManager {
 
   /// Handles the receipt of publish messages from a message broker.
   bool handlePublish(MqttMessage msg) {
-    final MqttPublishMessage pubMsg = msg as MqttPublishMessage;
+    final pubMsg = msg as MqttPublishMessage;
     MqttLogger.log('MqttPublishingManager::handlePublish - entered');
     var publishSuccess = true;
     try {
@@ -191,7 +191,7 @@ class MqttPublishingManager {
   /// Handles the publish release, for messages that are undergoing Qos ExactlyOnce processing.
   bool handlePublishRelease(MqttMessage msg) {
     MqttLogger.log('MqttPublishingManager::handlePublishRelease - entered');
-    final MqttPublishReleaseMessage pubRelMsg = msg as MqttPublishReleaseMessage;
+    final pubRelMsg = msg as MqttPublishReleaseMessage;
     var publishSuccess = true;
     try {
       final pubMsg =
@@ -222,7 +222,7 @@ class MqttPublishingManager {
   /// Returns true if the message flow completed successfully, otherwise false.
   bool handlePublishComplete(MqttMessage msg) {
     MqttLogger.log('MqttPublishingManager::handlePublishComplete - entered');
-    final MqttPublishCompleteMessage compMsg = msg as MqttPublishCompleteMessage;
+    final compMsg = msg as MqttPublishCompleteMessage;
     final publishMessage =
         publishedMessages.remove(compMsg.variableHeader.messageIdentifier)!;
     _notifyPublish(publishMessage);
@@ -233,7 +233,7 @@ class MqttPublishingManager {
   /// Returns true or false, depending on the success of message processing.
   bool handlePublishReceived(MqttMessage msg) {
     MqttLogger.log('MqttPublishingManager::handlePublishReceived - entered');
-    final MqttPublishReceivedMessage recvMsg = msg as MqttPublishReceivedMessage;
+    final recvMsg = msg as MqttPublishReceivedMessage;
     // If we've got a matching message, respond with a "ok release it for processing"
     var relMsg;
     if (publishedMessages
@@ -255,7 +255,7 @@ class MqttPublishingManager {
   void _notifyPublish(MqttPublishMessage message) {
     MqttLogger.log(
         'MqttPublishingManager::_notifyPublish - entered message ${message.header!.qos.toString()}');
-    if (_published.hasListener && message != null) {
+    if (_published.hasListener) {
       MqttLogger.log(
           'MqttPublishingManager::_notifyPublish - adding message ${message.header!.qos.toString()}');
       _published.add(message);

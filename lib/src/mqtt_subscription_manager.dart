@@ -265,7 +265,7 @@ class MqttSubscriptionManager {
   /// Returns true on successful subscription confirm, false on fail.
   /// Note if any subscriptions fail a fail will be returned.
   bool confirmSubscription(MqttMessage msg) {
-    final MqttSubscribeAckMessage subAck = msg as MqttSubscribeAckMessage;
+    final subAck = msg as MqttSubscribeAckMessage;
     final reasonCodes = subAck.reasonCodes;
     var ok = true;
     var reasonCodeIndex = 0;
@@ -306,7 +306,7 @@ class MqttSubscriptionManager {
   /// Returns true on successful unsubscription confirm, false on fail.
   /// The active subscription is not removed if the unsubscription for the topic fails.
   bool confirmUnsubscribe(MqttMessage msg) {
-    final MqttUnsubscribeAckMessage unSubAck = msg as MqttUnsubscribeAckMessage;
+    final unSubAck = msg as MqttUnsubscribeAckMessage;
     final reasonCodes = unSubAck.reasonCodes;
     var ok = true;
     var reasonCodeIndex = 0;
