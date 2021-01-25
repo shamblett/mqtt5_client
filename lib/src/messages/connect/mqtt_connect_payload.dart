@@ -20,7 +20,7 @@ class MqttConnectPayload implements MqttIPayload {
   MqttConnectPayload(this.variableHeader);
 
   /// Variable header, needed for payload encoding
-  MqttConnectVariableHeader variableHeader = MqttConnectVariableHeader();
+  MqttConnectVariableHeader? variableHeader = MqttConnectVariableHeader();
 
   /// Will Properties.
   ///
@@ -57,7 +57,7 @@ class MqttConnectPayload implements MqttIPayload {
   ///
   /// If the Will Flag is set [MqttConnectFlags.willFlag], the Will Topic is the
   /// encoded in the Payload.
-  String willTopic;
+  String? willTopic;
 
   /// Will payload.
   ///
@@ -67,18 +67,18 @@ class MqttConnectPayload implements MqttIPayload {
   /// it is set.
   typed.Uint8Buffer willPayload = typed.Uint8Buffer();
 
-  String _username;
+  String? _username;
 
   /// User name
-  String get username => _username;
+  String? get username => _username;
 
-  set username(String name) => _username = name != null ? name.trim() : name;
-  String _password;
+  set username(String? name) => _username = name != null ? name.trim() : name;
+  String? _password;
 
   /// Password
-  String get password => _password;
+  String? get password => _password;
 
-  set password(String pwd) => _password = pwd != null ? pwd.trim() : pwd;
+  set password(String? pwd) => _password = pwd != null ? pwd.trim() : pwd;
 
   /// Creates a payload from the specified header stream.
   @override
@@ -89,15 +89,15 @@ class MqttConnectPayload implements MqttIPayload {
 
   void _serialize(MqttByteBuffer payloadStream) {
     payloadStream.writeMqttStringM(clientIdentifier);
-    if (variableHeader.connectFlags.willFlag) {
+    if (variableHeader!.connectFlags.willFlag) {
       willProperties.writeTo(payloadStream);
       payloadStream.writeMqttStringM(willTopic);
       payloadStream.write(willPayload);
     }
-    if (variableHeader.connectFlags.usernameFlag) {
+    if (variableHeader!.connectFlags.usernameFlag) {
       payloadStream.writeMqttStringM(username);
     }
-    if (variableHeader.connectFlags.passwordFlag) {
+    if (variableHeader!.connectFlags.passwordFlag) {
       payloadStream.writeMqttStringM(password);
     }
   }

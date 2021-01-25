@@ -14,7 +14,7 @@ class MqttPublishReleaseMessage extends MqttMessage {
   MqttPublishReleaseMessage() {
     header = MqttHeader().asType(MqttMessageType.publishRelease);
     // Qos of at least once has to be specified for this message
-    header.qos = MqttQos.atLeastOnce;
+    header!.qos = MqttQos.atLeastOnce;
     variableHeader = MqttPublishReleaseVariableHeader(header);
   }
 
@@ -29,12 +29,12 @@ class MqttPublishReleaseMessage extends MqttMessage {
 
   /// Gets or sets the variable header contents. Contains extended
   /// metadata about the message.
-  MqttPublishReleaseVariableHeader variableHeader;
+  late MqttPublishReleaseVariableHeader variableHeader;
 
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength(), messageStream);
+    header!.writeTo(variableHeader.getWriteLength(), messageStream);
     variableHeader.writeTo(messageStream);
   }
 
@@ -54,10 +54,10 @@ class MqttPublishReleaseMessage extends MqttMessage {
   int get messageIdentifier => variableHeader.messageIdentifier;
 
   /// Publish reason code
-  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+  MqttPublishReasonCode? get reasonCode => variableHeader.reasonCode;
 
   /// Reason String.
-  String get reasonString => variableHeader.reasonString;
+  String? get reasonString => variableHeader.reasonString;
 
   /// User Property.
   List<MqttUserProperty> get userProperty => variableHeader.userProperty;

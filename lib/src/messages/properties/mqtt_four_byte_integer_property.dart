@@ -22,20 +22,20 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
 
   /// Identifier
   @override
-  MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
+  MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
   @override
-  int value = 0;
+  int? value = 0;
 
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.writeByte((value >> 24) & 0xff);
-    stream.writeByte((value >> 16) & 0xff);
-    stream.writeByte((value >> 8) & 0xff);
-    stream.writeByte(value & 0xff);
+    stream.writeByte((value! >> 24) & 0xff);
+    stream.writeByte((value! >> 16) & 0xff);
+    stream.writeByte((value! >> 8) & 0xff);
+    stream.writeByte(value! & 0xff);
   }
 
   /// Deserialize from a byte buffer stream

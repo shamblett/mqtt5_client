@@ -14,7 +14,7 @@ class MqttSynchronousServerConnectionHandler
   /// Initializes a new instance of the SynchronousMqttConnectionHandler class.
   MqttSynchronousServerConnectionHandler(
     clientEventBus, {
-    @required int maxConnectionAttempts,
+    required int maxConnectionAttempts,
   }) : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts) {
     this.clientEventBus = clientEventBus;
     connectTimer = MqttCancellableAsyncSleep(5000);
@@ -24,12 +24,12 @@ class MqttSynchronousServerConnectionHandler
   /// Synchronously connect to the specific Mqtt Connection.
   @override
   Future<MqttConnectionStatus> internalConnect(
-      String hostname, int port, MqttConnectMessage connectMessage) async {
+      String? hostname, int? port, MqttConnectMessage? connectMessage) async {
     var connectionAttempts = 0;
     MqttLogger.log(
         'MqttSynchronousServerConnectionHandler::internalConnect entered');
-    authenticationRequested = connectMessage.authenticationRequested;
-    if (authenticationRequested) {
+    authenticationRequested = connectMessage!.authenticationRequested;
+    if (authenticationRequested!) {
       MqttLogger.log(
           'MqttSynchronousServerConnectionHandler::internalConnect - authentication requested');
     }
@@ -40,7 +40,7 @@ class MqttSynchronousServerConnectionHandler
           'initiating connection try $connectionAttempts, auto reconnect in progress $autoReconnectInProgress');
       connectionStatus.state = MqttConnectionState.connecting;
       // Don't reallocate the connection if this is an auto reconnect
-      if (!autoReconnectInProgress) {
+      if (!autoReconnectInProgress!) {
         if (useWebSocket) {
           if (useAlternateWebSocketImplementation) {
             MqttLogger.log(
@@ -74,7 +74,7 @@ class MqttSynchronousServerConnectionHandler
 
       // Connect
       try {
-        if (!autoReconnectInProgress) {
+        if (!autoReconnectInProgress!) {
           MqttLogger.log(
               'MqttSynchronousServerConnectionHandler::internalConnect - calling connect');
           await connection.connect(hostname, port);
@@ -85,7 +85,7 @@ class MqttSynchronousServerConnectionHandler
         }
       } on Exception {
         // Ignore exceptions in an auto reconnect sequence
-        if (autoReconnectInProgress) {
+        if (autoReconnectInProgress!) {
           MqttLogger.log(
               'MqttSynchronousServerConnectionHandler::internalConnect'
               ' exception thrown during auto reconnect - ignoring');
@@ -108,7 +108,7 @@ class MqttSynchronousServerConnectionHandler
       await connectTimer.sleep();
       // If we are authenticating we must keep waiting for the connect
       // acknowledgement to indicate the end of the authentication sequence.
-      if (authenticationRequested) {
+      if (authenticationRequested!) {
         do {
           MqttLogger.log(
               'MqttSynchronousServerConnectionHandler::internalConnect - awaiting end of authentication sequence');
@@ -120,10 +120,10 @@ class MqttSynchronousServerConnectionHandler
           'MqttSynchronousServerConnectionHandler::internalConnect - '
           'post sleep, state = $connectionStatus');
     } while (connectionStatus.state != MqttConnectionState.connected &&
-        ++connectionAttempts < maxConnectionAttempts);
+        ++connectionAttempts < maxConnectionAttempts!);
     // If we've failed to handshake with the broker, throw an exception.
     if (connectionStatus.state != MqttConnectionState.connected) {
-      if (!autoReconnectInProgress) {
+      if (!autoReconnectInProgress!) {
         MqttLogger.log(
             'MqttSynchronousServerConnectionHandler::internalConnect failed');
         if (connectionStatus.reasonCode == MqttConnectReasonCode.notSet) {

@@ -27,66 +27,66 @@ class MqttConnectAckMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  MqttConnectAckVariableHeader _variableHeader;
+  MqttConnectAckVariableHeader? _variableHeader;
 
   /// The variable header contents.
-  MqttConnectAckVariableHeader get variableHeader => _variableHeader;
+  MqttConnectAckVariableHeader? get variableHeader => _variableHeader;
 
   /// Session Expiry Interval.
-  int get sessionExpiryInterval => _variableHeader.sessionExpiryInterval;
+  int? get sessionExpiryInterval => _variableHeader!.sessionExpiryInterval;
 
   /// Receive Maximum.
-  int get receiveMaximum => _variableHeader.receiveMaximum;
+  int? get receiveMaximum => _variableHeader!.receiveMaximum;
 
   /// Maximum QoS.
-  int get maximumQos => _variableHeader.maximumQos;
+  int? get maximumQos => _variableHeader!.maximumQos;
 
   /// Retain Available.
-  bool get retainAvailable => _variableHeader.retainAvailable;
+  bool get retainAvailable => _variableHeader!.retainAvailable;
 
   /// Maximum Packet Size
-  int get maximumPacketSize => _variableHeader.maximumPacketSize;
+  int? get maximumPacketSize => _variableHeader!.maximumPacketSize;
 
   /// Assigned client Identifier.
-  String get assignedClientIdentifier =>
-      _variableHeader.assignedClientIdentifier;
+  String? get assignedClientIdentifier =>
+      _variableHeader!.assignedClientIdentifier;
 
   /// Topic Alias Maximum.
-  int get topicAliasMaximum => _variableHeader.topicAliasMaximum;
+  int? get topicAliasMaximum => _variableHeader!.topicAliasMaximum;
 
   /// Reason String.
-  String get reasonString => _variableHeader.reasonString;
+  String? get reasonString => _variableHeader!.reasonString;
 
   /// User Property
-  List<MqttUserProperty> get userProperty => _variableHeader.userProperty;
+  List<MqttUserProperty>? get userProperty => _variableHeader!.userProperty;
 
   /// Wildcard Subscription Available.
   bool get wildcardSubscriptionsAvailable =>
-      _variableHeader.wildcardSubscriptionsAvailable;
+      _variableHeader!.wildcardSubscriptionsAvailable;
 
   /// Subscription Identifiers Available.
   bool get subscriptionIdentifiersAvailable =>
-      _variableHeader.subscriptionIdentifiersAvailable;
+      _variableHeader!.subscriptionIdentifiersAvailable;
 
   /// Shared Subscription Available.
   bool get sharedSubscriptionAvailable =>
-      _variableHeader.sharedSubscriptionAvailable;
+      _variableHeader!.sharedSubscriptionAvailable;
 
   /// Server Keep Alive.
-  int get serverKeepAlive => _variableHeader.serverKeepAlive;
+  int? get serverKeepAlive => _variableHeader!.serverKeepAlive;
 
   /// Response Information
-  String get responseInformation => _variableHeader.responseInformation;
+  String? get responseInformation => _variableHeader!.responseInformation;
 
   /// Server Reference.
-  String get serverReference => _variableHeader.serverReference;
+  String? get serverReference => _variableHeader!.serverReference;
 
   /// Authentication Method.
-  String get authenticationMethod => _variableHeader.authenticationMethod;
+  String? get authenticationMethod => _variableHeader!.authenticationMethod;
 
   /// Authentication Data.
-  typed.Uint8Buffer get authenticationData =>
-      _variableHeader.authenticationData;
+  typed.Uint8Buffer? get authenticationData =>
+      _variableHeader!.authenticationData;
 
   /// Reads a message from the supplied stream.
   @override

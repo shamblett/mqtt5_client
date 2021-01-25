@@ -14,7 +14,7 @@ class MqttSynchronousBrowserConnectionHandler
   /// Initializes a new instance of the MqttConnectionHandler class.
   MqttSynchronousBrowserConnectionHandler(
     clientEventBus, {
-    @required int maxConnectionAttempts,
+    required int maxConnectionAttempts,
   }) : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts) {
     this.clientEventBus = clientEventBus;
     connectTimer = MqttCancellableAsyncSleep(5000);
@@ -24,7 +24,7 @@ class MqttSynchronousBrowserConnectionHandler
   /// Synchronously connect to the specific Mqtt Connection.
   @override
   Future<MqttConnectionStatus> internalConnect(
-      String hostname, int port, MqttConnectMessage connectMessage) async {
+      String? hostname, int? port, MqttConnectMessage? connectMessage) async {
     var connectionAttempts = 0;
     MqttLogger.log(
         'MqttSynchronousMqttBrowserConnectionHandler::internalConnect entered');
@@ -35,7 +35,7 @@ class MqttSynchronousBrowserConnectionHandler
           'initiating connection try $connectionAttempts, auto reconnect in progress $autoReconnectInProgress');
       connectionStatus.state = MqttConnectionState.connecting;
       // Don't reallocate the connection if this is an auto reconnect
-      if (!autoReconnectInProgress) {
+      if (!autoReconnectInProgress!) {
         connection = MqttBrowserWsConnection(clientEventBus);
         if (websocketProtocols != null) {
           connection.protocols = websocketProtocols;
@@ -44,7 +44,7 @@ class MqttSynchronousBrowserConnectionHandler
       }
       // Connect
       try {
-        if (!autoReconnectInProgress) {
+        if (!autoReconnectInProgress!) {
           MqttLogger.log(
               'MqttSynchronousMqttBrowserConnectionHandler::internalConnect - calling connect');
           await connection.connect(hostname, port);
@@ -55,7 +55,7 @@ class MqttSynchronousBrowserConnectionHandler
         }
       } on Exception {
         // Ignore exceptions in an auto reconnect sequence
-        if (autoReconnectInProgress) {
+        if (autoReconnectInProgress!) {
           MqttLogger.log(
               'MqttSynchronousMqttBrowserConnectionHandler::internalConnect'
               ' exception thrown during auto reconnect - ignoring');
@@ -70,7 +70,7 @@ class MqttSynchronousBrowserConnectionHandler
       MqttLogger.log(
           'MqttSynchronousMqttBrowserConnectionHandler::internalConnect '
           'sending connect message');
-      sendMessage(connectMessage);
+      sendMessage(connectMessage!);
       MqttLogger.log(
           'MqttSynchronousMqttBrowserConnectionHandler::internalConnect - '
           'pre sleep, state = $connectionStatus');
@@ -81,10 +81,10 @@ class MqttSynchronousBrowserConnectionHandler
           'MqttSynchronousMqttBrowserConnectionHandler::internalConnect - '
           'post sleep, state = $connectionStatus');
     } while (connectionStatus.state != MqttConnectionState.connected &&
-        ++connectionAttempts < maxConnectionAttempts);
+        ++connectionAttempts < maxConnectionAttempts!);
     // If we've failed to handshake with the broker, throw an exception.
     if (connectionStatus.state != MqttConnectionState.connected) {
-      if (!autoReconnectInProgress) {
+      if (!autoReconnectInProgress!) {
         MqttLogger.log(
             'MqttSynchronousMqttBrowserConnectionHandler::internalConnect failed');
         if (connectionStatus.reasonCode == MqttConnectReasonCode.notSet) {

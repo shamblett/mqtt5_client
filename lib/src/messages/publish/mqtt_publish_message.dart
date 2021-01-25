@@ -28,13 +28,13 @@ class MqttPublishMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  MqttPublishVariableHeader _variableHeader;
+  MqttPublishVariableHeader? _variableHeader;
 
   /// The variable header contents. Contains extended metadata about the message.
-  MqttPublishVariableHeader get variableHeader => _variableHeader;
+  MqttPublishVariableHeader? get variableHeader => _variableHeader;
 
   /// Gets or sets the payload of the Mqtt Message.
-  MqttPublishPayload payload;
+  late MqttPublishPayload payload;
 
   /// Reads a message from the supplied stream.
   @override
@@ -50,70 +50,70 @@ class MqttPublishMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    final variableHeaderLength = variableHeader.getWriteLength();
+    final variableHeaderLength = variableHeader!.getWriteLength();
     final payloadLength = payload.getWriteLength();
-    header.writeTo(variableHeaderLength + payloadLength, messageStream);
-    variableHeader.writeTo(messageStream);
+    header!.writeTo(variableHeaderLength + payloadLength, messageStream);
+    variableHeader!.writeTo(messageStream);
     payload.writeTo(messageStream);
   }
 
   /// Sets the topic to publish data to.
   MqttPublishMessage toTopic(String topicName) {
-    variableHeader.topicName = topicName;
+    variableHeader!.topicName = topicName;
     return this;
   }
 
   /// Sets the message identifier of the message.
   MqttPublishMessage withMessageIdentifier(int messageIdentifier) {
-    variableHeader.messageIdentifier = messageIdentifier;
+    variableHeader!.messageIdentifier = messageIdentifier;
     return this;
   }
 
   ///  Sets the Qos of the published message.
   MqttPublishMessage withQos(MqttQos qos) {
-    header.withQos(qos);
+    header!.withQos(qos);
     return this;
   }
 
   /// Payload Format Indicator
   MqttPublishMessage withPayloadFormatIndicator(bool indicator) {
-    _variableHeader.payloadFormatIndicator = indicator;
+    _variableHeader!.payloadFormatIndicator = indicator;
     return this;
   }
 
   /// Message Expiry Interval
   MqttPublishMessage withMessageExpiryInterval(int interval) {
-    _variableHeader.messageExpiryInterval = interval;
+    _variableHeader!.messageExpiryInterval = interval;
     return this;
   }
 
   /// Topic Alias
   MqttPublishMessage withTopicAlias(int alias) {
-    _variableHeader.topicAlias = alias;
+    _variableHeader!.topicAlias = alias;
     return this;
   }
 
   /// Response Topic
   MqttPublishMessage withResponseTopic(String topic) {
-    _variableHeader.responseTopic = topic;
+    _variableHeader!.responseTopic = topic;
     return this;
   }
 
   /// Correlation Data
   MqttPublishMessage withResponseCorrelationdata(typed.Uint8Buffer data) {
-    _variableHeader.correlationData = data;
+    _variableHeader!.correlationData = data;
     return this;
   }
 
   /// Sets a list of user properties
-  MqttPublishMessage withUserProperties(List<MqttUserProperty> properties) {
-    _variableHeader.userProperty = properties;
+  MqttPublishMessage withUserProperties(List<MqttUserProperty>? properties) {
+    _variableHeader!.userProperty = properties;
     return this;
   }
 
   /// Add a specific user property
   void addUserProperty(MqttUserProperty property) {
-    _variableHeader.userProperty = [property];
+    _variableHeader!.userProperty = [property];
   }
 
   /// Add a user property from the supplied name/value pair
@@ -126,32 +126,32 @@ class MqttPublishMessage extends MqttMessage {
 
   /// Subscription Identifier
   MqttPublishMessage withSubscriptionIdentifier(int identifier) {
-    _variableHeader.subscriptionIdentifier = identifier;
+    _variableHeader!.subscriptionIdentifier = identifier;
     return this;
   }
 
   /// Content Type
   MqttPublishMessage withContentType(String type) {
-    _variableHeader.contentType = type;
+    _variableHeader!.contentType = type;
     return this;
   }
 
   /// Removes the current published data, i.e. clears the payload
   MqttPublishMessage clearPublishData() {
-    payload.message.clear();
+    payload.message!.clear();
     return this;
   }
 
   /// Appends data to publish to the end of the current message payload.
   MqttPublishMessage publishData(typed.Uint8Buffer data) {
-    payload.message.addAll(data);
+    payload.message!.addAll(data);
     return this;
   }
 
   /// Set the retain flag on the message
-  void setRetain({bool state}) {
+  void setRetain({bool? state}) {
     if ((state != null) && state) {
-      header.shouldBeRetained();
+      header!.shouldBeRetained();
     }
   }
 

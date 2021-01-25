@@ -40,6 +40,6 @@ const Map<int, MqttAuthenticateReasonCode> _mqttAuthenticateReasonCodeValues =
 };
 
 // MQTT authenticate reason code helper
-MqttEnumHelper<MqttAuthenticateReasonCode> mqttAuthenticateReasonCode =
-    MqttEnumHelper<MqttAuthenticateReasonCode>(
+MqttEnumHelper<MqttAuthenticateReasonCode?> mqttAuthenticateReasonCode =
+    MqttEnumHelper<MqttAuthenticateReasonCode?>(
         _mqttAuthenticateReasonCodeValues);

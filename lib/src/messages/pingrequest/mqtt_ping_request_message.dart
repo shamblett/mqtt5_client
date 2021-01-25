@@ -31,7 +31,7 @@ class MqttPingRequestMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    messageStream.writeByte(header.messageType.index << 4);
+    messageStream.writeByte(header!.messageType!.index << 4);
     messageStream.writeByte(0);
   }
 

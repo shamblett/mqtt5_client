@@ -35,8 +35,8 @@ class MqttUnsubscribeAckVariableHeader implements MqttIVariableHeader {
   /// Reason String.
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
-  String _reasonString;
-  String get reasonString => _reasonString;
+  String? _reasonString;
+  String? get reasonString => _reasonString;
 
   /// User Property.
   ///

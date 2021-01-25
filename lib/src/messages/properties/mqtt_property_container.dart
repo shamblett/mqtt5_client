@@ -11,7 +11,7 @@ part of mqtt5_client;
 class MqttPropertyContainer {
   // The container can only contain one entry of each property type except for
   // user properties where there can be more than one with duplicate names allowed.
-  final _container = <MqttPropertyIdentifier, MqttIProperty>{};
+  final _container = <MqttPropertyIdentifier?, MqttIProperty>{};
 
   final _userProperties = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperties => _userProperties;
@@ -25,7 +25,7 @@ class MqttPropertyContainer {
     if (property.identifier != MqttPropertyIdentifier.userProperty) {
       _container[property.identifier] = property;
     } else {
-      _userProperties.add(property);
+      _userProperties.add(property as MqttUserProperty);
     }
   }
 
@@ -79,7 +79,7 @@ class MqttPropertyContainer {
     }
     final length = stream.length;
     final out = _enc.fromInt(length);
-    return out..addAll(stream.buffer);
+    return out..addAll(stream.buffer!);
   }
 
   /// Length of the serialized properties including the length bytes
@@ -110,9 +110,9 @@ class MqttPropertyContainer {
       if (property.identifier != MqttPropertyIdentifier.userProperty) {
         _container[property.identifier] = property;
       } else {
-        _userProperties.add(property);
+        _userProperties.add(property as MqttUserProperty);
       }
-      length -= property.getWriteLength();
+      length -= property.getWriteLength()!;
     }
   }
 

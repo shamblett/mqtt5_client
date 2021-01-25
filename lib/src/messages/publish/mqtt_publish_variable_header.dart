@@ -20,7 +20,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   }
 
   /// Standard header
-  MqttHeader header;
+  MqttHeader? header;
 
   int _length = 0;
 
@@ -60,9 +60,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   ///
   ///  The lifetime of the Application Message in seconds.
   ///  If absent, the Application Message does not expire.
-  int _messageExpiryInterval = 65535;
-  int get messageExpiryInterval => _messageExpiryInterval;
-  set messageExpiryInterval(int interval) {
+  int? _messageExpiryInterval = 65535;
+  int? get messageExpiryInterval => _messageExpiryInterval;
+  set messageExpiryInterval(int? interval) {
     var property = MqttFourByteIntegerProperty(
         MqttPropertyIdentifier.messageExpiryInterval);
     property.value = interval;
@@ -77,9 +77,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Topic Alias mappings exist only within a network connection and last only for
   /// the lifetime of that network connection.
   /// A Topic Alias of 0 is not permitted.
-  int _topicAlias = 255;
-  int get topicAlias => _topicAlias;
-  set topicAlias(int alias) {
+  int? _topicAlias = 255;
+  int? get topicAlias => _topicAlias;
+  set topicAlias(int? alias) {
     if (alias == 0) {
       throw ArgumentError(
           'MqttPublishVariableHeader::topicAlias - 0 is not a valid value');
@@ -95,9 +95,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   ///
   /// The Topic Name for a response message.
   /// The Response Topic MUST NOT contain wildcard characters.
-  String _responseTopic = '';
-  String get responseTopic => _responseTopic;
-  set responseTopic(String topic) {
+  String? _responseTopic = '';
+  String? get responseTopic => _responseTopic;
+  set responseTopic(String? topic) {
     // Validate the response topic
     try {
       MqttPublicationTopic(topic);
@@ -116,9 +116,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   ///  The Correlation Data is used by the sender of the Request Message
   ///  to identify which request the Response Message is for when it is
   ///  received.
-  typed.Uint8Buffer _correlationData;
-  typed.Uint8Buffer get correlationData => _correlationData;
-  set correlationData(typed.Uint8Buffer data) {
+  typed.Uint8Buffer? _correlationData;
+  typed.Uint8Buffer? get correlationData => _correlationData;
+  set correlationData(typed.Uint8Buffer? data) {
     final property =
         MqttBinaryDataProperty(MqttPropertyIdentifier.correlationdata);
     property.addBytes(data);
@@ -133,7 +133,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// more than once.
   List<MqttUserProperty> _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
-  set userProperty(List<MqttUserProperty> properties) {
+  set userProperty(List<MqttUserProperty>? properties) {
     if (properties != null) {
       for (var userProperty in properties) {
         _propertySet.add(userProperty);
@@ -148,8 +148,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Multiple Subscription Identifiers will be included in a received message if the
   /// publication is the result of a match to more than one subscription, in this case their
   /// order is not significant.
-  final _subscriptionIdentifier = <int>[];
-  List<int> get subscriptionIdentifier => _subscriptionIdentifier;
+  final _subscriptionIdentifier = <int?>[];
+  List<int?> get subscriptionIdentifier => _subscriptionIdentifier;
   set subscriptionIdentifier(identifier) {
     if (identifier < 1 || identifier > 268435455) {
       throw ArgumentError(
@@ -166,9 +166,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   ///
   /// The value of the Content Type is defined by the sending and
   /// receiving application.
-  String _contentType = '';
-  String get contentType => _contentType;
-  set contentType(String type) {
+  String? _contentType = '';
+  String? get contentType => _contentType;
+  set contentType(String? type) {
     final property = MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
     property.value = type;
     _propertySet.add(property);
@@ -219,8 +219,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
     readTopicName(variableHeaderStream);
-    if (header.qos == MqttQos.atLeastOnce ||
-        header.qos == MqttQos.exactlyOnce) {
+    if (header!.qos == MqttQos.atLeastOnce ||
+        header!.qos == MqttQos.exactlyOnce) {
       readMessageIdentifier(variableHeaderStream);
     }
     // Properties
@@ -235,8 +235,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
     writeTopicName(variableHeaderStream);
-    if (header.qos == MqttQos.atLeastOnce ||
-        header.qos == MqttQos.exactlyOnce) {
+    if (header!.qos == MqttQos.atLeastOnce ||
+        header!.qos == MqttQos.exactlyOnce) {
       writeMessageIdentifier(variableHeaderStream);
     }
     _propertySet.writeTo(variableHeaderStream);
@@ -247,8 +247,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   int getWriteLength() {
     var headerLength = 0;
     headerLength += _enc.byteCount(topicName);
-    if (header.qos == MqttQos.atLeastOnce ||
-        header.qos == MqttQos.exactlyOnce) {
+    if (header!.qos == MqttQos.atLeastOnce ||
+        header!.qos == MqttQos.exactlyOnce) {
       headerLength += 2;
     }
     headerLength += _propertySet.getWriteLength();

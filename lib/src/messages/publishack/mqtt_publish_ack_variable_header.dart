@@ -22,13 +22,13 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
 
   // The message header
   final _header;
-  MqttHeader get header => _header;
+  MqttHeader? get header => _header;
 
   /// The message identifier
   int messageIdentifier = 0;
 
   /// Publish reason code
-  MqttPublishReasonCode reasonCode = MqttPublishReasonCode.notSet;
+  MqttPublishReasonCode? reasonCode = MqttPublishReasonCode.notSet;
 
   // Properties
   final _propertySet = MqttPropertyContainer();
@@ -43,9 +43,9 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   /// Reason String.
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
-  String _reasonString;
-  String get reasonString => _reasonString;
-  set reasonString(String reason) {
+  String? _reasonString;
+  String? get reasonString => _reasonString;
+  set reasonString(String? reason) {
     final property =
         MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
     property.value = reason;
@@ -97,7 +97,7 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
     readMessageIdentifier(variableHeaderStream);
     readReasonCode(variableHeaderStream);
     // Properties
-    if (header._messageSize > 4) {
+    if (header!._messageSize > 4) {
       variableHeaderStream.shrink();
       _propertySet.readFrom(variableHeaderStream);
       _processProperties();
@@ -107,7 +107,7 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   }
 
   // Serialize the header
-  typed.Uint8Buffer _serialize() {
+  typed.Uint8Buffer? _serialize() {
     final buffer = typed.Uint8Buffer();
     final stream = MqttByteBuffer(buffer);
     writeMessageIdentifier(stream);
@@ -125,7 +125,7 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   /// Writes a variable header to the supplied message stream.
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    variableHeaderStream.addAll(_serialize());
+    variableHeaderStream.addAll(_serialize()!);
   }
 
   /// Read the message identifier
@@ -136,7 +136,7 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
 
   /// Read the reason code.
   void readReasonCode(MqttByteBuffer stream) {
-    if (header.messageSize != 2) {
+    if (header!.messageSize != 2) {
       reasonCode = mqttPublishReasonCode.fromInt(stream.readByte());
       _length += 1;
     } else {
@@ -156,7 +156,7 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
 
   /// Gets the length of the write data.
   @override
-  int getWriteLength() => _serialize().length;
+  int getWriteLength() => _serialize()!.length;
 
   @override
   String toString() {

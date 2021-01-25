@@ -13,16 +13,16 @@ class MqttConnectionStatus {
   MqttConnectionState state = MqttConnectionState.disconnected;
 
   /// Reason Code
-  MqttConnectReasonCode reasonCode = MqttConnectReasonCode.notSet;
+  MqttConnectReasonCode? reasonCode = MqttConnectReasonCode.notSet;
 
   /// Reason String
-  String reasonString;
+  String? reasonString;
 
   /// Disconnection origin
   MqttDisconnectionOrigin disconnectionOrigin = MqttDisconnectionOrigin.none;
 
   /// Connect acknowledgement message as received.
-  MqttConnectAckMessage connectAckMessage;
+  late MqttConnectAckMessage connectAckMessage;
 
   @override
   String toString() {

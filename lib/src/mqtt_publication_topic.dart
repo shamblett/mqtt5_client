@@ -11,7 +11,7 @@ part of mqtt5_client;
 /// of messages that are published.
 class MqttPublicationTopic extends MqttTopic {
   /// Construction
-  MqttPublicationTopic(String topic)
+  MqttPublicationTopic(String? topic)
       : super(topic, <dynamic>[
           MqttTopic.validateMinLength,
           MqttTopic.validateMaxLength,

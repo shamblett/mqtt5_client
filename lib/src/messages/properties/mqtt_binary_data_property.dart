@@ -14,11 +14,11 @@ class MqttBinaryDataProperty implements MqttIProperty {
 
   /// Identifier
   @override
-  MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
+  MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
   @override
-  final value = typed.Uint8Buffer();
+  final dynamic value = typed.Uint8Buffer();
 
   final _enc = MqttBinaryDataEncoding();
 
@@ -49,7 +49,7 @@ class MqttBinaryDataProperty implements MqttIProperty {
   }
 
   /// Add a list of bytes to the buffer
-  void addBytes(typed.Uint8Buffer bytes) {
+  void addBytes(typed.Uint8Buffer? bytes) {
     value.addAll(bytes);
   }
 

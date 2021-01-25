@@ -61,7 +61,7 @@ void main() {
     expect(rxmessage.timeout, isFalse);
     expect(rxmessage.authenticationMethod, 'Auth method');
     expect(testCHS.sentMessages.length, 1);
-    expect(testCHS.sentMessages[0].header.messageType, MqttMessageType.auth);
+    expect(testCHS.sentMessages[0].header!.messageType, MqttMessageType.auth);
     final bm = testCHS.sentMessages[0] as MqttAuthenticateMessage;
     expect(bm.authenticationMethod, 'Auth method');
     expect(bm.timeout, isFalse);

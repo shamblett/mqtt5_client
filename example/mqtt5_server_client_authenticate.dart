@@ -41,7 +41,7 @@ Future<int> main() async {
   /// Authentication message exchange can occur between the sending of the connect message and reception of the
   /// corresponding connect acknowledge message, to cater for this we must listen for incoming authentication messages,
   /// pre connecting.
-  client.authentication.listen((final authMessage) {
+  client.authentication!.listen((final authMessage) {
     print('EXAMPLE:: Authentication Message received - $authMessage');
 
     /// Authentication message received, do what you need to do here, we simply tell the broker the sequence has ended.
@@ -62,9 +62,9 @@ Future<int> main() async {
   }
 
   /// Check we are connected. connectionStatus always gives us this and other information.
-  if (client.connectionStatus.state == MqttConnectionState.connected) {
+  if (client.connectionStatus!.state == MqttConnectionState.connected) {
     print(
-        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus.reasonCode.toString().split('.')[1]}');
+        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}');
   } else {
     print(
         'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}');
@@ -110,7 +110,7 @@ Future<int> main() async {
 /// The unsolicited disconnect callback
 void onDisconnected() {
   print('EXAMPLE::OnDisconnected client callback - Client disconnection');
-  if (client.connectionStatus.disconnectionOrigin ==
+  if (client.connectionStatus!.disconnectionOrigin ==
       MqttDisconnectionOrigin.solicited) {
     print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
   }

@@ -24,42 +24,42 @@ class MqttPublishAckMessage extends MqttMessage {
     messageStream.shrink();
   }
 
-  MqttPublishAckVariableHeader _variableHeader;
+  MqttPublishAckVariableHeader? _variableHeader;
 
   /// Gets the variable header contents. Contains extended
   /// metadata about the message.
-  MqttPublishAckVariableHeader get variableHeader => _variableHeader;
+  MqttPublishAckVariableHeader? get variableHeader => _variableHeader;
 
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength(), messageStream);
-    variableHeader.writeTo(messageStream);
+    header!.writeTo(variableHeader!.getWriteLength(), messageStream);
+    variableHeader!.writeTo(messageStream);
   }
 
   /// Sets the message identifier of the MqttMessage.
   MqttPublishAckMessage withMessageIdentifier(int messageIdentifier) {
-    variableHeader.messageIdentifier = messageIdentifier;
+    variableHeader!.messageIdentifier = messageIdentifier;
     return this;
   }
 
   /// Sets the reason code of the MqttMessage.
   MqttPublishAckMessage withReasonCode(MqttPublishReasonCode reason) {
-    variableHeader.reasonCode = reason;
+    variableHeader!.reasonCode = reason;
     return this;
   }
 
   /// The message identifier
-  int get messageIdentifier => variableHeader.messageIdentifier;
+  int get messageIdentifier => variableHeader!.messageIdentifier;
 
   /// Publish reason code
-  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+  MqttPublishReasonCode? get reasonCode => variableHeader!.reasonCode;
 
   /// Reason String.
-  String get reasonString => variableHeader.reasonString;
+  String? get reasonString => variableHeader!.reasonString;
 
   /// User Property.
-  List<MqttUserProperty> get userProperty => variableHeader.userProperty;
+  List<MqttUserProperty> get userProperty => variableHeader!.userProperty;
 
   @override
   String toString() {

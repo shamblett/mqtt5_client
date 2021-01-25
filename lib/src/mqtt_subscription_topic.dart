@@ -11,7 +11,7 @@ part of mqtt5_client;
 /// of topics that are subscribed to.
 class MqttSubscriptionTopic extends MqttTopic {
   /// Creates a new instance of a rawTopic from a topic string.
-  MqttSubscriptionTopic(String rawTopic)
+  MqttSubscriptionTopic(String? rawTopic)
       : super(rawTopic, <dynamic>[
           MqttTopic.validateMinLength,
           MqttTopic.validateMaxLength,
@@ -40,14 +40,14 @@ class MqttSubscriptionTopic extends MqttTopic {
   /// Validates the placement of the multi-wildcard character
   /// in subscription topics.
   static void _validateMultiWildcard(MqttTopic topicInstance) {
-    if (topicInstance.rawTopic.contains(MqttTopic.multiWildcard) &&
-        !topicInstance.rawTopic.endsWith(MqttTopic.multiWildcard)) {
+    if (topicInstance.rawTopic!.contains(MqttTopic.multiWildcard) &&
+        !topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcard)) {
       throw Exception('mqtt_client::SubscriptionTopic: The rawTopic wildcard # '
           'can only be present at the end of a topic');
     }
-    if (topicInstance.rawTopic.length > 1 &&
-        topicInstance.rawTopic.endsWith(MqttTopic.multiWildcard) &&
-        !topicInstance.rawTopic.endsWith(MqttTopic.multiWildcardValidEnd)) {
+    if (topicInstance.rawTopic!.length > 1 &&
+        topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcard) &&
+        !topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcardValidEnd)) {
       throw Exception(
           'mqtt_client::SubscriptionTopic: Topics using the # wildcard '
           'longer than 1 character must '

@@ -14,11 +14,11 @@ class MqttUtf8StringProperty implements MqttIProperty {
 
   /// Identifier
   @override
-  MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
+  MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
   @override
-  String value;
+  String? value;
 
   final _enc = MqttUtf8Encoding();
 
@@ -26,7 +26,7 @@ class MqttUtf8StringProperty implements MqttIProperty {
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.write(_enc.toUtf8(value));
+    stream.write(_enc.toUtf8(value!));
   }
 
   /// Deserialize from a byte buffer stream
@@ -44,7 +44,7 @@ class MqttUtf8StringProperty implements MqttIProperty {
 
   /// Gets the length of the write data when WriteTo will be called.
   @override
-  int getWriteLength() => _enc.byteCount(value) + 1;
+  int getWriteLength() => _enc.byteCount(value!) + 1;
 
   @override
   String toString() {

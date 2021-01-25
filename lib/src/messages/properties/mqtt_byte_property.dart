@@ -17,7 +17,7 @@ class MqttByteProperty implements MqttIProperty {
 
   /// Identifier
   @override
-  MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
+  MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
 
   /// Value
   @override

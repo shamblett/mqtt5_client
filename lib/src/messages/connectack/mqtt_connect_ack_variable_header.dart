@@ -22,8 +22,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
   /// Reason Code
-  MqttConnectReasonCode _reasonCode = MqttConnectReasonCode.notSet;
-  MqttConnectReasonCode get reasonCode => _reasonCode;
+  MqttConnectReasonCode? _reasonCode = MqttConnectReasonCode.notSet;
+  MqttConnectReasonCode? get reasonCode => _reasonCode;
 
   /// The property set
   final _propertySet = MqttPropertyContainer();
@@ -36,8 +36,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   ///
   /// The broker uses this property to inform the client that it is using a value
   /// other than that sent by the client in the Connect Message.
-  int _sessionExpiryInterval = 0;
-  int get sessionExpiryInterval => _sessionExpiryInterval;
+  int? _sessionExpiryInterval = 0;
+  int? get sessionExpiryInterval => _sessionExpiryInterval;
 
   /// Receive Maximum.
   ///
@@ -46,8 +46,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// mechanism to limit the QoS 0 publications that the client might try to send.
   ///
   /// A value of 65535 indicates not set.
-  int _receiveMaximum = 65535;
-  int get receiveMaximum => _receiveMaximum;
+  int? _receiveMaximum = 65535;
+  int? get receiveMaximum => _receiveMaximum;
 
   /// Maximum QoS.
   ///
@@ -59,8 +59,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// a QoS level exceeding the Maximum QoS level specified.
   ///
   /// A value of 2 is the default.
-  int _maximumQos = 2;
-  int get maximumQos => _maximumQos;
+  int? _maximumQos = 2;
+  int? get maximumQos => _maximumQos;
 
   /// Retain Available.
   ///
@@ -72,15 +72,15 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Maximum Packet Size.
   ///
   /// A value of zero indicates this property is not set.
-  int _maximumPacketSize = 0;
-  int get maximumPacketSize => _maximumPacketSize;
+  int? _maximumPacketSize = 0;
+  int? get maximumPacketSize => _maximumPacketSize;
 
   /// Assigned Client Identifier.
   ///
   /// The client Identifier which was assigned by the broker because a zero length client Identifier
   /// was found in the Connect message.
-  String _assignedClientIdentifier;
-  String get assignedClientIdentifier => _assignedClientIdentifier;
+  String? _assignedClientIdentifier;
+  String? get assignedClientIdentifier => _assignedClientIdentifier;
 
   /// Topic Alias Maximum.
   ///
@@ -90,14 +90,14 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// greater than this value.
   /// If Topic Alias Maximum is 0, the client must not send any Topic
   /// Aliases on to the broker.
-  int _topicAliasMaximum = 0;
-  int get topicAliasMaximum => _topicAliasMaximum;
+  int? _topicAliasMaximum = 0;
+  int? get topicAliasMaximum => _topicAliasMaximum;
 
   /// Reason String.
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
-  String _reasonString;
-  String get reasonString => _reasonString;
+  String? _reasonString;
+  String? get reasonString => _reasonString;
 
   /// User Property.
   ///
@@ -105,8 +105,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// diagnostic information.
   /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
   /// The same name is allowed to appear more than once.
-  List<MqttUserProperty> _userProperty;
-  List<MqttUserProperty> get userProperty => _userProperty;
+  List<MqttUserProperty>? _userProperty;
+  List<MqttUserProperty>? get userProperty => _userProperty;
 
   /// Wildcard Subscription Available.
   ///
@@ -143,8 +143,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   ///  specified by the client.
   ///
   /// A value of 0 indicates not set by the broker.
-  int _serverKeepAlive = 0;
-  int get serverKeepAlive => _serverKeepAlive;
+  int? _serverKeepAlive = 0;
+  int? get serverKeepAlive => _serverKeepAlive;
 
   /// Response Information.
   ///
@@ -152,27 +152,27 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   ///
   /// A common use of this is to pass a globally unique portion of the topic tree
   /// which is reserved for this client for at least the lifetime of its Session.
-  String _responseInformation;
-  String get responseInformation => _responseInformation;
+  String? _responseInformation;
+  String? get responseInformation => _responseInformation;
 
   /// Server Reference.
   ///
   /// A string to indicate another broker to use.
-  String _serverReference;
-  String get serverReference => _serverReference;
+  String? _serverReference;
+  String? get serverReference => _serverReference;
 
   /// Authentication Method.
   ///
   /// A string containing the name of the authentication method.
-  String _authenticationMethod;
-  String get authenticationMethod => _authenticationMethod;
+  String? _authenticationMethod;
+  String? get authenticationMethod => _authenticationMethod;
 
   /// Authentication Data.
   ///
   /// The contents of this data are defined by the authentication method and the state
   /// of already exchanged authentication data.
-  typed.Uint8Buffer _authenticationData;
-  typed.Uint8Buffer get authenticationData => _authenticationData;
+  typed.Uint8Buffer? _authenticationData;
+  typed.Uint8Buffer? get authenticationData => _authenticationData;
 
   /// Writes the variable header to the supplied stream.
   /// Not implemented for this message

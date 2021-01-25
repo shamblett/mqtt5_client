@@ -13,7 +13,7 @@ part of mqtt5_client;
 /// usage and data type, followed by a value.
 abstract class MqttIProperty {
   /// Identifier
-  MqttPropertyIdentifier identifier;
+  MqttPropertyIdentifier? identifier;
 
   /// The value
   dynamic get value;
@@ -26,5 +26,5 @@ abstract class MqttIProperty {
 
   /// Gets the length of the write data when WriteTo will be called.
   /// A subclass that overrides writeTo must also overwrite this method.
-  int getWriteLength();
+  int? getWriteLength();
 }

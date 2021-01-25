@@ -20,7 +20,7 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   }
 
   /// Standard header
-  MqttHeader header;
+  MqttHeader? header;
 
   int _length = 0;
 
@@ -30,7 +30,7 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   int get length => _length;
 
   /// Reason code
-  MqttAuthenticateReasonCode reasonCode = MqttAuthenticateReasonCode.notSet;
+  MqttAuthenticateReasonCode? reasonCode = MqttAuthenticateReasonCode.notSet;
 
   // Properties
   final _propertySet = MqttPropertyContainer();
@@ -39,9 +39,9 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   ///
   ///  A UTF-8 Encoded String containing the name of the authentication method.
   ///  It is a protocol error to omit the authentication method.
-  String _authenticationMethod;
-  String get authenticationMethod => _authenticationMethod;
-  set authenticationMethod(String method) {
+  String? _authenticationMethod;
+  String? get authenticationMethod => _authenticationMethod;
+  set authenticationMethod(String? method) {
     var property =
         MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
     property.value = method;
@@ -67,9 +67,9 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   /// Reason String.
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
-  String _reasonString;
-  String get reasonString => _reasonString;
-  set reasonString(String reason) {
+  String? _reasonString;
+  String? get reasonString => _reasonString;
+  set reasonString(String? reason) {
     var property = MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
     property.value = reason;
     _propertySet.add(property);
@@ -121,7 +121,7 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   /// Creates a variable header from the specified header stream.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
-    if (header.messageSize > 1) {
+    if (header!.messageSize > 1) {
       readReasonCode(variableHeaderStream);
       _length += 1;
       // Properties

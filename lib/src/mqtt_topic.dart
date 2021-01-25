@@ -13,7 +13,7 @@ abstract class MqttTopic {
   /// rawTopic - The topic to represent.
   /// validations - The validations to run on the rawTopic.
   MqttTopic(this.rawTopic, List<dynamic> validations) {
-    topicFragments = rawTopic.split(topicSeparator[0]);
+    topicFragments = rawTopic!.split(topicSeparator[0]);
     // run all validations
     for (final dynamic validation in validations) {
       validation(this);
@@ -36,17 +36,17 @@ abstract class MqttTopic {
   static const int maxTopicLength = 65535;
 
   /// Raw topic
-  String rawTopic;
+  String? rawTopic;
 
   /// Topic fragments
-  List<String> topicFragments;
+  late List<String> topicFragments;
 
   /// Validates that the topic does not exceed the maximum length.
   /// topicInstance - The instance to check.
   static void validateMaxLength(MqttTopic topicInstance) {
-    if (topicInstance.rawTopic.length > maxTopicLength) {
+    if (topicInstance.rawTopic!.length > maxTopicLength) {
       throw Exception('mqtt_client::Topic: The length of the supplied rawTopic '
-          '(${topicInstance.rawTopic.length}) is longer than the '
+          '(${topicInstance.rawTopic!.length}) is longer than the '
           'maximum allowable ($maxTopicLength)');
     }
   }
@@ -54,12 +54,12 @@ abstract class MqttTopic {
   /// Returns true if there are any wildcards in the specified
   /// rawTopic, otherwise false.
   bool get hasWildcards =>
-      rawTopic.contains(multiWildcard) || rawTopic.contains(wildcard);
+      rawTopic!.contains(multiWildcard) || rawTopic!.contains(wildcard);
 
   /// Validates that the topic does not fall below the minimum length.
   /// topicInstance - The instance to check.
   static void validateMinLength(MqttTopic topicInstance) {
-    if (topicInstance.rawTopic.isEmpty) {
+    if (topicInstance.rawTopic!.isEmpty) {
       throw Exception(
           'mqtt_client::Topic: rawTopic must contain at least one character');
     }
@@ -80,5 +80,5 @@ abstract class MqttTopic {
 
   /// Returns a String representation of the topic.
   @override
-  String toString() => rawTopic;
+  String toString() => rawTopic!;
 }

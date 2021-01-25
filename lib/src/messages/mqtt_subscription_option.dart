@@ -16,7 +16,7 @@ class MqttSubscriptionOption {
   ///
   /// Gives the maximum QoS level at which the broker can send
   /// application(publish) messages to the client.
-  MqttQos maximumQos = MqttQos.atMostOnce;
+  MqttQos? maximumQos = MqttQos.atMostOnce;
 
   /// No Local.
   ///
@@ -41,7 +41,7 @@ class MqttSubscriptionOption {
 
   /// Serialize
   int serialize() {
-    final maximumQos = this.maximumQos.index;
+    final maximumQos = this.maximumQos!.index;
     final noLocal = (this.noLocal ? 1 : 0) << 2;
     final retainAsPublished = (this.retainAsPublished ? 1 : 0) << 3;
     final retainHandling = this.retainHandling.index << 4;

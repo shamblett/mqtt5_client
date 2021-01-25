@@ -16,7 +16,7 @@ class MqttEnumHelper<T extends dynamic> {
   final Map<int, T> _valuesMap;
 
   /// From int
-  T fromInt(int index) {
+  T? fromInt(int index) {
     if (_valuesMap.containsKey(index)) {
       return _valuesMap[index];
     }
@@ -24,7 +24,7 @@ class MqttEnumHelper<T extends dynamic> {
   }
 
   /// As int
-  int asInt(T code) {
+  int? asInt(T code) {
     if (_valuesMap.containsValue(code)) {
       return _valuesMap.keys.firstWhere((int e) => _valuesMap[e] == code);
     }

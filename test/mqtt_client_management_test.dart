@@ -74,8 +74,8 @@ void main() {
       const topicSystemStructure = 'PLCs/+/numberOfSystems';
       var called = 0;
       payload.header = MqttHeader();
-      payload.header.qos = MqttQos.atLeastOnce;
-      payload.header.retain = true;
+      payload.header!.qos = MqttQos.atLeastOnce;
+      payload.header!.retain = true;
 
       final message0 =
           MqttReceivedMessage<MqttMessage>(topicNumberOfSystems1, payload);
@@ -100,8 +100,8 @@ void main() {
       var called1 = 0;
       var called2 = 0;
       payload.header = MqttHeader();
-      payload.header.qos = MqttQos.atLeastOnce;
-      payload.header.retain = true;
+      payload.header!.qos = MqttQos.atLeastOnce;
+      payload.header!.retain = true;
 
       final message0 =
           MqttReceivedMessage<MqttMessage>(topicNumberOfSystems, payload);

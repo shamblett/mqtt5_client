@@ -74,7 +74,7 @@ class MqttBrowserConnection extends MqttConnectionBase {
 
     while (messageStream.isMessageAvailable()) {
       var messageIsValid = true;
-      MqttMessage msg;
+      MqttMessage? msg;
 
       try {
         msg = MqttMessage.createFrom(messageStream);
@@ -96,11 +96,11 @@ class MqttBrowserConnection extends MqttConnectionBase {
             'MqttBrowserConnection::_onData - MESSAGE RECEIVED -> $msg');
         // If we have received a valid message we must clear the stream.
         messageStream.clear();
-        if (!clientEventBus.streamController.isClosed) {
-          if (msg.header.messageType == MqttMessageType.connectAck) {
-            clientEventBus.fire(MqttConnectAckMessageAvailable(msg));
+        if (!clientEventBus!.streamController.isClosed) {
+          if (msg!.header!.messageType == MqttMessageType.connectAck) {
+            clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
           } else {
-            clientEventBus.fire(MqttMessageAvailable(msg));
+            clientEventBus!.fire(MqttMessageAvailable(msg));
           }
           MqttLogger.log(
               'MqttBrowserConnection::_onData - message available event fired');
@@ -136,7 +136,7 @@ class MqttBrowserConnection extends MqttConnectionBase {
     if (onDisconnected != null) {
       MqttLogger.log(
           'MqttBrowserConnection::_onDone - calling disconnected callback');
-      onDisconnected();
+      onDisconnected!();
     }
   }
 }

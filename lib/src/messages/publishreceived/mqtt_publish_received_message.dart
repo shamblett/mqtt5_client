@@ -27,12 +27,12 @@ class MqttPublishReceivedMessage extends MqttMessage {
 
   /// Gets or sets the variable header contents. Contains extended
   /// metadata about the message.
-  MqttPublishReceivedVariableHeader variableHeader;
+  late MqttPublishReceivedVariableHeader variableHeader;
 
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength(), messageStream);
+    header!.writeTo(variableHeader.getWriteLength(), messageStream);
     variableHeader.writeTo(messageStream);
   }
 
@@ -52,10 +52,10 @@ class MqttPublishReceivedMessage extends MqttMessage {
   int get messageIdentifier => variableHeader.messageIdentifier;
 
   /// Publish reason code
-  MqttPublishReasonCode get reasonCode => variableHeader.reasonCode;
+  MqttPublishReasonCode? get reasonCode => variableHeader.reasonCode;
 
   /// Reason String.
-  String get reasonString => variableHeader.reasonString;
+  String? get reasonString => variableHeader.reasonString;
 
   /// User Property.
   List<MqttUserProperty> get userProperty => variableHeader.userProperty;

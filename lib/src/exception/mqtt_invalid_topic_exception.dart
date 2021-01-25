@@ -14,7 +14,7 @@ class MqttInvalidTopicException implements Exception {
     _message = 'mqtt-client::InvalidTopicException: Topic $topic is $message';
   }
 
-  String _message;
+  late String _message;
 
   @override
   String toString() => _message;

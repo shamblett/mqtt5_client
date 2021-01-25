@@ -35,10 +35,10 @@ class MqttAuthenticateMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  MqttAuthenticateVariableHeader _variableHeader;
+  MqttAuthenticateVariableHeader? _variableHeader;
 
   // Variable header.
-  MqttAuthenticateVariableHeader get variableHeader => _variableHeader;
+  MqttAuthenticateVariableHeader? get variableHeader => _variableHeader;
 
   /// Reads a message from the supplied stream.
   @override
@@ -51,15 +51,15 @@ class MqttAuthenticateMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    final variableHeaderLength = variableHeader.getWriteLength();
-    header.writeTo(variableHeaderLength, messageStream);
-    variableHeader.writeTo(messageStream);
+    final variableHeaderLength = variableHeader!.getWriteLength();
+    header!.writeTo(variableHeaderLength, messageStream);
+    variableHeader!.writeTo(messageStream);
   }
 
   /// Sets the reason code of the message.
   MqttAuthenticateMessage withReasonCode(
       MqttAuthenticateReasonCode reasonCode) {
-    variableHeader.reasonCode = reasonCode;
+    variableHeader!.reasonCode = reasonCode;
     return this;
   }
 
@@ -71,54 +71,54 @@ class MqttAuthenticateMessage extends MqttMessage {
   bool timeout = false;
 
   /// Gets the reason code of the message.
-  MqttAuthenticateReasonCode get reasonCode => _variableHeader.reasonCode;
+  MqttAuthenticateReasonCode? get reasonCode => _variableHeader!.reasonCode;
 
   /// Sets the reason string
   MqttAuthenticateMessage withReasonString(String reason) {
-    variableHeader.reasonString = reason;
+    variableHeader!.reasonString = reason;
     return this;
   }
 
   /// Gets the reason string.
-  String get reasonString => _variableHeader.reasonString;
+  String? get reasonString => _variableHeader!.reasonString;
 
   /// Sets the authentication method.
   MqttAuthenticateMessage withAuthenticationMethod(String method) {
-    variableHeader.authenticationMethod = method;
+    variableHeader!.authenticationMethod = method;
     return this;
   }
 
   /// Gets the authentication method.
-  String get authenticationMethod => _variableHeader.authenticationMethod;
+  String? get authenticationMethod => _variableHeader!.authenticationMethod;
 
   /// Sets the authentication data.
   MqttAuthenticateMessage withAuthenticationData(typed.Uint8Buffer data) {
-    _variableHeader.authenticationData = data;
+    _variableHeader!.authenticationData = data;
     return this;
   }
 
   /// Gets the authentication data.
   typed.Uint8Buffer get authenticationData =>
-      _variableHeader.authenticationData;
+      _variableHeader!.authenticationData;
 
   /// Sets a list of user properties
   MqttAuthenticateMessage withUserProperties(
       List<MqttUserProperty> properties) {
-    _variableHeader.userProperty = properties;
+    _variableHeader!.userProperty = properties;
     return this;
   }
 
   /// Get the user properties
-  List<MqttUserProperty> get userProperties => _variableHeader.userProperty;
+  List<MqttUserProperty> get userProperties => _variableHeader!.userProperty;
 
   /// Add a specific user property
   void addUserProperty(MqttUserProperty property) {
-    _variableHeader.userProperty = [property];
+    _variableHeader!.userProperty = [property];
   }
 
   /// Is valid
   @override
-  bool get isValid => variableHeader.isValid && !timeout;
+  bool get isValid => variableHeader!.isValid && !timeout;
 
   @override
   String toString() {

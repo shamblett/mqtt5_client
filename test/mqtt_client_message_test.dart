@@ -930,7 +930,7 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         container.writeTo(stream);
-        expect(stream.buffer.toList(),
+        expect(stream.buffer!.toList(),
             [0x0a, 0x3, 0x00, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x01, 0x44]);
       });
       test('Read From', () {
@@ -1318,7 +1318,7 @@ void main() {
         final propBuffer = typed.Uint8Buffer();
         final propStream = MqttByteBuffer(propBuffer);
         properties.writeTo(propStream);
-        buffer.addAll(propStream.buffer);
+        buffer.addAll(propStream.buffer!);
         final stream = MqttByteBuffer(buffer);
         final message = MqttConnectAckVariableHeader.fromByteBuffer(stream);
         expect(message.connectAckFlags.sessionPresent, isTrue);
@@ -1329,10 +1329,10 @@ void main() {
         expect(message.retainAvailable, isTrue);
         expect(message.maximumPacketSize, 2048);
         expect(message.userProperty, isNotNull);
-        expect(message.userProperty[0].pairName, 'User 1 name');
-        expect(message.userProperty[0].pairValue, 'User 1 value');
-        expect(message.userProperty[1].pairName, 'User 2 name');
-        expect(message.userProperty[1].pairValue, 'User 2 value');
+        expect(message.userProperty![0].pairName, 'User 1 name');
+        expect(message.userProperty![0].pairValue, 'User 1 value');
+        expect(message.userProperty![1].pairName, 'User 2 name');
+        expect(message.userProperty![1].pairValue, 'User 2 value');
         expect(message.wildcardSubscriptionsAvailable, isFalse);
         expect(message.subscriptionIdentifiersAvailable, isFalse);
         expect(message.sharedSubscriptionAvailable, isFalse);
@@ -1340,7 +1340,7 @@ void main() {
         expect(message.responseInformation, 'Response Information');
         expect(message.serverReference, 'Server Reference');
         expect(message.authenticationMethod, 'Authentication Method');
-        expect(message.authenticationData.toList(), [1, 2, 3, 4]);
+        expect(message.authenticationData!.toList(), [1, 2, 3, 4]);
         expect(message.getWriteLength(), 0);
       });
     });
@@ -1361,10 +1361,10 @@ void main() {
         expect(message.contentType, '');
         expect(message.length, 0);
         expect(message.getWriteLength(), 3);
-        message.header.qos = MqttQos.atLeastOnce;
+        message.header!.qos = MqttQos.atLeastOnce;
         expect(message.length, 0);
         expect(message.getWriteLength(), 5);
-        message.header.qos = MqttQos.exactlyOnce;
+        message.header!.qos = MqttQos.exactlyOnce;
         expect(message.getWriteLength(), 5);
       });
       test('Variable Header Publish - Reversible With Qos', () {
@@ -2724,7 +2724,7 @@ void main() {
         final stream = MqttByteBuffer(buffer);
         willProperties.writeTo(stream);
         expect(stream.length, 1);
-        expect(stream.buffer[0], 0);
+        expect(stream.buffer![0], 0);
         expect(stream.position, 1);
       });
       test('Will Properties - Complete', () {
@@ -2741,7 +2741,7 @@ void main() {
         expect(willProperties.contentType, 'Content Type');
         final correlationdata = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
         willProperties.correlationData = correlationdata;
-        expect(willProperties.correlationData.toList(), [1, 2, 3, 4]);
+        expect(willProperties.correlationData!.toList(), [1, 2, 3, 4]);
         final user1 = MqttUserProperty()
           ..pairName = 'name'
           ..pairValue = 'value';
@@ -2815,7 +2815,7 @@ void main() {
         payload.password = 'Password';
         payload.willProperties.contentType = 'Content Type';
         payload.willProperties.willDelayInterval = 0xFF;
-        payload.variableHeader.connectFlags.willRetain = true;
+        payload.variableHeader!.connectFlags.willRetain = true;
         expect(payload.getWriteLength(), 40);
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
@@ -3049,26 +3049,26 @@ void main() {
         sampleMessage[3] = 0x80; // Reason Code Unspecified Error
         sampleMessage[4] = 0x00;
         final byteBuffer = MqttByteBuffer(sampleMessage);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttConnectAckMessage>());
-        final MqttConnectAckMessage message = baseMessage;
+        final MqttConnectAckMessage message = baseMessage as MqttConnectAckMessage;
         expect(
-          message.header.duplicate,
+          message.header!.duplicate,
           false,
         );
         expect(
-          message.header.retain,
+          message.header!.retain,
           false,
         );
-        expect(message.header.qos, MqttQos.atMostOnce);
-        expect(message.header.messageType, MqttMessageType.connectAck);
-        expect(message.header.messageSize, 3);
-        expect(message.variableHeader.connectAckFlags.sessionPresent, isTrue);
-        expect(message.variableHeader.reasonCode,
+        expect(message.header!.qos, MqttQos.atMostOnce);
+        expect(message.header!.messageType, MqttMessageType.connectAck);
+        expect(message.header!.messageSize, 3);
+        expect(message.variableHeader!.connectAckFlags.sessionPresent, isTrue);
+        expect(message.variableHeader!.reasonCode,
             MqttConnectReasonCode.unspecifiedError);
         expect(
             MqttReasonCodeUtilities.isError(
-                mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),
+                mqttConnectReasonCode.asInt(message.variableHeader!.reasonCode)!),
             isTrue);
       });
       test('Deserialisation - No Will Flag', () {
@@ -3086,20 +3086,20 @@ void main() {
         sampleMessage[10] = 0x05;
 
         final byteBuffer = MqttByteBuffer(sampleMessage);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttConnectAckMessage>());
-        final MqttConnectAckMessage message = baseMessage;
-        expect(message.header.messageType, MqttMessageType.connectAck);
-        expect(message.header.messageSize, 9);
-        expect(message.variableHeader.connectAckFlags.sessionPresent, isFalse);
+        final MqttConnectAckMessage message = baseMessage as MqttConnectAckMessage;
+        expect(message.header!.messageType, MqttMessageType.connectAck);
+        expect(message.header!.messageSize, 9);
+        expect(message.variableHeader!.connectAckFlags.sessionPresent, isFalse);
         expect(
-            message.variableHeader.reasonCode, MqttConnectReasonCode.success);
+            message.variableHeader!.reasonCode, MqttConnectReasonCode.success);
         expect(
             MqttReasonCodeUtilities.isError(
-                mqttConnectReasonCode.asInt(message.variableHeader.reasonCode)),
+                mqttConnectReasonCode.asInt(message.variableHeader!.reasonCode)!),
             isFalse);
-        expect(message.variableHeader.receiveMaximum, 10);
-        expect(message.variableHeader.topicAliasMaximum, 5);
+        expect(message.variableHeader!.receiveMaximum, 10);
+        expect(message.variableHeader!.topicAliasMaximum, 5);
         expect(byteBuffer.position, 0);
       });
     });
@@ -3110,11 +3110,11 @@ void main() {
         buffer.add(0xe0);
         buffer.add(0x00);
         final stream = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(stream);
+        final baseMessage = MqttMessage.createFrom(stream)!;
         expect(baseMessage, const TypeMatcher<MqttDisconnectMessage>());
-        final MqttDisconnectMessage message = baseMessage;
-        expect(message.header.messageType, MqttMessageType.disconnect);
-        expect(message.header.messageSize, 0);
+        final MqttDisconnectMessage message = baseMessage as MqttDisconnectMessage;
+        expect(message.header!.messageType, MqttMessageType.disconnect);
+        expect(message.header!.messageSize, 0);
         expect(
             message.reasonCode, MqttDisconnectReasonCode.normalDisconnection);
         expect(message.isValid, isTrue);
@@ -3196,11 +3196,11 @@ void main() {
           101
         ]);
         final stream = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(stream);
+        final baseMessage = MqttMessage.createFrom(stream)!;
         expect(baseMessage, const TypeMatcher<MqttDisconnectMessage>());
-        final MqttDisconnectMessage message = baseMessage;
-        expect(message.header.messageType, MqttMessageType.disconnect);
-        expect(message.header.messageSize, 70);
+        final MqttDisconnectMessage message = baseMessage as MqttDisconnectMessage;
+        expect(message.header!.messageType, MqttMessageType.disconnect);
+        expect(message.header!.messageSize, 70);
         expect(message.reasonCode, MqttDisconnectReasonCode.quotaExceeded);
         expect(message.sessionExpiryInterval, 10);
         expect(message.serverReference, 'Server Reference');
@@ -3215,8 +3215,8 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(stream.buffer[0], 0xe0);
-        expect(stream.buffer[1], 0);
+        expect(stream.buffer![0], 0xe0);
+        expect(stream.buffer![1], 0);
         expect(message.isValid, isTrue);
       });
       test('Disconnect Message - Serialisation - Full', () {
@@ -3232,8 +3232,8 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(stream.buffer[0], 0xe0);
-        expect(stream.buffer[1], 70);
+        expect(stream.buffer![0], 0xe0);
+        expect(stream.buffer![1], 70);
         expect(message.isValid, isTrue);
       });
     });
@@ -3244,14 +3244,14 @@ void main() {
         buffer.add(0xf0);
         buffer.add(0x00);
         final stream = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(stream);
+        final baseMessage = MqttMessage.createFrom(stream)!;
         expect(baseMessage, const TypeMatcher<MqttAuthenticateMessage>());
-        final MqttAuthenticateMessage message = baseMessage;
-        expect(message.header.messageType, MqttMessageType.auth);
-        expect(message.header.messageSize, 0);
+        final MqttAuthenticateMessage message = baseMessage as MqttAuthenticateMessage;
+        expect(message.header!.messageType, MqttMessageType.auth);
+        expect(message.header!.messageSize, 0);
         expect(message.reasonCode, MqttAuthenticateReasonCode.success);
         expect(message.isValid, isFalse);
-        expect(message.variableHeader.length, 0);
+        expect(message.variableHeader!.length, 0);
         expect(message.timeout, isFalse);
       });
       test('Authenticate Message - Deserialisation - full', () {
@@ -3323,11 +3323,11 @@ void main() {
           101
         ]);
         final stream = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(stream);
+        final baseMessage = MqttMessage.createFrom(stream)!;
         expect(baseMessage, const TypeMatcher<MqttAuthenticateMessage>());
-        final MqttAuthenticateMessage message = baseMessage;
-        expect(message.header.messageType, MqttMessageType.auth);
-        expect(message.header.messageSize, 62);
+        final MqttAuthenticateMessage message = baseMessage as MqttAuthenticateMessage;
+        expect(message.header!.messageType, MqttMessageType.auth);
+        expect(message.header!.messageSize, 62);
         expect(message.reasonCode,
             MqttAuthenticateReasonCode.continueAuthentication);
         expect(message.authenticationMethod, 'method');
@@ -3344,8 +3344,8 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(stream.buffer[0], 0xf0);
-        expect(stream.buffer[1], 0);
+        expect(stream.buffer![0], 0xf0);
+        expect(stream.buffer![1], 0);
         expect(message.isValid, isFalse);
       });
       test('Authenticate Message - Serialisation - Full', () {
@@ -3361,8 +3361,8 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(stream.buffer[0], 0xf0);
-        expect(stream.buffer[1], 62);
+        expect(stream.buffer![0], 0xf0);
+        expect(stream.buffer![1], 62);
         expect(message.isValid, isTrue);
         expect(message.timeout, isFalse);
       });
@@ -3375,8 +3375,8 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(stream.buffer[0], 0xc0);
-        expect(stream.buffer[1], 0);
+        expect(stream.buffer![0], 0xc0);
+        expect(stream.buffer![1], 0);
       });
     });
 
@@ -3386,10 +3386,10 @@ void main() {
         sampleMessage[0] = 0xd0;
         sampleMessage[1] = 0x00;
         final byteBuffer = MqttByteBuffer(sampleMessage);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPingResponseMessage>());
-        final MqttPingResponseMessage message = baseMessage;
-        expect(message.header.messageType, MqttMessageType.pingResponse);
+        final MqttPingResponseMessage message = baseMessage as MqttPingResponseMessage;
+        expect(message.header!.messageType, MqttMessageType.pingResponse);
       });
     });
 
@@ -3415,22 +3415,22 @@ void main() {
         final buff = typed.Uint8Buffer();
         buff.addAll(sampleMessage);
         final byteBuffer = MqttByteBuffer(buff);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishMessage>());
-        expect(baseMessage.header.duplicate, isFalse);
-        expect(baseMessage.header.retain, isFalse);
-        expect(baseMessage.header.qos, MqttQos.atMostOnce);
-        expect(baseMessage.header.messageType, MqttMessageType.publish);
-        expect(baseMessage.header.messageSize, 13);
-        final MqttPublishMessage pm = baseMessage;
-        expect(pm.variableHeader.topicName, 'fred');
-        expect(pm.variableHeader.messageIdentifier, 0);
-        expect(pm.payload.message[0], 'h'.codeUnitAt(0));
-        expect(pm.payload.message[1], 'e'.codeUnitAt(0));
-        expect(pm.payload.message[2], 'l'.codeUnitAt(0));
-        expect(pm.payload.message[3], 'l'.codeUnitAt(0));
-        expect(pm.payload.message[4], 'o'.codeUnitAt(0));
-        expect(pm.payload.message[5], '!'.codeUnitAt(0));
+        expect(baseMessage.header!.duplicate, isFalse);
+        expect(baseMessage.header!.retain, isFalse);
+        expect(baseMessage.header!.qos, MqttQos.atMostOnce);
+        expect(baseMessage.header!.messageType, MqttMessageType.publish);
+        expect(baseMessage.header!.messageSize, 13);
+        final MqttPublishMessage pm = baseMessage as MqttPublishMessage;
+        expect(pm.variableHeader!.topicName, 'fred');
+        expect(pm.variableHeader!.messageIdentifier, 0);
+        expect(pm.payload.message![0], 'h'.codeUnitAt(0));
+        expect(pm.payload.message![1], 'e'.codeUnitAt(0));
+        expect(pm.payload.message![2], 'l'.codeUnitAt(0));
+        expect(pm.payload.message![3], 'l'.codeUnitAt(0));
+        expect(pm.payload.message![4], 'o'.codeUnitAt(0));
+        expect(pm.payload.message![5], '!'.codeUnitAt(0));
       });
       test('Deserialisation - Valid payload - No properties - with Qos', () {
         final sampleMessage = <int>[
@@ -3455,22 +3455,22 @@ void main() {
         final buff = typed.Uint8Buffer();
         buff.addAll(sampleMessage);
         final byteBuffer = MqttByteBuffer(buff);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishMessage>());
-        expect(baseMessage.header.duplicate, isFalse);
-        expect(baseMessage.header.retain, isFalse);
-        expect(baseMessage.header.qos, MqttQos.exactlyOnce);
-        expect(baseMessage.header.messageType, MqttMessageType.publish);
-        expect(baseMessage.header.messageSize, 15);
-        final MqttPublishMessage pm = baseMessage;
-        expect(pm.variableHeader.topicName, 'fred');
-        expect(pm.variableHeader.messageIdentifier, 1);
-        expect(pm.payload.message[0], 'h'.codeUnitAt(0));
-        expect(pm.payload.message[1], 'e'.codeUnitAt(0));
-        expect(pm.payload.message[2], 'l'.codeUnitAt(0));
-        expect(pm.payload.message[3], 'l'.codeUnitAt(0));
-        expect(pm.payload.message[4], 'o'.codeUnitAt(0));
-        expect(pm.payload.message[5], '!'.codeUnitAt(0));
+        expect(baseMessage.header!.duplicate, isFalse);
+        expect(baseMessage.header!.retain, isFalse);
+        expect(baseMessage.header!.qos, MqttQos.exactlyOnce);
+        expect(baseMessage.header!.messageType, MqttMessageType.publish);
+        expect(baseMessage.header!.messageSize, 15);
+        final MqttPublishMessage pm = baseMessage as MqttPublishMessage;
+        expect(pm.variableHeader!.topicName, 'fred');
+        expect(pm.variableHeader!.messageIdentifier, 1);
+        expect(pm.payload.message![0], 'h'.codeUnitAt(0));
+        expect(pm.payload.message![1], 'e'.codeUnitAt(0));
+        expect(pm.payload.message![2], 'l'.codeUnitAt(0));
+        expect(pm.payload.message![3], 'l'.codeUnitAt(0));
+        expect(pm.payload.message![4], 'o'.codeUnitAt(0));
+        expect(pm.payload.message![5], '!'.codeUnitAt(0));
       });
       test('Deserialisation - Valid payload - properties - with Qos', () {
         final sampleMessage = <int>[
@@ -3514,40 +3514,40 @@ void main() {
         final buff = typed.Uint8Buffer();
         buff.addAll(sampleMessage);
         final byteBuffer = MqttByteBuffer(buff);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishMessage>());
-        expect(baseMessage.header.duplicate, isFalse);
-        expect(baseMessage.header.retain, isFalse);
-        expect(baseMessage.header.qos, MqttQos.exactlyOnce);
-        expect(baseMessage.header.messageType, MqttMessageType.publish);
-        expect(baseMessage.header.messageSize, 34);
-        final MqttPublishMessage pm = baseMessage;
-        expect(pm.variableHeader.topicName, 'fred');
-        expect(pm.variableHeader.messageIdentifier, 1);
-        expect(pm.variableHeader.payloadFormatIndicator, isTrue);
-        expect(pm.variableHeader.topicAlias, 5);
-        expect(pm.variableHeader.userProperty[0].pairName, 'name');
-        expect(pm.variableHeader.userProperty[0].pairValue, 'value');
-        expect(pm.payload.message[0], 'h'.codeUnitAt(0));
-        expect(pm.payload.message[1], 'e'.codeUnitAt(0));
-        expect(pm.payload.message[2], 'l'.codeUnitAt(0));
-        expect(pm.payload.message[3], 'l'.codeUnitAt(0));
-        expect(pm.payload.message[4], 'o'.codeUnitAt(0));
-        expect(pm.payload.message[5], '!'.codeUnitAt(0));
+        expect(baseMessage.header!.duplicate, isFalse);
+        expect(baseMessage.header!.retain, isFalse);
+        expect(baseMessage.header!.qos, MqttQos.exactlyOnce);
+        expect(baseMessage.header!.messageType, MqttMessageType.publish);
+        expect(baseMessage.header!.messageSize, 34);
+        final MqttPublishMessage pm = baseMessage as MqttPublishMessage;
+        expect(pm.variableHeader!.topicName, 'fred');
+        expect(pm.variableHeader!.messageIdentifier, 1);
+        expect(pm.variableHeader!.payloadFormatIndicator, isTrue);
+        expect(pm.variableHeader!.topicAlias, 5);
+        expect(pm.variableHeader!.userProperty[0].pairName, 'name');
+        expect(pm.variableHeader!.userProperty[0].pairValue, 'value');
+        expect(pm.payload.message![0], 'h'.codeUnitAt(0));
+        expect(pm.payload.message![1], 'e'.codeUnitAt(0));
+        expect(pm.payload.message![2], 'l'.codeUnitAt(0));
+        expect(pm.payload.message![3], 'l'.codeUnitAt(0));
+        expect(pm.payload.message![4], 'o'.codeUnitAt(0));
+        expect(pm.payload.message![5], '!'.codeUnitAt(0));
       });
       test('Serialisation - Valid payload - properties - with Qos', () {
         final message = MqttPublishMessage()..withQos(MqttQos.exactlyOnce);
-        message.variableHeader.topicName = 'fred';
-        message.variableHeader.payloadFormatIndicator = true;
-        message.variableHeader.messageIdentifier = 1;
-        message.variableHeader.topicAlias = 5;
+        message.variableHeader!.topicName = 'fred';
+        message.variableHeader!.payloadFormatIndicator = true;
+        message.variableHeader!.messageIdentifier = 1;
+        message.variableHeader!.topicAlias = 5;
         var properties = <MqttUserProperty>[];
         var user1 = MqttUserProperty();
         user1.pairName = 'name';
         user1.pairValue = 'value';
         properties.add(user1);
-        message.variableHeader.userProperty = properties;
-        message.payload.message.addAll([
+        message.variableHeader!.userProperty = properties;
+        message.payload.message!.addAll([
           'h'.codeUnitAt(0),
           'e'.codeUnitAt(0),
           'l'.codeUnitAt(0),
@@ -3631,17 +3631,17 @@ void main() {
         buffer.add('l'.codeUnitAt(0));
         buffer.add('1'.codeUnitAt(0));
         final byteBuffer = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishAckMessage>());
-        expect(baseMessage.header.messageType, MqttMessageType.publishAck);
-        expect(baseMessage.header.messageSize, 24);
-        final MqttPublishAckMessage bm = baseMessage;
+        expect(baseMessage.header!.messageType, MqttMessageType.publishAck);
+        expect(baseMessage.header!.messageSize, 24);
+        final MqttPublishAckMessage bm = baseMessage as MqttPublishAckMessage;
         expect(bm.messageIdentifier, 1);
         expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
         expect(bm.reasonString, 'abcd');
         expect(bm.userProperty[0].pairName, 'name');
         expect(bm.userProperty[0].pairValue, 'val1');
-        expect(bm.variableHeader.length, 24);
+        expect(bm.variableHeader!.length, 24);
       });
       test('Serialisation - Valid', () {
         final message = MqttPublishAckMessage()
@@ -3684,11 +3684,11 @@ void main() {
         buffer.add('l'.codeUnitAt(0));
         buffer.add('1'.codeUnitAt(0));
         final byteBuffer = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishCompleteMessage>());
-        expect(baseMessage.header.messageType, MqttMessageType.publishComplete);
-        expect(baseMessage.header.messageSize, 24);
-        final MqttPublishCompleteMessage bm = baseMessage;
+        expect(baseMessage.header!.messageType, MqttMessageType.publishComplete);
+        expect(baseMessage.header!.messageSize, 24);
+        final MqttPublishCompleteMessage bm = baseMessage as MqttPublishCompleteMessage;
         expect(bm.messageIdentifier, 1);
         expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
         expect(bm.reasonString, 'abcd');
@@ -3737,11 +3737,11 @@ void main() {
         buffer.add('l'.codeUnitAt(0));
         buffer.add('1'.codeUnitAt(0));
         final byteBuffer = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishReceivedMessage>());
-        expect(baseMessage.header.messageType, MqttMessageType.publishReceived);
-        expect(baseMessage.header.messageSize, 24);
-        final MqttPublishReceivedMessage bm = baseMessage;
+        expect(baseMessage.header!.messageType, MqttMessageType.publishReceived);
+        expect(baseMessage.header!.messageSize, 24);
+        final MqttPublishReceivedMessage bm = baseMessage as MqttPublishReceivedMessage;
         expect(bm.messageIdentifier, 1);
         expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
         expect(bm.reasonString, 'abcd');
@@ -3790,12 +3790,12 @@ void main() {
         buffer.add('l'.codeUnitAt(0));
         buffer.add('1'.codeUnitAt(0));
         final byteBuffer = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(byteBuffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
         expect(baseMessage, const TypeMatcher<MqttPublishReleaseMessage>());
-        expect(baseMessage.header.messageType, MqttMessageType.publishRelease);
-        expect(baseMessage.header.qos, MqttQos.atLeastOnce);
-        expect(baseMessage.header.messageSize, 24);
-        final MqttPublishReleaseMessage bm = baseMessage;
+        expect(baseMessage.header!.messageType, MqttMessageType.publishRelease);
+        expect(baseMessage.header!.qos, MqttQos.atLeastOnce);
+        expect(baseMessage.header!.messageSize, 24);
+        final MqttPublishReleaseMessage bm = baseMessage as MqttPublishReleaseMessage;
         expect(bm.messageIdentifier, 1);
         expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
         expect(bm.reasonString, 'abcd');
@@ -3817,7 +3817,7 @@ void main() {
     group('Subscribe', () {
       test('Serialisation - Defaults', () {
         final message = MqttSubscribeMessage();
-        expect(message.header.qos, MqttQos.atLeastOnce);
+        expect(message.header!.qos, MqttQos.atLeastOnce);
         expect(message.isValid, isFalse);
         expect(message.getWriteLength(), 0);
         final buffer = typed.Uint8Buffer();
@@ -3848,7 +3848,7 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(message.getWriteLength(), message.header.messageSize + 2);
+        expect(message.getWriteLength(), message.header!.messageSize + 2);
       });
     });
 
@@ -3884,12 +3884,12 @@ void main() {
         buffer.add(0x8f);
         buffer.add(0x97);
         final stream = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(stream);
+        final baseMessage = MqttMessage.createFrom(stream)!;
         expect(stream.length, 0);
         expect(baseMessage, const TypeMatcher<MqttSubscribeAckMessage>());
-        expect(baseMessage.header.messageType, MqttMessageType.subscribeAck);
-        expect(baseMessage.header.messageSize, 26);
-        final MqttSubscribeAckMessage bm = baseMessage;
+        expect(baseMessage.header!.messageType, MqttMessageType.subscribeAck);
+        expect(baseMessage.header!.messageSize, 26);
+        final MqttSubscribeAckMessage bm = baseMessage as MqttSubscribeAckMessage;
         expect(bm.messageIdentifier, 10);
         expect(bm.userProperty[0].pairName, 'abc');
         expect(bm.userProperty[0].pairValue, 'def');
@@ -3916,11 +3916,11 @@ void main() {
             .fromStringTopic('topic1')
             .fromTopic(subTopic);
         expect(message.isValid, isTrue);
-        expect(message.header.messageType, MqttMessageType.unsubscribe);
+        expect(message.header!.messageType, MqttMessageType.unsubscribe);
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        expect(message.getWriteLength(), message.header.messageSize + 2);
+        expect(message.getWriteLength(), message.header!.messageSize + 2);
       });
     });
 
@@ -3956,12 +3956,12 @@ void main() {
         buffer.add(0x8f);
         buffer.add(0x97);
         final stream = MqttByteBuffer(buffer);
-        final baseMessage = MqttMessage.createFrom(stream);
+        final baseMessage = MqttMessage.createFrom(stream)!;
         expect(stream.length, 0);
         expect(baseMessage, const TypeMatcher<MqttUnsubscribeAckMessage>());
-        expect(baseMessage.header.messageType, MqttMessageType.unsubscribeAck);
-        expect(baseMessage.header.messageSize, 26);
-        final MqttUnsubscribeAckMessage bm = baseMessage;
+        expect(baseMessage.header!.messageType, MqttMessageType.unsubscribeAck);
+        expect(baseMessage.header!.messageSize, 26);
+        final MqttUnsubscribeAckMessage bm = baseMessage as MqttUnsubscribeAckMessage;
         expect(bm.messageIdentifier, 10);
         expect(bm.userProperty[0].pairName, 'abc');
         expect(bm.userProperty[0].pairValue, 'def');
