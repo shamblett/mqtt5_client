@@ -1,3 +1,6 @@
+# 2.1.0
+Issue 9
+
 # 2.0.0
 Issues 6<br>
 Note that auto reconnect will now automatically re subscribe
