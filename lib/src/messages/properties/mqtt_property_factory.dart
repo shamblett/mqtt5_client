@@ -27,7 +27,6 @@ class MqttPropertyFactory {
       case MqttPropertyIdentifier.subscriptionIdentifierAvailable:
       case MqttPropertyIdentifier.sharedSubscriptionAvailable:
       case MqttPropertyIdentifier.notSet:
-      case null:
         final property = MqttByteProperty();
         return property..readFrom(stream);
       case MqttPropertyIdentifier.messageExpiryInterval:

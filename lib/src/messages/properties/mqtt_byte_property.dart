@@ -34,6 +34,7 @@ class MqttByteProperty implements MqttIProperty {
   @override
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier ??= MqttPropertyIdentifier.notSet;
     value = stream.readByte();
   }
 
