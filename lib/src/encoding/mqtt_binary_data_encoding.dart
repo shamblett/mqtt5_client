@@ -12,7 +12,7 @@ part of mqtt5_client;
 /// to the range of 0 to 65,535 Bytes.
 class MqttBinaryDataEncoding {
   /// To binary data
-  typed.Uint8Buffer toBinaryData(typed.Uint8Buffer data) {
+  typed.Uint8Buffer toBinaryData(typed.Uint8Buffer? data) {
     if (data == null || data.isEmpty) {
       throw Exception(
           'MqttBinaryDataEncoding::toBinaryData  -  data is null or empty');

@@ -74,9 +74,9 @@ class MqttWillProperties {
   ///
   /// The value of the Content Type is defined by the sending and
   /// receiving application.
-  String _contentType;
-  String get contentType => _contentType;
-  set contentType(String type) {
+  String? _contentType;
+  String? get contentType => _contentType;
+  set contentType(String? type) {
     if (type != null) {
       final property =
           MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
@@ -90,9 +90,9 @@ class MqttWillProperties {
   ///
   /// The Topic Name for a response message. The presence of a Response Topic
   /// identifies the Will Message as a Request.
-  String _responseTopic;
-  String get responseTopic => _responseTopic;
-  set responseTopic(String topic) {
+  String? _responseTopic;
+  String? get responseTopic => _responseTopic;
+  set responseTopic(String? topic) {
     if (topic != null) {
       final property =
           MqttUtf8StringProperty(MqttPropertyIdentifier.responseTopic);
@@ -111,9 +111,9 @@ class MqttWillProperties {
   ///  any correlation data.
   ///  The value of the Correlation Data only has meaning to the sender of the
   ///  Request Message and receiver of the Response Message.
-  typed.Uint8Buffer _correlationData;
-  typed.Uint8Buffer get correlationData => _correlationData;
-  set correlationData(typed.Uint8Buffer data) {
+  typed.Uint8Buffer? _correlationData;
+  typed.Uint8Buffer? get correlationData => _correlationData;
+  set correlationData(typed.Uint8Buffer? data) {
     if (data != null) {
       final property =
           MqttBinaryDataProperty(MqttPropertyIdentifier.correlationdata);
@@ -122,8 +122,8 @@ class MqttWillProperties {
       if (_correlationData == null) {
         _correlationData = typed.Uint8Buffer()..addAll(data);
       } else {
-        _correlationData.clear();
-        _correlationData.addAll(data);
+        _correlationData!.clear();
+        _correlationData!.addAll(data);
       }
     }
   }

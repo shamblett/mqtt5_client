@@ -50,7 +50,7 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   /// more than once.
   final _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
-  set userProperty(List<MqttUserProperty> properties) {
+  set userProperty(List<MqttUserProperty>? properties) {
     if (properties != null) {
       for (var userProperty in properties) {
         _propertySet.add(userProperty);
@@ -68,7 +68,7 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   }
 
   // Serialize the header
-  typed.Uint8Buffer _serialize() {
+  typed.Uint8Buffer? _serialize() {
     final buffer = typed.Uint8Buffer();
     final stream = MqttByteBuffer(buffer);
     writeMessageIdentifier(stream);
@@ -84,12 +84,12 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   /// Writes a variable header to the supplied message stream.
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    variableHeaderStream.addAll(_serialize());
+    variableHeaderStream.addAll(_serialize()!);
   }
 
   /// Gets the length of the write data.
   @override
-  int getWriteLength() => _serialize().length;
+  int getWriteLength() => _serialize()!.length;
 
   @override
   String toString() {

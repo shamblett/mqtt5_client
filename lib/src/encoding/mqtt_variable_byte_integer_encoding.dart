@@ -20,7 +20,7 @@ class MqttVariableByteIntegerEncoding {
   static const maxConvertibleValue = 268435455;
 
   /// Byte integer to integer
-  int toInt(typed.Uint8Buffer byteInteger) {
+  int toInt(typed.Uint8Buffer? byteInteger) {
     if (byteInteger == null || byteInteger.isEmpty) {
       throw ArgumentError(
           'MqttByteIntegerEncoding::toInt byte integer is null or empty');

@@ -12,72 +12,72 @@ part of mqtt5_client;
 abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
   MqttConnectionHandlerBase(this.clientEventBus,
-      {@required this.maxConnectionAttempts});
+      {required this.maxConnectionAttempts});
 
   /// Successful connection callback.
   @override
-  ConnectCallback onConnected;
+  ConnectCallback? onConnected;
 
   /// Unsolicited disconnection callback.
   @override
-  DisconnectCallback onDisconnected;
+  DisconnectCallback? onDisconnected;
 
   /// Auto reconnect callback
   @override
-  AutoReconnectCallback onAutoReconnect;
+  AutoReconnectCallback? onAutoReconnect;
 
   /// Auto reconnected callback
   @override
-  AutoReconnectCompleteCallback onAutoReconnected;
+  AutoReconnectCompleteCallback? onAutoReconnected;
 
   /// Auto reconnect in progress
   @override
-  bool autoReconnectInProgress = false;
+  bool? autoReconnectInProgress = false;
 
   // Server name, needed for auto reconnect.
   @override
-  String server;
+  String? server;
 
   // Port number, needed for auto reconnect.
   @override
-  int port;
+  int? port;
 
   // Connection message, needed for auto reconnect.
   @override
-  MqttConnectMessage connectionMessage;
+  MqttConnectMessage? connectionMessage;
 
   /// Callback function to handle bad certificate. if true, ignore the error.
   @override
-  bool Function(dynamic certificate) onBadCertificate;
+  bool Function(dynamic certificate)? onBadCertificate;
 
   /// Max connection attempts
-  final int maxConnectionAttempts;
+  final int? maxConnectionAttempts;
 
   /// The broker connection acknowledgment timer
   @protected
-  MqttCancellableAsyncSleep connectTimer;
+  late MqttCancellableAsyncSleep connectTimer;
 
   /// The event bus
   @protected
-  events.EventBus clientEventBus;
+  events.EventBus? clientEventBus;
 
   /// User supplied websocket protocols
   @protected
-  List<String> websocketProtocols;
+  List<String>? websocketProtocols;
 
   /// The connection
   @protected
-  dynamic connection;
+  late dynamic connection;
 
   /// Indicates if the connect message has an authentication method
   /// i.e. authentication has been requested.
   @override
-  bool authenticationRequested = false;
+  bool? authenticationRequested = false;
 
   /// Registry of message processors
   @protected
-  Map<MqttMessageType, MessageCallbackFunction> messageProcessorRegistry =
-      <MqttMessageType, MessageCallbackFunction>{};
+  Map<MqttMessageType, MessageCallbackFunction?> messageProcessorRegistry =
+      <MqttMessageType, MessageCallbackFunction?>{};
 
   /// Registry of sent message callbacks
   @protected
@@ -95,7 +95,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Connect to the specific Mqtt Connection.
   @override
   Future<MqttConnectionStatus> connect(
-      String server, int port, MqttConnectMessage message) async {
+      String? server, int? port, MqttConnectMessage? message) async {
     // Save the parameters for auto reconnect.
     this.server = server;
     this.port = port;
@@ -116,20 +116,20 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Connect to the specific Mqtt Connection internally.
   @protected
   Future<MqttConnectionStatus> internalConnect(
-      String hostname, int port, MqttConnectMessage message);
+      String? hostname, int? port, MqttConnectMessage? message);
 
   /// Auto reconnect
   @protected
   void autoReconnect(MqttAutoReconnect reconnectEvent) async {
     MqttLogger.log('MqttConnectionHandlerBase::autoReconnect entered');
     // If already in progress exit and we were not connected return
-    if (autoReconnectInProgress && !reconnectEvent.wasConnected) {
+    if (autoReconnectInProgress! && !reconnectEvent.wasConnected) {
       return;
     }
     autoReconnectInProgress = true;
     // If the auto reconnect callback is set call it
     if (onAutoReconnect != null) {
-      onAutoReconnect();
+      onAutoReconnect!();
     }
 
     // If we are connected disconnect from the broker.
@@ -149,17 +149,17 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     if (connectionStatus.state == MqttConnectionState.connected) {
       connection.onDisconnected = onDisconnected;
       // Fire the re subscribe event.
-      clientEventBus.fire(MqttResubscribe(fromAutoReconnect: true));
+      clientEventBus!.fire(MqttResubscribe(fromAutoReconnect: true));
       MqttLogger.log(
           'MqttConnectionHandlerBase::autoReconnect - auto reconnect complete');
       // If the auto reconnect callback is set call it
       if (onAutoReconnected != null) {
-        onAutoReconnected();
+        onAutoReconnected!();
       }
     } else {
       MqttLogger.log(
           'MqttConnectionHandlerBase::autoReconnect - auto reconnect failed - re trying');
-      clientEventBus.fire(MqttAutoReconnect());
+      clientEventBus!.fire(MqttAutoReconnect());
     }
   }
 
@@ -202,7 +202,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Registers for the receipt of messages when they arrive.
   @override
   void registerForMessage(
-      MqttMessageType msgType, MessageCallbackFunction callback) {
+      MqttMessageType msgType, MessageCallbackFunction? callback) {
     messageProcessorRegistry[msgType] = callback;
   }
 
@@ -228,10 +228,10 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// handling non connection messages.
   @protected
   void messageAvailable(MqttMessageAvailable event) {
-    final messageType = event.message.header.messageType;
+    final messageType = event.message!.header!.messageType;
     MqttLogger.log(
         'MqttConnectionHandlerBase::messageAvailable - message type is $messageType');
-    final callback = messageProcessorRegistry[messageType];
+    final callback = messageProcessorRegistry[messageType!];
     if (callback != null) {
       callback(event.message);
     } else {
@@ -267,26 +267,26 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   bool connectAckProcessor(MqttMessage msg) {
     MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor');
     try {
-      final MqttConnectAckMessage ackMsg = msg;
+      final ackMsg = msg as MqttConnectAckMessage;
       // Drop the connection if our connect request has been rejected.
       if (MqttReasonCodeUtilities.isError(
-          mqttConnectReasonCode.asInt(ackMsg.variableHeader.reasonCode))) {
+          mqttConnectReasonCode.asInt(ackMsg.variableHeader!.reasonCode)!)) {
         MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
-            'connection rejected, reason code is ${mqttConnectReasonCode.asString(ackMsg.variableHeader.reasonCode)}');
-        connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
-        connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
+            'connection rejected, reason code is ${mqttConnectReasonCode.asString(ackMsg.variableHeader!.reasonCode)}');
+        connectionStatus.reasonCode = ackMsg.variableHeader!.reasonCode;
+        connectionStatus.reasonString = ackMsg.variableHeader!.reasonString;
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.
         MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
             '- state = connected');
         connectionStatus.state = MqttConnectionState.connected;
-        connectionStatus.reasonCode = ackMsg.variableHeader.reasonCode;
-        connectionStatus.reasonString = ackMsg.variableHeader.reasonString;
+        connectionStatus.reasonCode = ackMsg.variableHeader!.reasonCode;
+        connectionStatus.reasonString = ackMsg.variableHeader!.reasonString;
         connectionStatus.connectAckMessage = msg;
         // Call the connected callback if we have one
         if (onConnected != null) {
-          onConnected();
+          onConnected!();
         }
       }
     } on Exception {
@@ -300,14 +300,14 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
 
   /// Connect acknowledge recieved
   void connectAckReceived(MqttConnectAckMessageAvailable event) {
-    connectAckProcessor(event.message);
+    connectAckProcessor(event.message!);
   }
 
   /// Initialise the event listeners;
   void initialiseListeners() {
-    clientEventBus.on<MqttAutoReconnect>().listen(autoReconnect);
-    clientEventBus.on<MqttMessageAvailable>().listen(messageAvailable);
-    clientEventBus
+    clientEventBus!.on<MqttAutoReconnect>().listen(autoReconnect);
+    clientEventBus!.on<MqttMessageAvailable>().listen(messageAvailable);
+    clientEventBus!
         .on<MqttConnectAckMessageAvailable>()
         .listen(connectAckReceived);
   }

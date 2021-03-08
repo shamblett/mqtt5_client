@@ -14,7 +14,7 @@ class MqttUnsubscribeMessage extends MqttMessage {
   MqttUnsubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.unsubscribe);
     // Qos of at least once has to be specified for this message.
-    header.qos = MqttQos.atLeastOnce;
+    header!.qos = MqttQos.atLeastOnce;
   }
 
   final _variableHeader = MqttUnsubscribeVariableHeader();
@@ -30,7 +30,7 @@ class MqttUnsubscribeMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
+    header!.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
         messageStream);
     variableHeader.writeTo(messageStream);
     payload.writeTo(messageStream);

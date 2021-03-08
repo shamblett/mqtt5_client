@@ -29,24 +29,24 @@ class MqttSubscribeAckMessage extends MqttMessage {
   }
 
   /// Variable Header
-  MqttSubscribeAckVariableHeader _variableHeader;
-  MqttSubscribeAckVariableHeader get variableHeader => _variableHeader;
+  MqttSubscribeAckVariableHeader? _variableHeader;
+  MqttSubscribeAckVariableHeader? get variableHeader => _variableHeader;
 
   /// Payload
-  MqttSubscribeAckPayload _payload;
-  MqttSubscribeAckPayload get payload => _payload;
+  MqttSubscribeAckPayload? _payload;
+  MqttSubscribeAckPayload? get payload => _payload;
 
   /// The message identifier
-  int get messageIdentifier => _variableHeader.messageIdentifier;
+  int get messageIdentifier => _variableHeader!.messageIdentifier;
 
   /// Reason codes, one for each topic subscribed
-  List<MqttSubscribeReasonCode> get reasonCodes => _payload.reasonCodes;
+  List<MqttSubscribeReasonCode?> get reasonCodes => _payload!.reasonCodes;
 
   /// Reason String.
-  String get reasonString => _variableHeader.reasonString;
+  String? get reasonString => _variableHeader!.reasonString;
 
   /// User Property.
-  List<MqttUserProperty> get userProperty => _variableHeader.userProperty;
+  List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
 
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.

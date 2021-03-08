@@ -16,5 +16,5 @@ class MqttReadWrapper {
   }
 
   /// The bytes associated with the message being read.
-  List<int> messageBytes;
+  List<int>? messageBytes;
 }

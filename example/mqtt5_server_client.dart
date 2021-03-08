@@ -102,17 +102,17 @@ Future<int> main() async {
   }
 
   /// Check we are connected. connectionStatus always gives us this and other information.
-  if (client.connectionStatus.state == MqttConnectionState.connected) {
+  if (client.connectionStatus!.state == MqttConnectionState.connected) {
     print(
-        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus.reasonCode.toString().split('.')[1]}');
+        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}');
 
     /// All returned properties in the connect acknowledge message are available.
     /// Get our user properties from the connect acknowledge message.
-    if (client.connectionStatus.connectAckMessage.userProperty.isNotEmpty) {
+    if (client.connectionStatus!.connectAckMessage.userProperty!.isNotEmpty) {
       print(
-          'EXAMPLE::Connected - user property name - ${client.connectionStatus.connectAckMessage.userProperty[0].pairName}');
+          'EXAMPLE::Connected - user property name - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairName}');
       print(
-          'EXAMPLE::Connected - user property value - ${client.connectionStatus.connectAckMessage.userProperty[0].pairValue}');
+          'EXAMPLE::Connected - user property value - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairValue}');
     }
   } else {
     print(
@@ -128,9 +128,9 @@ Future<int> main() async {
 
   /// The client has a change notifier object(see the Observable class) which we then listen to to get
   /// notifications of published updates to each subscribed topic.
-  client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-    final MqttPublishMessage recMess = c[0].payload;
-    final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message);
+  client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    final recMess = c[0].payload as MqttPublishMessage;
+    final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
 
     /// The above may seem a little convoluted for users only interested in the
     /// payload, some users however may be interested in the received publish message,
@@ -149,9 +149,9 @@ Future<int> main() async {
   /// If needed you can listen for published messages that have completed the publishing
   /// handshake which is Qos dependant. Any message received on this stream has completed its
   /// publishing handshake with the broker.
-  client.published.listen((MqttPublishMessage message) {
+  client.published!.listen((MqttPublishMessage message) {
     print(
-        'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
+        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
   });
 
   /// Subscribe to our topic, we will publish to it in the onSubscribed callback.
@@ -185,14 +185,14 @@ void onSubscribed(MqttSubscription subscription) {
     /// Use the payload builder rather than a raw buffer
     builder.addString('Hello from mqtt5_client');
     print('EXAMPLE::Publishing our topic now we are subscribed');
-    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
+    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
   }
 }
 
 /// The unsolicited disconnect callback
 void onDisconnected() {
   print('EXAMPLE::OnDisconnected client callback - Client disconnection');
-  if (client.connectionStatus.disconnectionOrigin ==
+  if (client.connectionStatus!.disconnectionOrigin ==
       MqttDisconnectionOrigin.solicited) {
     if (topicNotified) {
       print(

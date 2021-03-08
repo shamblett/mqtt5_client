@@ -25,24 +25,24 @@ class MqttUnsubscribeAckMessage extends MqttMessage {
   }
 
   /// Variable Header
-  MqttUnsubscribeAckVariableHeader _variableHeader;
-  MqttUnsubscribeAckVariableHeader get variableHeader => _variableHeader;
+  MqttUnsubscribeAckVariableHeader? _variableHeader;
+  MqttUnsubscribeAckVariableHeader? get variableHeader => _variableHeader;
 
   /// Payload
-  MqttUnsubscribeAckPayload _payload;
-  MqttUnsubscribeAckPayload get payload => _payload;
+  MqttUnsubscribeAckPayload? _payload;
+  MqttUnsubscribeAckPayload? get payload => _payload;
 
   /// The message identifier
-  int get messageIdentifier => _variableHeader.messageIdentifier;
+  int get messageIdentifier => _variableHeader!.messageIdentifier;
 
   /// Reason codes, one for each topic subscribed
-  List<MqttSubscribeReasonCode> get reasonCodes => _payload.reasonCodes;
+  List<MqttSubscribeReasonCode?> get reasonCodes => _payload!.reasonCodes;
 
   /// Reason String.
-  String get reasonString => _variableHeader.reasonString;
+  String? get reasonString => _variableHeader!.reasonString;
 
   /// User Property.
-  List<MqttUserProperty> get userProperty => _variableHeader.userProperty;
+  List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
 
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.

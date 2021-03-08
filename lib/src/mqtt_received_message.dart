@@ -13,7 +13,7 @@ class MqttReceivedMessage<T> extends observe.ChangeRecord {
   MqttReceivedMessage(this.topic, this.payload);
 
   /// The topic the message was received on.
-  String topic;
+  String? topic;
 
   /// The payload of the message received.
   T payload;

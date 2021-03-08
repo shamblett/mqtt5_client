@@ -89,5 +89,5 @@ const Map<int, MqttSubscribeReasonCode> _mqttSubscribeReasonCodeValues =
 };
 
 /// MQTT subscribe reason code helper
-MqttEnumHelper<MqttSubscribeReasonCode> mqttSubscribeReasonCode =
-    MqttEnumHelper<MqttSubscribeReasonCode>(_mqttSubscribeReasonCodeValues);
+MqttEnumHelper<MqttSubscribeReasonCode?> mqttSubscribeReasonCode =
+    MqttEnumHelper<MqttSubscribeReasonCode?>(_mqttSubscribeReasonCodeValues);

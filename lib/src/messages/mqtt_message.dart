@@ -29,10 +29,10 @@ class MqttMessage {
   MqttMessage.fromHeader(this.header);
 
   /// The header of the MQTT Message. Contains metadata about the message
-  MqttHeader header;
+  MqttHeader? header;
 
   /// Creates a new instance of an MQTT Message based on a raw message stream.
-  static MqttMessage createFrom(MqttByteBuffer messageStream) {
+  static MqttMessage? createFrom(MqttByteBuffer messageStream) {
     try {
       var header = MqttHeader();
       // Pass the input stream sequentially through the component
@@ -56,7 +56,7 @@ class MqttMessage {
 
   /// Writes the message to the supplied stream.
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(0, messageStream);
+    header!.writeTo(0, messageStream);
   }
 
   /// Reads a message from the supplied stream.
@@ -69,7 +69,7 @@ class MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.write('MQTTMessage of type ');
-    sb.writeln(header.messageType.toString());
+    sb.writeln(header!.messageType.toString());
     sb.writeln(header.toString());
     return sb.toString();
   }

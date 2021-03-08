@@ -19,20 +19,20 @@ class MqttSubscribeMessage extends MqttMessage {
   MqttSubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.subscribe);
     // Qos at least once must be set for a subscribe message
-    header.qos = MqttQos.atLeastOnce;
+    header!.qos = MqttQos.atLeastOnce;
     _variableHeader = MqttSubscribeVariableHeader();
     _payload = MqttSubscribePayload();
   }
 
-  MqttSubscribeVariableHeader _variableHeader;
+  MqttSubscribeVariableHeader? _variableHeader;
 
   /// Gets the variable header contents.
-  MqttSubscribeVariableHeader get variableHeader => _variableHeader;
+  MqttSubscribeVariableHeader? get variableHeader => _variableHeader;
 
-  MqttSubscribePayload _payload;
+  MqttSubscribePayload? _payload;
 
   /// Gets the payload contents.
-  MqttSubscribePayload get payload => _payload;
+  MqttSubscribePayload? get payload => _payload;
 
   /// Writes the message to the supplied stream.
   @override
@@ -40,10 +40,11 @@ class MqttSubscribeMessage extends MqttMessage {
     if (!isValid) {
       return;
     }
-    header.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
+    header!.writeTo(
+        variableHeader!.getWriteLength() + payload!.getWriteLength(),
         messageStream);
-    variableHeader.writeTo(messageStream);
-    payload.writeTo(messageStream);
+    variableHeader!.writeTo(messageStream);
+    payload!.writeTo(messageStream);
   }
 
   /// Reads a message from the supplied stream.
@@ -59,7 +60,7 @@ class MqttSubscribeMessage extends MqttMessage {
   /// message identifier must be set.
   @override
   bool get isValid =>
-      _payload.isValid && _variableHeader.messageIdentifier != 0;
+      _payload!.isValid && _variableHeader!.messageIdentifier != 0;
 
   /// Write length
   int getWriteLength() {
@@ -75,16 +76,16 @@ class MqttSubscribeMessage extends MqttMessage {
   /// Adds a new subscription topic with the default Qos level.
   MqttSubscribeMessage toTopic(String topic) {
     final subTopic = MqttSubscriptionTopic(topic);
-    _payload.addSubscription(subTopic);
+    _payload!.addSubscription(subTopic);
     return this;
   }
 
   /// Adds a new subscription topic with the specified Qos level[MqttQos].
-  MqttSubscribeMessage toTopicWithQos(String topic, MqttQos withQos) {
+  MqttSubscribeMessage toTopicWithQos(String? topic, MqttQos? withQos) {
     final subTopic = MqttSubscriptionTopic(topic);
     final option = MqttSubscriptionOption();
     option.maximumQos = withQos;
-    _payload.addSubscription(subTopic, option);
+    _payload!.addSubscription(subTopic, option);
     return this;
   }
 
@@ -92,13 +93,13 @@ class MqttSubscribeMessage extends MqttMessage {
   MqttSubscribeMessage toTopicWithOption(
       String topic, MqttSubscriptionOption option) {
     final subTopic = MqttSubscriptionTopic(topic);
-    _payload.addSubscription(subTopic, option);
+    _payload!.addSubscription(subTopic, option);
     return this;
   }
 
   /// Adds a new subscription with the specified subscription
   MqttSubscribeMessage toSubscription(MqttSubscription subscription) {
-    _payload.addSubscription(subscription.topic, subscription.option);
+    _payload!.addSubscription(subscription.topic, subscription.option);
     return this;
   }
 
@@ -106,38 +107,38 @@ class MqttSubscribeMessage extends MqttMessage {
   MqttSubscribeMessage toSubscriptionList(
       List<MqttSubscription> subscriptions) {
     for (final subscription in subscriptions) {
-      _payload.addSubscription(subscription.topic, subscription.option);
+      _payload!.addSubscription(subscription.topic, subscription.option);
     }
     return this;
   }
 
   /// Subscription identifier
   MqttSubscribeMessage withSubscriptionIdentifier(int identifier) {
-    _variableHeader.subscriptionIdentifier = identifier;
+    _variableHeader!.subscriptionIdentifier = identifier;
     return this;
   }
 
   /// User property
   MqttSubscribeMessage withUserProperty(MqttUserProperty property) {
-    _variableHeader.userProperty = [property];
+    _variableHeader!.userProperty = [property];
     return this;
   }
 
   /// User properties
-  MqttSubscribeMessage withUserProperties(List<MqttUserProperty> properties) {
-    _variableHeader.userProperty = properties;
+  MqttSubscribeMessage withUserProperties(List<MqttUserProperty>? properties) {
+    _variableHeader!.userProperty = properties;
     return this;
   }
 
   /// Set the message identifier
   set messageIdentifier(int identifier) =>
-      _variableHeader.messageIdentifier = identifier;
+      _variableHeader!.messageIdentifier = identifier;
 
   /// Sets the duplicate flag for the message to indicate its a
   /// duplicate of a previous message type
   /// with the same message identifier.
   MqttSubscribeMessage isDuplicate() {
-    header.isDuplicate();
+    header!.isDuplicate();
     return this;
   }
 

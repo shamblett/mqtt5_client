@@ -33,10 +33,10 @@ class MqttSubscriptionManager {
   MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
       _messageIdentifierDispenser;
 
-  final _subscriptions = <String, MqttSubscription>{};
+  final _subscriptions = <String?, MqttSubscription>{};
 
   /// List of confirmed subscriptions, keyed on the topic name.
-  Map<String, MqttSubscription> get subscriptions => _subscriptions;
+  Map<String?, MqttSubscription> get subscriptions => _subscriptions;
 
   final _pendingSubscriptions = <int, List<MqttSubscription>>{};
 
@@ -57,13 +57,13 @@ class MqttSubscriptionManager {
   final _connectionHandler;
 
   /// Subscribe and Unsubscribe callbacks
-  SubscribeCallback onSubscribed;
+  SubscribeCallback? onSubscribed;
 
   /// Unsubscribed
-  UnsubscribeCallback onUnsubscribed;
+  UnsubscribeCallback? onUnsubscribed;
 
   /// Subscription failed callback
-  SubscribeFailCallback onSubscribeFail;
+  SubscribeFailCallback? onSubscribeFail;
 
   /// Re subscribe on auto reconnect.
   bool resubscribeOnAutoReconnect = true;
@@ -83,7 +83,7 @@ class MqttSubscriptionManager {
   /// Registers a new subscription with the subscription manager from a topic
   /// and a maximum Qos.
   /// Returns the subscription subscribed to.
-  MqttSubscription subscribeSubscriptionTopic(String topic, MqttQos qos) {
+  MqttSubscription? subscribeSubscriptionTopic(String? topic, MqttQos? qos) {
     if (topic == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::subscribeSubscriptionTopic - topic is null');
@@ -95,7 +95,7 @@ class MqttSubscriptionManager {
   /// Registers a new subscription with the subscription manager from a
   /// subscription.
   /// Returns the subscription subscribed to.
-  MqttSubscription subscribeSubscription(MqttSubscription subscription) {
+  MqttSubscription? subscribeSubscription(MqttSubscription? subscription) {
     if (subscription == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::subscribeSubscription - subscription is null');
@@ -112,8 +112,8 @@ class MqttSubscriptionManager {
   /// subscription basis, if you wish to send user properties then set
   /// them on the first subscription in the list.
   /// Returns the actual subscriptions subscribed to or null if none.
-  List<MqttSubscription> subscribeSubscriptionList(
-      List<MqttSubscription> subscriptions) {
+  List<MqttSubscription>? subscribeSubscriptionList(
+      List<MqttSubscription>? subscriptions) {
     if (subscriptions == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::subscribeSubscriptionList - subscription list is null');
@@ -151,7 +151,7 @@ class MqttSubscriptionManager {
 
   /// Gets a view on the existing observable, if the subscription
   /// already exists.
-  MqttSubscription _tryGetExistingSubscription(String topic) {
+  MqttSubscription? _tryGetExistingSubscription(String? topic) {
     final retSub = subscriptions[topic];
     if (retSub == null) {
       // Search the pending subscriptions
@@ -168,8 +168,8 @@ class MqttSubscriptionManager {
 
   /// Creates a new subscription for the specified topic and Qos.
   /// If the subscription cannot be created null is returned.
-  MqttSubscription _createNewSubscription(String topic, MqttQos qos,
-      {List<MqttUserProperty> userProperties}) {
+  MqttSubscription? _createNewSubscription(String? topic, MqttQos? qos,
+      {List<MqttUserProperty>? userProperties}) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
@@ -200,7 +200,7 @@ class MqttSubscriptionManager {
   }
 
   /// Unsubscribe from a string topic.
-  void unsubscribeTopic(String topic) {
+  void unsubscribeTopic(String? topic) {
     if (topic == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::unsubscribeStringTopic - topic is null');
@@ -217,7 +217,7 @@ class MqttSubscriptionManager {
   }
 
   /// Unsubscribe from a subscription.
-  void unsubscribeSubscription(MqttSubscription subscription) {
+  void unsubscribeSubscription(MqttSubscription? subscription) {
     if (subscription == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::unsubscribeSubscription - subscription is null');
@@ -225,7 +225,7 @@ class MqttSubscriptionManager {
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromTopic(subscription.topic)
-        .withUserProperties(subscription.userProperties);
+        .withUserProperties(subscription.userProperties!);
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         <MqttSubscription>[]..add(subscription);
@@ -235,7 +235,7 @@ class MqttSubscriptionManager {
   /// Note that user properties are set on a per message basis not a per
   /// subscription basis, if you wish to send user properties then set
   /// them on the first subscription in the list.
-  void unsubscribeSubscriptionList(List<MqttSubscription> subscriptions) {
+  void unsubscribeSubscriptionList(List<MqttSubscription>? subscriptions) {
     if (subscriptions == null) {
       throw ArgumentError(
           'MqttSubscriptionManager::unsubscribeSubscriptionList - subscription list is null');
@@ -243,7 +243,7 @@ class MqttSubscriptionManager {
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromSubscriptionList(subscriptions)
-        .withUserProperties(subscriptions.first.userProperties);
+        .withUserProperties(subscriptions.first.userProperties!);
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         subscriptions;
@@ -265,27 +265,27 @@ class MqttSubscriptionManager {
   /// Returns true on successful subscription confirm, false on fail.
   /// Note if any subscriptions fail a fail will be returned.
   bool confirmSubscription(MqttMessage msg) {
-    final MqttSubscribeAckMessage subAck = msg;
+    final subAck = msg as MqttSubscribeAckMessage;
     final reasonCodes = subAck.reasonCodes;
     var ok = true;
     var reasonCodeIndex = 0;
-    final messageIdentifier = subAck.variableHeader.messageIdentifier;
+    final messageIdentifier = subAck.variableHeader!.messageIdentifier;
     if (pendingSubscriptions.containsKey(messageIdentifier)) {
-      for (final pendingTopic in pendingSubscriptions[messageIdentifier]) {
+      for (final pendingTopic in pendingSubscriptions[messageIdentifier]!) {
         final topic = pendingTopic.topic.rawTopic;
         pendingTopic.reasonCode = subAck.reasonCodes[reasonCodeIndex];
         pendingTopic.userProperties = subAck.userProperty;
         // Check for a successful subscribe
         if (!MqttReasonCodeUtilities.isError(
-            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex]))) {
+            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!)) {
           subscriptions[topic] = pendingTopic;
           if (onSubscribed != null) {
-            onSubscribed(pendingTopic);
+            onSubscribed!(pendingTopic);
           }
         } else {
           subscriptions.remove(topic);
           if (onSubscribeFail != null) {
-            onSubscribeFail(pendingTopic);
+            onSubscribeFail!(pendingTopic);
           }
           ok = false;
         }
@@ -306,22 +306,22 @@ class MqttSubscriptionManager {
   /// Returns true on successful unsubscription confirm, false on fail.
   /// The active subscription is not removed if the unsubscription for the topic fails.
   bool confirmUnsubscribe(MqttMessage msg) {
-    final MqttUnsubscribeAckMessage unSubAck = msg;
+    final unSubAck = msg as MqttUnsubscribeAckMessage;
     final reasonCodes = unSubAck.reasonCodes;
     var ok = true;
     var reasonCodeIndex = 0;
-    final messageIdentifier = unSubAck.variableHeader.messageIdentifier;
+    final messageIdentifier = unSubAck.variableHeader!.messageIdentifier;
     if (pendingUnsubscriptions.containsKey(messageIdentifier)) {
-      for (final pendingTopic in pendingUnsubscriptions[messageIdentifier]) {
+      for (final pendingTopic in pendingUnsubscriptions[messageIdentifier]!) {
         final topic = pendingTopic.topic.rawTopic;
         pendingTopic.reasonCode = unSubAck.reasonCodes[reasonCodeIndex];
         pendingTopic.userProperties = unSubAck.userProperty;
         // Check for a successful unsubscribe
         if (!MqttReasonCodeUtilities.isError(
-            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex]))) {
+            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!)) {
           if (onUnsubscribed != null) {
             subscriptions.remove(topic);
-            onUnsubscribed(pendingTopic);
+            onUnsubscribed!(pendingTopic);
           }
         } else {
           ok = false;

@@ -93,7 +93,7 @@ void main() {
       try {
         await client.connect();
         var connectionOK = false;
-        if (client.connectionStatus.state == MqttConnectionState.connected) {
+        if (client.connectionStatus!.state == MqttConnectionState.connected) {
           print('Browser client connected locally');
           connectionOK = true;
         } else {
@@ -139,7 +139,7 @@ void main() {
       try {
         await client.connect();
         var connectionOK = false;
-        if (client.connectionStatus.state == MqttConnectionState.connected) {
+        if (client.connectionStatus!.state == MqttConnectionState.connected) {
           print('Browser client connected locally');
           connectionOK = true;
         } else {

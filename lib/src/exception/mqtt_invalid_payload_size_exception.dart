@@ -17,7 +17,7 @@ class MqttInvalidPayloadSizeException implements Exception {
         'be equal to or greater than 0 and less than $max bytes';
   }
 
-  String _message;
+  late String _message;
 
   @override
   String toString() => _message;

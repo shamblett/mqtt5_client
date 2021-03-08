@@ -20,11 +20,11 @@ class MqttStringPairProperty implements MqttIProperty {
 
   /// Identifier
   @override
-  MqttPropertyIdentifier identifier = MqttPropertyIdentifier.notSet;
+  MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
 
   /// The value
   @override
-  final value = MqttStringPair();
+  final dynamic value = MqttStringPair();
 
   /// Serialize to a byte buffer stream
   @override
@@ -45,20 +45,20 @@ class MqttStringPairProperty implements MqttIProperty {
 
   /// Gets the length of the write data when WriteTo will be called.
   @override
-  int getWriteLength() =>
+  int? getWriteLength() =>
       value.nameAsUtf8.length + value.valueAsUtf8.length + 1;
 
   /// Set the name
-  set pairName(String val) => value.name = val;
+  set pairName(String? val) => value.name = val;
 
   /// Set the value
-  set pairValue(String val) => value.value = val;
+  set pairValue(String? val) => value.value = val;
 
   /// Get the name
-  String get pairName => value.name;
+  String? get pairName => value.name;
 
   /// Get the value
-  String get pairValue => value.value;
+  String? get pairValue => value.value;
 
   @override
   String toString() {

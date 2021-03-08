@@ -78,5 +78,5 @@ const Map<int, MqttPublishReasonCode> _mqttPublishReasonCodeValues =
 };
 
 /// MQTT publish reason code helper
-MqttEnumHelper<MqttPublishReasonCode> mqttPublishReasonCode =
-    MqttEnumHelper<MqttPublishReasonCode>(_mqttPublishReasonCodeValues);
+MqttEnumHelper<MqttPublishReasonCode?> mqttPublishReasonCode =
+    MqttEnumHelper<MqttPublishReasonCode?>(_mqttPublishReasonCodeValues);

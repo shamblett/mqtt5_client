@@ -24,18 +24,18 @@ class MqttPublishPayload implements MqttIPayload {
   int length = 0;
 
   /// Message header
-  MqttHeader header;
+  MqttHeader? header;
 
   /// Variable header
-  MqttPublishVariableHeader variableHeader;
+  MqttPublishVariableHeader? variableHeader;
 
   /// The message that forms the payload of the publish message.
-  typed.Uint8Buffer message;
+  typed.Uint8Buffer? message;
 
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    final messageBytes = header.messageSize - variableHeader.length;
+    final messageBytes = header!.messageSize - variableHeader!.length;
     message = payloadStream.read(messageBytes);
     length += messageBytes;
   }
@@ -48,9 +48,9 @@ class MqttPublishPayload implements MqttIPayload {
 
   /// Gets the length of the payload in bytes when written to a stream.
   @override
-  int getWriteLength() => message.length;
+  int getWriteLength() => message!.length;
 
   @override
   String toString() =>
-      'Payload: {${message.length} bytes={${MqttUtilities.bytesToString(message)}';
+      'Payload: {${message!.length} bytes={${MqttUtilities.bytesToString(message!)}';
 }

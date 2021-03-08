@@ -29,7 +29,7 @@ class MqttAuthenticationManager {
 
   /// Handles the receipt of authentication messages from a message broker.
   bool handleAuthentication(MqttMessage msg) {
-    final MqttAuthenticateMessage authMsg = msg;
+    final authMsg = msg as MqttAuthenticateMessage;
     MqttLogger.log(
         'MqttAuthenticationManager::handleAuthentication - Authentication message received');
     _notifyAuthenticate(authMsg);
@@ -56,10 +56,10 @@ class MqttAuthenticationManager {
     final completer = Completer<MqttAuthenticateMessage>();
     send(msg);
     MqttLogger.log(
-        'MqttAuthenticationManager::reauthenticate - started, timeout is ${waitTimeInSeconds ?? 'indefinite'}');
+        'MqttAuthenticationManager::reauthenticate - started, timeout is ${waitTimeInSeconds}');
     final timeoutMsg = MqttAuthenticateMessage();
     timeoutMsg.timeout = true;
-    var subscription;
+    late var subscription;
     subscription = _authenticated.stream
         .timeout(Duration(seconds: waitTimeInSeconds), onTimeout: (_) {
       completer.complete(timeoutMsg);

@@ -12,7 +12,7 @@ part of mqtt5_client;
 /// Comprises a topic and its associated topic option.
 class MqttSubscribePayloadTopic {
   /// Construction
-  MqttSubscribePayloadTopic(this.topic, [MqttSubscriptionOption option]) {
+  MqttSubscribePayloadTopic(this.topic, [MqttSubscriptionOption? option]) {
     if (option != null) {
       this.option = option;
     }
@@ -36,10 +36,10 @@ class MqttSubscribePayload implements MqttIPayload {
   MqttSubscribePayload();
 
   /// Variable header
-  MqttIVariableHeader variableHeader;
+  MqttIVariableHeader? variableHeader;
 
   /// Message header
-  MqttHeader header;
+  MqttHeader? header;
 
   // The list of subscriptions.
   final _subscriptions = <MqttSubscribePayloadTopic>[];
@@ -55,7 +55,7 @@ class MqttSubscribePayload implements MqttIPayload {
       return buffer;
     }
     for (final topic in _subscriptions) {
-      buffer.addAll(_enc.toUtf8(topic.topic.rawTopic));
+      buffer.addAll(_enc.toUtf8(topic.topic.rawTopic!));
       buffer.add(topic.option.serialize());
     }
     return buffer;
@@ -84,7 +84,7 @@ class MqttSubscribePayload implements MqttIPayload {
 
   /// Adds a new subscription to the collection of subscriptions.
   void addSubscription(MqttSubscriptionTopic topic,
-      [MqttSubscriptionOption option]) {
+      [MqttSubscriptionOption? option]) {
     final subTopic = MqttSubscribePayloadTopic(topic, option);
     _subscriptions.add(subTopic);
   }

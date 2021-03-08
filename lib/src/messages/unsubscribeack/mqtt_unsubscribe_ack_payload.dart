@@ -25,14 +25,14 @@ class MqttUnsubscribeAckPayload extends MqttIPayload {
   int get length => _length;
 
   /// Message header
-  MqttHeader header;
+  MqttHeader? header;
 
   /// Variable header
-  MqttUnsubscribeAckVariableHeader variableHeader;
+  MqttUnsubscribeAckVariableHeader? variableHeader;
 
   /// Reason codes, one for each topic subscribed
-  final _reasonCodes = <MqttSubscribeReasonCode>[];
-  List<MqttSubscribeReasonCode> get reasonCodes => _reasonCodes;
+  final _reasonCodes = <MqttSubscribeReasonCode?>[];
+  List<MqttSubscribeReasonCode?> get reasonCodes => _reasonCodes;
 
   /// Writes the payload to the supplied stream.
   /// Not implemented, message is receive only.
@@ -45,7 +45,7 @@ class MqttUnsubscribeAckPayload extends MqttIPayload {
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    final payloadLength = header.messageSize - variableHeader.length;
+    final payloadLength = header!.messageSize - variableHeader!.length;
     for (var i = 0; i < payloadLength; i++) {
       _reasonCodes
           .add(mqttSubscribeReasonCode.fromInt(payloadStream.readByte()));

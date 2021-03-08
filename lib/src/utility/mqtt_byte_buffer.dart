@@ -17,20 +17,20 @@ class MqttByteBuffer {
   /// From a list
   MqttByteBuffer.fromList(List<int> data) {
     buffer = typed.Uint8Buffer();
-    buffer.addAll(data);
+    buffer!.addAll(data);
   }
 
   /// The current position within the buffer.
   int _position = 0;
 
   /// The underlying byte buffer
-  typed.Uint8Buffer buffer;
+  typed.Uint8Buffer? buffer;
 
   /// Position
   int get position => _position;
 
   /// Length
-  int get length => buffer.length;
+  int get length => buffer!.length;
 
   /// Available bytes
   int get availableBytes => length - _position;
@@ -45,12 +45,12 @@ class MqttByteBuffer {
 
   /// Add a list
   void addAll(List<int> data) {
-    buffer.addAll(data);
+    buffer!.addAll(data);
   }
 
   /// Shrink the buffer
   void shrink() {
-    buffer.removeRange(0, _position);
+    buffer!.removeRange(0, _position);
     _position = 0;
   }
 
@@ -66,7 +66,7 @@ class MqttByteBuffer {
   /// Reads a byte from the buffer and advances the position
   /// within the buffer by one byte, or returns -1 if at the end of the buffer.
   int readByte() {
-    final tmp = buffer[_position];
+    final tmp = buffer![_position];
     if (_position <= (length - 1)) {
       _position++;
     } else {
@@ -76,7 +76,7 @@ class MqttByteBuffer {
   }
 
   /// Peeks a byte from the buffer
-  int peekByte() => buffer[_position];
+  int peekByte() => buffer![_position];
 
   /// Read a short int(16 bits)
   int readShort() {
@@ -95,7 +95,7 @@ class MqttByteBuffer {
           'length $length, count $count, position $_position, buffer $buffer');
     }
     final tmp = typed.Uint8Buffer();
-    tmp.addAll(buffer.getRange(_position, _position + count));
+    tmp.addAll(buffer!.getRange(_position, _position + count));
     _position += count;
     final tmp2 = typed.Uint8Buffer();
     tmp2.addAll(tmp);
@@ -104,11 +104,11 @@ class MqttByteBuffer {
 
   /// Writes a byte to the current position in the buffer
   /// and advances the position within the buffer by one byte.
-  void writeByte(int byte) {
-    if (buffer.length == _position) {
-      buffer.add(byte);
+  void writeByte(int? byte) {
+    if (buffer!.length == _position) {
+      buffer!.add(byte!);
     } else {
-      buffer[_position] = byte;
+      buffer![_position] = byte!;
     }
     _position++;
   }
@@ -122,11 +122,11 @@ class MqttByteBuffer {
   /// Writes a sequence of bytes to the current
   /// buffer and advances the position within the buffer by the number of
   /// bytes written.
-  void write(typed.Uint8Buffer buffer) {
+  void write(typed.Uint8Buffer? buffer) {
     if (this.buffer == null) {
       this.buffer = buffer;
     } else {
-      this.buffer.addAll(buffer);
+      this.buffer!.addAll(buffer!);
     }
     _position = length;
   }
@@ -142,7 +142,7 @@ class MqttByteBuffer {
   }
 
   /// Writes an MQTT string member
-  void writeMqttStringM(String stringToWrite) {
+  void writeMqttStringM(String? stringToWrite) {
     writeMqttString(this, stringToWrite);
   }
 
@@ -150,7 +150,7 @@ class MqttByteBuffer {
   /// stringStream - The stream containing the string to write.
   /// stringToWrite - The string to write.
   static void writeMqttString(
-      MqttByteBuffer stringStream, String stringToWrite) {
+      MqttByteBuffer stringStream, String? stringToWrite) {
     if (stringToWrite != null) {
       final enc = MqttUtf8Encoding();
       final stringBytes = enc.toUtf8(stringToWrite);
@@ -181,10 +181,10 @@ class MqttByteBuffer {
 
   @override
   String toString() {
-    if (buffer == null || buffer.isEmpty) {
+    if (buffer == null || buffer!.isEmpty) {
       return 'null or empty';
     } else {
-      return buffer.toList().toString();
+      return buffer!.toList().toString();
     }
   }
 }

@@ -11,9 +11,9 @@ part of mqtt5_client;
 class MqttMessageFactory {
   /// Gets an instance of an MqttMessage based on the message type requested
   /// from a byte stream.
-  static MqttMessage getMessage(
+  static MqttMessage? getMessage(
       MqttHeader header, MqttByteBuffer messageStream) {
-    MqttMessage message;
+    MqttMessage? message;
     switch (header.messageType) {
       case MqttMessageType.connect:
       case MqttMessageType.pingRequest:

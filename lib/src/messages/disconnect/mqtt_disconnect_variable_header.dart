@@ -20,7 +20,7 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   }
 
   /// Standard header
-  MqttHeader header;
+  MqttHeader? header;
 
   int _length = 0;
 
@@ -30,7 +30,7 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   int get length => _length;
 
   /// Reason code
-  MqttDisconnectReasonCode reasonCode = MqttDisconnectReasonCode.notSet;
+  MqttDisconnectReasonCode? reasonCode = MqttDisconnectReasonCode.notSet;
 
   // Properties
   final _propertySet = MqttPropertyContainer();
@@ -38,9 +38,9 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Session Expiry Interval
   ///
   ///  The session expiry interval in seconds.
-  int _sessionExpiryInterval = 0;
-  int get sessionExpiryInterval => _sessionExpiryInterval;
-  set sessionExpiryInterval(int interval) {
+  int? _sessionExpiryInterval = 0;
+  int? get sessionExpiryInterval => _sessionExpiryInterval;
+  set sessionExpiryInterval(int? interval) {
     var property = MqttFourByteIntegerProperty(
         MqttPropertyIdentifier.sessionExpiryInterval);
     property.value = interval;
@@ -51,9 +51,9 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Reason String.
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
-  String _reasonString;
-  String get reasonString => _reasonString;
-  set reasonString(String reason) {
+  String? _reasonString;
+  String? get reasonString => _reasonString;
+  set reasonString(String? reason) {
     var property = MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
     property.value = reason;
     _propertySet.add(property);
@@ -77,9 +77,9 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Server Reference.
   ///
   /// A string to indicate another broker to use.
-  String _serverReference;
-  String get serverReference => _serverReference;
-  set serverReference(String reference) {
+  String? _serverReference;
+  String? get serverReference => _serverReference;
+  set serverReference(String? reference) {
     var property =
         MqttUtf8StringProperty(MqttPropertyIdentifier.serverReference);
     property.value = reference;
@@ -118,7 +118,7 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Creates a variable header from the specified header stream.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
-    if (header.messageSize > 1) {
+    if (header!.messageSize > 1) {
       readReasonCode(variableHeaderStream);
       _length += 1;
       // Properties
