@@ -56,7 +56,7 @@ Future<int> main() async {
   client.subscribe(topic2, MqttQos.exactlyOnce);
 
   // ignore: avoid_annotating_with_dynamic
-  client.updates!.listen((dynamic c) {
+  client.updates.listen((dynamic c) {
     final MqttPublishMessage recMess = c[0].payload;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
     print(

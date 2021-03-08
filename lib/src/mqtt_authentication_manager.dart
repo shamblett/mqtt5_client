@@ -56,7 +56,7 @@ class MqttAuthenticationManager {
     final completer = Completer<MqttAuthenticateMessage>();
     send(msg);
     MqttLogger.log(
-        'MqttAuthenticationManager::reauthenticate - started, timeout is ${waitTimeInSeconds}');
+        'MqttAuthenticationManager::reauthenticate - started, timeout is $waitTimeInSeconds');
     final timeoutMsg = MqttAuthenticateMessage();
     timeoutMsg.timeout = true;
     late var subscription;

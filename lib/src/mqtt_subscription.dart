@@ -9,8 +9,7 @@ part of mqtt5_client;
 
 /// An individual subscription as used by the client to build and track
 /// the status of subscriptions and unsubscriptions.
-class MqttSubscription extends Object
-    with observe.Observable<observe.ChangeRecord> {
+class MqttSubscription {
   /// Construction with an optional option
   MqttSubscription(this.topic, [this.option]) {
     option ??= MqttSubscriptionOption();

@@ -57,7 +57,7 @@ Future<int> main() async {
   // Do not subscribe to this topic.
   const topic3 = 'SJHTopic3';
 
-  client.updates!.listen((dynamic c) {
+  client.updates.listen((dynamic c) {
     final MqttPublishMessage recMess = c[0].payload;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
     print(

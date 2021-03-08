@@ -27,7 +27,7 @@ Future<int> main() async {
   // Subscribe to a known topic
   const topic = 'test/hw';
   client.subscribe(topic, MqttQos.exactlyOnce);
-  client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+  client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final recMess = c[0].payload as MqttPublishMessage;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
     print('Change notification:: payload is <$pt> for topic <$topic>');

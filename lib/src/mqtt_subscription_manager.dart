@@ -72,13 +72,13 @@ class MqttSubscriptionManager {
   final _clientEventBus;
 
   /// Observable change notifier for all subscribed topics
-  final observe.ChangeNotifier<MqttReceivedMessage<MqttMessage>>
+  final StreamController<List<MqttReceivedMessage<MqttMessage>>>
       _subscriptionNotifier =
-      observe.ChangeNotifier<MqttReceivedMessage<MqttMessage>>();
+      StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
 
   /// Subscription notifier
-  observe.ChangeNotifier<MqttReceivedMessage<MqttMessage>>
-      get subscriptionNotifier => _subscriptionNotifier;
+  Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
+      _subscriptionNotifier.stream;
 
   /// Registers a new subscription with the subscription manager from a topic
   /// and a maximum Qos.
@@ -175,7 +175,7 @@ class MqttSubscriptionManager {
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
       sub.userProperties = userProperties;
       final msgId = messageIdentifierDispenser.nextMessageIdentifier;
-      pendingSubscriptions[msgId] = <MqttSubscription>[]..add(sub);
+      pendingSubscriptions[msgId] = <MqttSubscription>[sub];
       // Build a subscribe message for the caller and send it to the broker.
       final msg = MqttSubscribeMessage()
           .toTopicWithQos(sub.topic.rawTopic, qos)
@@ -196,7 +196,7 @@ class MqttSubscriptionManager {
     MqttLogger.log('MqttSubscriptionManager::publishMessageReceived '
         'topic is $topic');
     final msg = MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
-    subscriptionNotifier.notifyChange(msg);
+    _subscriptionNotifier.add([msg]);
   }
 
   /// Unsubscribe from a string topic.
@@ -213,7 +213,7 @@ class MqttSubscriptionManager {
         .fromStringTopic(topic);
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
-        <MqttSubscription>[]..add(sub);
+        <MqttSubscription>[sub];
   }
 
   /// Unsubscribe from a subscription.
@@ -228,7 +228,7 @@ class MqttSubscriptionManager {
         .withUserProperties(subscription.userProperties!);
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
-        <MqttSubscription>[]..add(subscription);
+        <MqttSubscription>[subscription];
   }
 
   /// Unsubscribe from a subscription list.

@@ -1205,7 +1205,7 @@ void main() {
       final subAckMsg = baseMessage as MqttSubscribeAckMessage;
       subs.confirmSubscription(subAckMsg);
       // Start listening
-      subs.subscriptionNotifier.changes.listen(t1);
+      subs.subscriptionNotifier.listen(t1);
       // Receive the message event.
       final header = MqttHeader().asType(MqttMessageType.publish);
       final msg = MqttMessage.fromHeader(header);

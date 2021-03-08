@@ -13,7 +13,6 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 import 'package:event_bus/event_bus.dart' as events;
-import 'package:observable/observable.dart' as observe;
 
 /// The mqtt5_client package exported interface
 part 'src/mqtt_client.dart';

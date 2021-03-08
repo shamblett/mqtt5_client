@@ -22,7 +22,7 @@ void main() {
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
-    await authManager.authenticated.stream.listen((final rxMessage) {
+    authManager.authenticated.stream.listen((final rxMessage) {
       expect(rxMessage.authenticationMethod, 'Auth method');
       expect(rxMessage.timeout, isFalse);
     });
