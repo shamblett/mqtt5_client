@@ -8,7 +8,7 @@
 part of mqtt5_client;
 
 /// Callback function definitions
-typedef MessageCallbackFunction = bool Function(MqttMessage? message);
+typedef MessageCallbackFunction = bool Function(MqttMessage message);
 
 /// The connection handler interface class
 abstract class MqttIConnectionHandler {

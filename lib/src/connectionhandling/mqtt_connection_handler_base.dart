@@ -202,7 +202,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Registers for the receipt of messages when they arrive.
   @override
   void registerForMessage(
-      MqttMessageType msgType, MessageCallbackFunction? callback) {
+      MqttMessageType msgType, MessageCallbackFunction callback) {
     messageProcessorRegistry[msgType] = callback;
   }
 
@@ -233,7 +233,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
         'MqttConnectionHandlerBase::messageAvailable - message type is $messageType');
     final callback = messageProcessorRegistry[messageType!];
     if (callback != null) {
-      callback(event.message);
+      callback(event.message!);
     } else {
       MqttLogger.log(
           'MqttConnectionHandlerBase::messageAvailable - WARN - no registered callback for this message type');
