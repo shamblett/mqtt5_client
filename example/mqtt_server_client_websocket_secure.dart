@@ -1,7 +1,7 @@
 /*
- * Package : mqtt5_client
+ * Package : mqtt_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
- * Date   : 10/05/2020
+ * Date   : 31/05/2017
  * Copyright :  S.Hamblett
  */
 
@@ -10,9 +10,9 @@ import 'dart:io';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 
-/// An annotated simple subscribe/publish usage example for mqtt5_server_client. Please read in with reference
-/// to the MQTT 5 specification. The example is runnable against any suitable MQTT5 broker such as Mosquitto
-/// or Hive, please edit the hostname as required.
+/// An annotated simple subscribe/publish usage example for mqtt5_server_client using secure websockets.
+/// Please read in with reference to the MQTT specification. The example is runnable, also refer to
+/// test/mqtt5_client_broker_test...dart files for separate subscribe/publish tests.
 
 /// First create a client, the client is constructed with a broker name, client identifier
 /// and port if needed. The client identifier (short ClientId) is an identifier of each MQTT
@@ -21,37 +21,25 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 ///
 /// If a port is not specified the standard port of 1883 is used.
 ///
-/// If you want to use websockets rather than TCP see below. A separate example(mqtt5_server_client_secure.dart')
-/// shows how to set up and use secure sockets on the server.
 
-/// Edit as needed.
-const hostName = 'test.mosquitto.org';
-
-final client = MqttServerClient(hostName, '');
-const pubTopic = 'Dart/Mqtt5_client/testtopic';
-bool topicNotified = false;
-final builder = MqttPayloadBuilder();
+/// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
+/// for details.
+final client = MqttServerClient('wss://test.mosquitto.org', '');
 
 Future<int> main() async {
-  /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
-  /// for details.
-  ///
-  /// To use websockets add the following lines -:
-  /// client.useWebSocket = true;
-  /// client.port = 80;  ( or whatever your WS port is).
-  ///
-  /// There is also an alternate websocket implementation for specialist use, see useAlternateWebSocketImplementation
-  /// Note do not set the secure flag if you are using wss, the secure flags is for TCP sockets only.
+  client.useWebSocket = true;
+  client.port = 8081; // ( or whatever your wss port is)
   /// You can also supply your own websocket protocol list or disable this feature using the websocketProtocols
   /// setter, read the API docs for further details here, the vast majority of brokers will support the client default
   /// list so in most cases you can ignore this.
+  /// client.websocketProtocols = ['myString'];
 
   /// Set logging on if needed, defaults to off
   client.logging(on: false);
 
   /// If you intend to use a keep alive value in your connect message that is not the default(60s)
   /// you must set it here
-  client.keepAlivePeriod = 60;
+  client.keepAlivePeriod = 20;
 
   /// Add the unsolicited disconnection callback
   client.onDisconnected = onDisconnected;
@@ -83,12 +71,12 @@ Future<int> main() async {
       .withClientIdentifier('MQTT5DartClient')
       .startClean()
       .withUserProperties([property]);
-  print('EXAMPLE::Mqtt5 client connecting....');
+  print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 
   /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
-  /// its possible that in some circumstances the broker will just disconnect us, see the spec about this,
-  /// we however will never send malformed messages.
+  /// in some circumstances the broker will just disconnect us, see the spec about this, we however will
+  /// never send malformed messages.
   try {
     await client.connect();
   } on MqttNoConnectionException catch (e) {
@@ -101,22 +89,13 @@ Future<int> main() async {
     client.disconnect();
   }
 
-  /// Check we are connected. connectionStatus always gives us this and other information.
+  /// Check we are connected
   if (client.connectionStatus!.state == MqttConnectionState.connected) {
-    print(
-        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}');
-
-    /// All returned properties in the connect acknowledge message are available.
-    /// Get our user properties from the connect acknowledge message.
-    if (client.connectionStatus!.connectAckMessage.userProperty!.isNotEmpty) {
-      print(
-          'EXAMPLE::Connected - user property name - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairName}');
-      print(
-          'EXAMPLE::Connected - user property value - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairValue}');
-    }
+    print('EXAMPLE::Mosquitto client connected');
   } else {
+    /// Use status here rather than state if you also want the broker return code.
     print(
-        'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}');
+        'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
     client.disconnect();
     exit(-1);
   }
@@ -128,8 +107,8 @@ Future<int> main() async {
 
   /// The client has a change notifier object(see the Observable class) which we then listen to to get
   /// notifications of published updates to each subscribed topic.
-  client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-    final recMess = c[0].payload as MqttPublishMessage;
+  client.updates.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+    final recMess = c![0].payload as MqttPublishMessage;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
 
     /// The above may seem a little convoluted for users only interested in the
@@ -139,11 +118,7 @@ Future<int> main() async {
     /// The payload is a byte buffer, this will be specific to the topic
     print(
         'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-
-    /// Indicate the notification is correct
-    if (c[0].topic == pubTopic) {
-      topicNotified = true;
-    }
+    print('');
   });
 
   /// If needed you can listen for published messages that have completed the publishing
@@ -154,9 +129,20 @@ Future<int> main() async {
         'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
   });
 
-  /// Subscribe to our topic, we will publish to it in the onSubscribed callback.
-  print('EXAMPLE::Subscribing to the Dart/Mqtt5_client/testtopic topic');
+  /// Lets publish to our topic
+  /// Use the payload builder rather than a raw buffer
+  /// Our known topic to publish to
+  const pubTopic = 'Dart/Mqtt_client/testtopic';
+  final builder = MqttPayloadBuilder();
+  builder.addString('Hello from mqtt_client');
+
+  /// Subscribe to it
+  print('EXAMPLE::Subscribing to the Dart/Mqtt_client/testtopic topic');
   client.subscribe(pubTopic, MqttQos.exactlyOnce);
+
+  /// Publish it
+  print('EXAMPLE::Publishing our topic');
+  client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
 
   /// Ok, we will now sleep a while, in this gap you will see ping request/response
   /// messages being exchanged by the keep alive mechanism.
@@ -167,8 +153,7 @@ Future<int> main() async {
   print('EXAMPLE::Unsubscribing');
   client.unsubscribeStringTopic(topic);
 
-  /// Wait for the unsubscribe acknowledge message from the broker.
-  /// We could also add an unsubscribe callback and do the disconnect in it.
+  /// Wait for the unsubscribe message from the broker if you wish.
   await MqttUtilities.asyncSleep(2);
   print('EXAMPLE::Disconnecting');
   client.disconnect();
@@ -176,17 +161,8 @@ Future<int> main() async {
 }
 
 /// The subscribed callback
-void onSubscribed(MqttSubscription subscription) {
-  print(
-      'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
-
-  /// Publish to our topic if it has been subscribed
-  if (subscription.topic.rawTopic == pubTopic) {
-    /// Use the payload builder rather than a raw buffer
-    builder.addString('Hello from mqtt5_client');
-    print('EXAMPLE::Publishing our topic now we are subscribed');
-    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
-  }
+void onSubscribed(MqttSubscription subs) {
+  print('EXAMPLE::Subscription confirmed for topic ${subs.topic}');
 }
 
 /// The unsolicited disconnect callback
@@ -194,21 +170,15 @@ void onDisconnected() {
   print('EXAMPLE::OnDisconnected client callback - Client disconnection');
   if (client.connectionStatus!.disconnectionOrigin ==
       MqttDisconnectionOrigin.solicited) {
-    if (topicNotified) {
-      print(
-          'EXAMPLE::OnDisconnected callback is solicited, topic has been notified - this is correct');
-    } else {
-      print(
-          'EXAMPLE::OnDisconnected callback is solicited, topic has NOT been notified - this is an ERROR');
-    }
+    print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
   }
-  exit(0);
+  exit(-1);
 }
 
 /// The successful connect callback
 void onConnected() {
   print(
-      'EXAMPLE::OnConnected client callback - Client connection was successful');
+      'EXAMPLE::OnConnected client callback - Client connection was sucessful');
 }
 
 /// Pong callback

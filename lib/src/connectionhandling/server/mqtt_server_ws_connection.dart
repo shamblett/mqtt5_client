@@ -24,8 +24,8 @@ class MqttServerWsConnection extends MqttServerConnection {
 
   /// Connect
   @override
-  Future<MqttConnectionStatus> connect(String server, int port) {
-    final completer = Completer<MqttConnectionStatus>();
+  Future<MqttConnectionStatus?> connect(String server, int port) {
+    final completer = Completer<MqttConnectionStatus?>();
     MqttLogger.log('MqttWsConnection::connectAuto - entered');
     // Add the port if present
     Uri uri;
@@ -70,8 +70,8 @@ class MqttServerWsConnection extends MqttServerConnection {
 
   /// Connect Auto
   @override
-  Future<MqttConnectionStatus> connectAuto(String server, int port) {
-    final completer = Completer<MqttConnectionStatus>();
+  Future<MqttConnectionStatus?> connectAuto(String server, int port) {
+    final completer = Completer<MqttConnectionStatus?>();
     MqttLogger.log('MqttWsConnection::connectAuto - entered');
     // Add the port if present
     Uri uri;
