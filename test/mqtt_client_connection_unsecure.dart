@@ -35,7 +35,6 @@ void main() {
   const mockBrokerAddress = 'localhost';
   const mockBrokerPort = 1883;
   const testClientId = 'syncMqttTests';
-  const nonExistantHostName = 'aabbccddeeffeeddccbbaa.aa.bb';
   const badPort = 1884;
 
   group('Connection Keep Alive - Mock tests', () {
@@ -71,7 +70,7 @@ void main() {
       expect(ka.ka.pingTimer!.isActive, isTrue);
       ka.ka.pingTimer!.cancel();
     });
-  },skip:true);
+  }, skip: true);
 
   group('Synchronous MqttConnectionHandler', () {
     test('Connect invalid port', () async {
