@@ -24,8 +24,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
 
   /// Connect
   @override
-  Future<MqttConnectionStatus> connect(String server, int port) {
-    final completer = Completer<MqttConnectionStatus>();
+  Future<MqttConnectionStatus?> connect(String server, int port) {
+    final completer = Completer<MqttConnectionStatus?>();
     // Add the port if present
     Uri uri;
     try {

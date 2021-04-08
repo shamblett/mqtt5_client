@@ -14,7 +14,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 /// as long as you can break its connection to this process. You could wait for the first pong callback to print out
 /// (these are every 5 seconds) then stop/break connection to the server and reinstate it.
 ///
-final client = MqttServerClient('test.mosquitto.org', '');
+final client = MqttServerClient('localhost', '');
 
 Future<int> main() async {
   /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
