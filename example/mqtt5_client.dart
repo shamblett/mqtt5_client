@@ -12,3 +12,5 @@
 ///
 /// Note that for previous users the [MqttClient] class is now only a support class and should not
 /// be directly instantiated.
+/// See the example mqtt5_universal_client to see how instantiating a server or browser client as
+/// needed can be done automatically.

@@ -167,7 +167,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   @override
   void sendMessage(MqttMessage message) {
     MqttLogger.log(
-        'MqttConnectionHandlerBase::sendMessage - sending message started >>> -> $message');
+        'MqttConnectionHandlerBase::sendMessage - sending message started >>> -> ',
+        message);
     // Check for validity
     if (!message.isValid) {
       throw ArgumentError(

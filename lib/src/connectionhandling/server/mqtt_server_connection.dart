@@ -78,7 +78,7 @@ class MqttServerConnection extends MqttConnectionBase {
       }
       if (messageIsValid) {
         MqttLogger.log(
-            'MqttServerConnection::_onData - MESSAGE RECEIVED -> $msg');
+            'MqttServerConnection::_onData - MESSAGE RECEIVED -> ', msg);
         // If we have received a valid message we must clear the stream.
         messageStream.clear();
         if (!clientEventBus!.streamController.isClosed) {
