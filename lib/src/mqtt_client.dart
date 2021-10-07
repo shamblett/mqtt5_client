@@ -244,6 +244,7 @@ class MqttClient {
     connectionHandler.onAutoReconnect = onAutoReconnect;
     publishingManager =
         MqttPublishingManager(connectionHandler, clientEventBus);
+    authenticationManager ??= MqttAuthenticationManager();
     authenticationManager!.connectionHandler = connectionHandler;
     subscriptionsManager =
         MqttSubscriptionManager(connectionHandler, clientEventBus);
