@@ -100,6 +100,8 @@ class MqttServerWsConnection extends MqttServerConnection {
               protocols: protocols.isNotEmpty ? protocols : null)
           .then((dynamic socket) {
         client = socket;
+        readWrapper ??= MqttReadWrapper();
+        messageStream = MqttByteBuffer(typed.Uint8Buffer());
         _startListening();
         completer.complete();
       }).catchError((dynamic e) {
