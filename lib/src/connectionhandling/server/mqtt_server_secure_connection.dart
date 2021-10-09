@@ -38,8 +38,6 @@ class MqttServerSecureConnection extends MqttServerConnection {
           .then((SecureSocket socket) {
         MqttLogger.log('MqttServerSecureConnection::connect - securing socket');
         client = socket;
-        readWrapper = MqttReadWrapper();
-        messageStream = MqttByteBuffer(typed.Uint8Buffer());
         MqttLogger.log('MqttServerSecureConnection::connect - start listening');
         _startListening();
         completer.complete();
@@ -80,8 +78,6 @@ class MqttServerSecureConnection extends MqttServerConnection {
         MqttLogger.log(
             'MqttServerSecureConnection::connectAuto - securing socket');
         client = socket;
-        readWrapper ??= MqttReadWrapper();
-        messageStream = MqttByteBuffer(typed.Uint8Buffer());
         MqttLogger.log(
             'MqttServerSecureConnection::connectAuto - start listening');
         _startListening();

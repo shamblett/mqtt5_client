@@ -23,11 +23,11 @@ class MqttConnectionBase {
 
   /// The read wrapper
   @protected
-  MqttReadWrapper? readWrapper;
+  MqttReadWrapper readWrapper = MqttReadWrapper();;
 
   ///The read buffer
   @protected
-  late MqttByteBuffer messageStream;
+  MqttByteBuffer messageStream = MqttByteBuffer(typed.Uint8Buffer());
 
   /// Unsolicited disconnection callback
   @protected
