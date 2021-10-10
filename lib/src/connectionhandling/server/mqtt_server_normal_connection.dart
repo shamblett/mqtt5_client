@@ -28,8 +28,6 @@ class MqttServerNormalConnection extends MqttServerConnection {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {
         client = socket;
-        readWrapper = MqttReadWrapper();
-        messageStream = MqttByteBuffer(typed.Uint8Buffer());
         _startListening();
         completer.complete();
       }).catchError((dynamic e) {

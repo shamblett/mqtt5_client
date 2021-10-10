@@ -242,6 +242,7 @@ class MqttClient {
     connectionHandler.onDisconnected = internalDisconnect;
     connectionHandler.onConnected = onConnected;
     connectionHandler.onAutoReconnect = onAutoReconnect;
+    connectionHandler.onAutoReconnected = onAutoReconnected;
     publishingManager =
         MqttPublishingManager(connectionHandler, clientEventBus);
     authenticationManager ??= MqttAuthenticationManager();
