@@ -36,6 +36,7 @@ Future<int> main() async {
     expect(option.retainHandling, MqttRetainHandling.doNotSendRetained);
     final sub = MqttSubscription(MqttSubscriptionTopic("tinydb"), option);
     client.subscribeWithSubscription(sub);
+    expect(sub.option?.retainHandling, MqttRetainHandling.doNotSendRetained);
     client.disconnect();
   });
 
