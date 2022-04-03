@@ -91,7 +91,7 @@ class MqttSubscribeMessage extends MqttMessage {
 
   /// Adds a new subscription with the specified subscription option[MqttSubscriptionOption].
   MqttSubscribeMessage toTopicWithOption(
-      String topic, MqttSubscriptionOption option) {
+      String? topic, MqttSubscriptionOption option) {
     final subTopic = MqttSubscriptionTopic(topic);
     _payload!.addSubscription(subTopic, option);
     return this;

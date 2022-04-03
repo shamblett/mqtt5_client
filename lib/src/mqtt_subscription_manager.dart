@@ -103,7 +103,8 @@ class MqttSubscriptionManager {
     var cn = _tryGetExistingSubscription(subscription.topic.rawTopic);
     return cn ??= _createNewSubscription(
         subscription.topic.rawTopic, subscription.maximumQos,
-        userProperties: subscription.userProperties);
+        userProperties: subscription.userProperties,
+        option: subscription.option);
   }
 
   /// Registers a new subscription with the subscription manager from a
@@ -169,17 +170,28 @@ class MqttSubscriptionManager {
   /// Creates a new subscription for the specified topic and Qos.
   /// If the subscription cannot be created null is returned.
   MqttSubscription? _createNewSubscription(String? topic, MqttQos? qos,
-      {List<MqttUserProperty>? userProperties}) {
+      {List<MqttUserProperty>? userProperties,
+      MqttSubscriptionOption? option}) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
       sub.userProperties = userProperties;
+      if (option != null) {
+        sub.option = option;
+      }
       final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = <MqttSubscription>[sub];
-      // Build a subscribe message for the caller and send it to the broker.
-      final msg = MqttSubscribeMessage()
-          .toTopicWithQos(sub.topic.rawTopic, qos)
-          .withUserProperties(userProperties);
+      var msg;
+      if (option == null) {
+        // Build a subscribe message for the caller and send it to the broker.
+        msg = MqttSubscribeMessage()
+            .toTopicWithQos(sub.topic.rawTopic, qos)
+            .withUserProperties(userProperties);
+      } else {
+        msg = MqttSubscribeMessage()
+            .toTopicWithOption(sub.topic.rawTopic, option)
+            .withUserProperties(userProperties);
+      }
       msg.messageIdentifier = msgId;
       _connectionHandler.sendMessage(msg);
       return sub;
