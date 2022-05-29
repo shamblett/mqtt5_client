@@ -200,8 +200,8 @@ class MqttConnectMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.write(super.toString());
-    sb.write('${_variableHeader.toString()}');
-    sb.write('${payload.toString()}');
+    sb.write(_variableHeader.toString());
+    sb.write(payload.toString());
     return sb.toString();
   }
 }

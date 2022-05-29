@@ -105,9 +105,9 @@ class MqttSubscribePayload implements MqttIPayload {
   @override
   String toString() {
     final sb = StringBuffer();
-    _subscriptions.forEach((final topic) {
+    for (var topic in _subscriptions) {
       sb.write('Topic = ${topic.topic}, Option = ${topic.option}');
-    });
+    }
     return sb.toString();
   }
 }

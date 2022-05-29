@@ -124,7 +124,7 @@ class MqttAuthenticateMessage extends MqttMessage {
   String toString() {
     final sb = StringBuffer();
     sb.writeln(super.toString());
-    sb.write('${variableHeader.toString()}');
+    sb.write(variableHeader.toString());
     return sb.toString();
   }
 }

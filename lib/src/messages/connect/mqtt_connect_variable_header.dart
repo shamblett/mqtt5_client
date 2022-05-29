@@ -263,7 +263,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     writeProtocolVersion(variableHeaderStream);
     writeConnectFlags(variableHeaderStream);
     writeKeepAlive(variableHeaderStream);
-    WriteProperties(variableHeaderStream);
+    writeProperties(variableHeaderStream);
   }
 
   /// Gets the length of the write data when WriteTo will be called.
@@ -300,7 +300,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   }
 
   /// Properties
-  void WriteProperties(MqttByteBuffer stream) {
+  void writeProperties(MqttByteBuffer stream) {
     _propertySet.writeTo(stream);
   }
 

@@ -64,4 +64,7 @@ class MqttSubscription {
     sb.writeln('Created Time = ${createdTime.toString()}');
     return sb.toString();
   }
+
+  @override
+  int get hashCode => super.hashCode * 8;
 }
