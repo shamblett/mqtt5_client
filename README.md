@@ -1,5 +1,5 @@
 # mqtt5_client
-[![Build Status][![Build Status](https://github.com/shamblett/mqtt5_client/actions/workflows/ci.yml/badge.svg)](https://github.com/shamblett/mqtt5_client/actions/workflows/ci.yml)
+[![Build Status](https://github.com/shamblett/mqtt5_client/actions/workflows/ci.yml/badge.svg)](https://github.com/shamblett/mqtt5_client/actions/workflows/ci.yml)
 
 A server and browser based MQTT Version 5 client for Dart.
 
