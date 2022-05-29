@@ -332,9 +332,9 @@ class MqttSubscriptionManager {
         if (!MqttReasonCodeUtilities.isError(
             mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!)) {
           if (onUnsubscribed != null) {
-            subscriptions.remove(topic);
             onUnsubscribed!(pendingTopic);
           }
+          subscriptions.remove(topic);
         } else {
           ok = false;
         }
