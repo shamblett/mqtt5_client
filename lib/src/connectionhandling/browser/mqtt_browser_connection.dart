@@ -95,7 +95,7 @@ class MqttBrowserConnection extends MqttConnectionBase {
         MqttLogger.log(
             'MqttBrowserConnection::_onData - MESSAGE RECEIVED -> ', msg);
         // If we have received a valid message we must clear the stream.
-        messageStream.clear();
+        messageStream.shrink();
         if (!clientEventBus!.streamController.isClosed) {
           if (msg!.header!.messageType == MqttMessageType.connectAck) {
             clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
