@@ -264,6 +264,7 @@ class MqttClient {
     if (connectMessage.payload.clientIdentifier.isEmpty) {
       connectMessage.payload.clientIdentifier = clientIdentifier;
     }
+    connectionMessage = connectMessage;
     return connectionHandler.connect(server, port, connectMessage);
   }
 
