@@ -28,11 +28,12 @@ Future<int> main() async {
     exit(-1);
   }
 
-  final builder = MqttPayloadBuilder();
+  // Send the counter values
   for (var x = 1; x < 50; x++) {
     await MqttUtilities.asyncSleep(1);
-    builder.addInt(x);
-    print('ISSUE:: Publishing counter value $x');
+    final builder = MqttPayloadBuilder();
+    builder.addByte(x);
+    print('ISSUE:: Publishing counter value ${builder.payload!}');
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 

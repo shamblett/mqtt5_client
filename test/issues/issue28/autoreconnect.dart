@@ -33,13 +33,17 @@ Future<int> main() async {
       if (payload != null) {
         final counterValue = payload[0];
         print('ISSUE::Change notification:: counter received is $counterValue');
+        if ( counterValue == 10) {
+          client.doAutoReconnect(force:true);
+        }
       } else {
         print('ISSUE - ERROR payload is null');
       }
     });
+    await MqttUtilities.asyncSleep(60);
 
     print('ISSUE: Test complete');
-  }, timeout: Timeout(Duration(seconds: 40)));
+  }, timeout: Timeout(Duration(seconds: 62)));
 
   return 0;
 }
