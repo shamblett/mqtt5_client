@@ -16,6 +16,8 @@ Future<int> main() async {
     client.autoReconnect = true;
     client.logging(on: false);
     const topic = 'counter';
+    final connMess = MqttConnectMessage();
+    client.connectionMessage = connMess;
 
     print('ISSUE: Connecting');
     await client.connect();
@@ -27,15 +29,13 @@ Future<int> main() async {
     await MqttUtilities.asyncSleep(2);
 
     // Listen for the counter messages
+    print('ISSUE::Listening......');
     client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final recMess = c[0].payload as MqttPublishMessage;
       final payload = recMess.payload.message;
       if (payload != null) {
         final counterValue = payload[0];
         print('ISSUE::Change notification:: counter received is $counterValue');
-        if ( counterValue == 10) {
-          client.doAutoReconnect(force:true);
-        }
       } else {
         print('ISSUE - ERROR payload is null');
       }
