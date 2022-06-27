@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
+@TestOn('vm')
+
 import 'dart:io';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
@@ -14,8 +16,6 @@ import 'package:typed_data/typed_data.dart' as typed;
 import 'package:path/path.dart' as path;
 import 'package:event_bus/event_bus.dart' as events;
 import 'support/mqtt_client_mockbroker.dart';
-
-@TestOn('vm')
 
 // Mock classes
 class MockCH extends Mock implements MqttServerConnectionHandler {

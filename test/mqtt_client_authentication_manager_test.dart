@@ -4,6 +4,9 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
+
+@TestOn('vm')
+
 import 'dart:async';
 
 import 'package:event_bus/event_bus.dart' as events;
@@ -11,7 +14,6 @@ import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
 import 'support/mqtt_client_test_connection_handler.dart';
 
-@TestOn('vm')
 void main() {
   test('On Authentication Message Received', () async {
     final authManager = MqttAuthenticationManager();

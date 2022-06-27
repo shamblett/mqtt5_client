@@ -4,6 +4,9 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
+
+@TestOn('vm')
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
@@ -21,7 +24,6 @@ class MessageSerializationHelper {
   }
 }
 
-@TestOn('vm')
 void main() {
   group('Message Identifier', () {
     test('Numbering starts at 1', () {
