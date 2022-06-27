@@ -8,6 +8,8 @@ const hostName = 'localhost';
 Future<int> main() async {
   final client = MqttServerClient.withPort(hostName, 'SJHIssueTx', 1883);
   client.logging(on: false);
+  final connMess = MqttConnectMessage();
+  client.connectionMessage = connMess;
   const topic = 'counter';
 
   print('ISSUE:: client connecting....');
