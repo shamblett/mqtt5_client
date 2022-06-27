@@ -14,7 +14,7 @@ Future<int> main() async {
   test('Should resume persistent session after auto reconnect', () async {
     final client = MqttServerClient.withPort('localhost', 'SJHIssueRx', 1883);
 
-    client.logging(on: false);
+    client.logging(on: true);
     const topic = 'counter';
     final connMess = MqttConnectMessage();
     client.connectionMessage = connMess;
