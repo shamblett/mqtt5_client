@@ -66,21 +66,24 @@ class MqttServerConnection extends MqttConnectionBase {
         if (msg == null) {
           return;
         }
-      } on Exception {
+      } catch (e) {
         MqttLogger.log(
             'MqttServerConnection::_ondata - message is not yet valid, '
             'waiting for more data ...');
+        MqttLogger.log(
+            'MqttServerConnection::_ondata - exception raised is $e');
         messageIsValid = false;
       }
       if (!messageIsValid) {
-        messageStream.reset();
+        messageStream.clear();
         return;
       }
       if (messageIsValid) {
         MqttLogger.log(
             'MqttServerConnection::_onData - MESSAGE RECEIVED -> ', msg);
-        // If we have received a valid message we must shrink the stream.
+        // If we have received a valid message we must shrink the stream and clear it
         messageStream.shrink();
+        messageStream.clear();
         if (!clientEventBus!.streamController.isClosed) {
           if (msg!.header!.messageType == MqttMessageType.connectAck) {
             clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
