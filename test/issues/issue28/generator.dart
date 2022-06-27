@@ -29,7 +29,7 @@ Future<int> main() async {
   }
 
   // Send the counter values
-  for (var x = 1; x < 50; x++) {
+  for (var x = 1; x < 100; x++) {
     await MqttUtilities.asyncSleep(1);
     final builder = MqttPayloadBuilder();
     builder.addByte(x);

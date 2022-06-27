@@ -13,8 +13,8 @@ import 'package:test/test.dart';
 Future<int> main() async {
   test('Should resume persistent session after auto reconnect', () async {
     final client = MqttServerClient.withPort('localhost', 'SJHIssueRx', 1883);
-    client.autoReconnect = true;
-    client.logging(on: true);
+
+    client.logging(on: false);
     const topic = 'counter';
     final connMess = MqttConnectMessage();
     client.connectionMessage = connMess;
@@ -40,10 +40,11 @@ Future<int> main() async {
         print('ISSUE - ERROR payload is null');
       }
     });
-    await MqttUtilities.asyncSleep(60);
+    await MqttUtilities.asyncSleep(25);
 
     print('ISSUE: Test complete');
-  }, timeout: Timeout(Duration(seconds: 62)));
+    client.disconnect();
+  });
 
   return 0;
 }
