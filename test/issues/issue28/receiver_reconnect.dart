@@ -12,7 +12,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 Future<int> main() async {
   final client = MqttServerClient.withPort('localhost', 'SJHIssueRx', 1883);
 
-  client.logging(on: true);
+  client.logging(on: false);
   client.autoReconnect = true;
   const topic = 'counter';
   final connMess = MqttConnectMessage();
@@ -38,7 +38,7 @@ Future<int> main() async {
     } else {
       print('ISSUE - ERROR payload is null');
     }
-  }
+  });
 
   await MqttUtilities.asyncSleep(60);
 
