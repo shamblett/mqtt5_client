@@ -12,7 +12,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 Future<int> main() async {
   final client = MqttServerClient.withPort('localhost', 'SJHIssueRx', 1883);
 
-  client.logging(on: true);
+  client.logging(on: false);
   const topic = 'counter';
   final connMess = MqttConnectMessage();
   client.connectionMessage = connMess;
