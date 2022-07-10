@@ -15,6 +15,7 @@ Future<int> main() async {
   client.logging(on: false);
   const topic = 'counter';
   final connMess = MqttConnectMessage();
+  connMess.variableHeader?.sessionExpiryInterval = MqttConnectVariableHeader.sessionDoesNotExpire;
   client.connectionMessage = connMess;
 
   print('ISSUE: Connecting');
@@ -22,9 +23,6 @@ Future<int> main() async {
 
   // Subscribe to counter, Qos 1
   client.subscribe(topic, MqttQos.atLeastOnce);
-  print(
-      'EXAMPLE:: Sleeping to allow the subscription acknowledges to be received....');
-  await MqttUtilities.asyncSleep(2);
 
   // Listen for the counter messages
   print('ISSUE::Listening......');
