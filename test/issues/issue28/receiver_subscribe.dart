@@ -18,11 +18,17 @@ Future<int> main() async {
   connMess.startSession();
   client.connectionMessage = connMess;
 
+
   print('ISSUE: Connecting');
   await client.connect();
 
   // Subscribe to counter, Qos 1
   client.subscribe(topic, MqttQos.atLeastOnce);
+
+  // Wait for the subscription to be processed, this should result in no messages
+  // being lost.
+  print('ISSUE::Waiting for subscriptions......');
+  await MqttUtilities.asyncSleep(2);
 
   // Listen for the counter messages
   print('ISSUE::Listening......');
