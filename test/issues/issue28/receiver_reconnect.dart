@@ -17,7 +17,7 @@ Future<int> main() async {
   const topic = 'counter';
   final connMess = MqttConnectMessage();
   client.connectionMessage = connMess;
-  connMess.variableHeader?.sessionExpiryInterval = MqttConnectVariableHeader.sessionDoesNotExpire;
+  connMess.startSession();
 
   print('ISSUE: Connecting');
   await client.connect();

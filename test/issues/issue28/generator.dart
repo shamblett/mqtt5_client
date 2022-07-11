@@ -9,7 +9,7 @@ Future<int> main() async {
   final client = MqttServerClient.withPort(hostName, 'SJHIssueTx', 1883);
   client.logging(on: false);
   final connMess = MqttConnectMessage();
-  connMess.variableHeader?.sessionExpiryInterval = MqttConnectVariableHeader.sessionDoesNotExpire;
+  connMess.startSession();
   client.connectionMessage = connMess;
 
   const topic = 'counter';

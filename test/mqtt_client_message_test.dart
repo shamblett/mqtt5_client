@@ -3039,6 +3039,15 @@ void main() {
         expect(mb[0], 0x10);
         expect(mb[1], 0x25);
       });
+      test('Persistent session', () {
+        final msg = MqttConnectMessage()
+            .withClientIdentifier('mark')
+            .keepAliveFor(30)
+            .startSession();
+        final mb = MessageSerializationHelper.getMessageBytes(msg);
+        expect(mb[0], 0x10);
+        expect(mb[1], 0x16);
+      });
     });
 
     group('Connect Acknowledge', () {

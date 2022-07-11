@@ -38,9 +38,28 @@ class MqttConnectMessage extends MqttMessage {
   /// The payload of the message.
   late MqttConnectPayload payload;
 
-  /// Sets the clean start flag.
+  /// Sets the clean start flag to clear any persistent session for the client.
+  /// Mutually exclusive with [startSession]the last method applied to the message will take
+  /// effect.
   MqttConnectMessage startClean() {
     _variableHeader!.connectFlags.cleanStart = true;
+    return this;
+  }
+
+  /// Starts a persistent session with the broker.
+  /// The [sessionExpiryInterval] can be any none zero value up to the the maximum
+  /// [MqttConnectVariableHeader.sessionDoesNotExpire].
+  /// If 0 is passed the maximum value is used.
+  /// Mutually exclusive with [startClean], the last method applied to the message will take
+  /// effect.
+  MqttConnectMessage startSession(
+      {int sessionExpiryInterval =
+          MqttConnectVariableHeader.sessionDoesNotExpire}) {
+    final interval = sessionExpiryInterval == 0
+        ? MqttConnectVariableHeader.sessionDoesNotExpire
+        : sessionExpiryInterval;
+    _variableHeader!.sessionExpiryInterval = interval;
+    _variableHeader!.connectFlags.cleanStart = false;
     return this;
   }
 
