@@ -54,11 +54,6 @@ class MqttPublishingManager {
 
   final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
 
-  // Buffer of publish messages available but no listener is connected.
-  // When a listener becomes available this buffer is flushed to the published stream before further
-  // messages are published. Emptied every 500 messages.
-  final _noListener = <MqttPublishMessage>[];
-
   /// Generates message identifiers for messages.
   MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
       _messageIdentifierDispenser;
@@ -261,25 +256,7 @@ class MqttPublishingManager {
     MqttLogger.log(
         'MqttPublishingManager::_notifyPublish - entered message ${message.header!.qos.toString()}');
     if (_published.hasListener) {
-      // Check for buffered messages
-      if (_noListener.isNotEmpty) {
-        MqttLogger.log(
-            'MqttPublishingManager::_notifyPublish - adding buffered message ${message.header!.qos.toString()}');
-        for (var msg in _noListener) {
-          _published.add(msg);
-        }
-        _noListener.clear();
-      }
-      MqttLogger.log(
-          'MqttPublishingManager::_notifyPublish - adding message ${message.header!.qos.toString()}');
       _published.add(message);
-    } else {
-      MqttLogger.log(
-          'MqttPublishingManager::_notifyPublish - no listener - buffering');
-      _noListener.add(message);
-      if (_noListener.length == 500) {
-        _noListener.clear();
-      }
     }
   }
 }
