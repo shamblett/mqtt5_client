@@ -25,7 +25,6 @@ Future<int> main() async {
   // Subscribe to counter, Qos 1
   client.subscribe(topic, MqttQos.atLeastOnce);
 
-
   // Listen for the counter messages
   print('ISSUE::Listening......');
   client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {

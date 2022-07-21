@@ -18,7 +18,6 @@ Future<int> main() async {
   connMess.startSession();
   client.connectionMessage = connMess;
 
-
   print('ISSUE: Connecting');
   await client.connect();
 
