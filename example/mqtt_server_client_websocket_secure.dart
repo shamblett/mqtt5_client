@@ -69,7 +69,7 @@ Future<int> main() async {
   property.pairValue = 'Example value';
   final connMess = MqttConnectMessage()
       .withClientIdentifier('MQTT5DartClient')
-      .startClean()
+      .startClean() // Or startSession() for a persistent session
       .withUserProperties([property]);
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;

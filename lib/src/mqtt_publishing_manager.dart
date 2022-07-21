@@ -256,8 +256,6 @@ class MqttPublishingManager {
     MqttLogger.log(
         'MqttPublishingManager::_notifyPublish - entered message ${message.header!.qos.toString()}');
     if (_published.hasListener) {
-      MqttLogger.log(
-          'MqttPublishingManager::_notifyPublish - adding message ${message.header!.qos.toString()}');
       _published.add(message);
     }
   }

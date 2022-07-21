@@ -5,11 +5,12 @@
  * Copyright :  S.Hamblett
  */
 
+@TestOn('browser')
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_browser_client.dart';
 import 'package:test/test.dart';
 
-@TestOn('browser')
 void main() {
   const mockBrokerAddressWsNoScheme = 'localhost.com';
   const mockBrokerAddressWsBad = '://localhost.com';

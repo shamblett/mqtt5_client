@@ -179,6 +179,12 @@ class MqttByteBuffer {
     buffer?.clear();
   }
 
+  /// Cleans(shrink then clear) the buffer
+  void clean() {
+    shrink();
+    clear();
+  }
+
   @override
   String toString() {
     if (buffer == null || buffer!.isEmpty) {

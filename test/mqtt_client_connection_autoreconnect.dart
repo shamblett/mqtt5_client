@@ -5,13 +5,14 @@
  * Copyright :  S.Hamblett
  */
 
+@TestOn('vm')
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 import 'support/mqtt_client_mockbroker.dart';
 
-@TestOn('vm')
 void main() {
   // Test wide variables
   final broker = MockBroker();

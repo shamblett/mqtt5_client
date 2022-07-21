@@ -4,6 +4,9 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
+
+@TestOn('vm')
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
@@ -21,7 +24,6 @@ class MessageSerializationHelper {
   }
 }
 
-@TestOn('vm')
 void main() {
   group('Message Identifier', () {
     test('Numbering starts at 1', () {
@@ -3036,6 +3038,15 @@ void main() {
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
         expect(mb[1], 0x25);
+      });
+      test('Persistent session', () {
+        final msg = MqttConnectMessage()
+            .withClientIdentifier('mark')
+            .keepAliveFor(30)
+            .startSession();
+        final mb = MessageSerializationHelper.getMessageBytes(msg);
+        expect(mb[0], 0x10);
+        expect(mb[1], 0x16);
       });
     });
 

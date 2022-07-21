@@ -4,12 +4,13 @@
  * Date   : 10/05/2020
  * Copyright :  S.Hamblett
  */
+@TestOn('vm')
+
 import 'dart:async';
 
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
 
-@TestOn('vm')
 void main() {
   group('Topic filtering', () {
     final clientUpdates =

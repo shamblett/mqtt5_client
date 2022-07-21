@@ -33,7 +33,7 @@ Future<int> main() async {
   /// augmented with authentication data and other authentication related settings.
   final connMess = MqttConnectMessage()
       .withClientIdentifier('MQTT5DartClient')
-      .startClean()
+      .startClean() // Or startSession() for a persistent session
       .withAuthenticationMethod('SCRAM-SHA-1')
       .withAuthenticationData(Uint8Buffer()..addAll([1, 2, 3, 4]));
   client.connectionMessage = connMess;

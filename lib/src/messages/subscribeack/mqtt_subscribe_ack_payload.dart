@@ -62,7 +62,9 @@ class MqttSubscribeAckPayload extends MqttIPayload {
   String toString() {
     final sb = StringBuffer();
     for (final value in _reasonCodes) {
-      sb.writeln('Reason Code = ${mqttSubscribeReasonCode.asString(value)}');
+      if (value != null) {
+        sb.writeln('Reason Code = ${mqttSubscribeReasonCode.asString(value)}');
+      }
     }
     return sb.toString();
   }
