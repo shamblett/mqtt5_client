@@ -114,8 +114,8 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
                 'received, identifier is ${property.identifier}, ignoring');
           }
       }
-      _userProperty = _propertySet.userProperties;
     }
+    _userProperty = _propertySet.userProperties.toList();
   }
 
   /// Creates a variable header from the specified header stream.
