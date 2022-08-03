@@ -2749,8 +2749,8 @@ void main() {
         willProperties.userProperties = <MqttUserProperty>[user1];
         expect(willProperties.userProperties, isNotEmpty);
         expect(willProperties.userProperties[0], user1);
-        expect(willProperties.getWriteLength(), 63);
-        expect(willProperties.length, 62);
+        expect(willProperties.getWriteLength(), 66);
+        expect(willProperties.length, 65);
       });
       test('Payload - No Will Properties', () {
         final variableHeader = MqttConnectVariableHeader();

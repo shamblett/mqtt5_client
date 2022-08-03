@@ -62,8 +62,8 @@ class MqttWillProperties {
   int get messageExpiryInterval => _messageExpiryInterval;
   set messageExpiryInterval(int interval) {
     if (interval != 0) {
-      final property =
-          MqttByteProperty(MqttPropertyIdentifier.messageExpiryInterval);
+      final property = MqttFourByteIntegerProperty(
+          MqttPropertyIdentifier.messageExpiryInterval);
       property.value = interval;
       _propertySet.add(property);
       _messageExpiryInterval = interval;
