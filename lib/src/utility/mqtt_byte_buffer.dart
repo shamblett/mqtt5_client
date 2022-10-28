@@ -56,11 +56,26 @@ class MqttByteBuffer {
 
   /// Message available
   bool isMessageAvailable() {
-    if (availableBytes > 0) {
-      return true;
+    if (availableBytes == 0) {
+      return false;
     }
 
-    return false;
+    // read the message size by peeking in to the header and return true only
+    // if the whole message is available.
+    int savedPosition = _position;
+    var header = MqttHeader.fromByteBuffer(this);
+    // restore the position so that the [MqttMessage.createFrom] can read the
+    // header.
+    _position = savedPosition;
+    if (availableBytes < header.messageSize) {
+      MqttLogger.log(
+          'Available bytes($availableBytes) is less than the message size'
+          ' ${header.messageSize}');
+
+      return false;
+    }
+
+    return true;
   }
 
   /// Reads a byte from the buffer and advances the position
