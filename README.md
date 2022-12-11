@@ -29,7 +29,7 @@ Omissions from the full MQTT Version 5 specification in this version are as foll
 maximum values for instance are not enforced.
 - Subscription identifiers and shared subscriptions are not fully supported.
 - Server redirection is not supported.
-- Reason codes are processed only in support of the protcol itself, other than this although received reason codes are 
+- Reason codes are processed only in support of the protocol itself, other than this although received reason codes are 
 made available to the user the client will not necessarily take any action itself.
 - Flow control and Request/Response functionality is not fully supported.
 
