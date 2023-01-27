@@ -118,5 +118,5 @@ void onSubscribed(MqttSubscription topic) {
 /// The unsolicited disconnect callback
 void onDisconnected() {
   print('EXAMPLE::OnDisconnected client callback - Client disconnection');
-  exit(-1);
+  exit(0);
 }

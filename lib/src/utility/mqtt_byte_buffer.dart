@@ -60,6 +60,12 @@ class MqttByteBuffer {
       return false;
     }
 
+    // If we do not have 2 bytes we do not have a complete header, so no
+    // message is available.
+    if (length < 2) {
+      return false;
+    }
+
     // read the message size by peeking in to the header and return true only
     // if the whole message is available.
     int savedPosition = _position;
