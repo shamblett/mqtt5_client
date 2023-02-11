@@ -105,7 +105,7 @@ class MqttPropertyContainer {
     stream.read(_enc.length(length));
 
     // Build the property set until we run out of them
-    while (length != 0) {
+    while (length > 0) {
       final property = MqttPropertyFactory.get(stream);
       if (property.identifier != MqttPropertyIdentifier.userProperty) {
         _container[property.identifier] = property;
