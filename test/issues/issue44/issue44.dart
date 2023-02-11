@@ -103,9 +103,12 @@ Future<int> main() async {
     ];
     final byteBuffer = MqttByteBuffer.fromList(messageBuffer);
     final header = MqttHeader.fromByteBuffer(byteBuffer);
-    print(header);
-    final message = MqttMessageFactory.getMessage(header, byteBuffer);
-    print(message);
+    expect(header.messageType, MqttMessageType.reserved1);
+    try {
+      MqttMessageFactory.getMessage(header, byteBuffer);
+    } catch (e) {
+      expect(e is MqttInvalidHeaderException, isTrue);
+    }
   });
 
   return 0;
