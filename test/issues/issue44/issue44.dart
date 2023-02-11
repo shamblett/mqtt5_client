@@ -4,7 +4,7 @@ import 'package:typed_data/typed_buffers.dart' as typed;
 import 'package:test/test.dart';
 
 Future<int> main() async {
-  test('Message decode', () {
+  test('Message decode fail', () {
     final messageBuffer = [
       0,
       64,
@@ -111,5 +111,108 @@ Future<int> main() async {
     }
   });
 
+  test('Message decode OK', () {
+    final messageBuffer = [
+      64,
+      4,
+      0,
+      3,
+      0,
+      0,
+      50,
+      85,
+      0,
+      42,
+      77,
+      121,
+      83,
+      99,
+      97,
+      110,
+      53,
+      47,
+      57,
+      57,
+      50,
+      48,
+      47,
+      65,
+      116,
+      116,
+      101,
+      110,
+      100,
+      97,
+      110,
+      116,
+      47,
+      83,
+      116,
+      97,
+      116,
+      117,
+      115,
+      85,
+      112,
+      100,
+      97,
+      116,
+      101,
+      47,
+      49,
+      47,
+      52,
+      55,
+      50,
+      48,
+      0,
+      1,
+      0,
+      123,
+      34,
+      112,
+      105,
+      110,
+      103,
+      34,
+      58,
+      116,
+      114,
+      117,
+      101,
+      44,
+      34,
+      97,
+      99,
+      116,
+      105,
+      118,
+      97,
+      116,
+      101,
+      84,
+      101,
+      114,
+      109,
+      105,
+      110,
+      97,
+      108,
+      34,
+      58,
+      102,
+      97,
+      108,
+      115,
+      101,
+      125
+    ];
+    final byteBuffer = MqttByteBuffer.fromList(messageBuffer);
+    final header = MqttHeader.fromByteBuffer(byteBuffer);
+    expect(header.messageType, MqttMessageType.publishAck);
+    final message = MqttMessageFactory.getMessage(header, byteBuffer);
+    expect(message?.isValid, isTrue);
+    expect(message is MqttPublishAckMessage, isTrue);
+  });
   return 0;
 }
