@@ -1,9 +1,7 @@
 import 'package:mqtt5_client/mqtt5_client.dart';
-import 'package:mqtt5_client/mqtt5_server_client.dart';
-import 'package:typed_data/typed_buffers.dart' as typed;
 import 'package:test/test.dart';
 
-Future<int> main() async {
+int main() {
   test('Message decode fail', () {
     final messageBuffer = [
       0,
@@ -215,7 +213,7 @@ Future<int> main() async {
     expect(message is MqttPublishAckMessage, isTrue);
   });
 
-  test('Message decode - 1 extra 0', () {
+  test('Message decode - multiple', () {
     final messageBuffer = [
       64,
       4,
@@ -309,18 +307,30 @@ Future<int> main() async {
       108,
       115,
       101,
-      125,
-      0
+      125
     ];
+    final messages = <MqttMessage?>[];
+    var messageIndex = 0;
     final byteBuffer = MqttByteBuffer.fromList(messageBuffer);
-    final header = MqttHeader.fromByteBuffer(byteBuffer);
+
+    var header = MqttHeader.fromByteBuffer(byteBuffer);
     expect(header.messageType, MqttMessageType.publishAck);
-    final message = MqttMessageFactory.getMessage(header, byteBuffer);
-    expect(message is MqttPublishAckMessage, isTrue);
-    expect(message?.isValid, isTrue);
+    messages[messageIndex] = MqttMessageFactory.getMessage(header, byteBuffer);
+    expect(messages[messageIndex] is MqttPublishAckMessage, isTrue);
+    expect(messages[messageIndex]?.isValid, isTrue);
     expect(byteBuffer.position, 0);
     byteBuffer.shrink();
-    expect(byteBuffer.length, 1); // Should work
+    messageIndex++;
+
+    header = MqttHeader.fromByteBuffer(byteBuffer);
+    expect(header.messageType, MqttMessageType.publishAck);
+    messages[messageIndex] = MqttMessageFactory.getMessage(header, byteBuffer);
+    expect(messages[messageIndex] is MqttPublishAckMessage, isTrue);
+    expect(messages[messageIndex]?.isValid, isTrue);
+    expect(byteBuffer.position, 0);
+    byteBuffer.shrink();
+    messageIndex++;
+
   });
   return 0;
 }
