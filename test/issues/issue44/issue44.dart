@@ -315,7 +315,7 @@ int main() {
 
     var header = MqttHeader.fromByteBuffer(byteBuffer);
     expect(header.messageType, MqttMessageType.publishAck);
-    messages[messageIndex] = MqttMessageFactory.getMessage(header, byteBuffer);
+    messages.add(MqttMessageFactory.getMessage(header, byteBuffer));
     expect(messages[messageIndex] is MqttPublishAckMessage, isTrue);
     expect(messages[messageIndex]?.isValid, isTrue);
     expect(byteBuffer.position, 0);
@@ -324,7 +324,7 @@ int main() {
 
     header = MqttHeader.fromByteBuffer(byteBuffer);
     expect(header.messageType, MqttMessageType.publishAck);
-    messages[messageIndex] = MqttMessageFactory.getMessage(header, byteBuffer);
+    messages.add(MqttMessageFactory.getMessage(header, byteBuffer));
     expect(messages[messageIndex] is MqttPublishAckMessage, isTrue);
     expect(messages[messageIndex]?.isValid, isTrue);
     expect(byteBuffer.position, 0);
