@@ -220,7 +220,6 @@ int main() {
       0,
       3,
       0,
-      0,
       50,
       85,
       0,
@@ -323,14 +322,13 @@ int main() {
     messageIndex++;
 
     header = MqttHeader.fromByteBuffer(byteBuffer);
-    expect(header.messageType, MqttMessageType.publishAck);
+    expect(header.messageType, MqttMessageType.publish);
     messages.add(MqttMessageFactory.getMessage(header, byteBuffer));
-    expect(messages[messageIndex] is MqttPublishAckMessage, isTrue);
+    expect(messages[messageIndex] is MqttPublishMessage, isTrue);
     expect(messages[messageIndex]?.isValid, isTrue);
     expect(byteBuffer.position, 0);
     byteBuffer.shrink();
     messageIndex++;
-
   });
   return 0;
 }
