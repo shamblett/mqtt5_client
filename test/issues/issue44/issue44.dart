@@ -350,6 +350,7 @@ int main() {
       var header = MqttHeader.fromByteBuffer(byteBuffer);
       expect(header.messageType, MqttMessageType.publishAck);
       messages.add(MqttMessageFactory.getMessage(header, byteBuffer));
+      print(messages[0]);
       expect(byteBuffer.isMessageAvailable(), isFalse);
       expect(messages[messageIndex] is MqttPublishAckMessage, isTrue);
       expect(messages[messageIndex]?.isValid, isTrue);

@@ -54,8 +54,12 @@ class MqttServerConnection extends MqttConnectionBase {
     MqttLogger.log(
         'MqttServerConnection::_ondata - adding incoming data, data length is ${data.length},'
         ' message stream length is ${messageStream.length}, '
-        'message stream position is ${messageStream.position}');
+        'message stream position is ${messageStream.position},'
+        ' message stream is $messageStream');
     messageStream.addAll(data);
+    MqttLogger.log('MqttServerConnection::_ondata - added incoming data'
+        ' message stream length is ${messageStream.length}, '
+        'message stream position is ${messageStream.position}');
 
     while (messageStream.isMessageAvailable()) {
       var messageIsValid = true;
@@ -75,7 +79,7 @@ class MqttServerConnection extends MqttConnectionBase {
         messageIsValid = false;
       }
       if (!messageIsValid) {
-        messageStream.clear();
+        messageStream.shrink();
         return;
       }
       if (messageIsValid) {
