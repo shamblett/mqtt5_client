@@ -54,8 +54,7 @@ class MqttServerConnection extends MqttConnectionBase {
     MqttLogger.log(
         'MqttServerConnection::_ondata - adding incoming data, data length is ${data.length},'
         ' message stream length is ${messageStream.length}, '
-        'message stream position is ${messageStream.position},'
-        ' message stream is $messageStream');
+        'message stream position is ${messageStream.position}');
     messageStream.addAll(data);
     MqttLogger.log('MqttServerConnection::_ondata - added incoming data'
         ' message stream length is ${messageStream.length}, '
