@@ -85,8 +85,6 @@ class MqttByteBuffer {
     var header = MqttHeader.fromByteBuffer(this);
     // Restore the position
     _position = position;
-    MqttLogger.log(
-        'MqttByteBuffer:isMessageAvailable - decoded header is $header');
     if (availableBytes < header.messageSize) {
       MqttLogger.log(
           'MqttByteBuffer:isMessageAvailable - Available bytes($availableBytes) is less than the message size'
