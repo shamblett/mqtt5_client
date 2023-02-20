@@ -13,7 +13,6 @@ Future<int> main() async {
   final client = MqttServerClient.withPort('localhost', 'SJHIssueRx', 1883);
 
   client.logging(on: false);
-  const topic = 'counter';
   final connMess = MqttConnectMessage();
   client.connectionMessage = connMess;
   connMess.startSession();

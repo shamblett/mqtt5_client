@@ -1,18 +1,16 @@
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
-import 'package:typed_data/typed_buffers.dart';
 import 'package:test/test.dart';
 
 Future<int> main() async {
   resubscribeAfterUnsubscribe(
-      String broker_url, int port, bool useWs, int delay) async {
-    final client = MqttServerClient(broker_url, "");
+      String brokerUrl, int port, bool useWs, int delay) async {
+    final client = MqttServerClient(brokerUrl, "");
     client.useWebSocket = useWs;
     client.port = port;
     client.logging(on: true);
 
     String topic = "iWantToBeUnsubscribed";
-    var sendData = Uint8Buffer();
 
     await client.connect();
 
@@ -27,6 +25,7 @@ Future<int> main() async {
     await MqttUtilities.asyncSleep(delay);
 
     var subStatus =
+        // ignore: invalid_use_of_protected_member
         client.subscriptionsManager!.getSubscriptionTopicStatus(topic);
     print(subStatus);
 

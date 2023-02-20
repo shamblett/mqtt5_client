@@ -23,7 +23,7 @@ Future<int> main() async {
     client.subscribe(topic, MqttQos.exactlyOnce);
     client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final data = (c[0].payload as MqttPublishMessage).payload.message!;
-      print("Recieved Message: ${data} at ${c[0].topic}");
+      print("Recieved Message: $data at ${c[0].topic}");
       if (c[0].topic == topic) {
         recvData = data;
       }
@@ -60,7 +60,7 @@ Future<int> main() async {
     client.subscribe(topic, MqttQos.exactlyOnce);
     client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final data = (c[0].payload as MqttPublishMessage).payload.message!;
-      print("Recieved Message: ${data} at ${c[0].topic}");
+      print("Recieved Message: $data at ${c[0].topic}");
       if (c[0].topic == topic) {
         recvData = data;
       }

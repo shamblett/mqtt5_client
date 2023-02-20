@@ -68,14 +68,28 @@ class MqttByteBuffer {
 
     // read the message size by peeking in to the header and return true only
     // if the whole message is available.
-    int savedPosition = _position;
+
+    // If the first byte of the header is 0 then skip past it.
+    if (peekByte() == 0) {
+      MqttLogger.log(
+          'MqttByteBuffer:isMessageAvailable - first header byte is zero, skipping');
+      _position++;
+      shrink();
+    }
+
+    // Assume we now have a valid header
+    MqttLogger.log(
+        'MqttByteBuffer:isMessageAvailable - assumed valid header, value is ${peekByte()}');
+    // Save the position
+    var position = _position;
     var header = MqttHeader.fromByteBuffer(this);
-    // restore the position so that the [MqttMessage.createFrom] can read the
-    // header.
-    _position = savedPosition;
+    // Restore the position
+    _position = position;
+    MqttLogger.log(
+        'MqttByteBuffer:isMessageAvailable - decoded header is $header');
     if (availableBytes < header.messageSize) {
       MqttLogger.log(
-          'Available bytes($availableBytes) is less than the message size'
+          'MqttByteBuffer:isMessageAvailable - Available bytes($availableBytes) is less than the message size'
           ' ${header.messageSize}');
 
       return false;
