@@ -21,7 +21,7 @@ class MqttPublishAckVariableHeader implements MqttIVariableHeader {
   }
 
   // The message header
-  final _header;
+  final dynamic _header;
   MqttHeader? get header => _header;
 
   /// The message identifier

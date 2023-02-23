@@ -11,5 +11,4 @@ analyzer:
 
 linter:
   rules:
-    prefer_typing_uninitialized_variables: false
-    overridden_fields: false
+

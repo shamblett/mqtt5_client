@@ -59,7 +59,7 @@ class MqttAuthenticationManager {
         'MqttAuthenticationManager::reauthenticate - started, timeout is $waitTimeInSeconds');
     final timeoutMsg = MqttAuthenticateMessage();
     timeoutMsg.timeout = true;
-    late var subscription;
+    late dynamic subscription;
     subscription = _authenticated.stream
         .timeout(Duration(seconds: waitTimeInSeconds), onTimeout: (_) {
       completer.complete(timeoutMsg);

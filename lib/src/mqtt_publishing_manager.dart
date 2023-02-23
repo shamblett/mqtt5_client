@@ -76,7 +76,7 @@ class MqttPublishingManager {
   Map<Type, Object> get dataConvertors => _dataConverters;
 
   // The current connection handler.
-  final _connectionHandler;
+  final dynamic _connectionHandler;
 
   final StreamController<MqttPublishMessage> _published =
       StreamController<MqttPublishMessage>.broadcast();
@@ -89,7 +89,7 @@ class MqttPublishingManager {
   MqttMessageReceived? publishEvent;
 
   // The event bus
-  final _clientEventBus;
+  final dynamic _clientEventBus;
 
   /// Publish a message to the broker on the specified topic at the specified Qos.
   /// with optional retain flag and user properties.
@@ -196,7 +196,7 @@ class MqttPublishingManager {
     try {
       final pubMsg =
           receivedMessages.remove(pubRelMsg.variableHeader.messageIdentifier);
-      var compMsg;
+      dynamic compMsg;
       if (pubMsg != null) {
         // Send the message for processing to whoever is waiting.
         final topic = MqttPublicationTopic(pubMsg.variableHeader!.topicName);
@@ -235,7 +235,7 @@ class MqttPublishingManager {
     MqttLogger.log('MqttPublishingManager::handlePublishReceived - entered');
     final recvMsg = msg as MqttPublishReceivedMessage;
     // If we've got a matching message, respond with a "ok release it for processing"
-    var relMsg;
+    dynamic relMsg;
     if (publishedMessages
         .containsKey(recvMsg.variableHeader.messageIdentifier)) {
       relMsg = MqttPublishReleaseMessage()

@@ -54,7 +54,7 @@ class MqttSubscriptionManager {
 
   /// The connection handler that we use to subscribe to subscription
   /// acknowledgements.
-  final _connectionHandler;
+  final dynamic _connectionHandler;
 
   /// Subscribe and Unsubscribe callbacks
   SubscribeCallback? onSubscribed;
@@ -69,7 +69,7 @@ class MqttSubscriptionManager {
   bool resubscribeOnAutoReconnect = true;
 
   /// The event bus
-  final _clientEventBus;
+  final dynamic _clientEventBus;
 
   /// Observable change notifier for all subscribed topics
   final StreamController<List<MqttReceivedMessage<MqttMessage>>>
@@ -181,7 +181,7 @@ class MqttSubscriptionManager {
       }
       final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = <MqttSubscription>[sub];
-      var msg;
+      dynamic msg;
       if (option == null) {
         // Build a subscribe message for the caller and send it to the broker.
         msg = MqttSubscribeMessage()
