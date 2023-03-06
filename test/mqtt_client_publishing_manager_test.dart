@@ -6,6 +6,7 @@
  */
 
 @TestOn('vm')
+import 'dart:io';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 import 'package:test/test.dart';
@@ -21,12 +22,14 @@ class MockCH extends Mock implements MqttServerConnectionHandler {}
 class MockCON extends Mock implements MqttServerNormalConnection {}
 
 void main() {
+  List<RawSocketOption> socketOptions = <RawSocketOption>[];
   group('Message registration', () {
     // Group wide
     final con = MockCON();
     final ch = MockCH();
     final clientEventBus = events.EventBus();
-    final testCHNS = TestConnectionHandlerNoSend(clientEventBus);
+    final testCHNS = TestConnectionHandlerNoSend(clientEventBus,
+        socketOptions: socketOptions);
     testCHNS.connection = con;
     ch.connection = con;
     final cbFunc = ((MqttMessage msg) {
@@ -73,7 +76,8 @@ void main() {
   group('Publishing', () {
     test('Publish at least once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -98,7 +102,8 @@ void main() {
 
     test('Publish at least once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -121,7 +126,8 @@ void main() {
     });
     test('Publish at exactly once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -143,7 +149,8 @@ void main() {
     });
     test('Publish consecutive topics', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -158,7 +165,8 @@ void main() {
     });
     test('Publish at least once and ack', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -175,7 +183,8 @@ void main() {
     });
     test('Publish exactly once, release and complete', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -197,7 +206,8 @@ void main() {
     });
     test('Publish recieved at most once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -215,7 +225,8 @@ void main() {
     });
     test('Publish recieved at least once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -234,7 +245,8 @@ void main() {
     });
     test('Publish recieved exactly once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -253,7 +265,8 @@ void main() {
     });
     test('Release recieved exactly once', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -277,7 +290,8 @@ void main() {
     });
     test('Publish exactly once, interleaved scenario 1', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final payload1 = MqttPayloadBuilder();
@@ -311,7 +325,8 @@ void main() {
     });
     test('Publish exactly once, interleaved scenario 2', () {
       final clientEventBus = events.EventBus();
-      final testCHS = TestConnectionHandlerSend(clientEventBus);
+      final testCHS = TestConnectionHandlerSend(clientEventBus,
+          socketOptions: socketOptions);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final payload1 = MqttPayloadBuilder();

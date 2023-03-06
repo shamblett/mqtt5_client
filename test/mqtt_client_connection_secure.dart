@@ -38,6 +38,7 @@ void main() {
   const testClientId = 'syncMqttTests';
   const nonExistantHostName = 'aabbccddeeffeeddccbbaa.aa.bb';
   const badPort = 1884;
+  List<RawSocketOption> socketOptions = <RawSocketOption>[];
 
   group('Connection Keep Alive - Mock tests', () {
     // Group setup
@@ -77,10 +78,8 @@ void main() {
   group('Synchronous MqttConnectionHandler', () {
     test('Connect to bad host name', () async {
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(
-        clientEventBus,
-        maxConnectionAttempts: 3,
-      );
+      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+          maxConnectionAttempts: 3, socketOptions: socketOptions);
       ch.secure = true;
       try {
         await ch.connect(nonExistantHostName, mockBrokerPort,
@@ -98,10 +97,8 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(
-        clientEventBus,
-        maxConnectionAttempts: 3,
-      );
+      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+          maxConnectionAttempts: 3, socketOptions: socketOptions);
       ch.secure = true;
       ch.onDisconnected = disconnectCB;
       try {
@@ -149,10 +146,8 @@ void main() {
 
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(
-        clientEventBus,
-        maxConnectionAttempts: 3,
-      );
+      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+          maxConnectionAttempts: 3, socketOptions: socketOptions);
       ch.secure = true;
       final context = SecurityContext.defaultContext;
       final currDir = path.current + path.separator;
@@ -187,10 +182,8 @@ void main() {
       broker.pemName = 'self_signed';
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(
-        clientEventBus,
-        maxConnectionAttempts: 3,
-      );
+      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+          maxConnectionAttempts: 3, socketOptions: socketOptions);
       ch.secure = true;
       ch.onDisconnected = disconnectCB;
       final context = SecurityContext();
@@ -212,10 +205,8 @@ void main() {
       broker.pemName = 'self_signed';
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(
-        clientEventBus,
-        maxConnectionAttempts: 3,
-      );
+      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+          maxConnectionAttempts: 3, socketOptions: socketOptions);
       ch.secure = true;
       // Skip bad certificate
       ch.onBadCertificate = (_) => true;

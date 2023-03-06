@@ -8,6 +8,7 @@
 @TestOn('vm')
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:event_bus/event_bus.dart' as events;
 import 'package:mqtt5_client/mqtt5_client.dart';
@@ -15,10 +16,12 @@ import 'package:test/test.dart';
 import 'support/mqtt_client_test_connection_handler.dart';
 
 void main() {
+  List<RawSocketOption> socketOptions = <RawSocketOption>[];
   test('On Authentication Message Received', () async {
     final authManager = MqttAuthenticationManager();
     final clientEventBus = events.EventBus();
-    final testCHS = TestConnectionHandlerSend(clientEventBus);
+    final testCHS =
+        TestConnectionHandlerSend(clientEventBus, socketOptions: socketOptions);
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
@@ -34,7 +37,8 @@ void main() {
   test('Reauthenticate - Timeout No Message', () async {
     final authManager = MqttAuthenticationManager();
     final clientEventBus = events.EventBus();
-    final testCHS = TestConnectionHandlerSend(clientEventBus);
+    final testCHS =
+        TestConnectionHandlerSend(clientEventBus, socketOptions: socketOptions);
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
@@ -48,7 +52,8 @@ void main() {
 
   test('Reauthenticate - Timeout With Message', () async {
     final clientEventBus = events.EventBus();
-    final testCHS = TestConnectionHandlerSend(clientEventBus);
+    final testCHS =
+        TestConnectionHandlerSend(clientEventBus, socketOptions: socketOptions);
     final authManager = MqttAuthenticationManager();
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()

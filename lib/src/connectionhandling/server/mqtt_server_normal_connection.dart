@@ -10,12 +10,14 @@ part of mqtt5_server_client;
 /// The MQTT normal(insecure TCP) server connection class
 class MqttServerNormalConnection extends MqttServerConnection {
   /// Default constructor
-  MqttServerNormalConnection(events.EventBus? eventBus) : super(eventBus);
+  MqttServerNormalConnection(
+      events.EventBus? eventBus, List<RawSocketOption> socketOptions)
+      : super(eventBus, socketOptions);
 
   /// Initializes a new instance of the MqttConnection class.
-  MqttServerNormalConnection.fromConnect(
-      String server, int port, events.EventBus eventBus)
-      : super(eventBus) {
+  MqttServerNormalConnection.fromConnect(String server, int port,
+      events.EventBus eventBus, List<RawSocketOption> socketOptions)
+      : super(eventBus, socketOptions) {
     connect(server, port);
   }
 
@@ -27,6 +29,12 @@ class MqttServerNormalConnection extends MqttServerConnection {
     try {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {
+        // Socket options
+        final applied = _applySocketOptions(socket, socketOptions);
+        if (applied) {
+          MqttLogger.log(
+              'MqttNormalConnection::connect - socket options applied');
+        }
         client = socket;
         _startListening();
         completer.complete();
@@ -51,6 +59,12 @@ class MqttServerNormalConnection extends MqttServerConnection {
     try {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {
+        // Socket options
+        final applied = _applySocketOptions(socket, socketOptions);
+        if (applied) {
+          MqttLogger.log(
+              'MqttNormalConnection::connectAuto - socket options applied');
+        }
         client = socket;
         _startListening();
         completer.complete();
