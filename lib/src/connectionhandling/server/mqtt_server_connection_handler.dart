@@ -12,7 +12,7 @@ part of mqtt5_server_client;
 abstract class MqttServerConnectionHandler extends MqttConnectionHandlerBase {
   /// Initializes a new instance of the [MqttServerConnectionHandler] class.
   MqttServerConnectionHandler(clientEventBus,
-      {required int? maxConnectionAttempts})
+      {required int? maxConnectionAttempts, required this.socketOptions})
       : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts);
 
   /// Use a websocket rather than TCP
@@ -35,4 +35,7 @@ abstract class MqttServerConnectionHandler extends MqttConnectionHandlerBase {
 
   /// The security context for secure usage
   dynamic securityContext;
+
+  /// Socket options
+  List<RawSocketOption> socketOptions = <RawSocketOption>[];
 }
