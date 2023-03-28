@@ -77,6 +77,13 @@ class MqttPayloadBuilder {
     _payload!.addAll(encoder.convert(val));
   }
 
+  /// Add a will payload
+  ///
+  /// Will payloads are Binary Data as defined by the MQTT 5 specification
+  void addWillPayload(String val) {
+    _payload!.addAll(MqttUtf8Encoding().toUtf8(val));
+  }
+
   /// Add a 32 bit double
   void addHalfDouble(double val) {
     final tmp = Float32List.fromList(<double>[val]);

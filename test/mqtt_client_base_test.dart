@@ -1022,6 +1022,33 @@ void main() {
       ]);
     });
 
+    test('Add Will payload', () {
+      final builder = MqttPayloadBuilder();
+      builder.addWillPayload('{"message":"bye"}');
+      expect(builder.length, 19);
+      expect(builder.payload!.toList(), <int>[
+        0,
+        17,
+        123,
+        34,
+        109,
+        101,
+        115,
+        115,
+        97,
+        103,
+        101,
+        34,
+        58,
+        34,
+        98,
+        121,
+        101,
+        34,
+        125
+      ]);
+    });
+
     test('Add half double', () {
       final builder = MqttPayloadBuilder();
       builder.addHalfDouble(10000.5);
