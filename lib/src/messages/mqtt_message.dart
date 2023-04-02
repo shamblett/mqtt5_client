@@ -41,7 +41,7 @@ class MqttMessage {
 
       if (messageStream.availableBytes < header.messageSize) {
         messageStream.reset();
-        throw MqttInvalidMessageException(
+        throw MqttIncompleteMessageException(
             'Available bytes is less than the message size');
       }
       final message = MqttMessageFactory.getMessage(header, messageStream);
