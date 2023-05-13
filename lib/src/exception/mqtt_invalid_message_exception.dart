@@ -7,11 +7,24 @@
 
 part of mqtt5_client;
 
-/// Exception thrown when processing a Message that is invalid in some way.
+/// Exception thrown when processing a message that is invalid in some way.
 class MqttInvalidMessageException implements Exception {
   /// Construct
   MqttInvalidMessageException(String text) {
     _message = 'mqtt-client::InvalidMessageException: $text';
+  }
+
+  late String _message;
+
+  @override
+  String toString() => _message;
+}
+
+/// Exception thrown when processing a message that is not completely received
+class MqttIncompleteMessageException implements Exception {
+  /// Construct
+  MqttIncompleteMessageException(String text) {
+    _message = 'mqtt-client::IncompleteMessageException: $text';
   }
 
   late String _message;

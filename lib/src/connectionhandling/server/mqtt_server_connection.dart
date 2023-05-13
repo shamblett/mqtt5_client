@@ -65,45 +65,57 @@ class MqttServerConnection extends MqttConnectionBase {
         ' message stream length is ${messageStream.length}, '
         'message stream position is ${messageStream.position}');
 
-    while (messageStream.isMessageAvailable()) {
-      var messageIsValid = true;
-      MqttMessage? msg;
+    // Catch all unexpected exceptions, if any send a disconnect message
+    try {
+      while (messageStream.isMessageAvailable()) {
+        var messageIsValid = true;
+        MqttMessage? msg;
 
-      try {
-        msg = MqttMessage.createFrom(messageStream);
-        if (msg == null) {
+        try {
+          msg = MqttMessage.createFrom(messageStream);
+          if (msg == null) {
+            return;
+          }
+        } on MqttIncompleteMessageException {
+          MqttLogger.log(
+              'MqttServerConnection::_ondata - message is not yet valid, '
+              'waiting for more data ...');
+          messageIsValid = false;
+        } catch (e) {
+          MqttLogger.log(
+              'MqttServerConnection::_ondata - exception raised is $e');
+          rethrow;
+        }
+        if (!messageIsValid) {
+          messageStream.shrink();
           return;
         }
-      } catch (e) {
-        MqttLogger.log(
-            'MqttServerConnection::_ondata - message is not yet valid, '
-            'waiting for more data ...');
-        MqttLogger.log(
-            'MqttServerConnection::_ondata - exception raised is $e');
-        messageIsValid = false;
-      }
-      if (!messageIsValid) {
-        messageStream.shrink();
-        return;
-      }
-      if (messageIsValid) {
-        MqttLogger.log(
-            'MqttServerConnection::_onData - MESSAGE RECEIVED -> ', msg);
-        // If we have received a valid message we must shrink the stream
-        messageStream.shrink();
-        if (!clientEventBus!.streamController.isClosed) {
-          if (msg!.header!.messageType == MqttMessageType.connectAck) {
-            clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
-          } else {
-            clientEventBus!.fire(MqttMessageAvailable(msg));
+        if (messageIsValid) {
+          MqttLogger.log(
+              'MqttServerConnection::_onData - MESSAGE RECEIVED -> ', msg);
+          // If we have received a valid message we must shrink the stream
+          messageStream.shrink();
+          if (!clientEventBus!.streamController.isClosed) {
+            if (msg!.header!.messageType == MqttMessageType.connectAck) {
+              clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
+            } else {
+              clientEventBus!.fire(MqttMessageAvailable(msg));
+            }
+            MqttLogger.log(
+                'MqttServerConnection::_onData - message available event fired');
           }
-          MqttLogger.log(
-              'MqttServerConnection::_onData - message available event fired');
-        } else {
-          MqttLogger.log(
-              'MqttServerConnection::_onData - WARN - message available event not fired, event bus is closed');
         }
       }
+    } catch (e) {
+      MqttLogger.log(
+          'MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect $e');
+      // Send disconnect
+      final disconnect = MqttDisconnectMessage()
+        ..withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
+      messageStream.reset();
+      disconnect.writeTo(messageStream);
+      messageStream.seek(0);
+      send(messageStream);
     }
     MqttLogger.log(
         'MqttServerConnection::_onData - Message Received Ended <<< ');

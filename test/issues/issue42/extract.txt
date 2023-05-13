@@ -1,0 +1,112 @@
+
+
+I/flutter ( 6953): 2023-03-31 13:36:32.142602 -- MqttByteBuffer:isMessageAvailable - Available bytes(77) is less than the message size 150
+
+.....
+
+ 2023-03-31 13:36:32.238812 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:32.239363 -- MqttServerConnection::_ondata - adding incoming data, data length is 2, message stream length is 146, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:32.240084 -- MqttServerConnection::_ondata - added incoming data message stream length is 148, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:32.240352 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 6953): 2023-03-31 13:36:32.240570 -- MqttByteBuffer:isMessageAvailable - Available bytes(148) is less than the message size 205
+I/flutter ( 6953): 2023-03-31 13:36:32.240771 -- MqttServerConnection::_onData - Message Received Ended <<<
+
+.....
+
+2023-03-31 13:36:32.242453 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:32.242783 -- MqttServerConnection::_ondata - adding incoming data, data length is 8191, message stream length is 77, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:32.243014 -- MqttServerConnection::_ondata - added incoming data message stream length is 8268, message stream position is 0
+
+.....
+
+I/flutter ( 6953): 2023-03-31 13:36:32.394595 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:32.395940 -- MqttServerConnection::_ondata - adding incoming data, data length is 2767, message stream length is 148, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:32.396462 -- MqttServerConnection::_ondata - added incoming data message stream length is 2915, message stream position is 0
+
+I/flutter ( 6953): 2023-03-31 13:36:34.150694 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:34.151192 -- MqttServerConnection::_ondata - adding incoming data, data length is 2, message stream length is 30, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:34.151605 -- MqttServerConnection::_ondata - added incoming data message stream length is 32, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:34.152031 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 6953): 2023-03-31 13:36:34.152614 -- MqttByteBuffer:isMessageAvailable - Available bytes(32) is less than the message size 212
+I/flutter ( 6953): 2023-03-31 13:36:34.153381 -- MqttServerConnection::_onData - Message Received Ended <<<
+
+....
+
+I/flutter ( 6953): 2023-03-31 13:36:34.156665 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:34.157119 -- MqttServerConnection::_ondata - adding incoming data, data length is 8191, message stream length is 0, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:34.157744 -- MqttServerConnection::_ondata - added incoming data message stream length is 8191, message stream position is 0
+
+....
+
+I/flutter ( 6953): 2023-03-31 13:36:34.721842 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:34.722292 -- MqttServerConnection::_ondata - adding incoming data, data length is 8191, message stream length is 52, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:34.722519 -- MqttServerConnection::_ondata - added incoming data message stream length is 8243, message stream position is 0
+
+....
+
+I/flutter ( 6953): 2023-03-31 13:36:34.765716 -- MqttServerConnection::_onData - WARN - message available event not fired, event bus is closed
+I/flutter ( 6953): 2023-03-31 13:36:34.766127 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 6953): 2023-03-31 13:36:34.766434 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 6953): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 144
+I/flutter ( 6953): Topic Name = vadim/v1/server/devices/relay_796973/IsOnline
+I/flutter ( 6953): Message Identifier = 0
+I/flutter ( 6953): Payload Format Indicator = false
+I/flutter ( 6953): Message Expiry Interval = 65535
+I/flutter ( 6953): Topic Alias = 255
+I/flutter ( 6953): Response Topic =
+I/flutter ( 6953): Subscription Identifier(s) = []
+I/flutter ( 6953): Properties = No properties set
+I/flutter ( 6953):
+I/flutter ( 6953): Payload: {4 bytes={<84><114><117><101>
+I/flutter ( 6953): 2023-03-31 13:36:34.766603 -- MqttServerConnection::_onData - WARN - message available event not fired, event bus is closed
+I/flutter ( 6953): 2023-03-31 13:36:34.766741 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+E/flutter ( 6953): [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: mqtt-client::InvalidHeaderException: The header being processed contained an invalid size byte pattern. Message size must take a most 4 bytes, and the last byte must have bit 8 set to 0.
+E/flutter ( 6953): #0      MqttHeader.readFrom
+E/flutter ( 6953): #1      new MqttHeader.fromByteBuffer
+E/flutter ( 6953): #2      MqttByteBuffer.isMessageAvailable
+E/flutter ( 6953): #3      MqttServerConnection._onData
+E/flutter ( 6953): #4      _RootZone.runUnaryGuarded (dart:async/zone.dart:1586:10)
+E/flutter ( 6953): #5      _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:339:11)
+E/flutter ( 6953): #6      _BufferingStreamSubscription._add (dart:async/stream_impl.dart:271:7)
+E/flutter ( 6953): #7      _SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:774:19)
+E/flutter ( 6953): #8      _StreamController._add (dart:async/stream_controller.dart:648:7)
+E/flutter ( 6953): #9      _StreamController.add (dart:async/stream_controller.dart:596:5)
+E/flutter ( 6953): #10     _Socket._onData (dart:io-patch/socket_patch.dart:2324:41)
+E/flutter ( 6953): #11     _RootZone.runUnaryGuarded (dart:async/zone.dart:1586:10)
+E/flutter ( 6953): #12     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:339:11)
+E/flutter ( 6953): #13     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:271:7)
+E/flutter ( 6953): #14     _SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:774:19)
+E/flutter ( 6953): #15     _StreamController._add (dart:async/stream_controller.dart:648:7)
+E/flutter ( 6953): #16     _StreamController.add (dart:async/stream_controller.dart:596:5)
+E/flutter ( 6953): #17     _RawSecureSocket._sendReadEvent (dart:io/secure_socket.dart:1107:19)
+E/flutter ( 6953): #18     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+E/flutter ( 6953): #19     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+E/flutter ( 6953): #20     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+E/flutter ( 6953): #21     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:192:12)
+E/flutter ( 6953):
+
+.....
+
+I/flutter ( 6953): 2023-03-31 13:36:37.054369 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:37.054582 -- MqttServerConnection::_ondata - adding incoming data, data length is 8191, message stream length is 0, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:37.055704 -- MqttServerConnection::_ondata - added incoming data message stream length is 8191, message stream position is 0
+
+
+.....
+
+2023-03-31 13:36:37.208854 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:37.209035 -- MqttServerConnection::_ondata - adding incoming data, data length is 8191, message stream length is 210, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:37.210949 -- MqttServerConnection::_ondata - added incoming data message stream length is 8401, message stream position is 0
+
+.....
+
+2023-03-31 13:36:37.292174 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 6953): 2023-03-31 13:36:37.292461 -- MqttServerConnection::_ondata - adding incoming data, data length is 3381, message stream length is 0, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:37.292857 -- MqttServerConnection::_ondata - added incoming data message stream length is 3381, message stream position is 0
+I/flutter ( 6953): 2023-03-31 13:36:37.293014 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 48
+I/flutter ( 6953): 2023-03-31 13:36:37.294758 -- MqttServerConnection::_ondata - message is not yet valid, waiting for more data ...
+I/flutter ( 6953): 2023-03-31 13:36:37.295048 -- MqttServerConnection::_ondata - exception raised is mqtt-client::InvalidMessageException: The data provided in the message stream was not a valid MQTT Message, exception is Exception: MqttByteBuffer::read: The buffer did not have enough bytes for the read operation length 3381, count 24932, position 4, buffer [48, 118, 97, 100, 105, 109, 47, 118, 49, 47, 115, 101, 114, 118, 101, 114, 47, 100, 101, 118, 105, 99, 101, 115, 47, 82, 101, 108, 97, 121, 95, 100, 100, 101, 50, 47, 73, 115, 73, 110, 105, 116, 105, 97, 108, 105, 122, 101, 100, 92, 38, 0, 8, 68, 97, 116, 101, 84, 105, 109, 101, 0, 28, 50, 48, 50, 51, 45, 48, 51, 45, 50, 56, 84, 49, 57, 58, 48, 51, 58, 52, 52, 46, 57, 55, 56, 54, 51, 54, 57, 90, 38, 0, 14, 95, 95, 95, 105, 110, 116, 101, 114, 110, 97, 108, 95, 105, 100, 0, 32, 57, 48, 56, 98, 100, 55, 99, 57, 54, 98, 56, 57, 52, 102, 50, 98, 97, 53, 100, 55, 51, 102, 98, 101, 57, 55, 53, 55, 98, 51, 50, 98, 84, 114, 117, 101, 49, 142, 1, 0, 43, 118, 97, 100, 105, 109, 47,
+
+
+.....
+
