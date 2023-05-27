@@ -76,11 +76,11 @@ class MqttClient {
   dynamic connectionHandler;
 
   @protected
-  List<String>? websocketProtocolString;
+  List<String>? websocketProtocolString = MqttConstants.protocolsSingleDefault;
 
   /// User definable websocket protocols. Use this for non default websocket
   /// protocols only if your broker needs this. There are two defaults in
-  /// MqttWsConnection class, the multiple protocol is the default. Some brokers
+  /// MqttWsConnection class, the single protocol is the default. Some brokers
   /// will not accept a list and only expect a single protocol identifier,
   /// in this case use the single protocol default. You can supply your own
   /// list, or to disable this entirely set the protocols to an

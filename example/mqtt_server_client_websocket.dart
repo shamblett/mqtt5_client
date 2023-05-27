@@ -62,7 +62,7 @@ Future<int> main() async {
   /// client identifier, any supplied username/password, the default keepalive interval(60s)
   /// and clean session, an example of a specific one below.
   /// Add some user properties, these may be available in the connect acknowledgement.
-  /// Note there are many otions selectable on this message, if you opt to use authentication please see
+  /// Note there are many options selectable on this message, if you opt to use authentication please see
   /// the example in mqtt5_server_client_authenticate.dart.
   final property = MqttUserProperty();
   property.pairName = 'Example name';

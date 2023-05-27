@@ -20,7 +20,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
   }
 
   /// The websocket subprotocol list
-  List<String> protocols = MqttConstants.protocolsMultipleDefault;
+  List<String> protocols = MqttConstants.protocolsSingleDefault;
 
   /// Connect
   @override
