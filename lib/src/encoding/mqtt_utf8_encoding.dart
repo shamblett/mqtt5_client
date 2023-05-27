@@ -18,12 +18,12 @@ part of mqtt5_client;
 /// of bytes in a UTF-8 encoded string itself.
 /// Consequently, the maximum size of a UTF-8 encoded string is 65,535 bytes.
 ///
-class MqttUtf8Encoding extends Utf8Codec {
+class MqttUtf8Encoding {
   /// Encodes all the characters in the specified string
   /// into a sequence of bytes.
   typed.Uint8Buffer toUtf8(String s) {
     _validateString(s);
-    final stringConverted = encoder.convert(s);
+    final stringConverted = utf8.encoder.convert(s);
     if (stringConverted.length > 65535) {
       throw Exception(
           'MqttUtf8Encoding::toUtf8 -  UTF8 string length is invalid, length is ${stringConverted.length}');
@@ -39,7 +39,7 @@ class MqttUtf8Encoding extends Utf8Codec {
   String fromUtf8(typed.Uint8Buffer bytes) {
     var len = length(bytes);
     var utf8Bytes = bytes.toList().getRange(2, 2 + len);
-    var decoded = decoder.convert(utf8Bytes.toList());
+    var decoded = utf8.decoder.convert(utf8Bytes.toList());
     _validateString(decoded);
     return decoded;
   }
