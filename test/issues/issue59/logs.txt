@@ -1,0 +1,553 @@
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.316861 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:56.322688 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.323006 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.323291 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.323488 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:56.323998 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+[log] demo/v1
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.324405 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:56.324565 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.324763 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:56.324916 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.325105 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:56.325344 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:56.499970 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.500369 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 58
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.501319 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:56.506889 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.507073 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.507194 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.507315 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:56.507700 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.507950 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:56.508059 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.508201 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:56.508307 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.508440 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:56.508610 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:56.677454 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.677937 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 59
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.679017 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:56.689646 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.690025 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.690399 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.690612 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:56.691183 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.691862 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:56.692014 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.692208 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+[log] demo/v1
+I/flutter ( 9263): 2023-09-12 20:50:56.692362 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.692612 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:56.692864 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/flutter ( 9263): 2023-09-12 20:50:56.854321 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter ( 9263): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter ( 9263): 2023-09-12 20:50:56.855345 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:56.859092 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.859319 -- MqttServerConnection::_ondata - adding incoming data, data length is 2, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.859486 -- MqttServerConnection::_ondata - added incoming data message stream length is 2, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.859636 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 208
+I/flutter ( 9263): 2023-09-12 20:50:56.859825 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.pingResponse
+I/flutter ( 9263): MessageType = MqttMessageType.pingResponse Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter ( 9263): 2023-09-12 20:50:56.860113 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:56.860248 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.860444 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.pingResponse
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:56.883292 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.883714 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 60
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.884678 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:56.888957 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.889289 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.889593 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:56.889795 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:56.890427 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:56.890966 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:56.891165 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:56.891341 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:56.891493 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:56.891660 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:56.891943 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:57.068738 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.069133 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 61
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.070177 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:57.073721 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.073969 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.074266 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.074436 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:57.074868 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.075250 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:57.075403 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.075597 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:57.075761 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.075948 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:57.076216 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:57.295336 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.295625 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 62
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.296662 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:57.306708 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.306972 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.307113 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.307219 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:57.307677 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.307971 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:57.308082 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.308224 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:57.308330 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.308462 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:57.308635 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:57.511633 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.512110 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 63
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.513084 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:57.524013 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.524429 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.524760 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.525215 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:57.526024 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.526564 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:57.526774 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.527118 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:57.527331 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.527747 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:57.528153 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:57.713169 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.713620 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 64
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.714786 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:57.723554 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.723866 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.724042 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.724264 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:57.724886 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.725270 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:57.725431 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.725692 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:57.725858 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.726066 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:57.726385 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:57.946078 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.946617 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 65
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.947530 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:57.956070 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.956450 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.956657 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:57.956915 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:57.957507 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+[log] demo/v1
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:57.957955 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:57.958286 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:57.958577 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:57.958781 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:57.959039 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:57.959417 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:58.177806 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.178056 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 66
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:58.178752 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:58.190102 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.190601 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:58.190817 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:58.191222 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:58.192045 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:58.192595 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:58.192795 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.193050 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:58.193258 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.193482 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:58.193826 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:58.426199 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.426635 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 67
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:58.427358 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:58.439143 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.439527 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 0, message stream position is 0
+[log] demo/v1
+I/flutter ( 9263): 2023-09-12 20:50:58.439828 -- MqttServerConnection::_ondata - added incoming data message stream length is 13, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:58.440030 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:58.440706 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:58.441225 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:58.441425 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.441673 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:58.441875 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.442196 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:58.442630 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] 5
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:58.666861 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.667324 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 68
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:58.668340 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:58.680499 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.680793 -- MqttServerConnection::_ondata - adding incoming data, data length is 12, message stream length is 0, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:58.680959 -- MqttServerConnection::_ondata - added incoming data message stream length is 12, message stream position is 0
+I/flutter ( 9263): 2023-09-12 20:50:58.681145 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:58.684215 -- MqttServerConnection::_ondata - exception raised is mqtt-client::InvalidMessageException: The data provided in the message stream was not a valid MQTT Message, exception is mqtt-client::IncompleteMessageException: Available bytes is less than the message size, bytestream is [49, 11, 0, 7, 100, 101, 109, 111, 47, 118, 49, 0]
+I/flutter ( 9263): 2023-09-12 20:50:58.684530 -- MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect mqtt-client::InvalidMessageException: The data provided in the message stream was not a valid MQTT Message, exception is mqtt-client::IncompleteMessageException: Available bytes is less than the message size, bytestream is [49, 11, 0, 7, 100, 101, 109, 111, 47, 118, 49, 0]
+I/flutter ( 9263): 2023-09-12 20:50:58.688588 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.689192 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.689393 -- MqttServerConnection::_ondata - adding incoming data, data length is 1, message stream length is 14, message stream position is 14
+I/flutter ( 9263): 2023-09-12 20:50:58.689594 -- MqttServerConnection::_ondata - added incoming data message stream length is 15, message stream position is 14
+I/flutter ( 9263): 2023-09-12 20:50:58.689701 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 53
+I/flutter ( 9263): 2023-09-12 20:50:58.691926 -- MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect mqtt-client::InvalidHeaderException: The header being processed contained an invalid size byte pattern. Message size must take a most 4 bytes, and the last byte must have bit 8 set to 0.
+I/flutter ( 9263): 2023-09-12 20:50:58.692350 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.695455 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.695648 -- MqttServerConnection::_ondata - adding incoming data, data length is 13, message stream length is 17, message stream position is 17
+I/flutter ( 9263): 2023-09-12 20:50:58.695770 -- MqttServerConnection::_ondata - added incoming data message stream length is 30, message stream position is 17
+I/flutter ( 9263): 2023-09-12 20:50:58.695875 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter ( 9263): 2023-09-12 20:50:58.696382 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 11
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 0
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<224>
+I/flutter ( 9263): 2023-09-12 20:50:58.696660 -- MqttServerConnection::_onData - message available event fired
+I/flutter ( 9263): 2023-09-12 20:50:58.696770 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter ( 9263): 2023-09-12 20:50:58.696929 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.publish
+I/flutter ( 9263): 2023-09-12 20:50:58.697085 -- MqttPublishingManager::handlePublish - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.697235 -- MqttPublishingManager::_notifyPublish - entered message MqttQos.atMostOnce
+I/flutter ( 9263): 2023-09-12 20:50:58.697408 -- MqttSubscriptionManager::publishMessageReceived topic is demo/v1
+[log] demo/v1
+[log] �
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:58.884746 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:58.885190 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 69
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:58.886153 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:59.078185 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:59.078601 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 70
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:59.079333 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/flutter ( 9263): 2023-09-12 20:50:59.279695 -- MqttPublishingManager::publishUserMessage - entered
+I/flutter ( 9263): 2023-09-12 20:50:59.279982 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.publish
+I/flutter ( 9263): MessageType = MqttMessageType.publish Duplicate = false Retain = true Qos = atMostOnce Size = 0
+I/flutter ( 9263): Topic Name = demo/v1
+I/flutter ( 9263): Message Identifier = 71
+I/flutter ( 9263): Payload Format Indicator = false
+I/flutter ( 9263): Message Expiry Interval = 65535
+I/flutter ( 9263): Topic Alias = 255
+I/flutter ( 9263): Response Topic =
+I/flutter ( 9263): Subscription Identifier(s) = []
+I/flutter ( 9263): Properties = No properties set
+I/flutter ( 9263):
+I/flutter ( 9263): Payload: {1 bytes={<53>
+I/flutter ( 9263): 2023-09-12 20:50:59.280726 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter ( 9263): 2023-09-12 20:50:59.308516 -- MqttConnectionBase::_onError - calling disconnected callback
+I/flutter ( 9263): 2023-09-12 20:50:59.313979 -- MqttConnectionBase::_onDone - calling disconnected callback
+I/flutter ( 9263): 2023-09-12 20:50:59.316242 -- MqttConnectionHandlerBase::autoReconnect entered
+I/flutter ( 9263): 2023-09-12 20:50:59.317911 -- MqttConnectionHandlerBase::autoReconnect - attempting reconnection
+I/flutter ( 9263): 2023-09-12 20:50:59.318672 -- MqttConnectionHandlerBase::connect - server 192.168.1.2, port 1883
+I/flutter ( 9263): 2023-09-12 20:50:59.318851 -- MqttSynchronousServerConnectionHandler::internalConnect entered
+I/flutter ( 9263): 2023-09-12 20:50:59.319036 -- MqttSynchronousServerConnectionHandler::internalConnect - initiating connection try 0, auto reconnect in progress true
+I/flutter ( 9263): 2023-09-12 20:50:59.319173 -- MqttSynchronousServerConnectionHandler::internalConnect - calling connectAuto
+I/flutter ( 9263): 2023-09-12 20:50:59.320356 -- MqttNormalConnection::connectAuto - entered
+I/flutter ( 9263): 2023-09-12 20:50:59.327131 -- MqttConnectionHandlerBase::autoReconnect entered
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 0
+I/ViewRootImpl@e47ee08[MainActivity]( 9263): ViewPostIme pointer 1
