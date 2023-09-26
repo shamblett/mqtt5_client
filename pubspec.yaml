@@ -1,6 +1,6 @@
 name: mqtt5_client
 description: A server and browser based MQTT5 client for Dart supporting normal, secure sockets and websockets.
-version: 4.0.0
+version: 4.0.1
 repository: https://github.com/shamblett/mqtt5_client
 homepage: https://github.com/shamblett/mqtt5_client
 
@@ -15,15 +15,15 @@ dependencies:
  event_bus: '^2.0.0'
  path: '^1.8.2'
  crypto: '^3.0.3'
- meta: '^1.8.0'
+ meta: '^1.10.0'
  
 dev_dependencies:
- test: '^1.24.3'
- mockito: '^5.4.1'
- build_runner: '^2.4.4'
- build_test: '^2.1.6'
- build_web_compilers: '^4.0.3'
- lints: '^2.1.0'
+ test: '^1.24.6'
+ mockito: '^5.4.2'
+ build_runner: '^2.4.6'
+ build_test: '^2.2.1'
+ build_web_compilers: '^4.0.5'
+ lints: '^2.1.1'
 
 false_secrets:
   - /test/pem/self_signed.key

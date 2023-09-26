@@ -46,6 +46,10 @@ class MqttMessage {
       }
       final message = MqttMessageFactory.getMessage(header, messageStream);
       return message;
+      // Rethrow incomplete message
+    } on MqttIncompleteMessageException {
+      rethrow;
+      // Catch anything else
     } on Exception catch (e) {
       throw MqttInvalidMessageException(
           'The data provided in the message stream was not a '
