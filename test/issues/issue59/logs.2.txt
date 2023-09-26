@@ -1,0 +1,141 @@
+D/EGL_emulation(12226): app_time_stats: avg=1255.57ms min=0.57ms max=18746.05ms count=15
+I/flutter (12226): 2023-09-12 12:59:39.039568 -- Authenticating with username '{vadim_windows}' and password '{vadim_windows}'
+I/flutter (12226): 2023-09-12 12:59:39.039687 -- MqttClient::checkCredentials - Username length (13) exceeds the max recommended in the MQTT spec.
+I/flutter (12226): 2023-09-12 12:59:39.039793 -- MqttClient::checkCredentials - Password length (13) exceeds the max recommended in the MQTT spec.
+I/flutter (12226): 2023-09-12 12:59:39.040939 -- MqttConnectionHandlerBase::connect - server 192.168.1.89, port 8883
+I/flutter (12226): 2023-09-12 12:59:39.041015 -- MqttSynchronousServerConnectionHandler::internalConnect entered
+I/flutter (12226): 2023-09-12 12:59:39.041120 -- MqttSynchronousServerConnectionHandler::internalConnect - initiating connection try 0, auto reconnect in progress false
+I/flutter (12226): 2023-09-12 12:59:39.041232 -- MqttSynchronousServerConnectionHandler::internalConnect - secure selected
+I/flutter (12226): 2023-09-12 12:59:39.041370 -- MqttSynchronousServerConnectionHandler::internalConnect - calling connect
+I/flutter (12226): 2023-09-12 12:59:39.041480 -- MqttServerSecureConnection::connect - entered
+[log] Mqtt start connecting
+[log] Mqtt start disconnection
+[log] Mqtt disconnection success
+I/flutter (12226): 2023-09-12 12:59:39.067815 -- MqttServerSecureConnection::connect - securing socket
+I/flutter (12226): 2023-09-12 12:59:39.067965 -- MqttServerSecureConnection::connect - start listening
+I/flutter (12226): 2023-09-12 12:59:39.068090 -- MqttServerConnection::_startListening
+I/flutter (12226): 2023-09-12 12:59:39.068314 -- MqttSynchronousServerConnectionHandler::internalConnect - connection complete
+I/flutter (12226): 2023-09-12 12:59:39.068354 -- MqttSynchronousServerConnectionHandler::internalConnect sending connect message
+I/flutter (12226): 2023-09-12 12:59:39.068401 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.connect
+I/flutter (12226): MessageType = MqttMessageType.connect Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): ProtocolName = MQTT
+I/flutter (12226): ProtocolVersion = 5
+I/flutter (12226): ConnectFlags = CleanStart=true, WillFlag=false, WillQos=atMostOnce, WillRetain=false, PasswordFlag=true, UserNameFlag=true
+I/flutter (12226): KeepAlive = 60
+I/flutter (12226): Properties = No properties setWill topic = null
+I/flutter (12226): User name = vadim_windows
+I/flutter (12226): Password = vadim_windows
+I/flutter (12226): 2023-09-12 12:59:39.069475 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 12:59:39.070353 -- MqttSynchronousServerConnectionHandler::internalConnect - pre sleep, state = Connection status is connecting with return code of notSet and a disconnection origin of none
+I/flutter (12226): 2023-09-12 12:59:39.077814 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter (12226): 2023-09-12 12:59:39.077963 -- MqttServerConnection::_ondata - adding incoming data, data length is 10, message stream length is 0, message stream position is 0
+I/flutter (12226): 2023-09-12 12:59:39.078183 -- MqttServerConnection::_ondata - added incoming data message stream length is 10, message stream position is 0
+I/flutter (12226): 2023-09-12 12:59:39.078328 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 32
+I/flutter (12226): 2023-09-12 12:59:39.079305 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.connectAck
+I/flutter (12226): MessageType = MqttMessageType.connectAck Duplicate = false Retain = false Qos = atMostOnce Size = 8
+I/flutter (12226): Session Present = false
+I/flutter (12226): Connect Reason Code = success
+I/flutter (12226): Session Expiry Interval = 0
+I/flutter (12226): Receive Maximum = 65535
+I/flutter (12226): Maximum QoS = 2
+I/flutter (12226): Retain Available = false
+I/flutter (12226): Maximum Packet Size = 0
+I/flutter (12226): Assigned client Identifier = null
+I/flutter (12226): Topic Alias Maximum = 65535
+I/flutter (12226): Reason String = null
+I/flutter (12226): Wildcard Subscription Available = true
+I/flutter (12226): Subscription Identifiers Available = true
+I/flutter (12226): Shared Subscription Available = false
+I/flutter (12226): broker Keep Alive = 0
+I/flutter (12226): Response Information = null
+I/flutter (12226): broker Reference = null
+I/flutter (12226): Authentication Method = null
+I/flutter (12226): Properties = Identifier : topicAliasMaximum, value : 65535
+I/flutter (12226): Identifier : sharedSubscriptionAvailable, value : 0
+I/flutter (12226):
+I/flutter (12226): 2023-09-12 12:59:39.079663 -- MqttServerConnection::_onData - message available event fired
+I/flutter (12226): 2023-09-12 12:59:39.079846 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter (12226): 2023-09-12 12:59:39.080003 -- MqttConnectionHandlerBase::_connectAckProcessor
+I/flutter (12226): 2023-09-12 12:59:39.080133 -- MqttConnectionHandlerBase::_connectAckProcessor - state = connected
+I/flutter (12226): 2023-09-12 12:59:39.080407 -- MqttConnectionHandlerBase:: cancelling connect timer
+I/flutter (12226): 2023-09-12 12:59:39.080804 -- MqttSynchronousServerConnectionHandler::internalConnect - post sleep, state = Connection status is connected with return code of success and a disconnection origin of none
+I/flutter (12226): 2023-09-12 12:59:39.081195 -- MqttSynchronousServerConnectionHandler::internalConnect exited with state Connection status is connected with return code of success and a disconnection origin of none
+I/flutter (12226): 2023-09-12 12:59:39.081639 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.subscribe
+[log] Mqtt client connected
+[log] Mqtt connection success.
+I/flutter (12226): MessageType = MqttMessageType.subscribe Duplicate = false Retain = false Qos = atLeastOnce Size = 0
+I/flutter (12226): Message Identifier = 5
+I/flutter (12226): Subscription identifier = 0
+I/flutter (12226): Properties = No properties set
+I/flutter (12226): Topic = vadim_windows/#, Option = Maximum Qos = atMostOnce
+I/flutter (12226): No Local = false
+I/flutter (12226): Retain As Published = true
+I/flutter (12226): Retain Handling = sendRetained
+I/flutter (12226): 2023-09-12 12:59:39.082954 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 12:59:39.083300 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.subscribe
+I/flutter (12226): MessageType = MqttMessageType.subscribe Duplicate = false Retain = false Qos = atLeastOnce Size = 0
+I/flutter (12226): Message Identifier = 6
+I/flutter (12226): Subscription identifier = 0
+I/flutter (12226): Properties = No properties set
+I/flutter (12226): Topic = common/#, Option = Maximum Qos = atMostOnce
+I/flutter (12226): No Local = false
+I/flutter (12226): Retain As Published = true
+I/flutter (12226): Retain Handling = sendRetained
+I/flutter (12226): 2023-09-12 12:59:39.083979 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 12:59:41.325558 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter (12226): 2023-09-12 12:59:41.325912 -- MqttServerConnection::_ondata - adding incoming data, data length is 48, message stream length is 0, message stream position is 0
+I/flutter (12226): 2023-09-12 12:59:41.326257 -- MqttServerConnection::_ondata - added incoming data message stream length is 48, message stream position is 0
+I/flutter (12226): 2023-09-12 12:59:41.326427 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 49
+I/flutter (12226): 2023-09-12 12:59:41.328484 -- MqttServerConnection::_ondata - exception raised is mqtt-client::InvalidMessageException: The data provided in the message stream was not a valid MQTT Message, exception is mqtt-client::IncompleteMessageException: Available bytes is less than the message size, bytestream is [49, 47, 0, 41, 118, 97, 100, 105, 109, 95, 119, 105, 110, 100, 111, 119, 115, 47, 118, 49, 47, 115, 101, 114, 118, 101, 114, 47, 100, 101, 118, 105, 99, 101, 115, 47, 116, 101, 115, 116, 47, 116, 101, 115, 116, 2, 1, 1]
+I/flutter (12226): 2023-09-12 12:59:41.328907 -- MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect mqtt-client::InvalidMessageException: The data provided in the message stream was not a valid MQTT Message, exception is mqtt-client::IncompleteMessageException: Available bytes is less than the message size, bytestream is [49, 47, 0, 41, 118, 97, 100, 105, 109, 95, 119, 105, 110, 100, 111, 119, 115, 47, 118, 49, 47, 115, 101, 114, 118, 101, 114, 47, 100, 101, 118, 105, 99, 101, 115, 47, 116, 101, 115, 116, 47, 116, 101, 115, 116, 2, 1, 1]
+I/flutter (12226): 2023-09-12 12:59:41.329368 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter (12226): 2023-09-12 12:59:41.330638 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter (12226): 2023-09-12 12:59:41.331112 -- MqttServerConnection::_ondata - adding incoming data, data length is 1, message stream length is 50, message stream position is 50
+I/flutter (12226): 2023-09-12 12:59:41.331260 -- MqttServerConnection::_ondata - added incoming data message stream length is 51, message stream position is 50
+I/flutter (12226): 2023-09-12 12:59:41.331653 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 53
+I/flutter (12226): 2023-09-12 12:59:41.331841 -- MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect mqtt-client::InvalidHeaderException: The header being processed contained an invalid size byte pattern. Message size must take a most 4 bytes, and the last byte must have bit 8 set to 0.
+I/flutter (12226): 2023-09-12 12:59:41.332198 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter (12226): 2023-09-12 12:59:41.334155 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter (12226): 2023-09-12 12:59:41.334846 -- MqttServerConnection::_ondata - adding incoming data, data length is 6, message stream length is 53, message stream position is 53
+I/flutter (12226): 2023-09-12 12:59:41.335107 -- MqttServerConnection::_ondata - added incoming data message stream length is 59, message stream position is 53
+I/flutter (12226): 2023-09-12 12:59:41.335322 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 144
+I/flutter (12226): 2023-09-12 12:59:41.336394 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.subscribeAck
+I/flutter (12226): MessageType = MqttMessageType.subscribeAck Duplicate = false Retain = false Qos = atMostOnce Size = 4
+I/flutter (12226): Message Identifier = 5
+I/flutter (12226): Reason String = null
+I/flutter (12226): Properties = No properties set
+I/flutter (12226): Reason Code = grantedQos0
+I/flutter (12226): 2023-09-12 12:59:41.336965 -- MqttServerConnection::_onData - message available event fired
+I/flutter (12226): 2023-09-12 12:59:41.337220 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter (12226): 2023-09-12 12:59:41.337646 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.subscribeAck
+I/flutter (12226): 2023-09-12 12:59:41.339099 -- MqttServerConnection::_onData - Message Received Started <<<
+I/flutter (12226): 2023-09-12 12:59:41.339380 -- MqttServerConnection::_ondata - adding incoming data, data length is 6, message stream length is 0, message stream position is 0
+I/flutter (12226): 2023-09-12 12:59:41.339619 -- MqttServerConnection::_ondata - added incoming data message stream length is 6, message stream position is 0
+I/flutter (12226): 2023-09-12 12:59:41.339818 -- MqttByteBuffer:isMessageAvailable - assumed valid header, value is 144
+I/flutter (12226): 2023-09-12 12:59:41.340305 -- MqttServerConnection::_onData - MESSAGE RECEIVED -> MQTTMessage of type MqttMessageType.subscribeAck
+I/flutter (12226): MessageType = MqttMessageType.subscribeAck Duplicate = false Retain = false Qos = atMostOnce Size = 4
+I/flutter (12226): Message Identifier = 6
+I/flutter (12226): Reason String = null
+I/flutter (12226): Properties = No properties set
+I/flutter (12226): Reason Code = grantedQos0
+I/flutter (12226): 2023-09-12 12:59:41.340742 -- MqttServerConnection::_onData - message available event fired
+I/flutter (12226): 2023-09-12 12:59:41.340917 -- MqttServerConnection::_onData - Message Received Ended <<<
+I/flutter (12226): 2023-09-12 12:59:41.341136 -- MqttConnectionHandlerBase::messageAvailable - message type is MqttMessageType.subscribeAck
+I/flutter (12226): 2023-09-12 12:59:44.044853 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter (12226): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): 2023-09-12 12:59:44.045567 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 12:59:49.053968 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter (12226): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): 2023-09-12 12:59:49.056199 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 12:59:54.063312 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter (12226): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): 2023-09-12 12:59:54.064817 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 12:59:59.072776 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter (12226): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): 2023-09-12 12:59:59.075221 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 13:00:04.081628 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter (12226): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): 2023-09-12 13:00:04.082716 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
+I/flutter (12226): 2023-09-12 13:00:09.090315 -- MqttConnectionHandlerBase::sendMessage - sending message started >>> -> MQTTMessage of type MqttMessageType.pingRequest
+I/flutter (12226): MessageType = MqttMessageType.pingRequest Duplicate = false Retain = false Qos = atMostOnce Size = 0
+I/flutter (12226): 2023-09-12 13:00:09.091415 -- MqttConnectionHandlerBase::sendMessage - sending message ended >>>
