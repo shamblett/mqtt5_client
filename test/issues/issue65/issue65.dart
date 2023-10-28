@@ -33,7 +33,6 @@ int main() {
 
     test('Publish Chinese topic', () {
       const topic = 'smartDevices/房間1';
-      // 73 6d 61 72 74 44 65 76 69 63 65 73 2f e6 88 bf e9 96 93 31
       final pubTopic = MqttPublicationTopic(topic);
       final msg = MqttPublishMessage()
           .toTopic(pubTopic.toString())
