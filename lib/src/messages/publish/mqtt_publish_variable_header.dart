@@ -258,7 +258,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   /// Topic name
   void readTopicName(MqttByteBuffer stream) {
     topicName = MqttByteBuffer.readMqttString(stream);
-    _length += topicName.length + 2;
+    final enc = MqttUtf8Encoding();
+    _length = enc.length(enc.toUtf8(topicName)) + 2;
   }
 
   /// Message identifier
