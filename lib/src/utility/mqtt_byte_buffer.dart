@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Utility class to allow stream like access to a sized byte buffer.
 /// This class is in effect a cut-down implementation of the C# NET

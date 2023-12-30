@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Represents the Fixed Header of an MQTT message.
 /// Each MQTT Control Packet contains a Fixed Header.

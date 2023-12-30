@@ -5,13 +5,12 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_server_client;
+part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT client server connection base class
 class MqttServerConnection extends MqttConnectionBase {
   /// Default constructor
-  MqttServerConnection(clientEventBus, this.socketOptions)
-      : super(clientEventBus);
+  MqttServerConnection(super.clientEventBus, this.socketOptions);
 
   /// Initializes a new instance of the MqttConnection class.
   MqttServerConnection.fromConnect(

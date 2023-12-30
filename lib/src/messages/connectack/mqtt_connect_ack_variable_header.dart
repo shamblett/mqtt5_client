@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The Variable Header of the Connect Acknowledgement message contains the following fields
 /// in the order: Connect Acknowledge Flags, Connect Reason Code, and Properties.

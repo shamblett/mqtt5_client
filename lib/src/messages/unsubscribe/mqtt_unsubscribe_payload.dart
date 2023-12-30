@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The payload for the unsubscribe message contains the list of
 /// topic filters that the client wishes to unsubscribe from

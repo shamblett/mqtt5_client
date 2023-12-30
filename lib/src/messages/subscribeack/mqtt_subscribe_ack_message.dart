@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// A subscribe acknowledgement message is sent by the broker to the client
 /// to confirm receipt and processing of a subscribe message.

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The disconnect message is the final MQTT Control Packet sent from the client or the broker.
 /// It indicates the reason why the network connection is being closed.

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The Variable Header for the connect Packet contains the following fields
 /// in this order: Protocol Name, Protocol Level, Connect Flags,

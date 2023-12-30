@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// An authenticate message is sent from the client to the broker or the
 /// broker to the client as part of an extended authentication exchange,

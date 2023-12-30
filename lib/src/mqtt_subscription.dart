@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../mqtt5_client.dart';
 
 /// An individual subscription as used by the client to build and track
 /// the status of subscriptions and unsubscriptions.

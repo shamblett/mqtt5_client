@@ -5,14 +5,12 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_server_client;
+part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT normal(insecure TCP) server connection class
 class MqttServerNormalConnection extends MqttServerConnection {
   /// Default constructor
-  MqttServerNormalConnection(
-      events.EventBus? eventBus, List<RawSocketOption> socketOptions)
-      : super(eventBus, socketOptions);
+  MqttServerNormalConnection(super.eventBus, super.socketOptions);
 
   /// Initializes a new instance of the MqttConnection class.
   MqttServerNormalConnection.fromConnect(String server, int port,

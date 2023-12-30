@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The publish complete message is the response to a publisg release message.
 /// It is the fourth and final message of the QoS 2 protocol exchange.

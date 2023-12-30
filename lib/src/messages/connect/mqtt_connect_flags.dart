@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// Represents the connect flags part of the MQTT Variable Header
 class MqttConnectFlags {
