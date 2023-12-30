@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The variable Header of the publish received message contains the following fields in the
 /// order: message identifier from the publish message that is being acknowledged,

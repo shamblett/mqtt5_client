@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The Variable Header of the Publish message contains the following fields in the
 /// order: Topic Name, Packet Identifier, and Properties.

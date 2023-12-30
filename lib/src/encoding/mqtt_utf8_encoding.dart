@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Encoding implementation that can encode and decode strings
 /// in the MQTT UTF8 string format.

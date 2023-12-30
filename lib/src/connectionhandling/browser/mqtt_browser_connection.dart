@@ -5,12 +5,12 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_browser_client;
+part of '../../../mqtt5_browser_client.dart';
 
 /// The MQTT browser connection base class
 class MqttBrowserConnection extends MqttConnectionBase {
   /// Default constructor
-  MqttBrowserConnection(clientEventBus) : super(clientEventBus);
+  MqttBrowserConnection(super.clientEventBus);
 
   /// Initializes a new instance of the MqttBrowserConnection class.
   MqttBrowserConnection.fromConnect(server, port, clientEventBus)

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../mqtt5_client.dart';
 
 /// Provides the base implementation of an MQTT topic.
 abstract class MqttTopic {

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// Two Byte Integer data values are 16-bit unsigned integers in big-endian order:
 /// the high order byte precedes the lower order byte. This means that a

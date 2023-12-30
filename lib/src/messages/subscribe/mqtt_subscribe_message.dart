@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The subscribe message is sent from the client to the broker to create one or more subscriptions.
 /// Each subscription registers the client’s interest in one or more topics.

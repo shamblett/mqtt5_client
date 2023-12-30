@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The variable header of the subscription acknowledge message contains the following fields
 /// in the order: the packet(message) identifier from the subscribe message that is being acknowledged,

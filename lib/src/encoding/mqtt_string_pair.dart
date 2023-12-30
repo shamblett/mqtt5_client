@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// A UTF-8 String Pair consists of two UTF-8 Encoded Strings.
 /// This data type is used to hold name-value pairs. The first string serves as the

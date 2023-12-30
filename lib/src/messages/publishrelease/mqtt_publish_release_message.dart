@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// A publish release message is the response to a publish received message.
 /// It is the third packet of the QoS 2 protocol exchange.

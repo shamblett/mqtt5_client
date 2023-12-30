@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// A publish acknowledge messageis the response to a publish message with QoS 1.
 class MqttPublishAckMessage extends MqttMessage {

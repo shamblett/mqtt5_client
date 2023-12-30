@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The variable header of the publish complete message contains the following fields
 /// in the order: Packet(message) identifier from the publish release message that is being

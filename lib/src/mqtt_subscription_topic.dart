@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../mqtt5_client.dart';
 
 /// Implementation of a Subscription topic that performs additional validations
 /// of topics that are subscribed to.

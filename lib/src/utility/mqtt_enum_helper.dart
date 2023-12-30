@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Generic enumeration helper class
 class MqttEnumHelper<T extends dynamic> {

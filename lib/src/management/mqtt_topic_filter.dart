@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// This class allows specific topics to be listened for. It essentially
 /// acts as a bandpass filter for the topics you are interested in if

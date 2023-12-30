@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// Connect acknowledgement message [MqttConnectAckMessage] flags.
 class MqttConnectAckFlags {

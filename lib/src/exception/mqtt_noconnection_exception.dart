@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Exception thrown when the client fails to connect
 class MqttNoConnectionException implements Exception {

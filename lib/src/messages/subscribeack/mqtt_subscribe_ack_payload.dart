@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The payload contains a list of reason codes. Each reason code corresponds to a
 /// topic filter in the subscribe message being acknowledged.

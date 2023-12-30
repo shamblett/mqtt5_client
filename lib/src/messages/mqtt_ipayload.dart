@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 // Base class for the payload (Body) of an MQTT Message.
 abstract class MqttIPayload {

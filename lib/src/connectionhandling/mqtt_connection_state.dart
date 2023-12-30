@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Enumeration that indicates the origin of a client disconnection
 enum MqttDisconnectionOrigin {

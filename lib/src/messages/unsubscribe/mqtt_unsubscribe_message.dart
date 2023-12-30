@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// An unsubscribe message is sent by the client to the broker,
 /// to unsubscribe from topics.

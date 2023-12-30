@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../mqtt5_client.dart';
 
 /// Subscribed and Unsubscribed callback typedefs
 typedef SubscribeCallback = void Function(MqttSubscription subscription);
