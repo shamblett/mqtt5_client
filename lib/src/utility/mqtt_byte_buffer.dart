@@ -84,10 +84,11 @@ class MqttByteBuffer {
     var position = _position;
     var header = MqttHeader.fromByteBuffer(this);
     // Restore the position
+    final avibytes = availableBytes; // should same in MqttMessage.createFrom
     _position = position;
-    if (availableBytes < header.messageSize) {
+    if (avibytes < header.messageSize) {
       MqttLogger.log(
-          'MqttByteBuffer:isMessageAvailable - Available bytes($availableBytes) is less than the message size'
+          'MqttByteBuffer:isMessageAvailable - Available bytes($avibytes) is less than the message size'
           ' ${header.messageSize}');
 
       return false;
