@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// An Mqtt message that is used to initiate a connection to a message broker.
 /// After a network connection is established by a client to a broker, the

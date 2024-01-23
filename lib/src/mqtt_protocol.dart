@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../mqtt5_client.dart';
 
 /// Protocol selection helper class, protocol defaults V5
 class MqttProtocol {

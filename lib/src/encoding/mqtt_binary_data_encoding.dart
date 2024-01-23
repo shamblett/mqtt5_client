@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Binary Data is represented by a Two Byte Integer length which indicates the number of data bytes,
 /// followed by that number of bytes. Thus, the length of Binary Data is limited

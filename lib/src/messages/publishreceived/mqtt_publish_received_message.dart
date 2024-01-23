@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// A publish receive message is the response to a publish message with QoS 2.
 /// It is the second packet of the QoS 2 protocol exchange.

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// The Variable Byte Integer is encoded using an encoding scheme which uses a single
 /// byte for values up to 127. Larger values are handled as follows. The least significant

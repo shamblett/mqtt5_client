@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// A user property.
 /// This is a convenience extension of a string pair property to allow more

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Ping response received callback
 typedef PongCallback = void Function();

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_server_client;
+part of '../../../mqtt5_server_client.dart';
 
 /// Connection handler that performs server based connections and disconnections
 /// to the hostname in a synchronous manner.

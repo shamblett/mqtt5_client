@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// Four Byte Integer data values are 32-bit unsigned integers in big-endian order:
 /// the high order byte precedes the successively lower order bytes.

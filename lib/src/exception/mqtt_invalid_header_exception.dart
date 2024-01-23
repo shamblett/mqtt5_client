@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Exception thrown when processing a header that is invalid in some way.
 class MqttInvalidHeaderException implements Exception {

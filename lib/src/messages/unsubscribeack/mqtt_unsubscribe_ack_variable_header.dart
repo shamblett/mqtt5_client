@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The variable header of the unsubscribe acknowledgement message contains  the following fields
 /// in the order: packet(message) identifier from the unsubscribe message that is being

@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../mqtt5_client.dart';
 
 /// Represents a MQTT message that has been received from a broker.
 class MqttReceivedMessage<T> {

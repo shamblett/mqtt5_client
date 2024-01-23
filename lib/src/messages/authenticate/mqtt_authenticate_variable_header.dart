@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../../mqtt5_client.dart';
 
 /// The variable Header of the authentication message contains the following fields in
 /// the order: authenticate reason code and properties.

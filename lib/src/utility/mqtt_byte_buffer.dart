@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt5_client;
+part of '../../mqtt5_client.dart';
 
 /// Utility class to allow stream like access to a sized byte buffer.
 /// This class is in effect a cut-down implementation of the C# NET
@@ -84,10 +84,11 @@ class MqttByteBuffer {
     var position = _position;
     var header = MqttHeader.fromByteBuffer(this);
     // Restore the position
+    final avibytes = availableBytes; // should same in MqttMessage.createFrom
     _position = position;
-    if (availableBytes < header.messageSize) {
+    if (avibytes < header.messageSize) {
       MqttLogger.log(
-          'MqttByteBuffer:isMessageAvailable - Available bytes($availableBytes) is less than the message size'
+          'MqttByteBuffer:isMessageAvailable - Available bytes($avibytes) is less than the message size'
           ' ${header.messageSize}');
 
       return false;
