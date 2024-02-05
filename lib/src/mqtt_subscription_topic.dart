@@ -99,7 +99,8 @@ class MqttSubscriptionTopic extends MqttTopic {
       // more fragments in the lhs rawTopic then the matchee rawTopic
       // is too specific to be a match.
       if (i + 1 == matcheeTopic.topicFragments.length &&
-          topicFragments.length > matcheeTopic.topicFragments.length) {
+          topicFragments.length > matcheeTopic.topicFragments.length &&
+          lhsFragment != matcheeTopic.topicFragments[i]) {
         return false;
       }
       // If we're at the last fragment of the lhs rawTopic but there are
