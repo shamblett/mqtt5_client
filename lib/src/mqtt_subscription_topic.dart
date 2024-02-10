@@ -95,8 +95,16 @@ class MqttSubscriptionTopic extends MqttTopic {
           return false;
         }
       }
+      // If we're at the last fragment of the matchee rawTopic but there are
+      // more fragments in the lhs rawTopic then the matchee rawTopic
+      // is too specific to be a match.
+      if (i + 1 == matcheeTopic.topicFragments.length &&
+          topicFragments.length > matcheeTopic.topicFragments.length &&
+          lhsFragment != matcheeTopic.topicFragments[i]) {
+        return false;
+      }
       // If we're at the last fragment of the lhs rawTopic but there are
-      // more fragments in the in the matchee then the matchee rawTopic
+      // more fragments in the matchee then the matchee rawTopic
       // is too specific to be a match.
       if (i + 1 == topicFragments.length &&
           matcheeTopic.topicFragments.length > topicFragments.length) {

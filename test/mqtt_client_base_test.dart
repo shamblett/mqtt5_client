@@ -382,6 +382,15 @@ void main() {
       expect(
           subTopic.matches(MqttPublicationTopic('some/random/topic')), isFalse);
     });
+    test('different length topics do not match and do not throw range error',
+        () {
+      const topic = 'finance/ibm/closingprice/+/topic/sub';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(
+          subTopic
+              .matches(MqttPublicationTopic('finance/ibm/closingprice/sub')),
+          isFalse);
+    });
     test(
         'MultiWildcard does not match topic with difference before Wildcard level',
         () {
