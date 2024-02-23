@@ -270,12 +270,9 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     try {
       final ackMsg = msg as MqttConnectAckMessage;
       // Drop the connection if our connect request has been rejected.
-      if (MqttReasonCodeUtilities.isError(
-          mqttConnectReasonCode.asInt(ackMsg.variableHeader!.reasonCode)!)) {
+      if (!_reasonCodeOk(msg)) {
         MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
-            'connection rejected, reason code is ${mqttConnectReasonCode.asString(ackMsg.variableHeader!.reasonCode)}');
-        connectionStatus.reasonCode = ackMsg.variableHeader!.reasonCode;
-        connectionStatus.reasonString = ackMsg.variableHeader!.reasonString;
+            '- reason code check failed, disconnecting');
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.
@@ -311,5 +308,42 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     clientEventBus!
         .on<MqttConnectAckMessageAvailable>()
         .listen(connectAckReceived);
+  }
+
+  // Reason code check, returns true if the reason code is valid and not an error
+  bool _reasonCodeOk(MqttConnectAckMessage msg) {
+    if (msg.variableHeader != null) {
+      final reasonCode = msg.variableHeader?.reasonCode;
+      if (reasonCode != null) {
+        final reasonCodeInt = mqttConnectReasonCode.asInt(reasonCode);
+        if (reasonCodeInt != null) {
+          connectionStatus.reasonCode = reasonCode;
+          connectionStatus.reasonString = msg.variableHeader?.reasonString;
+          if (MqttReasonCodeUtilities.isError(reasonCodeInt)) {
+            MqttLogger.log(
+                'MqttConnectionHandlerBase::_reasonCodeOk - reason code is an error '
+                '${mqttConnectReasonCode.asString(reasonCode)}');
+            return false;
+          } else {
+            MqttLogger.log(
+                'MqttConnectionHandlerBase::_reasonCodeOk - reason code is ok '
+                '${mqttConnectReasonCode.asString(reasonCode)}');
+            return true;
+          }
+        } else {
+          MqttLogger.log(
+              'MqttConnectionHandlerBase::_reasonCodeOk - reason code has a null integer value');
+          return false;
+        }
+      } else {
+        MqttLogger.log(
+            'MqttConnectionHandlerBase::_reasonCodeOk - reason code is null');
+        return true;
+      }
+    } else {
+      MqttLogger.log(
+          'MqttConnectionHandlerBase::_reasonCodeOk - variable header is null');
+      return false;
+    }
   }
 }
