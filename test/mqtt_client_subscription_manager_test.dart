@@ -32,7 +32,7 @@ void main() {
               DateTime.now().millisecondsSinceEpoch,
           isTrue);
       expect(subscription.option, isNotNull);
-      expect(subscription.userProperties, isNull);
+      expect(subscription.userProperties, []);
       expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
       subscription.maximumQos = MqttQos.exactlyOnce;
       expect(subscription.maximumQos, MqttQos.exactlyOnce);
@@ -50,7 +50,7 @@ void main() {
               DateTime.now().millisecondsSinceEpoch,
           isTrue);
       expect(subscription.option, isNotNull);
-      expect(subscription.userProperties, isNull);
+      expect(subscription.userProperties, []);
       expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
       expect(subscription.option!.noLocal, isTrue);
     });
@@ -64,7 +64,7 @@ void main() {
               DateTime.now().millisecondsSinceEpoch,
           isTrue);
       expect(subscription.option, isNotNull);
-      expect(subscription.userProperties, isNull);
+      expect(subscription.userProperties, []);
       expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
     });
     test('Equality', () {
@@ -292,9 +292,9 @@ void main() {
         var cbCalled = false;
         void subCallback(MqttSubscription subscription) {
           expect(subscription.topic.rawTopic, 'testtopic');
-          expect(subscription.userProperties!.length, 1);
-          expect(subscription.userProperties![0].pairName, 'abc');
-          expect(subscription.userProperties![0].pairValue, 'def');
+          expect(subscription.userProperties.length, 1);
+          expect(subscription.userProperties[0].pairName, 'abc');
+          expect(subscription.userProperties[0].pairValue, 'def');
           expect(subscription.reasonCode, MqttSubscribeReasonCode.grantedQos0);
           cbCalled = true;
         }
@@ -432,9 +432,9 @@ void main() {
 
         void subFailCallback(MqttSubscription subscription) {
           expect(subscription.topic.rawTopic, 'testtopic');
-          expect(subscription.userProperties!.length, 1);
-          expect(subscription.userProperties![0].pairName, 'abc');
-          expect(subscription.userProperties![0].pairValue, 'def');
+          expect(subscription.userProperties.length, 1);
+          expect(subscription.userProperties[0].pairName, 'abc');
+          expect(subscription.userProperties[0].pairValue, 'def');
           expect(
               subscription.reasonCode, MqttSubscribeReasonCode.notAuthorized);
           cbFailCalled = true;
@@ -710,6 +710,62 @@ void main() {
         expect(msg.payload.subscriptions.first.rawTopic, topic);
         expect(subs.pendingUnsubscriptions[2]!.first.topic.rawTopic, topic);
       });
+      test(
+          'Unsubscription request creates pending unsubscription - no properties',
+          () {
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(clientEventBus,
+            socketOptions: socketOptions);
+        const topic = 'testtopic';
+        final subscription = MqttSubscription(MqttSubscriptionTopic(topic));
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.messageIdentifierDispenser.reset();
+        subs.subscribeSubscription(subscription);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x18);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        subs.confirmSubscription(subAckMsg);
+        // Unsubscribe
+        subs.unsubscribeSubscription(subscription);
+        expect(subs.pendingUnsubscriptions.length, 1);
+        expect(subs.subscriptions.length, 1);
+        expect(testCHS.sentMessages.length, 2);
+        expect(testCHS.sentMessages[1],
+            const TypeMatcher<MqttUnsubscribeMessage>());
+        final msg = testCHS.sentMessages[1] as MqttUnsubscribeMessage;
+        expect(msg.variableHeader.messageIdentifier, 2);
+        expect(msg.payload.subscriptions.length, 1);
+        expect(msg.payload.subscriptions.first.rawTopic, topic);
+        expect(subs.pendingUnsubscriptions[2]!.first.topic.rawTopic, topic);
+      });
       test('Unsubscription list request creates pending unsubscription', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
@@ -791,9 +847,9 @@ void main() {
         void unsubCallback(MqttSubscription subscription) {
           expect(subscription.topic.rawTopic, 'testtopic');
           expect(subscription.reasonCode, MqttSubscribeReasonCode.grantedQos0);
-          expect(subscription.userProperties!.length, 1);
-          expect(subscription.userProperties![0].pairName, 'abc');
-          expect(subscription.userProperties![0].pairValue, 'def');
+          expect(subscription.userProperties.length, 1);
+          expect(subscription.userProperties[0].pairName, 'abc');
+          expect(subscription.userProperties[0].pairValue, 'def');
           cbCalled = true;
         }
 

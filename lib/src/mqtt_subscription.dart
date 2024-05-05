@@ -46,7 +46,7 @@ class MqttSubscription {
   /// User properties as supplied in subscribe or unsubscribe operations
   /// or as received in subscribe acknowledge or unsubscribe acknowledge
   /// messages.
-  List<MqttUserProperty>? userProperties;
+  List<MqttUserProperty> userProperties = [];
 
   @override
   bool operator ==(Object other) {

@@ -175,7 +175,9 @@ class MqttSubscriptionManager {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
-      sub.userProperties = userProperties;
+      if (userProperties != null) {
+        sub.userProperties = userProperties;
+      }
       if (option != null) {
         sub.option = option;
       }
@@ -237,7 +239,7 @@ class MqttSubscriptionManager {
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromTopic(subscription.topic)
-        .withUserProperties(subscription.userProperties!);
+        .withUserProperties(subscription.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         <MqttSubscription>[subscription];
@@ -255,7 +257,7 @@ class MqttSubscriptionManager {
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromSubscriptionList(subscriptions)
-        .withUserProperties(subscriptions.first.userProperties!);
+        .withUserProperties(subscriptions.first.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);
     pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
         subscriptions;
