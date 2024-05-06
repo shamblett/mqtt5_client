@@ -31,5 +31,5 @@ maximum values for instance are not enforced.
 - Server redirection is not supported.
 - Reason codes are processed only in support of the protocol itself, other than this although received reason codes are 
 made available to the user the client will not necessarily take any action itself.
-- Flow control and Request/Response functionality is not fully supported.
+- Flow control is not fully supported.
 
