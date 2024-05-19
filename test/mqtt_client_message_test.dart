@@ -3105,6 +3105,9 @@ void main() {
         expect(
             message.variableHeader!.reasonCode, MqttConnectReasonCode.success);
         expect(
+            mqttConnectReasonCode.asString(message.variableHeader!.reasonCode),
+            'success');
+        expect(
             MqttReasonCodeUtilities.isError(mqttConnectReasonCode
                 .asInt(message.variableHeader!.reasonCode)!),
             isFalse);
@@ -3212,6 +3215,8 @@ void main() {
         expect(message.header!.messageType, MqttMessageType.disconnect);
         expect(message.header!.messageSize, 70);
         expect(message.reasonCode, MqttDisconnectReasonCode.quotaExceeded);
+        expect(mqttDisconnectReasonCode.asString(message.reasonCode),
+            'quotaExceeded');
         expect(message.sessionExpiryInterval, 10);
         expect(message.serverReference, 'Server Reference');
         expect(message.userProperties[0].pairName, 'User 1 name');

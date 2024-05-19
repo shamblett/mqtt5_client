@@ -32,5 +32,5 @@ class MqttEnumHelper<T extends dynamic> {
   }
 
   /// As string
-  String asString(T name) => name.toString().split('.')[1];
+  String asString(T name) => name.toString().split('.').last;
 }
