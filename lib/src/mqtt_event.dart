@@ -70,3 +70,15 @@ class MqttResubscribe {
   /// If set re subscribe has been triggered from auto reconnect.
   bool fromAutoReconnect = false;
 }
+
+/// Disconnect on keep alive on no ping response event
+class DisconnectOnNoPingResponse {
+  /// Constructor
+  DisconnectOnNoPingResponse();
+}
+
+/// Disconnect on sent message failed event
+class DisconnectOnNoMessageSent {
+  /// Constructor
+  DisconnectOnNoMessageSent();
+}
