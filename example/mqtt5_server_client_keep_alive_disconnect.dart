@@ -25,7 +25,7 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 /// shows how to set up and use secure sockets on the server.
 
 /// Edit as needed.
-const hostName = 'test.mosquitto.org';
+const hostName = 'localhost';
 
 final client = MqttServerClient(hostName, '');
 const pubTopic = 'Dart/Mqtt5_client/testtopic';
@@ -51,7 +51,7 @@ Future<int> main() async {
 
   /// If you intend to use a keep alive value in your connect message that is not the default(60s)
   /// you must set it here
-  client.keepAlivePeriod = 60;
+  client.keepAlivePeriod = 5;
 
   /// Set the ping response disconnect period, if a ping response is not received from the broker in this period
   /// the client will disconnect itself.
