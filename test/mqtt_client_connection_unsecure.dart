@@ -22,8 +22,10 @@ class MockCH extends Mock implements MqttServerConnectionHandler {
 }
 
 class MockKA extends Mock implements MqttConnectionKeepAlive {
-  MockKA(MqttIConnectionHandler connectionHandler, int keepAliveSeconds) {
-    ka = MqttConnectionKeepAlive(connectionHandler, keepAliveSeconds);
+  MockKA(MqttIConnectionHandler connectionHandler,
+      events.EventBus clientEventBus, int keepAliveSeconds) {
+    ka = MqttConnectionKeepAlive(
+        connectionHandler, clientEventBus, keepAliveSeconds);
   }
 
   late MqttConnectionKeepAlive ka;
@@ -42,7 +44,8 @@ void main() {
     // Group setup
     final ch = MockCH();
     //when(ch.secure).thenReturn(false);
-    final ka = MockKA(ch, 3);
+    final clientEventBus = events.EventBus();
+    final ka = MockKA(ch, clientEventBus, 3);
     test('Message sent', () {
       final MqttMessage msg = MqttPingRequestMessage();
       when(ka.messageSent(msg)).thenReturn(ka.ka.messageSent(msg));
@@ -182,7 +185,7 @@ void main() {
           MqttConnectMessage().withClientIdentifier(testClientId));
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.success);
-      final ka = MqttConnectionKeepAlive(ch, 2);
+      final ka = MqttConnectionKeepAlive(ch, clientEventBus, 2);
       broker.setMessageHandler = messageHandlerPingRequest;
       print(
           'Connection Keep Alive - Successful response - keepealive ms is ${ka.keepAlivePeriod}');

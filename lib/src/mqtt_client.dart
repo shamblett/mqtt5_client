@@ -103,6 +103,13 @@ class MqttClient {
   /// Keep alive period, seconds
   int keepAlivePeriod = MqttConstants.defaultKeepAlive;
 
+  /// The period of time to wait if the broker does not respond to a ping request
+  /// from keep alive processing, in seconds.
+  /// If this time period is exceeded the client is forcibly disconnected.
+  /// The default is 0, which disables this functionality.
+  /// Thi setting has no effect if keep alive is disabled.
+  int disconnectOnNoResponsePeriod = 0;
+
   /// Handles everything to do with publication management.
   @protected
   MqttPublishingManager? publishingManager;
@@ -252,9 +259,16 @@ class MqttClient {
     subscriptionsManager!.onSubscribeFail = onSubscribeFail;
     subscriptionsManager!.resubscribeOnAutoReconnect =
         resubscribeOnAutoReconnect;
-    keepAlive = MqttConnectionKeepAlive(connectionHandler, keepAlivePeriod);
-    if (pongCallback != null) {
-      keepAlive!.pongCallback = pongCallback;
+    if (keepAlivePeriod != MqttConstants.defaultKeepAlive) {
+      MqttLogger.log(
+          'Mqtt5Client::connect - keep alive is enabled with a value of $keepAlivePeriod seconds');
+      keepAlive = MqttConnectionKeepAlive(connectionHandler, clientEventBus,
+          keepAlivePeriod, disconnectOnNoResponsePeriod);
+      if (pongCallback != null) {
+        keepAlive!.pongCallback = pongCallback;
+      }
+    } else {
+      MqttLogger.log('Mqtt5Client::connect - keep alive is disabled');
     }
     final connectMessage = getConnectMessage(username, password);
     // If the client id is not set in the connection message use the one
@@ -414,6 +428,17 @@ class MqttClient {
   /// This method will disconnect regardles of the [autoReconnect] state.
   void disconnect() {
     _disconnect(unsolicited: false);
+  }
+
+  /// Called when the keep alive mechanism has determined that
+  /// a ping response expected from the broker has not arrived in the
+  /// time period specified by [disconnectOnNoResponsePeriod].
+  void disconnectOnNoPingResponse(DisconnectOnNoPingResponse event) {
+    MqttLogger.log(
+        'Mqtt5Client::_disconnectOnNoPingResponse - disconnecting, no ping request response for $disconnectOnNoResponsePeriod seconds');
+    // Destroy the existing client socket
+    connectionHandler?.connection.disconnect();
+    internalDisconnect();
   }
 
   /// Re-authenticate.
