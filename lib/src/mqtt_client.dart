@@ -100,7 +100,9 @@ class MqttClient {
   @protected
   MqttConnectionKeepAlive? keepAlive;
 
-  /// Keep alive period, seconds
+  /// Keep alive period, seconds.
+  /// The default is 0 which disables the keep alive mechanism.
+  /// To enable the keep alive mechanism set this to a value greater than 0.
   int keepAlivePeriod = MqttConstants.defaultKeepAlive;
 
   /// The period of time to wait if the broker does not respond to a ping request
@@ -259,7 +261,7 @@ class MqttClient {
     subscriptionsManager!.onSubscribeFail = onSubscribeFail;
     subscriptionsManager!.resubscribeOnAutoReconnect =
         resubscribeOnAutoReconnect;
-    if (keepAlivePeriod != MqttConstants.defaultKeepAlive) {
+    if (keepAlivePeriod > MqttConstants.defaultKeepAlive) {
       MqttLogger.log(
           'Mqtt5Client::connect - keep alive is enabled with a value of $keepAlivePeriod seconds');
       keepAlive = MqttConnectionKeepAlive(connectionHandler, clientEventBus,
