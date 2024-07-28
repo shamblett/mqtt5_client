@@ -30,8 +30,8 @@ Future<int> main() async {
   /// Set logging on if needed, defaults to off
   client.logging(on: false);
 
-  /// If you intend to use a keep alive value in your connect message that is not the default(60s)
-  /// you must set it here
+  /// The client keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
+  /// a positive value other than 0.
   client.keepAlivePeriod = 20;
 
   /// The ws port for Mosquitto is 8080, for wss it is 8081

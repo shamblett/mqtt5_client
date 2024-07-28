@@ -58,6 +58,11 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// The actual value of the Keep Alive is application specific; typically, this is
   /// a few minutes. The maximum value of 65,535 is 18 hours 12 minutes and 15 seconds.
+  ///
+  /// Note that in the context of the client this is known as the server keep alive mechanism
+  /// as opposed to the client keep alive mechanism controlled through the [MqttClient.keepAlivePeriod]
+  /// field. If you wish to use the server keep alive mechanism then it is up to you to ensure you
+  /// send control packets within the keep alive time period.
   int keepAlive = 0;
 
   static const sessionDoesNotExpire = 4294967295;
