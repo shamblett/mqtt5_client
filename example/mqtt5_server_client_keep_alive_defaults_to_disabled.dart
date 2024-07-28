@@ -50,10 +50,8 @@ Future<int> main() async {
   /// Set logging on if needed, defaults to off
   client.logging(on: false);
 
-  /// The keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
+  /// The client keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
   /// a positive value other than 0.
-  /// If you intend to use a keep alive value in your connect message that is not the default(0)
-  /// you must set it here.
   /// client.keepAlivePeriod = 5; // Off for this example
 
   /// Add the unsolicited disconnection callback
