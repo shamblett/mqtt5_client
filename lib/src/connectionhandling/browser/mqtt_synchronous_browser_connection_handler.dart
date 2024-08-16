@@ -77,28 +77,44 @@ class MqttSynchronousBrowserConnectionHandler
       // We're the sync connection handler so we need to wait for the
       // brokers acknowledgement of the connections
       await connectTimer.sleep();
+      connectionAttempts++;
       MqttLogger.log(
           'MqttSynchronousMqttBrowserConnectionHandler::internalConnect - '
           'post sleep, state = $connectionStatus');
+      if (connectionStatus.state != MqttConnectionState.connected) {
+        if (!autoReconnectInProgress!) {
+          MqttLogger.log(
+              'MqttSynchronousMqttBrowserConnectionHandler::internalConnect failed, attempt $connectionAttempts');
+          if (onFailedConnectionAttempt != null) {
+            MqttLogger.log(
+                'MqttSynchronousMqttBrowserConnectionHandler::calling onFailedConnectionAttempt');
+            onFailedConnectionAttempt!(connectionAttempts);
+          }
+        }
+      }
     } while (connectionStatus.state != MqttConnectionState.connected &&
-        ++connectionAttempts < maxConnectionAttempts!);
+        connectionAttempts < maxConnectionAttempts!);
     // If we've failed to handshake with the broker, throw an exception.
     if (connectionStatus.state != MqttConnectionState.connected) {
       if (!autoReconnectInProgress!) {
         MqttLogger.log(
             'MqttSynchronousMqttBrowserConnectionHandler::internalConnect failed');
-        if (connectionStatus.reasonCode == MqttConnectReasonCode.notSet) {
-          throw MqttNoConnectionException(
-              'The maximum allowed connection attempts '
-              '({$maxConnectionAttempts}) were exceeded. '
-              'The broker is not responding to the connection request message '
-              '(Missing Connection Acknowledgement?');
+        if (onFailedConnectionAttempt == null) {
+          if (connectionStatus.reasonCode == MqttConnectReasonCode.notSet) {
+            throw MqttNoConnectionException(
+                'The maximum allowed connection attempts '
+                '({$maxConnectionAttempts}) were exceeded. '
+                'The broker is not responding to the connection request message '
+                '(Missing Connection Acknowledgement?');
+          } else {
+            throw MqttNoConnectionException(
+                'The maximum allowed connection attempts '
+                '({$maxConnectionAttempts}) were exceeded. '
+                'The broker is not responding to the connection request message correctly '
+                'The reason code is ${connectionStatus.reasonCode}');
+          }
         } else {
-          throw MqttNoConnectionException(
-              'The maximum allowed connection attempts '
-              '({$maxConnectionAttempts}) were exceeded. '
-              'The broker is not responding to the connection request message correctly '
-              'The reason code is ${mqttConnectReasonCode.asString(connectionStatus.reasonCode)}');
+          connectionStatus.state = MqttConnectionState.faulted;
         }
       }
     }

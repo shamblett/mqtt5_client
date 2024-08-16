@@ -21,6 +21,7 @@ dependencies:
 dev_dependencies:
  test: '^1.25.0'
  mockito: '^5.4.4'
+ mocktail: '^1.0.4'
  build_runner: '^2.4.7'
  build_test: '^2.2.2'
  build_web_compilers: '^4.0.7'

@@ -15,7 +15,7 @@ class MqttBrowserClient extends MqttClient {
   MqttBrowserClient(
     super.server,
     super.clientIdentifier, {
-    this.maxConnectionAttempts = 3,
+    this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
   });
 
   /// Initializes a new instance of the MqttServerClient class using
@@ -27,7 +27,7 @@ class MqttBrowserClient extends MqttClient {
     super.server,
     super.clientIdentifier,
     int super.port, {
-    this.maxConnectionAttempts = 3,
+    this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
   }) : super.withPort();
 
   /// Max connection attempts
