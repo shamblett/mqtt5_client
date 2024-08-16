@@ -6,6 +6,8 @@
  */
 
 @TestOn('vm')
+library;
+
 import 'dart:io';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
@@ -14,6 +16,7 @@ import 'package:mockito/mockito.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 import 'package:event_bus/event_bus.dart' as events;
 import 'support/mqtt_client_mockbroker.dart';
+import 'support/mqtt_client_mock_socket.dart';
 
 // Mock classes
 class MockCH extends Mock implements MqttServerConnectionHandler {
@@ -110,6 +113,46 @@ void main() {
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.notSet);
+    });
+    test('Connect no connect ack onFailedConnectionAttempt callback set',
+        () async {
+      await IOOverrides.runZoned(() async {
+        bool connectionFailed = false;
+        int tAttempt = 0;
+        final lAttempt = <int>[];
+        void onFailedConnectionAttempt(int attempt) {
+          tAttempt++;
+          lAttempt.add(attempt);
+          connectionFailed = true;
+        }
+
+        final clientEventBus = events.EventBus();
+        final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+            maxConnectionAttempts: 3, socketOptions: socketOptions);
+        ch.onFailedConnectionAttempt = onFailedConnectionAttempt;
+        final start = DateTime.now();
+        try {
+          await ch.connect(mockBrokerAddress, mockBrokerPort,
+              MqttConnectMessage().withClientIdentifier(testClientId));
+        } on Exception catch (e) {
+          expect(e is MqttNoConnectionException, isTrue);
+        }
+        expect(connectionFailed, isTrue);
+        expect(tAttempt, 3);
+        expect(lAttempt, [1, 2, 3]);
+        expect(ch.connectionStatus.state, MqttConnectionState.faulted);
+        expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.notSet);
+        final end = DateTime.now();
+        expect(end.difference(start).inSeconds > 4, true);
+      },
+          socketConnect: (dynamic host, int port,
+                  {dynamic sourceAddress,
+                  int sourcePort = 0,
+                  Duration? timeout}) =>
+              MqttMockSocketSimpleConnectNoAck.connect(host, port,
+                  sourceAddress: sourceAddress,
+                  sourcePort: sourcePort,
+                  timeout: timeout));
     });
     test('Successful response and disconnect', () async {
       var connectCbCalled = false;

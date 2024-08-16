@@ -22,8 +22,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
   /// Reason Code
-  MqttConnectReasonCode? _reasonCode = MqttConnectReasonCode.notSet;
-  MqttConnectReasonCode? get reasonCode => _reasonCode;
+  MqttConnectReasonCode? reasonCode = MqttConnectReasonCode.notSet;
 
   /// The property set
   final _propertySet = MqttPropertyContainer();
@@ -258,7 +257,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     length += 1;
     // Reason code
     var byte = variableHeaderStream.readByte();
-    _reasonCode = mqttConnectReasonCode.fromInt(byte);
+    reasonCode = mqttConnectReasonCode.fromInt(byte);
     length += 1;
     // Properties
     variableHeaderStream.shrink();

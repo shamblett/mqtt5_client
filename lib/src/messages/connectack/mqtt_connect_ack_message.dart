@@ -29,6 +29,10 @@ class MqttConnectAckMessage extends MqttMessage {
 
   MqttConnectAckVariableHeader? _variableHeader;
 
+  /// Reason code
+  withReasonCode(MqttConnectReasonCode code) =>
+      _variableHeader?.reasonCode = code;
+
   /// The variable header contents.
   MqttConnectAckVariableHeader? get variableHeader => _variableHeader;
 

@@ -31,6 +31,9 @@ class MqttConstants {
   /// The value of zero disables the keep alive mechanism.
   static int defaultKeepAlive = 0;
 
+  /// Default maximum connection attempts
+  static const int defaultMaxConnectionAttempts = 3;
+
   /// V4
   static const int mqttProtocolVersion = 5;
 
