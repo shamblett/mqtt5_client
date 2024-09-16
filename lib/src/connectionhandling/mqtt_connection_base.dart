@@ -76,10 +76,27 @@ class MqttConnectionBase {
   void _disconnect() {
     // On disconnect clean(discard) anything in the message stream
     messageStream.clean();
-    if (client != null) {
-      client.destroy();
-      client = null;
+
+    // Close the client
+    if (client == null) {
+      return;
     }
+
+    if (client is WebSocket) {
+      final wsClient = client as WebSocket;
+      wsClient.close();
+    } else if (client is Socket) {
+      final socketClient = client as Socket;
+      socketClient.destroy();
+    } else {
+      try {
+        client.destroy();
+      } catch (e) {
+        MqttLogger.log('MqttConnectionBase::_disconnect - exception raised $e');
+      }
+    }
+
+    client = null;
   }
 
   /// User requested or auto disconnect disconnection

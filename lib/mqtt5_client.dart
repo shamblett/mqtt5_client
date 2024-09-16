@@ -9,6 +9,7 @@ library mqtt5_client;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
 import 'package:typed_data/typed_data.dart' as typed;
