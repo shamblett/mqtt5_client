@@ -269,7 +269,9 @@ class MqttSubscriptionManager {
   void resubscribe() {
     for (final subscription in subscriptions.values) {
       _createNewSubscription(
-          subscription.topic.rawTopic, subscription.maximumQos);
+          subscription.topic.rawTopic, subscription.maximumQos,
+          userProperties: subscription.userProperties,
+          option: subscription.option);
     }
     subscriptions.clear();
   }
@@ -394,7 +396,9 @@ class MqttSubscriptionManager {
           'MttSubscriptionManager::_resubscribe - resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}');
       for (final subscription in subscriptions.values) {
         _createNewSubscription(
-            subscription.topic.rawTopic, subscription.maximumQos);
+            subscription.topic.rawTopic, subscription.maximumQos,
+            userProperties: subscription.userProperties,
+            option: subscription.option);
       }
       subscriptions.clear();
     } else {
