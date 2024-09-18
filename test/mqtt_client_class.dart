@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 @TestOn('linux')
+library;
+
 
 import 'dart:io';
 import 'package:test/test.dart';

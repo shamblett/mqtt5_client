@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 @TestOn('vm')
+library;
+
 
 import 'dart:io';
 import 'package:mqtt5_client/mqtt5_client.dart';
