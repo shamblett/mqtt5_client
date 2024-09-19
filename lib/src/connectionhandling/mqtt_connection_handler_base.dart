@@ -163,7 +163,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     } else {
       MqttLogger.log(
           'MqttConnectionHandlerBase::autoReconnect - auto reconnect failed - re trying');
-      clientEventBus!.fire(MqttAutoReconnect());
+      clientEventBus?.fire(MqttAutoReconnect());
     }
   }
 
@@ -265,6 +265,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     MqttLogger.log(
         'MqttConnectionHandlerBase::_performConnectionDisconnect entered');
     connectionStatus.state = MqttConnectionState.disconnected;
+    clientEventBus = null;
   }
 
   /// Processes the connect acknowledgement message.
