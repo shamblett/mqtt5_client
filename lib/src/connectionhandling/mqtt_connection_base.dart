@@ -77,7 +77,12 @@ class MqttConnectionBase {
     // On disconnect clean(discard) anything in the message stream
     messageStream.clean();
     if (client != null) {
-      client.destroy();
+      // TODO needs a proper fix, see issue 111
+      try {
+        client.destroy();
+      } on NoSuchMethodError {
+        client.close();
+      }
       client = null;
     }
   }
