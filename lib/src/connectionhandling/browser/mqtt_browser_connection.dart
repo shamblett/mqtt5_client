@@ -110,7 +110,7 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     final messageBytes = message.read(message.length);
     var buffer = messageBytes.buffer;
     var bData = ByteData.view(buffer);
-    client?.sendTypedData(bData);
+    (client as WebSocket).send(bData.jsify()!);
   }
 
   void _disconnect() {

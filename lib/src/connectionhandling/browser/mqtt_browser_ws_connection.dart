@@ -156,11 +156,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
   /// Implement stream subscription
   @override
   List<StreamSubscription> onListen() {
-    final webSocket = client;
-    if (webSocket == null) {
-      throw StateError('webSocket is null');
-    }
-
+    final webSocket = client as WebSocket;
     return [
       webSocket.onClose.listen((e) {
         MqttLogger.log(
@@ -202,9 +198,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
 
   @override
   void _disconnect() {
-    if (client != null) {
-      client.close();
-      client = null;
-    }
+    client.close();
+    client = null;
   }
 }
