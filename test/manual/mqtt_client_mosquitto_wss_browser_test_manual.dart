@@ -39,9 +39,7 @@ void main() {
       client.websocketProtocols = MqttConstants.protocolsSingleDefault;
       final connMess = MqttConnectMessage()
           .withClientIdentifier(testClientId)
-          .withWillTopic('willtopic')
-          .startClean() // Non persistent session for testing
-          .withWillQos(MqttQos.atLeastOnce);
+          .startClean(); // Non persistent session for testing
       client.connectionMessage = connMess;
       var ok = true;
       try {
