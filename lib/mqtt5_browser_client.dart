@@ -5,10 +5,11 @@
  * Copyright :  S.Hamblett
  */
 
-library mqtt5_browser_client;
+library;
 
 import 'dart:async';
-import 'package:universal_html/html.dart';
+import 'dart:js_interop';
+import 'package:web/web.dart';
 import 'dart:typed_data';
 import 'package:event_bus/event_bus.dart' as events;
 import 'mqtt5_client.dart';
