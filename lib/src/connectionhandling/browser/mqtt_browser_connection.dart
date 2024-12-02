@@ -92,17 +92,22 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
             'MqttBrowserConnection::_onData - MESSAGE RECEIVED -> ', msg);
         // If we have received a valid message we must shrink the stream
         messageStream.shrink();
-        if (!clientEventBus!.streamController.isClosed) {
-          if (msg!.header!.messageType == MqttMessageType.connectAck) {
-            clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
+        if (clientEventBus != null) {
+          if (!clientEventBus!.streamController.isClosed) {
+            if (msg!.header!.messageType == MqttMessageType.connectAck) {
+              clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
+            } else {
+              clientEventBus!.fire(MqttMessageAvailable(msg));
+            }
+            MqttLogger.log(
+                'MqttBrowserConnection::_onData - message available event fired');
           } else {
-            clientEventBus!.fire(MqttMessageAvailable(msg));
+            MqttLogger.log(
+                'MqttBrowserConnection::_onData - message not processed, event bus is closed');
           }
-          MqttLogger.log(
-              'MqttBrowserConnection::_onData - message available event fired');
         } else {
           MqttLogger.log(
-              'MqttBrowserConnection::_onData - message not processed, disconnecting');
+              'MqttBrowserConnection::_onData - message not processed, event bus is null');
         }
       }
     }
