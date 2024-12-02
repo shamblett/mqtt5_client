@@ -94,14 +94,22 @@ class MqttServerConnection extends MqttConnectionBase {
               'MqttServerConnection::_onData - MESSAGE RECEIVED -> ', msg);
           // If we have received a valid message we must shrink the stream
           messageStream.shrink();
-          if (!clientEventBus!.streamController.isClosed) {
-            if (msg!.header!.messageType == MqttMessageType.connectAck) {
-              clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
+          if (clientEventBus != null) {
+            if (!clientEventBus!.streamController.isClosed) {
+              if (msg!.header!.messageType == MqttMessageType.connectAck) {
+                clientEventBus!.fire(MqttConnectAckMessageAvailable(msg));
+              } else {
+                clientEventBus!.fire(MqttMessageAvailable(msg));
+              }
+              MqttLogger.log(
+                  'MqttServerConnection::_onData - message available event fired');
             } else {
-              clientEventBus!.fire(MqttMessageAvailable(msg));
+              MqttLogger.log(
+                  'MqttServerConnection::_onData - message not processed, event bus is closed');
             }
+          } else {
             MqttLogger.log(
-                'MqttServerConnection::_onData - message available event fired');
+                'MqttServerConnection::_onData - message not processed, event bus is null');
           }
         }
       }
