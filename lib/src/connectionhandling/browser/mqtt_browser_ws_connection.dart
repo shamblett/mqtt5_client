@@ -50,12 +50,14 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       // Connect and save the socket.
       client = WebSocket(uriString, protocols.map((e) => e.toJS).toList().toJS);
       wsClient.binaryType = 'arraybuffer';
-      dynamic closeEvents;
-      dynamic errorEvents;
-      wsClient.onOpen.listen((e) {
+      StreamSubscription<Event>? openEvents;
+      StreamSubscription<CloseEvent>? closeEvents;
+      StreamSubscription<Event>? errorEvents;
+      openEvents = wsClient.onOpen.listen((e) {
         MqttLogger.log('MqttBrowserWsConnection::connect - websocket is open');
-        closeEvents.cancel();
-        errorEvents.cancel();
+        openEvents?.cancel();
+        closeEvents?.cancel();
+        errorEvents?.cancel();
         _startListening();
         return completer.complete();
       });
@@ -63,15 +65,17 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       closeEvents = wsClient.onClose.listen((e) {
         MqttLogger.log(
             'MqttBrowserWsConnection::connect - websocket is closed');
-        closeEvents.cancel();
-        errorEvents.cancel();
+        openEvents?.cancel();
+        closeEvents?.cancel();
+        errorEvents?.cancel();
         return completer.complete(MqttConnectionStatus());
       });
       errorEvents = wsClient.onError.listen((e) {
         MqttLogger.log(
             'MqttBrowserWsConnection::connect - websocket has errored');
-        closeEvents.cancel();
-        errorEvents.cancel();
+        openEvents?.cancel();
+        closeEvents?.cancel();
+        errorEvents?.cancel();
         return completer.complete(MqttConnectionStatus());
       });
     } on Exception {
@@ -113,13 +117,15 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       // Connect and save the socket.
       client = WebSocket(uriString, protocols.map((e) => e.toJS).toList().toJS);
       wsClient.binaryType = 'arraybuffer';
-      dynamic closeEvents;
-      dynamic errorEvents;
-      wsClient.onOpen.listen((e) {
+      StreamSubscription<Event>? openEvents;
+      StreamSubscription<CloseEvent>? closeEvents;
+      StreamSubscription<Event>? errorEvents;
+      openEvents = wsClient.onOpen.listen((e) {
         MqttLogger.log(
             'MqttBrowserWsConnection::connectAuto - websocket is open');
-        closeEvents.cancel();
-        errorEvents.cancel();
+        openEvents?.cancel();
+        closeEvents?.cancel();
+        errorEvents?.cancel();
         _startListening();
         return completer.complete();
       });
@@ -127,15 +133,17 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       closeEvents = wsClient.onClose.listen((e) {
         MqttLogger.log(
             'MqttBrowserWsConnection::connectAuto - websocket is closed');
-        closeEvents.cancel();
-        errorEvents.cancel();
+        openEvents?.cancel();
+        closeEvents?.cancel();
+        errorEvents?.cancel();
         return completer.complete(MqttConnectionStatus());
       });
       errorEvents = wsClient.onError.listen((e) {
         MqttLogger.log(
             'MqttBrowserWsConnection::connectAuto - websocket has errored');
-        closeEvents.cancel();
-        errorEvents.cancel();
+        openEvents?.cancel();
+        closeEvents?.cancel();
+        errorEvents?.cancel();
         return completer.complete(MqttConnectionStatus());
       });
     } on Exception {
