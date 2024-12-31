@@ -56,10 +56,10 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     MqttLogger.log(
         'MqttBrowserConnection::_onData - Message Received Started <<< ');
 
-  
-    //! This change is to support correctly WASM, when is using CanvasKit, the byteData is a ByteBuffer,
-    //! but when is on SKWasm / WASM, the byteData is a JSArrayBuffer, so we need to convert it to a Dart ByteBuffer
-    //! before convert it to a Uint8List
+    // Normally the byteData is a ByteBuffer,
+    // but for SKWasm / WASM, the byteData is a JSArrayBuffer,
+    // so we need to convert it to a Dart ByteBuffer
+    // before we convert it to a Uint8List.
     // ignore: invalid_runtime_check_with_js_interop_types
     if (byteData is JSArrayBuffer) {
       byteData = byteData.toDart;
