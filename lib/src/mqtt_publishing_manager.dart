@@ -158,12 +158,10 @@ class MqttPublishingManager {
         // QOS AtMostOnce 0 require no response.
         // Send the message for processing to whoever is waiting.
         _clientEventBus.fire(MqttMessageReceived(topic, msg));
-        _notifyPublish(msg);
       } else if (pubMsg.header!.qos == MqttQos.atLeastOnce) {
         // QOS AtLeastOnce 1 requires an acknowledgement
         // Send the message for processing to whoever is waiting.
         _clientEventBus.fire(MqttMessageReceived(topic, msg));
-        _notifyPublish(msg);
         final ackMsg = MqttPublishAckMessage()
             .withMessageIdentifier(pubMsg.variableHeader!.messageIdentifier)
             .withReasonCode(MqttPublishReasonCode.success);
@@ -171,7 +169,7 @@ class MqttPublishingManager {
       } else if (pubMsg.header!.qos == MqttQos.exactlyOnce) {
         // QOS ExactlyOnce means we can't give it away yet, we need to do a handshake
         // to make sure the broker knows we got it, and we know he knows we got it.
-        // If we've already got it thats ok, it just means its being republished because
+        // If we've already got it that's ok, it just means its being republished because
         // of a handshake breakdown, overwrite our existing one for the sake of it
         if (!receivedMessages
             .containsKey(pubMsg.variableHeader!.messageIdentifier)) {
