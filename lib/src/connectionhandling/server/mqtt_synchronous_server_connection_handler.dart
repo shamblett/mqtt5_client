@@ -58,6 +58,7 @@ class MqttSynchronousServerConnectionHandler
           if (websocketProtocols != null) {
             connection.protocols = websocketProtocols;
           }
+          connection.onBadCertificate = onBadCertificate;
         } else if (secure) {
           MqttLogger.log(
               'MqttSynchronousServerConnectionHandler::internalConnect - '
