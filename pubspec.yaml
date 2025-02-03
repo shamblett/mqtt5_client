@@ -13,10 +13,10 @@ funding:
 dependencies:
  typed_data: '^1.4.0'
  event_bus: '^2.0.1'
- path: '^1.9.1'
+ path: '^1.9.0'
  universal_html: '^2.2.4'
  crypto: '^3.0.6'
- meta: '^1.16.0'
+ meta: '^1.15.0'
  web: '>=0.5.0 <2.0.0'
  
 dev_dependencies:

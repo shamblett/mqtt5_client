@@ -93,8 +93,8 @@ class MqttServerClient extends MqttClient {
       connectionHandler.useWebSocket = false;
       connectionHandler.useAlternateWebSocketImplementation = false;
       connectionHandler.securityContext = securityContext;
-      connectionHandler.onBadCertificate = onBadCertificate;
     }
+    connectionHandler.onBadCertificate = onBadCertificate;
     return await super.connect(username, password);
   }
 }

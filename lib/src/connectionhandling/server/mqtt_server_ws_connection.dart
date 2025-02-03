@@ -19,6 +19,10 @@ class MqttServerWsConnection extends MqttServerConnection {
     connect(server, port);
   }
 
+  /// Callback function to handle bad certificate (self signed).
+  /// if true, ignore the error.
+  bool Function(X509Certificate certificate)? onBadCertificate;
+
   /// The websocket subprotocol list
   List<String> protocols = MqttConstants.protocolsMultipleDefault;
 
@@ -46,10 +50,18 @@ class MqttServerWsConnection extends MqttServerConnection {
     final uriString = uri.toString();
     MqttLogger.log(
         'MqttWsConnection:: WS URL is $uriString, protocols are $protocols');
+    HttpClient? httpClient;
+    if (onBadCertificate != null) {
+      httpClient = HttpClient()
+        ..badCertificateCallback = (cert, host, port) {
+          return onBadCertificate!(cert);
+        };
+    }
     try {
       // Connect and save the socket.
       WebSocket.connect(uriString,
-              protocols: protocols.isNotEmpty ? protocols : null)
+              protocols: protocols.isNotEmpty ? protocols : null,
+              customClient: httpClient)
           .then((dynamic socket) {
         client = socket;
         _startListening();

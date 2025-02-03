@@ -105,6 +105,10 @@ class MqttServerWs2Connection extends MqttServerConnection {
     connect(server, port);
   }
 
+  /// Callback function to handle bad certificate (like self signed).
+  /// if true, ignore the error.
+  bool Function(X509Certificate certificate)? onBadCertificate;
+
   /// The websocket subprotocol list
   List<String> protocols = MqttConstants.protocolsMultipleDefault;
 
@@ -138,7 +142,8 @@ class MqttServerWs2Connection extends MqttServerConnection {
         'MqttServerWs2Connection:: WS URL is $uriString, protocols are $protocols');
 
     try {
-      SecureSocket.connect(uri.host, uri.port, context: context)
+      SecureSocket.connect(uri.host, uri.port,
+              context: context, onBadCertificate: onBadCertificate)
           .then((Socket socket) {
         MqttLogger.log('MqttServerWs2Connection::connect - securing socket');
         _performWSHandshake(socket, uri).then((bool b) {
