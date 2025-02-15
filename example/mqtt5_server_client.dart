@@ -84,7 +84,12 @@ Future<int> main() async {
       .startClean() // Or startSession() for a persistent session
       .withUserProperties([property]);
   print('EXAMPLE::Mqtt5 client connecting....');
+
+  // Set the connect message
   client.connectionMessage = connMess;
+
+  /// You can also set a disconnect message if you wish,
+  // client.disconnectMessage = MqttDisconnectMessage().withReasonCode(MqttDisconnectReasonCode.disconnectWithWillMessage);
 
   /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
   /// its possible that in some circumstances the broker will just disconnect us, see the spec about this,

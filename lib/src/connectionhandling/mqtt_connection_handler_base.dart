@@ -8,7 +8,7 @@
 part of '../../mqtt5_client.dart';
 
 ///  This class provides shared connection functionality
-///  to serverand browser connection handler implementations.
+///  to server and browser connection handler implementations.
 abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
   MqttConnectionHandlerBase(this.clientEventBus,
@@ -247,12 +247,16 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
 
   /// Disconnects
   @override
-  MqttConnectionState disconnect() {
+  MqttConnectionState disconnect([MqttDisconnectMessage? disconnectMessage]) {
     MqttLogger.log('MqttConnectionHandlerBase::disconnect');
     if (connectionStatus.state == MqttConnectionState.connected) {
       // Send a disconnect message to the broker
-      sendMessage(MqttDisconnectMessage()
-          .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
+      if (disconnectMessage == null) {
+        sendMessage(MqttDisconnectMessage()
+            .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
+      } else {
+        sendMessage(disconnectMessage);
+      }
     }
     // Disconnect
     _performConnectionDisconnect();

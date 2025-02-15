@@ -155,6 +155,12 @@ class MqttClient {
   /// The connection message to use to override the default
   MqttConnectMessage? connectionMessage;
 
+  /// The disconnection message to use to override the default.
+  /// The default disconnection reason is normal disconnection,
+  /// this allows setting of your own reason code and any other properties.
+  MqttDisconnectMessage disconnectMessage = MqttDisconnectMessage()
+      .withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
+
   /// Client disconnect callback, called on unsolicited disconnect.
   /// This will not be called even if set if [autoReconnect} is set,instead
   /// [AutoReconnectCallback] will be called.
@@ -440,7 +446,7 @@ class MqttClient {
   /// Do NOT call this in any onDisconnect callback that may be set,
   /// this will result in a loop situation.
   ///
-  /// This method will disconnect regardles of the [autoReconnect] state.
+  /// This method will disconnect regardless of the [autoReconnect] state.
   void disconnect() {
     _disconnect(unsolicited: false);
   }
@@ -509,7 +515,7 @@ class MqttClient {
     // need this.
     var disconnectOrigin = MqttDisconnectionOrigin.unsolicited;
     if (!unsolicited) {
-      connectionHandler?.disconnect();
+      connectionHandler?.disconnect(disconnectMessage);
       disconnectOrigin = MqttDisconnectionOrigin.solicited;
     }
     publishingManager?.published.close();
