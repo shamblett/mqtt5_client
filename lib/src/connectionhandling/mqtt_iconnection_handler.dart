@@ -47,7 +47,7 @@ abstract class MqttIConnectionHandler {
 
   /// Runs the disconnection process to stop communicating
   /// with a message broker.
-  MqttConnectionState disconnect();
+  MqttConnectionState disconnect([MqttDisconnectMessage disconnectMessage]);
 
   /// Indicates if the connect message has an authentication method
   /// i.e. authentication has been requested.

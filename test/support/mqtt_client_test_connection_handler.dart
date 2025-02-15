@@ -60,7 +60,7 @@ class TestConnectionHandlerSend extends MqttServerConnectionHandler {
   }
 
   @override
-  MqttConnectionState disconnect() =>
+  MqttConnectionState disconnect([MqttDisconnectMessage? disconnectMessage]) =>
       connectionStatus.state = MqttConnectionState.disconnected;
 
   @override
