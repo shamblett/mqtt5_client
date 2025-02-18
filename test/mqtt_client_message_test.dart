@@ -2817,8 +2817,9 @@ void main() {
         payload.password = 'Password';
         payload.willProperties.contentType = 'Content Type';
         payload.willProperties.willDelayInterval = 0xFF;
+        payload.willTopic = 'willtopic';
         payload.variableHeader!.connectFlags.willRetain = true;
-        expect(payload.getWriteLength(), 40);
+        expect(payload.getWriteLength(), 53);
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         payload.writeTo(stream);
@@ -2862,7 +2863,20 @@ void main() {
           0,
           0,
           0,
-          255
+          255,
+          0,
+          9,
+          119,
+          105,
+          108,
+          108,
+          116,
+          111,
+          112,
+          105,
+          99,
+          0,
+          0
         ]);
       });
     });
@@ -3015,7 +3029,7 @@ void main() {
             .withWillTopic('willTopic');
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
-        expect(mb[1], 0x1D);
+        expect(mb[1], 0x1F);
       });
       test('User properties', () {
         final userProp = MqttUserProperty();
