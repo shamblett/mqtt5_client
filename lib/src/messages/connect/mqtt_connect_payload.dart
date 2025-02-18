@@ -92,6 +92,11 @@ class MqttConnectPayload implements MqttIPayload {
     if (variableHeader!.connectFlags.willFlag) {
       willProperties.writeTo(payloadStream);
       payloadStream.writeMqttStringM(willTopic);
+      if (willPayload.length > 65535) {
+        throw Exception(
+            'MqttConnectPayload::_serialize -  willPayload length is invalid, length is ${willPayload.length}');
+      }
+      payloadStream.writeShort(willPayload.length);
       payloadStream.write(willPayload);
     }
     if (variableHeader!.connectFlags.usernameFlag) {
