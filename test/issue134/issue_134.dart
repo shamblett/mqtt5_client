@@ -9,7 +9,8 @@ Future<void> main() async {
   )
     ..useWebSocket = true
     ..connectionMessage = mqtt.MqttConnectMessage()
-        .withWillQos(mqtt.MqttQos.atMostOnce)
+        .will()
+        .withWillQos(mqtt.MqttQos.exactlyOnce)
         .withWillTopic('mqtt5_client/test/disconnect_with_will')
         .withWillPayload(
       (() {
@@ -40,6 +41,8 @@ Future<void> main() async {
     })(),
   );
   print('Published: $id');
+
+  await Future.delayed(const Duration(seconds: 2)); // Some delay just in case
 
   client.disconnect();
 }
