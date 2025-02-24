@@ -3672,6 +3672,27 @@ void main() {
         final decodedMsg = MqttMessage.createFrom(byteBuffer);
         expect(decodedMsg!.header!.messageType, MqttMessageType.publish);
       });
+      test('Publish Chinese payload', () {
+        const topic = 'smartDevices';
+        final builder = MqttPayloadBuilder();
+        builder.addUTF8String('你好大衛');
+        final msg = MqttPublishMessage()
+            .toTopic(topic)
+            .withMessageIdentifier(1)
+            .withQos(MqttQos.atMostOnce)
+            .publishData(builder.payload!);
+        expect(msg.variableHeader!.topicName, topic);
+        final buffer = typed.Uint8Buffer();
+        final byteBuffer = MqttByteBuffer(buffer);
+        msg.writeTo(byteBuffer);
+        byteBuffer.reset();
+
+        final decodedMsg = MqttMessage.createFrom(byteBuffer);
+        expect(decodedMsg!.header!.messageType, MqttMessageType.publish);
+        final data = MqttUtilities.bytesToStringAsString(
+            (decodedMsg as MqttPublishMessage).payload.message!);
+        expect(data, '你好大衛');
+      });
     });
 
     group('Publish Ack', () {
