@@ -72,20 +72,29 @@ class MqttConnectMessage extends MqttMessage {
   /// Sets the Will flag.
   ///
   /// Note that setting this will also activate encoding of will
-  /// properties and other dependant fields.
-  /// Refer to the [MqttWillProperties] class for details.
+  /// properties and other dependant fields, see [withWillTopic], [withWillPayload]
+  ///
+  /// Refer to the [MqttWillProperties] class for property details and [withWillProperties]
+  ///
+  /// The user is responsible for setting this field if will properties are to be used.
+  /// The client will not set this for you. If you do not set this then the will mechanism
+  /// will not work.
   MqttConnectMessage will() {
     _variableHeader!.connectFlags.willFlag = true;
     return this;
   }
 
   /// Sets the Will Qos.
+  ///
+  /// You must set the will flag with [will] to activate this field.
   MqttConnectMessage withWillQos(MqttQos qos) {
     _variableHeader!.connectFlags.willQos = qos;
     return this;
   }
 
   /// Sets the Will retain flag.
+  ///
+  /// You must set the will flag with [will] to activate this field.
   MqttConnectMessage withWillRetain() {
     _variableHeader!.connectFlags.willRetain = true;
     return this;
@@ -98,18 +107,24 @@ class MqttConnectMessage extends MqttMessage {
   }
 
   /// Sets the will payload.
+  ///
+  /// You must set the will flag with [will] to activate this field.
   MqttConnectMessage withWillPayload(typed.Uint8Buffer willPayload) {
     payload.willPayload = willPayload;
     return this;
   }
 
   /// Sets the Will topic.
+  ///
+  /// You must set the will flag with [will] to activate this field.
   MqttConnectMessage withWillTopic(String willTopic) {
     payload.willTopic = willTopic;
     return this;
   }
 
   /// Sets the will properties
+  ///
+  /// You must set the will flag with [will] to activate this field.
   MqttConnectMessage withWillProperties(MqttWillProperties properties) {
     payload.willProperties = properties;
     return this;
