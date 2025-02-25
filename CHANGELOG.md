@@ -1,3 +1,6 @@
+# 4.9.2
+Issue 134 - Will API documentation update
+
 # 4.9.1
 Issue 140
 
@@ -5,7 +8,7 @@ Issue 140
 Issue 136
 
 # 4.8.0
-Issue 134
+Issue 134 - Disconnect Message
 
 # 4.7.0
 PR133, Issue 132
