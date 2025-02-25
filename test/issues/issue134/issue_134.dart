@@ -19,8 +19,7 @@ Future<void> main() async {
         return builder.payload!;
       })(),
     )
-    ..disconnectMessage =
-    mqtt.MqttDisconnectMessage()
+    ..disconnectMessage = mqtt.MqttDisconnectMessage()
         .withReasonCode(mqtt.MqttDisconnectReasonCode.disconnectWithWillMessage)
     ..onConnected = () {
       print('onConnected');
