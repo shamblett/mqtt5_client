@@ -367,7 +367,7 @@ class MqttMockSocketDisconnectNormal extends MockSocket {
     if (initial) {
       initial = false;
       final ack =
-          MqttConnectAckMessage().withReasonCode(MqttConnectReasonCode.success);
+          MqttConnectAckMessage()..withReasonCode(MqttConnectReasonCode.success);
       final buff = Uint8Buffer();
       final ms = MqttByteBuffer(buff);
       ack.writeTo(ms);
