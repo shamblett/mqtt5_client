@@ -184,7 +184,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
         ? variableHeaderStream.writeByte(1)
         : variableHeaderStream.writeByte(0);
     variableHeaderStream.writeByte(mqttConnectReasonCode.asInt(reasonCode));
-
+    _propertySet.writeTo(variableHeaderStream);
   }
 
   // Process the properties read from the byte stream
@@ -276,7 +276,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
 
   /// Gets the length of the write data when WriteTo will be called.
   @override
-  int getWriteLength() => 2;
+  int getWriteLength() => 2 + _propertySet.length();
 
   @override
   String toString() {
