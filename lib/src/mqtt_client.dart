@@ -248,7 +248,7 @@ class MqttClient {
   Stream<List<MqttReceivedMessage<MqttMessage>>> get updates =>
       subscriptionsManager!.subscriptionNotifier;
 
-  /// Comon client connection method.
+  /// Common client connection method.
   Future<MqttConnectionStatus?> connect(
       [String? username, String? password]) async {
     // Protect against an incorrect instantiation
@@ -269,6 +269,8 @@ class MqttClient {
     connectionHandler.onAutoReconnect = onAutoReconnect;
     connectionHandler.onAutoReconnected = onAutoReconnected;
     connectionHandler.onFailedConnectionAttempt = onFailedConnectionAttempt;
+    connectionHandler.registerForMessage(
+        MqttMessageType.disconnect, _processReceivedDisconnectMessage);
     publishingManager =
         MqttPublishingManager(connectionHandler, clientEventBus);
     authenticationManager ??= MqttAuthenticationManager();
@@ -382,7 +384,7 @@ class MqttClient {
   void resubscribe() => subscriptionsManager!.resubscribe();
 
   /// Publishes a message to the message broker.
-  /// Returns the message identifer assigned to the message.
+  /// Returns the message identifier assigned to the message.
   /// Raises InvalidTopicException if the topic supplied violates the
   /// MQTT topic format rules.
   int publishMessage(
@@ -447,8 +449,8 @@ class MqttClient {
   /// this will result in a loop situation.
   ///
   /// This method will disconnect regardless of the [autoReconnect] state.
-  void disconnect() {
-    _disconnect(unsolicited: false);
+  void disconnect({fromBroker = false}) {
+    _disconnect(unsolicited: false, fromBroker: fromBroker);
   }
 
   /// Called when the keep alive mechanism has determined that
@@ -509,13 +511,16 @@ class MqttClient {
   }
 
   /// Actual disconnect processing
-  void _disconnect({bool unsolicited = true}) {
+  void _disconnect({bool unsolicited = true, fromBroker = false}) {
     // Only disconnect the connection handler if the request is
-    // solicited, unsolicited requests, ie broker termination don't
+    // solicited by the user or the broker, unsolicited requests, i.e. network termination don't
     // need this.
     var disconnectOrigin = MqttDisconnectionOrigin.unsolicited;
     if (!unsolicited) {
-      connectionHandler?.disconnect(disconnectMessage);
+      // Don't send a disconnect message if the disconnect is from the broker.
+      if (!fromBroker) {
+        connectionHandler?.disconnect(disconnectMessage);
+      }
       disconnectOrigin = MqttDisconnectionOrigin.solicited;
     }
     publishingManager?.published.close();
@@ -566,5 +571,16 @@ class MqttClient {
     if (on) {
       MqttLogger.loggingOn = true;
     }
+  }
+
+  // Process a disconnect message received from the broker.
+  bool _processReceivedDisconnectMessage(MqttMessage msg) {
+    final disconnectMsg = msg as MqttDisconnectMessage;
+    final reason = mqttDisconnectReasonCode.asString(disconnectMsg.reasonCode);
+    MqttLogger.log(
+        'MqttClient::_processReceivedDisconnectMessage - Disconnect Message received, reason is \'$reason\'  - disconnecting');
+    _connectionStatus.disconnectMessage = disconnectMsg;
+    disconnect(fromBroker: true);
+    return true;
   }
 }

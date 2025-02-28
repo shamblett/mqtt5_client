@@ -19,11 +19,17 @@ void main() {
   test('Disconnect Normal Disconnect', () async {
     await IOOverrides.runZoned(() async {
       bool connectionFailed = false;
+      bool onDisconnectedCalled = false;
+      void onDisconnected() {
+        onDisconnectedCalled = true;
+      }
+
       final client =
           MqttServerClient('localhost', '', maxConnectionAttempts: 1);
       client.connectionMessage =
           MqttConnectMessage().withClientIdentifier('MqttDisconnectTest');
       client.logging(on: true);
+      client.onDisconnected = onDisconnected;
       try {
         await client.connect();
       } on Exception catch (e) {
@@ -32,8 +38,14 @@ void main() {
       }
       expect(connectionFailed, isFalse);
       expect(client.connectionStatus?.state, MqttConnectionState.connected);
-      expect(client.connectionStatus?.reasonCode, MqttConnectReasonCode.success);
+      expect(
+          client.connectionStatus?.reasonCode, MqttConnectReasonCode.success);
       client.publishMessage('PublishTest', MqttQos.atLeastOnce, Uint8Buffer());
+      await Future.delayed(Duration(seconds: 1));
+      expect(client.connectionStatus?.state, MqttConnectionState.disconnected);
+      expect(client.connectionStatus?.disconnectMessage.reasonCode,
+          MqttDisconnectReasonCode.normalDisconnection);
+      expect(onDisconnectedCalled, isTrue);
     },
         socketConnect: (dynamic host, int port,
                 {dynamic sourceAddress,

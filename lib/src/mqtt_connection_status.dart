@@ -21,8 +21,12 @@ class MqttConnectionStatus {
   /// Disconnection origin
   MqttDisconnectionOrigin disconnectionOrigin = MqttDisconnectionOrigin.none;
 
-  /// Connect acknowledgement message as received.
+  /// The last Connect acknowledgement message as
+  /// received.
   late MqttConnectAckMessage connectAckMessage;
+
+  /// The last disconnect message received from the broker.
+  late MqttDisconnectMessage disconnectMessage;
 
   @override
   String toString() {

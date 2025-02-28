@@ -13,8 +13,9 @@ enum MqttDisconnectionOrigin {
   /// for example a broker/network initiated disconnect
   unsolicited,
 
-  /// Solicited, i.e. requested by the client,
-  /// for example disconnect called on the client.
+  /// Solicited, i.e. requested by the client or the broker.
+  /// Either a [disconnect] called on the client or a disconnect
+  /// message received from the broker.
   solicited,
 
   /// None set
