@@ -1237,8 +1237,8 @@ void main() {
         expect(message1.authenticationMethod, isNull);
         expect(message.authenticationData, isNull);
         expect(message1.authenticationData, isNull);
-        expect(message.getWriteLength(), 0);
-        expect(message1.getWriteLength(), 0);
+        expect(message.getWriteLength(), 2);
+        expect(message1.getWriteLength(), 2);
       });
       test('Variable Header Connect Ack - All', () {
         final buffer = typed.Uint8Buffer();
@@ -1343,7 +1343,7 @@ void main() {
         expect(message.serverReference, 'Server Reference');
         expect(message.authenticationMethod, 'Authentication Method');
         expect(message.authenticationData!.toList(), [1, 2, 3, 4]);
-        expect(message.getWriteLength(), 0);
+        expect(message.getWriteLength(), 192);
       });
     });
     group('Publish Message', () {
