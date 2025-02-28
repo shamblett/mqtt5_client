@@ -366,8 +366,8 @@ class MqttMockSocketDisconnectNormal extends MockSocket {
     mockBytes.addAll(data);
     if (initial) {
       initial = false;
-      final ack =
-          MqttConnectAckMessage()..withReasonCode(MqttConnectReasonCode.success);
+      final ack = MqttConnectAckMessage()
+        ..withReasonCode(MqttConnectReasonCode.success);
       final buff = Uint8Buffer();
       final ms = MqttByteBuffer(buff);
       ack.writeTo(ms);
@@ -378,6 +378,60 @@ class MqttMockSocketDisconnectNormal extends MockSocket {
       initial = true;
       final disconnect = MqttDisconnectMessage()
           .withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
+      final buff = Uint8Buffer();
+      final ms = MqttByteBuffer(buff);
+      disconnect.writeTo(ms);
+      ms.seek(0);
+      final out = Uint8List.fromList(ms.buffer!.toList());
+      onDataFunc(out);
+    }
+  }
+
+  @override
+  StreamSubscription<Uint8List> listen(void Function(Uint8List event)? onData,
+      {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+    onDataFunc = onData;
+    onDoneFunc = onDone;
+    return outgoing;
+  }
+}
+
+///
+/// Connected - Broker sends disconnect message with normal disconnect
+///
+class MqttMockSocketDisconnectSessionTakeOver extends MockSocket {
+  dynamic onDataFunc;
+  dynamic onDoneFunc;
+
+  static bool initial = true;
+
+  static Future<MqttMockSocketDisconnectSessionTakeOver> connect(host, int port,
+      {sourceAddress, int sourcePort = 0, Duration? timeout}) {
+    final completer = Completer<MqttMockSocketDisconnectSessionTakeOver>();
+    final extSocket = MqttMockSocketDisconnectSessionTakeOver();
+    extSocket.port = port;
+    extSocket.host = host;
+    completer.complete(extSocket);
+    return completer.future;
+  }
+
+  @override
+  void add(List<int> data) {
+    mockBytes.addAll(data);
+    if (initial) {
+      initial = false;
+      final ack = MqttConnectAckMessage()
+        ..withReasonCode(MqttConnectReasonCode.success);
+      final buff = Uint8Buffer();
+      final ms = MqttByteBuffer(buff);
+      ack.writeTo(ms);
+      ms.seek(0);
+      final out = Uint8List.fromList(ms.buffer!.toList());
+      onDataFunc(out);
+    } else {
+      initial = true;
+      final disconnect = MqttDisconnectMessage()
+          .withReasonCode(MqttDisconnectReasonCode.sessionTakenOver);
       final buff = Uint8Buffer();
       final ms = MqttByteBuffer(buff);
       disconnect.writeTo(ms);
