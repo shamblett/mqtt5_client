@@ -47,7 +47,7 @@ Future<int> main() async {
   /// list so in most cases you can ignore this.
 
   /// Set logging on if needed, defaults to off
-  client.logging(on: false);
+  client.logging(on: true);
 
   /// The client keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
   /// a positive value other than 0.

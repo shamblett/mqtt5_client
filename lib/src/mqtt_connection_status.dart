@@ -7,22 +7,26 @@
 
 part of '../mqtt5_client.dart';
 
-/// Records the status of the last connection attempt
+/// Records the status of the last connection attempt.
 class MqttConnectionStatus {
   /// Connection state
   MqttConnectionState state = MqttConnectionState.disconnected;
 
-  /// Reason Code
+  /// Reason Code from [connectAckMessage]
   MqttConnectReasonCode? reasonCode = MqttConnectReasonCode.notSet;
 
-  /// Reason String
+  /// Reason String from [connectAckMessage]
   String? reasonString;
 
   /// Disconnection origin
   MqttDisconnectionOrigin disconnectionOrigin = MqttDisconnectionOrigin.none;
 
-  /// Connect acknowledgement message as received.
+  /// The last Connect acknowledgement message as
+  /// received.
   late MqttConnectAckMessage connectAckMessage;
+
+  /// The last disconnect message received from the broker.
+  late MqttDisconnectMessage disconnectMessage;
 
   @override
   String toString() {

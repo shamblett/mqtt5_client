@@ -21,6 +21,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Connect acknowledge message flags
   MqttConnectAckFlags connectAckFlags = MqttConnectAckFlags();
 
+  /// Session present
+  bool sessionPresent = false;
+
   /// Reason Code
   MqttConnectReasonCode? reasonCode = MqttConnectReasonCode.notSet;
 
@@ -177,8 +180,11 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   /// Not implemented for this message
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    throw UnimplementedError(
-        'MqttConnectAckVariableHeader::writeTo - Not implemented, message is receive only');
+    sessionPresent
+        ? variableHeaderStream.writeByte(1)
+        : variableHeaderStream.writeByte(0);
+    variableHeaderStream.writeByte(mqttConnectReasonCode.asInt(reasonCode));
+    _propertySet.writeTo(variableHeaderStream);
   }
 
   // Process the properties read from the byte stream
@@ -254,6 +260,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   void readFrom(MqttByteBuffer variableHeaderStream) {
     // Connect ack flags
     connectAckFlags.readFrom(variableHeaderStream);
+    sessionPresent = connectAckFlags.sessionPresent;
     length += 1;
     // Reason code
     var byte = variableHeaderStream.readByte();
@@ -268,9 +275,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   }
 
   /// Gets the length of the write data when WriteTo will be called.
-  /// 0 for this message as [writeTo] is not implemented.
   @override
-  int getWriteLength() => 0;
+  int getWriteLength() => 2 + _propertySet.length();
 
   @override
   String toString() {

@@ -9,13 +9,15 @@ part of '../../mqtt5_client.dart';
 
 /// Enumeration that indicates the origin of a client disconnection
 enum MqttDisconnectionOrigin {
-  /// Unsolicited, i.e. not requested by the client,
-  /// for example a broker/network initiated disconnect
+  /// Unsolicited, i.e. not requested by the client or the broker.
+  /// for example a broker/network failure.
   unsolicited,
 
-  /// Solicited, i.e. requested by the client,
-  /// for example disconnect called on the client.
+  /// Solicited, i.e. requested by the client.
   solicited,
+
+  /// Broker solicited, i.e. requested by the broker sending a disconnect message.
+  brokerSolicited,
 
   /// None set
   none
