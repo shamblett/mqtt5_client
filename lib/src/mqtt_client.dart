@@ -449,8 +449,8 @@ class MqttClient {
   /// this will result in a loop situation.
   ///
   /// This method will disconnect regardless of the [autoReconnect] state.
-  void disconnect({fromBroker = false}) {
-    _disconnect(unsolicited: false, fromBroker: fromBroker);
+  void disconnect() {
+    _disconnect(unsolicited: false);
   }
 
   /// Called when the keep alive mechanism has determined that
@@ -510,7 +510,7 @@ class MqttClient {
     }
   }
 
-  /// Actual disconnect processing
+  // Actual disconnect processing
   void _disconnect({bool unsolicited = true, fromBroker = false}) {
     // Only disconnect the connection handler if the request is
     // solicited by the user or the broker, unsolicited requests, i.e. network termination don't
@@ -520,8 +520,10 @@ class MqttClient {
       // Don't send a disconnect message if the disconnect is from the broker.
       if (!fromBroker) {
         connectionHandler?.disconnect(disconnectMessage);
+        disconnectOrigin = MqttDisconnectionOrigin.solicited;
+      } else {
+        disconnectOrigin = MqttDisconnectionOrigin.brokerSolicited;
       }
-      disconnectOrigin = MqttDisconnectionOrigin.solicited;
     }
     publishingManager?.published.close();
     publishingManager = null;
@@ -580,7 +582,7 @@ class MqttClient {
     MqttLogger.log(
         'MqttClient::_processReceivedDisconnectMessage - Disconnect Message received, reason is \'$reason\'  - disconnecting');
     _connectionStatus.disconnectMessage = disconnectMsg;
-    disconnect(fromBroker: true);
+    _disconnect(unsolicited: false, fromBroker: true);
     return true;
   }
 }

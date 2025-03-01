@@ -28,7 +28,6 @@ void main() {
           MqttServerClient('localhost', '', maxConnectionAttempts: 1);
       client.connectionMessage =
           MqttConnectMessage().withClientIdentifier('MqttDisconnectTest');
-      client.logging(on: true);
       client.onDisconnected = onDisconnected;
       try {
         await client.connect();
@@ -45,6 +44,8 @@ void main() {
       expect(client.connectionStatus?.state, MqttConnectionState.disconnected);
       expect(client.connectionStatus?.disconnectMessage.reasonCode,
           MqttDisconnectReasonCode.normalDisconnection);
+      expect(client.connectionStatus?.disconnectionOrigin,
+          MqttDisconnectionOrigin.brokerSolicited);
       expect(onDisconnectedCalled, isTrue);
     },
         socketConnect: (dynamic host, int port,
@@ -69,7 +70,6 @@ void main() {
           MqttServerClient('localhost', '', maxConnectionAttempts: 1);
       client.connectionMessage =
           MqttConnectMessage().withClientIdentifier('MqttDisconnectTest');
-      client.logging(on: true);
       client.onDisconnected = onDisconnected;
       try {
         await client.connect();
@@ -86,6 +86,8 @@ void main() {
       expect(client.connectionStatus?.state, MqttConnectionState.disconnected);
       expect(client.connectionStatus?.disconnectMessage.reasonCode,
           MqttDisconnectReasonCode.sessionTakenOver);
+      expect(client.connectionStatus?.disconnectionOrigin,
+          MqttDisconnectionOrigin.brokerSolicited);
       expect(onDisconnectedCalled, isTrue);
     },
         socketConnect: (dynamic host, int port,
