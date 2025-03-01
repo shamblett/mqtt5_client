@@ -1,3 +1,6 @@
+# 4.10.0
+Issue 143 - *** Disconnect message received from the broker will now disconnect the client ***
+
 # 4.9.2
 Issue 134 - Will API documentation update
 
