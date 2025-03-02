@@ -10,17 +10,21 @@ part of '../../../mqtt5_server_client.dart';
 /// The MQTT client server connection base class
 class MqttServerConnection extends MqttConnectionBase {
   /// Default constructor
-  MqttServerConnection(super.clientEventBus, this.socketOptions);
+  MqttServerConnection(
+      super.clientEventBus, this.socketOptions, this.socketTimeout);
 
   /// Initializes a new instance of the MqttConnection class.
   MqttServerConnection.fromConnect(
-      server, int port, clientEventBus, this.socketOptions)
+      server, int port, clientEventBus, this.socketOptions, this.socketTimeout)
       : super(clientEventBus) {
     connect(server, port);
   }
 
   /// Socket options, applicable only to TCP sockets
   List<RawSocketOption> socketOptions = <RawSocketOption>[];
+
+  /// Socket timeout duration.
+  Duration? socketTimeout;
 
   /// Connect, must be overridden in connection classes
   @override
@@ -144,5 +148,15 @@ class MqttServerConnection extends MqttConnectionBase {
       }
     }
     return socketOptions.isNotEmpty;
+  }
+
+  // Check for a timeout exception
+  bool _isSocketTimeout(Exception e) {
+    if (e is SocketException) {
+      if (e.message.contains('Connection timed out')) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -78,7 +78,10 @@ class MqttServerClient extends MqttClient {
         .listen(disconnectOnNoPingResponse);
     connectionHandler = MqttSynchronousServerConnectionHandler(clientEventBus,
         maxConnectionAttempts: maxConnectionAttempts,
-        socketOptions: socketOptions);
+        socketOptions: socketOptions,
+        socketTimeout: socketTimeout != null
+            ? Duration(milliseconds: socketTimeout!)
+            : null);
     if (useWebSocket) {
       connectionHandler.secure = false;
       connectionHandler.useWebSocket = true;

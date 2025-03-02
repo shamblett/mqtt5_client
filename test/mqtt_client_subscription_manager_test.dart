@@ -85,7 +85,7 @@ void main() {
       test('Default Construction', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         expect(subs.subscriptions, isEmpty);
         expect(subs.pendingSubscriptions, isEmpty);
@@ -102,7 +102,7 @@ void main() {
       test('Null Parameters - Subscribe', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         var exceptionCalled = true;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         try {
@@ -127,7 +127,7 @@ void main() {
       test('Null Parameters - Unsubscribe', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         var exceptionCalled = true;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         try {
@@ -157,7 +157,7 @@ void main() {
       test('Topic Subscription request creates pending subscription', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -187,7 +187,7 @@ void main() {
       test('Subscription request creates pending subscription', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -228,7 +228,7 @@ void main() {
       test('Subscription List request creates pending subscriptions', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         final subscription1 = MqttSubscription(MqttSubscriptionTopic('topic1'),
             MqttSubscriptionOption()..maximumQos = MqttQos.atLeastOnce);
         final user1 = MqttUserProperty();
@@ -302,7 +302,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -367,7 +367,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -443,7 +443,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -522,7 +522,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic1 = 'testtopic1';
         const qos1 = MqttQos.atLeastOnce;
         const topic2 = 'testtopic2';
@@ -601,7 +601,7 @@ void main() {
       test('Topic unsubscription request creates pending unsubscription', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -653,7 +653,7 @@ void main() {
       test('Unsubscription request creates pending unsubscription', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         final subscription = MqttSubscription(MqttSubscriptionTopic(topic));
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -716,7 +716,7 @@ void main() {
           () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         final subscription = MqttSubscription(MqttSubscriptionTopic(topic));
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -770,7 +770,7 @@ void main() {
       test('Unsubscription list request creates pending unsubscription', () {
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic1 = 'testtopic1';
         const topic2 = 'testtopic2';
         const topic3 = 'testtopic3';
@@ -856,7 +856,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -946,7 +946,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -1036,7 +1036,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic = 'testtopic';
         const qos = MqttQos.atLeastOnce;
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
@@ -1130,7 +1130,7 @@ void main() {
 
         final clientEventBus = events.EventBus();
         final testCHS = TestConnectionHandlerSend(clientEventBus,
-            socketOptions: socketOptions);
+            socketOptions: socketOptions, socketTimeout: null);
         const topic1 = 'testtopic1';
         const topic2 = 'testtopic2';
         const topic3 = 'testtopic3';
@@ -1244,7 +1244,7 @@ void main() {
       final dynamic t1 = expectAsync1(subRec, count: 1);
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       const qos = MqttQos.atLeastOnce;
       final subs = MqttSubscriptionManager(testCHS, clientEventBus);
       subs.messageIdentifierDispenser.reset();

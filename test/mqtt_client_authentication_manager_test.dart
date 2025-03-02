@@ -21,8 +21,8 @@ void main() {
   test('On Authentication Message Received', () async {
     final authManager = MqttAuthenticationManager();
     final clientEventBus = events.EventBus();
-    final testCHS =
-        TestConnectionHandlerSend(clientEventBus, socketOptions: socketOptions);
+    final testCHS = TestConnectionHandlerSend(clientEventBus,
+        socketOptions: socketOptions, socketTimeout: null);
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
@@ -38,8 +38,8 @@ void main() {
   test('Reauthenticate - Timeout No Message', () async {
     final authManager = MqttAuthenticationManager();
     final clientEventBus = events.EventBus();
-    final testCHS =
-        TestConnectionHandlerSend(clientEventBus, socketOptions: socketOptions);
+    final testCHS = TestConnectionHandlerSend(clientEventBus,
+        socketOptions: socketOptions, socketTimeout: null);
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
@@ -53,8 +53,8 @@ void main() {
 
   test('Reauthenticate - Timeout With Message', () async {
     final clientEventBus = events.EventBus();
-    final testCHS =
-        TestConnectionHandlerSend(clientEventBus, socketOptions: socketOptions);
+    final testCHS = TestConnectionHandlerSend(clientEventBus,
+        socketOptions: socketOptions, socketTimeout: null);
     final authManager = MqttAuthenticationManager();
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
