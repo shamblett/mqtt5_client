@@ -21,7 +21,11 @@ class MqttSynchronousServerConnectionHandler
             socketOptions: socketOptions,
             socketTimeout: socketTimeout) {
     this.clientEventBus = clientEventBus;
-    connectTimer = MqttCancellableAsyncSleep(5000);
+    if (socketTimeout == null) {
+      connectTimer = MqttCancellableAsyncSleep(5000);
+    } else {
+      connectTimer = MqttCancellableAsyncSleep(10);
+    }
     initialiseListeners();
   }
 
