@@ -62,6 +62,22 @@ class MqttServerClient extends MqttClient {
   /// Applicable only to TCP sockets
   List<RawSocketOption> socketOptions = <RawSocketOption>[];
 
+  /// Socket timeout period.
+  ///
+  /// Specifies the maximum time in milliseconds a connect call will wait for socket connection.
+  ///
+  /// Can be used to stop excessive waiting time at the network layer.
+  /// For TCP sockets only, not websockets.
+  ///
+  /// Minimum value is 1000ms.
+  int? _socketTimeout;
+  int? get socketTimeout => _socketTimeout;
+  set socketTimeout(int? period) {
+    if (period != null && period >= 1000) {
+      _socketTimeout = period;
+    }
+  }
+
   /// Performs a connect to the message broker with an optional
   /// username and password for the purposes of authentication.
   /// If a username and password are supplied these will override
@@ -78,7 +94,10 @@ class MqttServerClient extends MqttClient {
         .listen(disconnectOnNoPingResponse);
     connectionHandler = MqttSynchronousServerConnectionHandler(clientEventBus,
         maxConnectionAttempts: maxConnectionAttempts,
-        socketOptions: socketOptions);
+        socketOptions: socketOptions,
+        socketTimeout: socketTimeout != null
+            ? Duration(milliseconds: socketTimeout!)
+            : null);
     if (useWebSocket) {
       connectionHandler.secure = false;
       connectionHandler.useWebSocket = true;

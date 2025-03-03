@@ -10,12 +10,17 @@ part of '../../../mqtt5_server_client.dart';
 /// The MQTT server connection class for the websocket interface
 class MqttServerWsConnection extends MqttServerConnection {
   /// Default constructor
-  MqttServerWsConnection(super.eventBus, super.socketOptions);
+  MqttServerWsConnection(
+      super.eventBus, super.socketOptions, super.socketTimeout);
 
   /// Initializes a new instance of the MqttConnection class.
-  MqttServerWsConnection.fromConnect(String server, int port,
-      events.EventBus eventBus, List<RawSocketOption> socketOptions)
-      : super(eventBus, socketOptions) {
+  MqttServerWsConnection.fromConnect(
+      String server,
+      int port,
+      events.EventBus eventBus,
+      List<RawSocketOption> socketOptions,
+      Duration? socketTimeout)
+      : super(eventBus, socketOptions, socketTimeout) {
     connect(server, port);
   }
 

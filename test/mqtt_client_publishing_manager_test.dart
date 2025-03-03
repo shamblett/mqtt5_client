@@ -31,7 +31,7 @@ void main() {
     final ch = MockCH();
     final clientEventBus = events.EventBus();
     final testCHNS = TestConnectionHandlerNoSend(clientEventBus,
-        socketOptions: socketOptions);
+        socketOptions: socketOptions, socketTimeout: null);
     testCHNS.connection = con;
     ch.connection = con;
     final cbFunc = ((MqttMessage msg) {
@@ -79,7 +79,7 @@ void main() {
     test('Publish at least once', () {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -105,7 +105,7 @@ void main() {
     test('Publish at least once', () {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -129,7 +129,7 @@ void main() {
     test('Publish at exactly once', () {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -152,7 +152,7 @@ void main() {
     test('Publish consecutive topics', () {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       final buff = typed.Uint8Buffer(4);
       buff[0] = 't'.codeUnitAt(0);
@@ -169,7 +169,7 @@ void main() {
       var onPublished = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -193,7 +193,7 @@ void main() {
       var onPublished = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final buff = typed.Uint8Buffer(4);
@@ -222,7 +222,7 @@ void main() {
       var onPublished = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -247,7 +247,7 @@ void main() {
       var onPublished = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -273,7 +273,7 @@ void main() {
       var onPublished = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -299,7 +299,7 @@ void main() {
       var onPublished = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       const msgId = 1;
       final data = typed.Uint8Buffer(3);
@@ -329,7 +329,7 @@ void main() {
     test('Publish exactly once, interleaved scenario 1', () {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final payload1 = MqttPayloadBuilder();
@@ -364,7 +364,7 @@ void main() {
     test('Publish exactly once, interleaved scenario 2', () {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(clientEventBus,
-          socketOptions: socketOptions);
+          socketOptions: socketOptions, socketTimeout: null);
       final pm = MqttPublishingManager(testCHS, clientEventBus);
       pm.messageIdentifierDispenser.reset();
       final payload1 = MqttPayloadBuilder();

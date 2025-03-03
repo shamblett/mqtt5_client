@@ -10,7 +10,9 @@ import 'package:mqtt5_client/mqtt5_server_client.dart';
 
 class TestConnectionHandlerNoSend extends MqttServerConnectionHandler {
   TestConnectionHandlerNoSend(super.clientEventBus,
-      {super.maxConnectionAttempts, required super.socketOptions});
+      {super.maxConnectionAttempts,
+      required super.socketOptions,
+      required super.socketTimeout});
 
   @override
   Future<MqttConnectionStatus> internalConnect(
@@ -33,7 +35,9 @@ class TestConnectionHandlerNoSend extends MqttServerConnectionHandler {
 
 class TestConnectionHandlerSend extends MqttServerConnectionHandler {
   TestConnectionHandlerSend(super.clientEventBus,
-      {super.maxConnectionAttempts, required super.socketOptions});
+      {super.maxConnectionAttempts,
+      required super.socketOptions,
+      required super.socketTimeout});
 
   /// Alternate websocket implementation.
   ///
