@@ -1,3 +1,6 @@
+# 4.11.0
+Issue 139
+
 # 4.10.0
 Issue 143 - *** Disconnect message received from the broker will now disconnect the client ***
 
