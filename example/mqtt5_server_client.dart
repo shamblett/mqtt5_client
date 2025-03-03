@@ -55,6 +55,7 @@ Future<int> main() async {
 
   /// The socket timeout period can be set, the minimum value is 1000ms.
   /// This mitigates connection delays at the network level holding up connection attempts unduly.
+  /// If this is not set then the default inter connection attempt delay of 5 seconds is used.
   client.socketTimeout = 2000; // milliseconds
 
   /// Add the unsolicited disconnection callback

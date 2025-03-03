@@ -108,22 +108,6 @@ class MqttClient {
   /// To enable the keep alive mechanism set this to a value greater than 0.
   int keepAlivePeriod = MqttConstants.defaultKeepAlive;
 
-  /// Socket timeout period.
-  ///
-  /// Specifies the maximum time in milliseconds a connect call will wait for socket connection.
-  ///
-  /// Can be used to stop excessive waiting time at the network layer.
-  /// For TCP sockets only, not websockets.
-  ///
-  /// Minimum value is 1000ms.
-  int? _socketTimeout;
-  int? get socketTimeout => _socketTimeout;
-  set socketTimeout(int? period) {
-    if (period != null && period >= 1000) {
-      _socketTimeout = period;
-    }
-  }
-
   /// The period of time to wait if the broker does not respond to a ping request
   /// from keep alive processing, in seconds.
   /// If this time period is exceeded the client is forcibly disconnected.

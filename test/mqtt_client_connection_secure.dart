@@ -129,6 +129,7 @@ void main() {
         expect(client.socketTimeout, isNull);
         client.socketTimeout = 2000;
         expect(client.socketTimeout, 2000);
+        client.secure = true;
         try {
           await client.connect();
         } on MqttNoConnectionException {
