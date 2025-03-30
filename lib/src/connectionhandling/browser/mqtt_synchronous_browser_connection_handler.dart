@@ -105,13 +105,15 @@ class MqttSynchronousBrowserConnectionHandler
                 'The maximum allowed connection attempts '
                 '({$maxConnectionAttempts}) were exceeded. '
                 'The broker is not responding to the connection request message '
-                '(Missing Connection Acknowledgement?');
+                '(Missing Connection Acknowledgement?',
+                reasonCode: connectionStatus.reasonCode);
           } else {
             throw MqttNoConnectionException(
                 'The maximum allowed connection attempts '
                 '({$maxConnectionAttempts}) were exceeded. '
                 'The broker is not responding to the connection request message correctly '
-                'The reason code is ${connectionStatus.reasonCode}');
+                'The reason code is ${connectionStatus.reasonCode}',
+                reasonCode: connectionStatus.reasonCode);
           }
         } else {
           connectionStatus.state = MqttConnectionState.faulted;
