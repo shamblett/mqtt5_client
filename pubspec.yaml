@@ -5,7 +5,7 @@ repository: https://github.com/shamblett/mqtt5_client
 homepage: https://github.com/shamblett/mqtt5_client
 
 environment:
- sdk: '>=3.0.0 <4.0.0'
+ sdk: '>=3.7.0 <4.0.0'
 
 funding:
  - https://www.darticulate.com/#funding
@@ -27,6 +27,7 @@ dev_dependencies:
  build_test: '^2.2.2'
  build_web_compilers: '^4.0.11'
  lints: '^5.0.0'
+ dart_code_metrics_presets: ^2.21.0
 
 topics:
   - iot
