@@ -9,6 +9,12 @@ part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT client server connection base class
 class MqttServerConnection extends MqttConnectionBase {
+  /// Socket options, applicable only to TCP sockets
+  List<RawSocketOption> socketOptions = <RawSocketOption>[];
+
+  /// Socket timeout duration.
+  Duration? socketTimeout;
+
   /// Default constructor
   MqttServerConnection(
     super.clientEventBus,
@@ -27,12 +33,6 @@ class MqttServerConnection extends MqttConnectionBase {
     connect(server, port);
   }
 
-  /// Socket options, applicable only to TCP sockets
-  List<RawSocketOption> socketOptions = <RawSocketOption>[];
-
-  /// Socket timeout duration.
-  Duration? socketTimeout;
-
   /// Connect, must be overridden in connection classes
   @override
   Future<void> connect(String server, int port) {
@@ -47,7 +47,13 @@ class MqttServerConnection extends MqttConnectionBase {
     return completer.future;
   }
 
-  /// Create the listening stream subscription and subscribe the callbacks
+  /// Sends the message in the stream to the broker.
+  void send(MqttByteBuffer message) {
+    final messageBytes = message.read(message.length);
+    client?.add(messageBytes.toList());
+  }
+
+  // Create the listening stream subscription and subscribe the callbacks
   void _startListening() {
     MqttLogger.log('MqttServerConnection::_startListening');
     try {
@@ -57,7 +63,7 @@ class MqttServerConnection extends MqttConnectionBase {
     }
   }
 
-  /// OnData listener callback
+  // OnData listener callback
   void _onData(dynamic data) {
     MqttLogger.log(
       'MqttServerConnection::_onData - Message Received Started <<< ',
@@ -151,12 +157,6 @@ class MqttServerConnection extends MqttConnectionBase {
     MqttLogger.log(
       'MqttServerConnection::_onData - Message Received Ended <<< ',
     );
-  }
-
-  /// Sends the message in the stream to the broker.
-  void send(MqttByteBuffer message) {
-    final messageBytes = message.read(message.length);
-    client?.add(messageBytes.toList());
   }
 
   // Apply any socket options, true indicates options applied
