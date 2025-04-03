@@ -25,10 +25,16 @@ class MockCH extends Mock implements MqttServerConnectionHandler {
 }
 
 class MockKA extends Mock implements MqttConnectionKeepAlive {
-  MockKA(MqttIConnectionHandler connectionHandler,
-      events.EventBus clientEventBus, int keepAliveSeconds) {
+  MockKA(
+    MqttIConnectionHandler connectionHandler,
+    events.EventBus clientEventBus,
+    int keepAliveSeconds,
+  ) {
     ka = MqttConnectionKeepAlive(
-        connectionHandler, clientEventBus, keepAliveSeconds);
+      connectionHandler,
+      clientEventBus,
+      keepAliveSeconds,
+    );
   }
 
   late MqttConnectionKeepAlive ka;
@@ -57,15 +63,17 @@ void main() {
     });
     test('Ping response received', () {
       final MqttMessage msg = MqttPingResponseMessage();
-      when(ka.pingResponseReceived(msg))
-          .thenReturn(ka.ka.pingResponseReceived(msg));
+      when(
+        ka.pingResponseReceived(msg),
+      ).thenReturn(ka.ka.pingResponseReceived(msg));
       expect(ka.pingResponseReceived(msg), isTrue);
       verify(ka.pingResponseReceived(msg));
     });
     test('Ping request received', () {
       final MqttMessage msg = MqttPingRequestMessage();
-      when(ka.pingRequestReceived(msg))
-          .thenReturn(ka.ka.pingRequestReceived(msg));
+      when(
+        ka.pingRequestReceived(msg),
+      ).thenReturn(ka.ka.pingRequestReceived(msg));
       expect(ka.pingRequestReceived(msg), isTrue);
       verify(ka.pingRequestReceived(msg));
     });
@@ -87,14 +95,19 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       ch.onDisconnected = disconnectCB;
       try {
-        await ch.connect(mockBrokerAddress, badPort,
-            MqttConnectMessage().withClientIdentifier(testClientId));
+        await ch.connect(
+          mockBrokerAddress,
+          badPort,
+          MqttConnectMessage().withClientIdentifier(testClientId),
+        );
       } on Exception catch (e) {
         expect(e.toString().contains('refused'), isTrue);
       }
@@ -105,61 +118,84 @@ void main() {
     test('Connect no connect ack', () async {
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       try {
-        await ch.connect(mockBrokerAddress, mockBrokerPort,
-            MqttConnectMessage().withClientIdentifier(testClientId));
+        await ch.connect(
+          mockBrokerAddress,
+          mockBrokerPort,
+          MqttConnectMessage().withClientIdentifier(testClientId),
+        );
       } on Exception catch (e) {
         expect(e is MqttNoConnectionException, isTrue);
       }
       expect(ch.connectionStatus.state, MqttConnectionState.faulted);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.notSet);
     });
-    test('Connect no connect ack onFailedConnectionAttempt callback set',
-        () async {
-      await IOOverrides.runZoned(() async {
-        bool connectionFailed = false;
-        int tAttempt = 0;
-        final lAttempt = <int>[];
-        void onFailedConnectionAttempt(int attempt) {
-          tAttempt;
-          lAttempt.add(attempt);
-          connectionFailed = true;
-        }
+    test(
+      'Connect no connect ack onFailedConnectionAttempt callback set',
+      () async {
+        await IOOverrides.runZoned(
+          () async {
+            bool connectionFailed = false;
+            int tAttempt = 0;
+            final lAttempt = <int>[];
+            void onFailedConnectionAttempt(int attempt) {
+              tAttempt;
+              lAttempt.add(attempt);
+              connectionFailed = true;
+            }
 
-        final clientEventBus = events.EventBus();
-        final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-            maxConnectionAttempts: 3,
-            socketOptions: socketOptions,
-            socketTimeout: null);
-        ch.onFailedConnectionAttempt = onFailedConnectionAttempt;
-        final start = DateTime.now();
-        try {
-          await ch.connect(mockBrokerAddress, mockBrokerPort,
-              MqttConnectMessage().withClientIdentifier(testClientId));
-        } on Exception catch (e) {
-          expect(e is MqttNoConnectionException, isTrue);
-        }
-        expect(connectionFailed, isTrue);
-        expect(tAttempt, 3);
-        expect(lAttempt, [1, 2, 3]);
-        expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-        expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.notSet);
-        final end = DateTime.now();
-        expect(end.difference(start).inSeconds > 4, true);
+            final clientEventBus = events.EventBus();
+            final ch = MqttSynchronousServerConnectionHandler(
+              clientEventBus,
+              maxConnectionAttempts: 3,
+              socketOptions: socketOptions,
+              socketTimeout: null,
+            );
+            ch.onFailedConnectionAttempt = onFailedConnectionAttempt;
+            final start = DateTime.now();
+            try {
+              await ch.connect(
+                mockBrokerAddress,
+                mockBrokerPort,
+                MqttConnectMessage().withClientIdentifier(testClientId),
+              );
+            } on Exception catch (e) {
+              expect(e is MqttNoConnectionException, isTrue);
+            }
+            expect(connectionFailed, isTrue);
+            expect(tAttempt, 3);
+            expect(lAttempt, [1, 2, 3]);
+            expect(ch.connectionStatus.state, MqttConnectionState.faulted);
+            expect(
+              ch.connectionStatus.reasonCode,
+              MqttConnectReasonCode.notSet,
+            );
+            final end = DateTime.now();
+            expect(end.difference(start).inSeconds > 4, true);
+          },
+          socketConnect:
+              (
+                dynamic host,
+                int port, {
+                dynamic sourceAddress,
+                int sourcePort = 0,
+                Duration? timeout,
+              }) => MqttMockSocketSimpleConnectNoAck.connect(
+                host,
+                port,
+                sourceAddress: sourceAddress,
+                sourcePort: sourcePort,
+                timeout: timeout,
+              ),
+        );
       },
-          socketConnect: (dynamic host, int port,
-                  {dynamic sourceAddress,
-                  int sourcePort = 0,
-                  Duration? timeout}) =>
-              MqttMockSocketSimpleConnectNoAck.connect(host, port,
-                  sourceAddress: sourceAddress,
-                  sourcePort: sourcePort,
-                  timeout: timeout));
-    });
+    );
     test('Successful response and disconnect', () async {
       var connectCbCalled = false;
       void messageHandler(typed.Uint8Buffer? messageArrived) {
@@ -172,14 +208,19 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       broker.setMessageHandler = messageHandler;
       ch.onConnected = connectCb;
-      await ch.connect(mockBrokerAddress, mockBrokerPort,
-          MqttConnectMessage().withClientIdentifier(testClientId));
+      await ch.connect(
+        mockBrokerAddress,
+        mockBrokerPort,
+        MqttConnectMessage().withClientIdentifier(testClientId),
+      );
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.success);
       expect(connectCbCalled, isTrue);
@@ -193,47 +234,63 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       broker.setMessageHandler = messageHandler;
-      final status = await ch.connect(mockBrokerAddress, mockBrokerPort,
-          MqttConnectMessage().withClientIdentifier(testClientId));
+      final status = await ch.connect(
+        mockBrokerAddress,
+        mockBrokerPort,
+        MqttConnectMessage().withClientIdentifier(testClientId),
+      );
       expect(status.state, MqttConnectionState.connected);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.success);
       final state = ch.disconnect();
       expect(state, MqttConnectionState.disconnected);
     });
     test('Socket Timeout', () async {
-      await IOOverrides.runZoned(() async {
-        bool testOk = false;
-        final client =
-            MqttServerClient('localhost', '', maxConnectionAttempts: 1);
-        final start = DateTime.now();
-        client.socketTimeout = 500;
-        expect(client.socketTimeout, isNull);
-        client.socketTimeout = 2000;
-        expect(client.socketTimeout, 2000);
-        client.logging(on: true);
-        try {
-          await client.connect();
-        } on MqttNoConnectionException {
-          testOk = true;
-        }
-        final end = DateTime.now();
-        expect(end.isAfter(start), isTrue);
-        expect(end.subtract(Duration(seconds: 2)).second, start.second);
-        expect(testOk, isTrue);
-      },
-          socketConnect: (dynamic host, int port,
-                  {dynamic sourceAddress,
-                  int sourcePort = 0,
-                  Duration? timeout}) =>
-              MqttMockSocketTimeout.connect(host, port,
-                  sourceAddress: sourceAddress,
-                  sourcePort: sourcePort,
-                  timeout: timeout));
+      await IOOverrides.runZoned(
+        () async {
+          bool testOk = false;
+          final client = MqttServerClient(
+            'localhost',
+            '',
+            maxConnectionAttempts: 1,
+          );
+          final start = DateTime.now();
+          client.socketTimeout = 500;
+          expect(client.socketTimeout, isNull);
+          client.socketTimeout = 2000;
+          expect(client.socketTimeout, 2000);
+          client.logging(on: true);
+          try {
+            await client.connect();
+          } on MqttNoConnectionException {
+            testOk = true;
+          }
+          final end = DateTime.now();
+          expect(end.isAfter(start), isTrue);
+          expect(end.subtract(Duration(seconds: 2)).second, start.second);
+          expect(testOk, isTrue);
+        },
+        socketConnect:
+            (
+              dynamic host,
+              int port, {
+              dynamic sourceAddress,
+              int sourcePort = 0,
+              Duration? timeout,
+            }) => MqttMockSocketTimeout.connect(
+              host,
+              port,
+              sourceAddress: sourceAddress,
+              sourcePort: sourcePort,
+              timeout: timeout,
+            ),
+      );
     });
   });
 
@@ -254,32 +311,42 @@ void main() {
         final header = MqttHeader.fromByteBuffer(headerStream);
         if (expectRequest <= 3) {
           print(
-              'Connection Keep Alive - Successful response - Ping Request received $expectRequest');
+            'Connection Keep Alive - Successful response - Ping Request received $expectRequest',
+          );
           expect(header.messageType, MqttMessageType.pingRequest);
           expectRequest;
         }
       }
 
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       broker.setMessageHandler = messageHandlerConnect;
-      await ch.connect(mockBrokerAddress, mockBrokerPort,
-          MqttConnectMessage().withClientIdentifier(testClientId));
+      await ch.connect(
+        mockBrokerAddress,
+        mockBrokerPort,
+        MqttConnectMessage().withClientIdentifier(testClientId),
+      );
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.success);
       final ka = MqttConnectionKeepAlive(ch, clientEventBus, 2);
       broker.setMessageHandler = messageHandlerPingRequest;
       print(
-          'Connection Keep Alive - Successful response - keepealive ms is ${ka.keepAlivePeriod}');
+        'Connection Keep Alive - Successful response - keepealive ms is ${ka.keepAlivePeriod}',
+      );
       print(
-          'Connection Keep Alive - Successful response - ping timer active is ${ka.pingTimer!.isActive.toString()}');
+        'Connection Keep Alive - Successful response - ping timer active is ${ka.pingTimer!.isActive.toString()}',
+      );
       final stopwatch = Stopwatch()..start();
       await MqttUtilities.asyncSleep(10);
-      print('Connection Keep Alive - Successful response - Elapsed time '
-          'is ${stopwatch.elapsedMilliseconds / 1000} seconds');
+      print(
+        'Connection Keep Alive - Successful response - Elapsed time '
+        'is ${stopwatch.elapsedMilliseconds / 1000} seconds',
+      );
       ka.stop();
     });
   });
@@ -303,7 +370,8 @@ void main() {
         print('Client connected');
       } else {
         print(
-            'ERROR Client connection failed - disconnecting, state is ${client.connectionStatus!.state}');
+          'ERROR Client connection failed - disconnecting, state is ${client.connectionStatus!.state}',
+        );
         client.disconnect();
       }
       // Publish a known topic

@@ -21,7 +21,8 @@ class MqttTopicFilter {
     _clientUpdates.listen(_topicIn);
     _updates =
         StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
-            sync: true);
+          sync: true,
+        );
   }
 
   final String _topic;
@@ -53,8 +54,10 @@ class MqttTopicFilter {
         _updates.add(tmp);
       }
     } on RangeError catch (e) {
-      MqttLogger.log('MqttClientTopicFilter::_topicIn - cannot process '
-          'received topic: $lastTopic');
+      MqttLogger.log(
+        'MqttClientTopicFilter::_topicIn - cannot process '
+        'received topic: $lastTopic',
+      );
       MqttLogger.log('MqttClientTopicFilter::_topicIn - exception is $e');
     }
   }

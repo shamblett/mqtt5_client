@@ -50,15 +50,19 @@ void main() {
       const password = 'password 1';
       print(password);
       await client.connect();
-      expect(client.connectionStatus!.state == MqttConnectionState.connected,
-          isTrue);
+      expect(
+        client.connectionStatus!.state == MqttConnectionState.connected,
+        isTrue,
+      );
       await MqttUtilities.asyncSleep(2);
       client.doAutoReconnect();
       await MqttUtilities.asyncSleep(2);
       expect(autoReconnectCallbackCalled, isFalse);
       expect(disconnectCallbackCalled, isFalse);
-      expect(client.connectionStatus!.state == MqttConnectionState.connected,
-          isTrue);
+      expect(
+        client.connectionStatus!.state == MqttConnectionState.connected,
+        isTrue,
+      );
       broker.close();
     });
 
@@ -91,16 +95,20 @@ void main() {
       const password = 'password 2';
       print(password);
       await client.connect();
-      expect(client.connectionStatus!.state == MqttConnectionState.connected,
-          isTrue);
+      expect(
+        client.connectionStatus!.state == MqttConnectionState.connected,
+        isTrue,
+      );
       broker.close();
       await MqttUtilities.asyncSleep(2);
       client.doAutoReconnect();
       await MqttUtilities.asyncSleep(2);
       expect(autoReconnectCallbackCalled, isTrue);
       expect(disconnectCallbackCalled, isFalse);
-      expect(client.connectionStatus!.state == MqttConnectionState.connected,
-          isTrue);
+      expect(
+        client.connectionStatus!.state == MqttConnectionState.connected,
+        isTrue,
+      );
     });
     test('Connected - Broker Disconnects Remains Active', () async {
       var autoReconnectCallbackCalled = false;
@@ -131,16 +139,20 @@ void main() {
       const password = 'password 3';
       print(password);
       await client.connect();
-      expect(client.connectionStatus!.state == MqttConnectionState.connected,
-          isTrue);
+      expect(
+        client.connectionStatus!.state == MqttConnectionState.connected,
+        isTrue,
+      );
       await MqttUtilities.asyncSleep(2);
       await broker.stop();
       await broker.start();
       expect(autoReconnectCallbackCalled, isTrue);
       await MqttUtilities.asyncSleep(5);
       expect(disconnectCallbackCalled, isFalse);
-      expect(client.connectionStatus!.state == MqttConnectionState.connected,
-          isTrue);
+      expect(
+        client.connectionStatus!.state == MqttConnectionState.connected,
+        isTrue,
+      );
       broker.close();
     });
   });

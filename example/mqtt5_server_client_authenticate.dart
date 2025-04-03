@@ -64,10 +64,12 @@ Future<int> main() async {
   /// Check we are connected. connectionStatus always gives us this and other information.
   if (client.connectionStatus!.state == MqttConnectionState.connected) {
     print(
-        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}');
+      'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}',
+    );
   } else {
     print(
-        'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}');
+      'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}',
+    );
     client.disconnect();
     exit(-1);
   }
@@ -88,8 +90,10 @@ Future<int> main() async {
   /// if true the broker has not replied to the request. The default timeout is 30 seconds, set
   /// this as you wish.
   print('EXAMPLE::Reauthenticating');
-  final reAuthMessage =
-      await client.reauthenticate(authMessage, waitTimeInSeconds: 5);
+  final reAuthMessage = await client.reauthenticate(
+    authMessage,
+    waitTimeInSeconds: 5,
+  );
   if (reAuthMessage.timeout) {
     print('EXAMPLE::Reauthenticate timeout, broker did not reply.');
   } else {
@@ -119,5 +123,6 @@ void onDisconnected() {
 /// The successful connect callback
 void onConnected() {
   print(
-      'EXAMPLE::OnConnected client callback - Client connection was successful');
+    'EXAMPLE::OnConnected client callback - Client connection was successful',
+  );
 }

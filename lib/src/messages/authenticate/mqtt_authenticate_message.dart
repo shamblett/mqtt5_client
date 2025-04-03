@@ -30,7 +30,9 @@ class MqttAuthenticateMessage extends MqttMessage {
   /// Initializes a new instance of the MqttAuthenticateMessage class from
   /// a message stream.
   MqttAuthenticateMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
     readFrom(messageStream);
   }
@@ -44,8 +46,10 @@ class MqttAuthenticateMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     super.readFrom(messageStream);
-    _variableHeader =
-        MqttAuthenticateVariableHeader.fromByteBuffer(header, messageStream);
+    _variableHeader = MqttAuthenticateVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
   }
 
   /// Writes the message to the supplied stream.
@@ -58,7 +62,8 @@ class MqttAuthenticateMessage extends MqttMessage {
 
   /// Sets the reason code of the message.
   MqttAuthenticateMessage withReasonCode(
-      MqttAuthenticateReasonCode reasonCode) {
+    MqttAuthenticateReasonCode reasonCode,
+  ) {
     variableHeader!.reasonCode = reasonCode;
     return this;
   }
@@ -103,7 +108,8 @@ class MqttAuthenticateMessage extends MqttMessage {
 
   /// Sets a list of user properties
   MqttAuthenticateMessage withUserProperties(
-      List<MqttUserProperty> properties) {
+    List<MqttUserProperty> properties,
+  ) {
     _variableHeader!.userProperty = properties;
     return this;
   }

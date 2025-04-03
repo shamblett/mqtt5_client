@@ -64,7 +64,8 @@ class MqttStringPairProperty implements MqttIProperty {
   String toString() {
     final sb = StringBuffer();
     sb.write(
-        'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, Name : "$pairName" Value : "$pairValue"');
+      'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, Name : "$pairName" Value : "$pairValue"',
+    );
     return sb.toString();
   }
 }

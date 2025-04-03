@@ -31,7 +31,9 @@ class MqttDisconnectMessage extends MqttMessage {
   /// Initializes a new instance of the MqttDisconnectMessage class from
   /// a message stream.
   MqttDisconnectMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
     readFrom(messageStream);
   }
@@ -45,8 +47,10 @@ class MqttDisconnectMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     super.readFrom(messageStream);
-    _variableHeader =
-        MqttDisconnectVariableHeader.fromByteBuffer(header, messageStream);
+    _variableHeader = MqttDisconnectVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
   }
 
   /// Writes the message to the supplied stream.

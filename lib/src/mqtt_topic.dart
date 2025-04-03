@@ -45,9 +45,11 @@ abstract class MqttTopic {
   /// topicInstance - The instance to check.
   static void validateMaxLength(MqttTopic topicInstance) {
     if (topicInstance.rawTopic!.length > maxTopicLength) {
-      throw Exception('mqtt_client::Topic: The length of the supplied rawTopic '
-          '(${topicInstance.rawTopic!.length}) is longer than the '
-          'maximum allowable ($maxTopicLength)');
+      throw Exception(
+        'mqtt_client::Topic: The length of the supplied rawTopic '
+        '(${topicInstance.rawTopic!.length}) is longer than the '
+        'maximum allowable ($maxTopicLength)',
+      );
     }
   }
 
@@ -61,7 +63,8 @@ abstract class MqttTopic {
   static void validateMinLength(MqttTopic topicInstance) {
     if (topicInstance.rawTopic!.isEmpty) {
       throw Exception(
-          'mqtt_client::Topic: rawTopic must contain at least one character');
+        'mqtt_client::Topic: rawTopic must contain at least one character',
+      );
     }
   }
 

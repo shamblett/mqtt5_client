@@ -34,10 +34,12 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   set subscriptionIdentifier(identifier) {
     if (identifier < 1 || identifier > 268435455) {
       throw ArgumentError(
-          'MqttSubscribeVariableHeader::subscriptionIdentifier identifier is invalid');
+        'MqttSubscribeVariableHeader::subscriptionIdentifier identifier is invalid',
+      );
     }
     final property = MqttVariableByteIntegerProperty(
-        MqttPropertyIdentifier.subscriptionIdentifier);
+      MqttPropertyIdentifier.subscriptionIdentifier,
+    );
     property.value = identifier;
     _propertySet.add(property);
     _subscriptionIdentifier = identifier;
@@ -64,7 +66,8 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
     throw UnimplementedError(
-        'MqttSubscribeVariableHeader::readFrom - not implemented, message is send only');
+      'MqttSubscribeVariableHeader::readFrom - not implemented, message is send only',
+    );
   }
 
   // Serialize the header

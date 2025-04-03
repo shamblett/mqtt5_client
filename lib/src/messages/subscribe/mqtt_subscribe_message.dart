@@ -41,8 +41,9 @@ class MqttSubscribeMessage extends MqttMessage {
       return;
     }
     header!.writeTo(
-        variableHeader!.getWriteLength() + payload!.getWriteLength(),
-        messageStream);
+      variableHeader!.getWriteLength() + payload!.getWriteLength(),
+      messageStream,
+    );
     variableHeader!.writeTo(messageStream);
     payload!.writeTo(messageStream);
   }
@@ -52,7 +53,8 @@ class MqttSubscribeMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttSubscribeMessage::readFrom - not implemented, message is send only');
+      'MqttSubscribeMessage::readFrom - not implemented, message is send only',
+    );
   }
 
   /// Is valid, if not valid the subscription message cannot be sent to
@@ -91,7 +93,9 @@ class MqttSubscribeMessage extends MqttMessage {
 
   /// Adds a new subscription with the specified subscription option[MqttSubscriptionOption].
   MqttSubscribeMessage toTopicWithOption(
-      String? topic, MqttSubscriptionOption option) {
+    String? topic,
+    MqttSubscriptionOption option,
+  ) {
     final subTopic = MqttSubscriptionTopic(topic);
     _payload!.addSubscription(subTopic, option);
     return this;
@@ -105,7 +109,8 @@ class MqttSubscribeMessage extends MqttMessage {
 
   /// Adds a new subscription with the specified subscription list
   MqttSubscribeMessage toSubscriptionList(
-      List<MqttSubscription> subscriptions) {
+    List<MqttSubscription> subscriptions,
+  ) {
     for (final subscription in subscriptions) {
       _payload!.addSubscription(subscription.topic, subscription.option);
     }

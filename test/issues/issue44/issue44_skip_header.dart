@@ -98,7 +98,7 @@ int main() {
         108,
         115,
         101,
-        125
+        125,
       ];
       final messages = <MqttMessage?>[];
       var messageIndex = 0;

@@ -80,11 +80,15 @@ Future<int> main() async {
     client.disconnect();
   }
 
-  test("Get a retained message right after its published",
-      () => recieveRetainedMessageTestNoDelay());
+  test(
+    "Get a retained message right after its published",
+    () => recieveRetainedMessageTestNoDelay(),
+  );
 
-  test("Get a retained message after a delay of 1 second",
-      () => recieveRetainedMessageTestDelay());
+  test(
+    "Get a retained message after a delay of 1 second",
+    () => recieveRetainedMessageTestDelay(),
+  );
 
   return 0;
 }

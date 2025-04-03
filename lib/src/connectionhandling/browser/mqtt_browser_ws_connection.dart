@@ -14,8 +14,10 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
 
   /// Initializes a new instance of the MqttConnection class.
   MqttBrowserWsConnection.fromConnect(
-      String server, int port, events.EventBus eventBus)
-      : super(eventBus) {
+    String server,
+    int port,
+    events.EventBus eventBus,
+  ) : super(eventBus) {
     connect(server, port);
   }
 
@@ -64,7 +66,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
 
       closeEvents = wsClient.onClose.listen((e) {
         MqttLogger.log(
-            'MqttBrowserWsConnection::connect - websocket is closed');
+          'MqttBrowserWsConnection::connect - websocket is closed',
+        );
         openEvents?.cancel();
         closeEvents?.cancel();
         errorEvents?.cancel();
@@ -72,7 +75,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       });
       errorEvents = wsClient.onError.listen((e) {
         MqttLogger.log(
-            'MqttBrowserWsConnection::connect - websocket has errored');
+          'MqttBrowserWsConnection::connect - websocket has errored',
+        );
         openEvents?.cancel();
         closeEvents?.cancel();
         errorEvents?.cancel();
@@ -112,7 +116,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     uri = uri.replace(port: port);
     final uriString = uri.toString();
     MqttLogger.log(
-        'MqttBrowserWsConnection::connectAuto -  WS URL is $uriString');
+      'MqttBrowserWsConnection::connectAuto -  WS URL is $uriString',
+    );
     try {
       // Connect and save the socket.
       client = WebSocket(uriString, protocols.map((e) => e.toJS).toList().toJS);
@@ -122,7 +127,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       StreamSubscription<Event>? errorEvents;
       openEvents = wsClient.onOpen.listen((e) {
         MqttLogger.log(
-            'MqttBrowserWsConnection::connectAuto - websocket is open');
+          'MqttBrowserWsConnection::connectAuto - websocket is open',
+        );
         openEvents?.cancel();
         closeEvents?.cancel();
         errorEvents?.cancel();
@@ -132,7 +138,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
 
       closeEvents = wsClient.onClose.listen((e) {
         MqttLogger.log(
-            'MqttBrowserWsConnection::connectAuto - websocket is closed');
+          'MqttBrowserWsConnection::connectAuto - websocket is closed',
+        );
         openEvents?.cancel();
         closeEvents?.cancel();
         errorEvents?.cancel();
@@ -140,7 +147,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       });
       errorEvents = wsClient.onError.listen((e) {
         MqttLogger.log(
-            'MqttBrowserWsConnection::connectAuto - websocket has errored');
+          'MqttBrowserWsConnection::connectAuto - websocket has errored',
+        );
         openEvents?.cancel();
         closeEvents?.cancel();
         errorEvents?.cancel();
@@ -153,7 +161,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       throw MqttNoConnectionException(message);
     }
     MqttLogger.log(
-        'MqttBrowserWsConnection::connectAuto - connection is waiting');
+      'MqttBrowserWsConnection::connectAuto - connection is waiting',
+    );
     return completer.future;
   }
 
@@ -163,7 +172,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     return [
       wsClient.onClose.listen((e) {
         MqttLogger.log(
-            'MqttBrowserConnection::_startListening - websocket is closed');
+          'MqttBrowserConnection::_startListening - websocket is closed',
+        );
         onDone();
       }),
       wsClient.onMessage.listen((MessageEvent e) {
@@ -171,7 +181,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
       }),
       wsClient.onError.listen((e) {
         MqttLogger.log(
-            'MqttBrowserConnection::_startListening - websocket has errored');
+          'MqttBrowserConnection::_startListening - websocket has errored',
+        );
         onError(e);
       }),
     ];
@@ -183,7 +194,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     _disconnect();
     if (onDisconnected != null) {
       MqttLogger.log(
-          'MqttConnectionBase::_onError - calling disconnected callback');
+        'MqttConnectionBase::_onError - calling disconnected callback',
+      );
       onDisconnected!();
     }
   }
@@ -194,7 +206,8 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     _disconnect();
     if (onDisconnected != null) {
       MqttLogger.log(
-          'MqttConnectionBase::_onDone - calling disconnected callback');
+        'MqttConnectionBase::_onDone - calling disconnected callback',
+      );
       onDisconnected!();
     }
   }

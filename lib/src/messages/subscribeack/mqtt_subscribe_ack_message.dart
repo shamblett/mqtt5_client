@@ -23,7 +23,9 @@ class MqttSubscribeAckMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttSubscribeAckMessage class.
   MqttSubscribeAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
     readFrom(messageStream);
   }
@@ -53,16 +55,21 @@ class MqttSubscribeAckMessage extends MqttMessage {
   @override
   void writeTo(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttSubscribeAckMessage::writeTo - not implemented, message is receive only');
+      'MqttSubscribeAckMessage::writeTo - not implemented, message is receive only',
+    );
   }
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    _variableHeader =
-        MqttSubscribeAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader = MqttSubscribeAckVariableHeader.fromByteBuffer(
+      messageStream,
+    );
     _payload = MqttSubscribeAckPayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+      header,
+      variableHeader,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

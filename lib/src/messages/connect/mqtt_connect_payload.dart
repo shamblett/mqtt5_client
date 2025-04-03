@@ -84,7 +84,8 @@ class MqttConnectPayload implements MqttIPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     throw UnimplementedError(
-        'MqttConnectPayload::readFrom - message is transmit only');
+      'MqttConnectPayload::readFrom - message is transmit only',
+    );
   }
 
   void _serialize(MqttByteBuffer payloadStream) {
@@ -94,7 +95,8 @@ class MqttConnectPayload implements MqttIPayload {
       payloadStream.writeMqttStringM(willTopic);
       if (willPayload.length > 65535) {
         throw Exception(
-            'MqttConnectPayload::_serialize -  willPayload length is invalid, length is ${willPayload.length}');
+          'MqttConnectPayload::_serialize -  willPayload length is invalid, length is ${willPayload.length}',
+        );
       }
       payloadStream.writeShort(willPayload.length);
       payloadStream.write(willPayload);

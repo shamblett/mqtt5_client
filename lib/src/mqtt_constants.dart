@@ -43,7 +43,7 @@ class MqttConstants {
   /// The default websocket subprotocol list
   static const List<String> protocolsMultipleDefault = <String>[
     'mqtt',
-    'mqttv5'
+    'mqttv5',
   ];
 
   /// The default websocket subprotocol list for brokers who expect

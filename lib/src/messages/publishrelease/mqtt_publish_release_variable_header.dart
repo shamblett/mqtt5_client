@@ -16,7 +16,9 @@ class MqttPublishReleaseVariableHeader implements MqttIVariableHeader {
 
   /// Initializes a new instance of the class from a byte buffer.
   MqttPublishReleaseVariableHeader.fromByteBuffer(
-      this._header, MqttByteBuffer headerStream) {
+    this._header,
+    MqttByteBuffer headerStream,
+  ) {
     readFrom(headerStream);
   }
 
@@ -46,8 +48,9 @@ class MqttPublishReleaseVariableHeader implements MqttIVariableHeader {
   String? _reasonString;
   String? get reasonString => _reasonString;
   set reasonString(String? reason) {
-    final property =
-        MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
+    final property = MqttUtf8StringProperty(
+      MqttPropertyIdentifier.reasonString,
+    );
     property.value = reason;
     _propertySet.add(property);
     _reasonString = reason;
@@ -72,7 +75,8 @@ class MqttPublishReleaseVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttPublishReceivedVariableHeader::_processProperties, message properties received are invalid');
+        'MqttPublishReceivedVariableHeader::_processProperties, message properties received are invalid',
+      );
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -83,8 +87,9 @@ class MqttPublishReleaseVariableHeader implements MqttIVariableHeader {
         default:
           if (property.identifier != MqttPropertyIdentifier.userProperty) {
             MqttLogger.log(
-                'MqttPublishReceivedVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
+              'MqttPublishReceivedVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
           }
       }
       _userProperty = _propertySet.userProperties;

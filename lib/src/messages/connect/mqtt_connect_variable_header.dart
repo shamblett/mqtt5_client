@@ -103,7 +103,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   int get sessionExpiryInterval => _sessionExpiryInterval;
   set sessionExpiryInterval(int interval) {
     var property = MqttFourByteIntegerProperty(
-        MqttPropertyIdentifier.sessionExpiryInterval);
+      MqttPropertyIdentifier.sessionExpiryInterval,
+    );
     property.value = interval;
     _propertySet.add(property);
     _sessionExpiryInterval = interval;
@@ -124,8 +125,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     if (maximum <= 0 || maximum > 65535) {
       throw ArgumentError.value(maximum, 'value must be between 1 and 65535');
     }
-    var property =
-        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.receiveMaximum);
+    var property = MqttTwoByteIntegerProperty(
+      MqttPropertyIdentifier.receiveMaximum,
+    );
     property.value = maximum;
     _propertySet.add(property);
     _receiveMaximum = maximum;
@@ -148,8 +150,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     if (size == 0) {
       throw ArgumentError.value(size, 'value must not be 0');
     }
-    var property =
-        MqttFourByteIntegerProperty(MqttPropertyIdentifier.maximumPacketSize);
+    var property = MqttFourByteIntegerProperty(
+      MqttPropertyIdentifier.maximumPacketSize,
+    );
     property.value = size;
     _propertySet.add(property);
     _maximumPacketSize = size;
@@ -166,8 +169,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   int _topicAliasMaximum = 0;
   int get topicAliasMaximum => _topicAliasMaximum;
   set topicAliasMaximum(int maximum) {
-    var property =
-        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAliasMaximum);
+    var property = MqttTwoByteIntegerProperty(
+      MqttPropertyIdentifier.topicAliasMaximum,
+    );
     property.value = maximum;
     _propertySet.add(property);
     _topicAliasMaximum = maximum;
@@ -182,8 +186,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   bool _requestResponseInformation = false;
   bool get requestResponseInformation => _requestResponseInformation;
   set requestResponseInformation(bool request) {
-    var property =
-        MqttByteProperty(MqttPropertyIdentifier.requestResponseInformation);
+    var property = MqttByteProperty(
+      MqttPropertyIdentifier.requestResponseInformation,
+    );
     property.value = request ? 1 : 0;
     _propertySet.add(property);
     _requestResponseInformation = request;
@@ -199,8 +204,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   bool _requestProblemInformation = true;
   bool get requestProblemInformation => _requestProblemInformation;
   set requestProblemInformation(bool request) {
-    var property =
-        MqttByteProperty(MqttPropertyIdentifier.requestProblemInformation);
+    var property = MqttByteProperty(
+      MqttPropertyIdentifier.requestProblemInformation,
+    );
     property.value = request ? 1 : 0;
     _propertySet.add(property);
     _requestProblemInformation = request;
@@ -230,8 +236,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   String _authenticationMethod = '';
   String get authenticationMethod => _authenticationMethod;
   set authenticationMethod(String method) {
-    var property =
-        MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
+    var property = MqttUtf8StringProperty(
+      MqttPropertyIdentifier.authenticationMethod,
+    );
     property.value = method;
     _propertySet.add(property);
     _authenticationMethod = method;
@@ -245,8 +252,9 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   final _authenticationData = typed.Uint8Buffer();
   typed.Uint8Buffer get authenticationData => _authenticationData;
   set authenticationData(typed.Uint8Buffer data) {
-    var property =
-        MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
+    var property = MqttBinaryDataProperty(
+      MqttPropertyIdentifier.authenticationData,
+    );
     property.addBytes(data);
     _propertySet.add(property);
     _authenticationData.clear();
@@ -258,7 +266,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
     throw UnimplementedError(
-        'MqttConnectVariableHeader::readFrom - not implemented on this message type');
+      'MqttConnectVariableHeader::readFrom - not implemented on this message type',
+    );
   }
 
   /// Writes the variable header to the supplied stream.

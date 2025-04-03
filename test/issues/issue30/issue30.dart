@@ -15,15 +15,18 @@ Future<int> main() async {
         .withReasonCode(MqttAuthenticateReasonCode.success)
         .withAuthenticationMethod('method')
         .withAuthenticationData(typed.Uint8Buffer()..addAll([1, 2, 3, 4]))
-        .withUserProperties([user1]).withReasonString('Reason String');
+        .withUserProperties([user1])
+        .withReasonString('Reason String');
 
     final buffer = typed.Uint8Buffer();
     final stream = MqttByteBuffer(buffer);
     message.writeTo(stream);
     stream.reset();
     final outputHeader = MqttHeader.fromByteBuffer(stream);
-    final message2 =
-        MqttAuthenticateMessage.fromByteBuffer(outputHeader, stream);
+    final message2 = MqttAuthenticateMessage.fromByteBuffer(
+      outputHeader,
+      stream,
+    );
 
     expect(message.userProperties.length, 1); // 1
     expect(message2.userProperties.length, 1); // 1

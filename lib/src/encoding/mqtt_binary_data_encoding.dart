@@ -15,11 +15,13 @@ class MqttBinaryDataEncoding {
   typed.Uint8Buffer toBinaryData(typed.Uint8Buffer? data) {
     if (data == null || data.isEmpty) {
       throw Exception(
-          'MqttBinaryDataEncoding::toBinaryData  -  data is null or empty');
+        'MqttBinaryDataEncoding::toBinaryData  -  data is null or empty',
+      );
     }
     if (data.length > 65535) {
       throw Exception(
-          'MqttBinaryDataEncoding::toBinaryData  -  data length is invalid, length is ${data.length}');
+        'MqttBinaryDataEncoding::toBinaryData  -  data length is invalid, length is ${data.length}',
+      );
     }
     final dataBytes = typed.Uint8Buffer();
     dataBytes.add(data.length >> 8);
@@ -38,7 +40,8 @@ class MqttBinaryDataEncoding {
   int length(typed.Uint8Buffer data) {
     if (data.length < 2) {
       throw Exception(
-          'MqttBinaryDataEncoding::length length byte array must comprise 2 bytes');
+        'MqttBinaryDataEncoding::length length byte array must comprise 2 bytes',
+      );
     }
     return (data[0] << 8) + data[1];
   }

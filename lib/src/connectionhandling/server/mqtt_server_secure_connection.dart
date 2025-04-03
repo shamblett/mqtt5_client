@@ -11,21 +11,21 @@ part of '../../../mqtt5_server_client.dart';
 class MqttServerSecureConnection extends MqttServerConnection {
   /// Default constructor
   MqttServerSecureConnection(
-      this.context,
-      events.EventBus? eventBus,
-      this.onBadCertificate,
-      List<RawSocketOption> socketOptions,
-      Duration? socketTimeout)
-      : super(eventBus, socketOptions, socketTimeout);
+    this.context,
+    events.EventBus? eventBus,
+    this.onBadCertificate,
+    List<RawSocketOption> socketOptions,
+    Duration? socketTimeout,
+  ) : super(eventBus, socketOptions, socketTimeout);
 
   /// Initializes a new instance of the MqttServerSecureConnection class.
   MqttServerSecureConnection.fromConnect(
-      String server,
-      int port,
-      events.EventBus eventBus,
-      List<RawSocketOption> socketOptions,
-      Duration? socketTimeout)
-      : super(eventBus, socketOptions, socketTimeout) {
+    String server,
+    int port,
+    events.EventBus eventBus,
+    List<RawSocketOption> socketOptions,
+    Duration? socketTimeout,
+  ) : super(eventBus, socketOptions, socketTimeout) {
     connect(server, port);
   }
 
@@ -41,34 +41,43 @@ class MqttServerSecureConnection extends MqttServerConnection {
     final completer = Completer<MqttConnectionStatus?>();
     MqttLogger.log('MqttServerSecureConnection::connect - entered');
     try {
-      SecureSocket.connect(server, port,
-              onBadCertificate: onBadCertificate,
-              context: context,
-              timeout: socketTimeout)
+      SecureSocket.connect(
+            server,
+            port,
+            onBadCertificate: onBadCertificate,
+            context: context,
+            timeout: socketTimeout,
+          )
           .then((SecureSocket socket) {
-        MqttLogger.log('MqttServerSecureConnection::connect - securing socket');
-        // Socket options
-        final applied = _applySocketOptions(socket, socketOptions);
-        if (applied) {
-          MqttLogger.log(
-              'MqttServerSecureConnection::connect - socket options applied');
-        }
-        client = socket;
-        MqttLogger.log('MqttServerSecureConnection::connect - start listening');
-        _startListening();
-        completer.complete();
-      }).catchError((dynamic e) {
-        if (_isSocketTimeout(e)) {
-          final message =
-              'MqttNormalConnection::connect - The connection to the message broker '
-              '{$server}:{$port} could not be made, a socket timeout has occurred';
-          MqttLogger.log(message);
-          completer.complete();
-        } else {
-          onError(e);
-          completer.completeError(e);
-        }
-      });
+            MqttLogger.log(
+              'MqttServerSecureConnection::connect - securing socket',
+            );
+            // Socket options
+            final applied = _applySocketOptions(socket, socketOptions);
+            if (applied) {
+              MqttLogger.log(
+                'MqttServerSecureConnection::connect - socket options applied',
+              );
+            }
+            client = socket;
+            MqttLogger.log(
+              'MqttServerSecureConnection::connect - start listening',
+            );
+            _startListening();
+            completer.complete();
+          })
+          .catchError((dynamic e) {
+            if (_isSocketTimeout(e)) {
+              final message =
+                  'MqttNormalConnection::connect - The connection to the message broker '
+                  '{$server}:{$port} could not be made, a socket timeout has occurred';
+              MqttLogger.log(message);
+              completer.complete();
+            } else {
+              onError(e);
+              completer.completeError(e);
+            }
+          });
     } on SocketException catch (e) {
       final message =
           'MqttServerSecureConnection::The connection to the message broker '
@@ -96,34 +105,42 @@ class MqttServerSecureConnection extends MqttServerConnection {
     final completer = Completer<MqttConnectionStatus?>();
     MqttLogger.log('MqttServerSecureConnection::connectAuto - entered');
     try {
-      SecureSocket.connect(server, port,
-              onBadCertificate: onBadCertificate, context: context)
+      SecureSocket.connect(
+            server,
+            port,
+            onBadCertificate: onBadCertificate,
+            context: context,
+          )
           .then((SecureSocket socket) {
-        MqttLogger.log(
-            'MqttServerSecureConnection::connectAuto - securing socket');
-        // Socket options
-        final applied = _applySocketOptions(socket, socketOptions);
-        if (applied) {
-          MqttLogger.log(
-              'MqttServerSecureConnection::connectAuto - socket options applied');
-        }
-        client = socket;
-        MqttLogger.log(
-            'MqttServerSecureConnection::connectAuto - start listening');
-        _startListening();
-        completer.complete();
-      }).catchError((dynamic e) {
-        if (_isSocketTimeout(e)) {
-          final message =
-              'MqttNormalConnection::connectAuto - The connection to the message broker '
-              '{$server}:{$port} could not be made, a socket timeout has occurred';
-          MqttLogger.log(message);
-          completer.complete();
-        } else {
-          onError(e);
-          completer.completeError(e);
-        }
-      });
+            MqttLogger.log(
+              'MqttServerSecureConnection::connectAuto - securing socket',
+            );
+            // Socket options
+            final applied = _applySocketOptions(socket, socketOptions);
+            if (applied) {
+              MqttLogger.log(
+                'MqttServerSecureConnection::connectAuto - socket options applied',
+              );
+            }
+            client = socket;
+            MqttLogger.log(
+              'MqttServerSecureConnection::connectAuto - start listening',
+            );
+            _startListening();
+            completer.complete();
+          })
+          .catchError((dynamic e) {
+            if (_isSocketTimeout(e)) {
+              final message =
+                  'MqttNormalConnection::connectAuto - The connection to the message broker '
+                  '{$server}:{$port} could not be made, a socket timeout has occurred';
+              MqttLogger.log(message);
+              completer.complete();
+            } else {
+              onError(e);
+              completer.completeError(e);
+            }
+          });
     } on SocketException catch (e) {
       final message =
           'MqttServerSecureConnection::connectAuto - The connection to the message broker '

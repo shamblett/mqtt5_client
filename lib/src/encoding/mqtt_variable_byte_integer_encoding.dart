@@ -23,7 +23,8 @@ class MqttVariableByteIntegerEncoding {
   int toInt(typed.Uint8Buffer? byteInteger) {
     if (byteInteger == null || byteInteger.isEmpty) {
       throw ArgumentError(
-          'MqttByteIntegerEncoding::toInt byte integer is null or empty');
+        'MqttByteIntegerEncoding::toInt byte integer is null or empty',
+      );
     }
     var multiplier = 1;
     var value = 0;
@@ -39,18 +40,21 @@ class MqttVariableByteIntegerEncoding {
         value += (encodedByte & 127) * multiplier;
         if (multiplier > 128 * 128 * 128) {
           throw ArgumentError(
-              'MqttByteIntegerEncoding::toInt Malformed Variable Byte Integer');
+            'MqttByteIntegerEncoding::toInt Malformed Variable Byte Integer',
+          );
         }
         multiplier *= 128;
         index++;
       } while ((encodedByte & 128) != 0);
     } on Error {
       throw ArgumentError(
-          'MqttByteIntegerEncoding::toInt invalid byte sequence $byteInteger');
+        'MqttByteIntegerEncoding::toInt invalid byte sequence $byteInteger',
+      );
     }
     if (index > 4) {
       throw FormatException(
-          'MqttByteIntegerEncoding::toInt - variable byte integer is incorrectly formatted');
+        'MqttByteIntegerEncoding::toInt - variable byte integer is incorrectly formatted',
+      );
     }
     return value;
   }
@@ -60,7 +64,8 @@ class MqttVariableByteIntegerEncoding {
   typed.Uint8Buffer fromInt(int value) {
     if (value > maxConvertibleValue || value < 0) {
       throw ArgumentError(
-          'MqttByteIntegerEncoding::fromInt supplied value is not convertible $value');
+        'MqttByteIntegerEncoding::fromInt supplied value is not convertible $value',
+      );
     }
     var x = value;
     var encodedByte = 0;
@@ -86,7 +91,8 @@ class MqttVariableByteIntegerEncoding {
     // Must be a maximum length of 4
     if (result.isEmpty || count > 4) {
       throw ArgumentError(
-          'MqttByteIntegerEncoding::fromInt byte integer has an invalid length ${result.length}, value is $value');
+        'MqttByteIntegerEncoding::fromInt byte integer has an invalid length ${result.length}, value is $value',
+      );
     }
     return result;
   }

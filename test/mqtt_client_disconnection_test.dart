@@ -17,86 +17,136 @@ import 'support/mqtt_client_mock_socket.dart';
 
 void main() {
   test('Disconnect Normal Disconnect', () async {
-    await IOOverrides.runZoned(() async {
-      bool connectionFailed = false;
-      bool onDisconnectedCalled = false;
-      void onDisconnected() {
-        onDisconnectedCalled = true;
-      }
+    await IOOverrides.runZoned(
+      () async {
+        bool connectionFailed = false;
+        bool onDisconnectedCalled = false;
+        void onDisconnected() {
+          onDisconnectedCalled = true;
+        }
 
-      final client =
-          MqttServerClient('localhost', '', maxConnectionAttempts: 1);
-      client.connectionMessage =
-          MqttConnectMessage().withClientIdentifier('MqttDisconnectTest');
-      client.onDisconnected = onDisconnected;
-      try {
-        await client.connect();
-      } on Exception catch (e) {
-        expect(e is MqttNoConnectionException, isTrue);
-        connectionFailed = true;
-      }
-      expect(connectionFailed, isFalse);
-      expect(client.connectionStatus?.state, MqttConnectionState.connected);
-      expect(
-          client.connectionStatus?.reasonCode, MqttConnectReasonCode.success);
-      client.publishMessage('PublishTest', MqttQos.atLeastOnce, Uint8Buffer());
-      await Future.delayed(Duration(seconds: 1));
-      expect(client.connectionStatus?.state, MqttConnectionState.disconnected);
-      expect(client.connectionStatus?.disconnectMessage.reasonCode,
-          MqttDisconnectReasonCode.normalDisconnection);
-      expect(client.connectionStatus?.disconnectionOrigin,
-          MqttDisconnectionOrigin.brokerSolicited);
-      expect(onDisconnectedCalled, isTrue);
-    },
-        socketConnect: (dynamic host, int port,
-                {dynamic sourceAddress,
-                int sourcePort = 0,
-                Duration? timeout}) =>
-            MqttMockSocketDisconnectNormal.connect(host, port,
-                sourceAddress: sourceAddress,
-                sourcePort: sourcePort,
-                timeout: timeout));
+        final client = MqttServerClient(
+          'localhost',
+          '',
+          maxConnectionAttempts: 1,
+        );
+        client.connectionMessage = MqttConnectMessage().withClientIdentifier(
+          'MqttDisconnectTest',
+        );
+        client.onDisconnected = onDisconnected;
+        try {
+          await client.connect();
+        } on Exception catch (e) {
+          expect(e is MqttNoConnectionException, isTrue);
+          connectionFailed = true;
+        }
+        expect(connectionFailed, isFalse);
+        expect(client.connectionStatus?.state, MqttConnectionState.connected);
+        expect(
+          client.connectionStatus?.reasonCode,
+          MqttConnectReasonCode.success,
+        );
+        client.publishMessage(
+          'PublishTest',
+          MqttQos.atLeastOnce,
+          Uint8Buffer(),
+        );
+        await Future.delayed(Duration(seconds: 1));
+        expect(
+          client.connectionStatus?.state,
+          MqttConnectionState.disconnected,
+        );
+        expect(
+          client.connectionStatus?.disconnectMessage.reasonCode,
+          MqttDisconnectReasonCode.normalDisconnection,
+        );
+        expect(
+          client.connectionStatus?.disconnectionOrigin,
+          MqttDisconnectionOrigin.brokerSolicited,
+        );
+        expect(onDisconnectedCalled, isTrue);
+      },
+      socketConnect:
+          (
+            dynamic host,
+            int port, {
+            dynamic sourceAddress,
+            int sourcePort = 0,
+            Duration? timeout,
+          }) => MqttMockSocketDisconnectNormal.connect(
+            host,
+            port,
+            sourceAddress: sourceAddress,
+            sourcePort: sourcePort,
+            timeout: timeout,
+          ),
+    );
   });
 
   test('Disconnect Session Take Over', () async {
-    await IOOverrides.runZoned(() async {
-      bool connectionFailed = false;
-      bool onDisconnectedCalled = false;
-      void onDisconnected() {
-        onDisconnectedCalled = true;
-      }
+    await IOOverrides.runZoned(
+      () async {
+        bool connectionFailed = false;
+        bool onDisconnectedCalled = false;
+        void onDisconnected() {
+          onDisconnectedCalled = true;
+        }
 
-      final client =
-          MqttServerClient('localhost', '', maxConnectionAttempts: 1);
-      client.connectionMessage =
-          MqttConnectMessage().withClientIdentifier('MqttDisconnectTest');
-      client.onDisconnected = onDisconnected;
-      try {
-        await client.connect();
-      } on Exception catch (e) {
-        expect(e is MqttNoConnectionException, isTrue);
-        connectionFailed = true;
-      }
-      expect(connectionFailed, isFalse);
-      expect(client.connectionStatus?.state, MqttConnectionState.connected);
-      expect(
-          client.connectionStatus?.reasonCode, MqttConnectReasonCode.success);
-      client.publishMessage('PublishTest', MqttQos.atLeastOnce, Uint8Buffer());
-      await Future.delayed(Duration(seconds: 1));
-      expect(client.connectionStatus?.state, MqttConnectionState.disconnected);
-      expect(client.connectionStatus?.disconnectMessage.reasonCode,
-          MqttDisconnectReasonCode.sessionTakenOver);
-      expect(client.connectionStatus?.disconnectionOrigin,
-          MqttDisconnectionOrigin.brokerSolicited);
-      expect(onDisconnectedCalled, isTrue);
-    },
-        socketConnect: (dynamic host, int port,
-                {dynamic sourceAddress,
-                int sourcePort = 0,
-                Duration? timeout}) =>
-            MqttMockSocketDisconnectSessionTakeOver.connect(host, port,
-                sourceAddress: sourceAddress,
-                sourcePort: sourcePort,
-                timeout: timeout));
+        final client = MqttServerClient(
+          'localhost',
+          '',
+          maxConnectionAttempts: 1,
+        );
+        client.connectionMessage = MqttConnectMessage().withClientIdentifier(
+          'MqttDisconnectTest',
+        );
+        client.onDisconnected = onDisconnected;
+        try {
+          await client.connect();
+        } on Exception catch (e) {
+          expect(e is MqttNoConnectionException, isTrue);
+          connectionFailed = true;
+        }
+        expect(connectionFailed, isFalse);
+        expect(client.connectionStatus?.state, MqttConnectionState.connected);
+        expect(
+          client.connectionStatus?.reasonCode,
+          MqttConnectReasonCode.success,
+        );
+        client.publishMessage(
+          'PublishTest',
+          MqttQos.atLeastOnce,
+          Uint8Buffer(),
+        );
+        await Future.delayed(Duration(seconds: 1));
+        expect(
+          client.connectionStatus?.state,
+          MqttConnectionState.disconnected,
+        );
+        expect(
+          client.connectionStatus?.disconnectMessage.reasonCode,
+          MqttDisconnectReasonCode.sessionTakenOver,
+        );
+        expect(
+          client.connectionStatus?.disconnectionOrigin,
+          MqttDisconnectionOrigin.brokerSolicited,
+        );
+        expect(onDisconnectedCalled, isTrue);
+      },
+      socketConnect:
+          (
+            dynamic host,
+            int port, {
+            dynamic sourceAddress,
+            int sourcePort = 0,
+            Duration? timeout,
+          }) => MqttMockSocketDisconnectSessionTakeOver.connect(
+            host,
+            port,
+            sourceAddress: sourceAddress,
+            sourcePort: sourcePort,
+            timeout: timeout,
+          ),
+    );
   });
 }

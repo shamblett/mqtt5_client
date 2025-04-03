@@ -75,7 +75,8 @@ class MqttSubscribePayload implements MqttIPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     throw UnimplementedError(
-        'MqttSubscribePayload::writeTo - not implemented, mesage is send only');
+      'MqttSubscribePayload::writeTo - not implemented, mesage is send only',
+    );
   }
 
   /// Gets the length of the payload in bytes when written to a stream.
@@ -83,8 +84,10 @@ class MqttSubscribePayload implements MqttIPayload {
   int getWriteLength() => _serialize().length;
 
   /// Adds a new subscription to the collection of subscriptions.
-  void addSubscription(MqttSubscriptionTopic topic,
-      [MqttSubscriptionOption? option]) {
+  void addSubscription(
+    MqttSubscriptionTopic topic, [
+    MqttSubscriptionOption? option,
+  ]) {
     final subTopic = MqttSubscribePayloadTopic(topic, option);
     _subscriptions.add(subTopic);
   }

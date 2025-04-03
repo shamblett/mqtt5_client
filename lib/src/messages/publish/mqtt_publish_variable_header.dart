@@ -15,7 +15,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
 
   /// Initializes a new instance of the MqttPublishVariableHeader class.
   MqttPublishVariableHeader.fromByteBuffer(
-      this.header, MqttByteBuffer variableHeaderStream) {
+    this.header,
+    MqttByteBuffer variableHeaderStream,
+  ) {
     readFrom(variableHeaderStream);
   }
 
@@ -49,8 +51,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   bool _payloadFormatIndicator = false;
   bool get payloadFormatIndicator => _payloadFormatIndicator;
   set payloadFormatIndicator(bool indicator) {
-    var property =
-        MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+    var property = MqttByteProperty(
+      MqttPropertyIdentifier.payloadFormatIndicator,
+    );
     property.value = indicator ? 1 : 0;
     _propertySet.add(property);
     _payloadFormatIndicator = indicator;
@@ -64,7 +67,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   int? get messageExpiryInterval => _messageExpiryInterval;
   set messageExpiryInterval(int? interval) {
     var property = MqttFourByteIntegerProperty(
-        MqttPropertyIdentifier.messageExpiryInterval);
+      MqttPropertyIdentifier.messageExpiryInterval,
+    );
     property.value = interval;
     _propertySet.add(property);
     _messageExpiryInterval = interval;
@@ -82,10 +86,12 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   set topicAlias(int? alias) {
     if (alias == 0) {
       throw ArgumentError(
-          'MqttPublishVariableHeader::topicAlias - 0 is not a valid value');
+        'MqttPublishVariableHeader::topicAlias - 0 is not a valid value',
+      );
     }
-    var property =
-        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAlias);
+    var property = MqttTwoByteIntegerProperty(
+      MqttPropertyIdentifier.topicAlias,
+    );
     property.value = alias;
     _propertySet.add(property);
     _topicAlias = alias;
@@ -103,7 +109,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
       MqttPublicationTopic(topic);
     } on Exception {
       throw ArgumentError(
-          'MqttPublishVariableHeader::responseTopic topic cannot contain wildcards');
+        'MqttPublishVariableHeader::responseTopic topic cannot contain wildcards',
+      );
     }
     var property = MqttUtf8StringProperty(MqttPropertyIdentifier.responseTopic);
     property.value = topic;
@@ -119,8 +126,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   typed.Uint8Buffer? _correlationData;
   typed.Uint8Buffer? get correlationData => _correlationData;
   set correlationData(typed.Uint8Buffer? data) {
-    final property =
-        MqttBinaryDataProperty(MqttPropertyIdentifier.correlationdata);
+    final property = MqttBinaryDataProperty(
+      MqttPropertyIdentifier.correlationdata,
+    );
     property.addBytes(data);
     _propertySet.add(property);
     _correlationData = data;
@@ -153,10 +161,12 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   set subscriptionIdentifier(identifier) {
     if (identifier < 1 || identifier > 268435455) {
       throw ArgumentError(
-          'MqttPublishVariableHeader::subscriptionIdentifier identifier is invalid');
+        'MqttPublishVariableHeader::subscriptionIdentifier identifier is invalid',
+      );
     }
     final property = MqttVariableByteIntegerProperty(
-        MqttPropertyIdentifier.subscriptionIdentifier);
+      MqttPropertyIdentifier.subscriptionIdentifier,
+    );
     property.value = identifier;
     _propertySet.add(property);
     _subscriptionIdentifier.add(identifier);
@@ -178,7 +188,8 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttPublishVariableHeader::_processProperties, message properties received are invalid');
+        'MqttPublishVariableHeader::_processProperties, message properties received are invalid',
+      );
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -207,8 +218,9 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
         default:
           if (property.identifier != MqttPropertyIdentifier.userProperty) {
             MqttLogger.log(
-                'MqttPublishVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
+              'MqttPublishVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
           }
       }
       _userProperty = _propertySet.userProperties;

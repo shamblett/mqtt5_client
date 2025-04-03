@@ -17,5 +17,5 @@ enum MqttRetainHandling {
   sendRetainedOnlyIfNotExist,
 
   /// Do not send retained messages at the time of the subscribe.
-  doNotSendRetained
+  doNotSendRetained,
 }

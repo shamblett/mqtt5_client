@@ -13,7 +13,10 @@ import 'package:test/test.dart';
 Future<int> main() async {
   test('Should try three times then fail', () async {
     final client = MqttServerClient.withPort(
-        'test.mosquitto.org', 'client-id-123456789', 1883);
+      'test.mosquitto.org',
+      'client-id-123456789',
+      1883,
+    );
     client.autoReconnect = true;
     client.logging(on: true);
 
@@ -24,11 +27,12 @@ Future<int> main() async {
       await client.connect('user', 'password');
     } on MqttNoConnectionException catch (e) {
       expect(
-          e.toString(),
-          'mqtt-client::NoConnectionException: The maximum allowed connection attempts '
-          '({3}) were exceeded. '
-          'The broker is not responding to the connection request message '
-          'correctly The reason code is notAuthorized');
+        e.toString(),
+        'mqtt-client::NoConnectionException: The maximum allowed connection attempts '
+        '({3}) were exceeded. '
+        'The broker is not responding to the connection request message '
+        'correctly The reason code is notAuthorized',
+      );
       exceptionOK = true;
     }
     expect(exceptionOK, isTrue);

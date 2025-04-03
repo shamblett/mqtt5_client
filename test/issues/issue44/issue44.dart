@@ -98,7 +98,7 @@ int main() {
         108,
         115,
         101,
-        125
+        125,
       ];
       final byteBuffer = MqttByteBuffer.fromList(messageBuffer);
       final header = MqttHeader.fromByteBuffer(byteBuffer);
@@ -204,7 +204,7 @@ int main() {
         108,
         115,
         101,
-        125
+        125,
       ];
       final byteBuffer = MqttByteBuffer.fromList(messageBuffer);
       final header = MqttHeader.fromByteBuffer(byteBuffer);
@@ -307,7 +307,7 @@ int main() {
         108,
         115,
         101,
-        125
+        125,
       ];
       final messages = <MqttMessage?>[];
       var messageIndex = 0;
@@ -333,15 +333,7 @@ int main() {
 
   group('Multi', () {
     test('Message decode - multiple - two buffers', () {
-      final messageBuffer = [
-        64,
-        4,
-        0,
-        3,
-        0,
-        50,
-        85,
-      ];
+      final messageBuffer = [64, 4, 0, 3, 0, 50, 85];
 
       final messages = <MqttMessage?>[];
       var messageIndex = 0;
@@ -442,7 +434,7 @@ int main() {
         108,
         115,
         101,
-        125
+        125,
       ]);
       expect(byteBuffer.isMessageAvailable(), isTrue);
       header = MqttHeader.fromByteBuffer(byteBuffer);

@@ -17,10 +17,14 @@ class MqttPublishAckMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
-    _variableHeader =
-        MqttPublishAckVariableHeader.fromByteBuffer(header, messageStream);
+    _variableHeader = MqttPublishAckVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

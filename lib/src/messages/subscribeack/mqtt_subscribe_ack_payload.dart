@@ -15,7 +15,10 @@ class MqttSubscribeAckPayload extends MqttIPayload {
 
   /// Initializes a new instance of the MqttSubscribeAckPayload class.
   MqttSubscribeAckPayload.fromByteBuffer(
-      this.header, this.variableHeader, MqttByteBuffer payloadStream) {
+    this.header,
+    this.variableHeader,
+    MqttByteBuffer payloadStream,
+  ) {
     readFrom(payloadStream);
   }
 
@@ -39,7 +42,8 @@ class MqttSubscribeAckPayload extends MqttIPayload {
   @override
   void writeTo(MqttByteBuffer payloadStream) {
     throw UnimplementedError(
-        'MqttSubscribeAckPayload::writeTo - not implemented, message is receive only');
+      'MqttSubscribeAckPayload::writeTo - not implemented, message is receive only',
+    );
   }
 
   /// Creates a payload from the specified header stream.
@@ -47,8 +51,9 @@ class MqttSubscribeAckPayload extends MqttIPayload {
   void readFrom(MqttByteBuffer payloadStream) {
     final payloadLength = header!.messageSize - variableHeader!.length;
     for (var i = 0; i < payloadLength; i++) {
-      _reasonCodes
-          .add(mqttSubscribeReasonCode.fromInt(payloadStream.readByte()));
+      _reasonCodes.add(
+        mqttSubscribeReasonCode.fromInt(payloadStream.readByte()),
+      );
       _length += 1;
     }
   }

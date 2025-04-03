@@ -74,14 +74,16 @@ Future<int> main() async {
   /// Create a connection message to use or use the default one. The default one sets the
   /// client identifier, any supplied username/password, the default keepalive interval(60s)
   /// and clean session, an example of a specific one below.
-  final connMessA = MqttConnectMessage()
-      .withClientIdentifier('Mqtt_MyClientUniqueIdA')
-      .startClean(); // Non persistent session for testing
+  final connMessA =
+      MqttConnectMessage()
+          .withClientIdentifier('Mqtt_MyClientUniqueIdA')
+          .startClean(); // Non persistent session for testing
   clientA.connectionMessage = connMessA;
 
-  final connMessB = MqttConnectMessage()
-      .withClientIdentifier('Mqtt_MyClientUniqueIdB')
-      .startClean(); // Non persistent session for testing
+  final connMessB =
+      MqttConnectMessage()
+          .withClientIdentifier('Mqtt_MyClientUniqueIdB')
+          .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   clientB.connectionMessage = connMessB;
 
@@ -102,7 +104,8 @@ Future<int> main() async {
   } else {
     /// Use status here rather than state if you also want the broker return code.
     print(
-        'EXAMPLE::ERROR Mosquitto client A connection failed - disconnecting, status is ${clientA.connectionStatus}');
+      'EXAMPLE::ERROR Mosquitto client A connection failed - disconnecting, status is ${clientA.connectionStatus}',
+    );
     clientA.disconnect();
     exit(-1);
   }
@@ -124,7 +127,8 @@ Future<int> main() async {
     /// for a while.
     /// The payload is a byte buffer, this will be specific to the topic
     print(
-        'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+      'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->',
+    );
     print('');
   });
 
@@ -133,7 +137,8 @@ Future<int> main() async {
   /// publishing handshake with the broker.
   clientA.published!.listen((MqttPublishMessage message) {
     print(
-        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+      'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}',
+    );
   });
 
   /// Lets publish to our topic
@@ -170,19 +175,22 @@ Future<int> main() async {
 /// The subscribed callback
 void onSubscribed(MqttSubscription subscription) {
   print(
-      'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
+    'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}',
+  );
 }
 
 // The pre auto re connect callback
 void onAutoReconnect() {
   print(
-      'EXAMPLE::onAutoReconnect client A callback - Client auto reconnection sequence will start');
+    'EXAMPLE::onAutoReconnect client A callback - Client auto reconnection sequence will start',
+  );
 }
 
 /// The post auto re connect callback
 void onAutoReconnected() async {
   print(
-      'EXAMPLE::onAutoReconnected client callback - Client A auto reconnection sequence has completed');
+    'EXAMPLE::onAutoReconnected client callback - Client A auto reconnection sequence has completed',
+  );
   clientA.disconnect();
   print('EXAMPLE::Mosquitto client A connecting....');
   try {
@@ -198,7 +206,8 @@ void onAutoReconnected() async {
   } else {
     /// Use status here rather than state if you also want the broker return code.
     print(
-        'EXAMPLE::ERROR Mosquitto client B connection failed - disconnecting, status is ${clientB.connectionStatus}');
+      'EXAMPLE::ERROR Mosquitto client B connection failed - disconnecting, status is ${clientB.connectionStatus}',
+    );
     clientB.disconnect();
     exit(-1);
   }
@@ -207,17 +216,20 @@ void onAutoReconnected() async {
 /// The successful connect callback
 void onConnectedA() {
   print(
-      'EXAMPLE::OnConnected client A callback - Client connection was successful');
+    'EXAMPLE::OnConnected client A callback - Client connection was successful',
+  );
 }
 
 // The successful connect callback
 void onConnectedB() {
   print(
-      'EXAMPLE::OnConnected client B callback - Client connection was successful');
+    'EXAMPLE::OnConnected client B callback - Client connection was successful',
+  );
 }
 
 /// Pong callback
 void pong() {
   print(
-      'EXAMPLE::Ping response client callback invoked - you may want to disconnect your broker here');
+    'EXAMPLE::Ping response client callback invoked - you may want to disconnect your broker here',
+  );
 }

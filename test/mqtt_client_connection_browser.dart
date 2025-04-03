@@ -30,24 +30,28 @@ void main() {
       } on Exception catch (e) {
         expect(e is MqttNoConnectionException, true);
         expect(
-            e.toString(),
-            'mqtt-client::NoConnectionException: '
-            'MqttBrowserWsConnection::connect - The URI supplied for the WS connection is not valid - ://localhost.com');
+          e.toString(),
+          'mqtt-client::NoConnectionException: '
+          'MqttBrowserWsConnection::connect - The URI supplied for the WS connection is not valid - ://localhost.com',
+        );
       }
     });
 
     test('Invalid URL - bad scheme', () async {
       try {
-        final client =
-            MqttBrowserClient(mockBrokerAddressWsNoScheme, testClientId);
+        final client = MqttBrowserClient(
+          mockBrokerAddressWsNoScheme,
+          testClientId,
+        );
         client.logging(on: true);
         await client.connect();
       } on Exception catch (e) {
         expect(e is MqttNoConnectionException, true);
         expect(
-            e.toString(),
-            'mqtt-client::NoConnectionException: '
-            'MqttBrowserWsConnection::connect - The URI supplied for the WS has an incorrect scheme - $mockBrokerAddressWsNoScheme');
+          e.toString(),
+          'mqtt-client::NoConnectionException: '
+          'MqttBrowserWsConnection::connect - The URI supplied for the WS has an incorrect scheme - $mockBrokerAddressWsNoScheme',
+        );
       }
     });
   });
@@ -100,14 +104,16 @@ void main() {
           connectionOK = true;
         } else {
           print(
-              'Browser client connection failed - disconnecting, status is ${client.connectionStatus}');
+            'Browser client connection failed - disconnecting, status is ${client.connectionStatus}',
+          );
           client.disconnect();
         }
         expect(connectionOK, isTrue);
         expect(callbackOk, isTrue);
       } on MqttNoConnectionException {
         print(
-            '>>>>> TEST NOT OK - No connection exception thrown, is the local WS broker running?');
+          '>>>>> TEST NOT OK - No connection exception thrown, is the local WS broker running?',
+        );
         ok = false;
       }
       expect(ok, isTrue);
@@ -146,7 +152,8 @@ void main() {
           connectionOK = true;
         } else {
           print(
-              'Browser client connection failed - disconnecting, status is ${client.connectionStatus}');
+            'Browser client connection failed - disconnecting, status is ${client.connectionStatus}',
+          );
           client.disconnect();
         }
         await sleeper.sleep();
@@ -158,7 +165,8 @@ void main() {
         }
       } on MqttNoConnectionException {
         print(
-            '>>>>> TEST NOT OK - No connection exception thrown, cannot connect to Mosquitto');
+          '>>>>> TEST NOT OK - No connection exception thrown, cannot connect to Mosquitto',
+        );
         ok = false;
       }
       expect(ok, isTrue);

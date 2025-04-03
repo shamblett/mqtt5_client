@@ -26,8 +26,9 @@ class MqttWillProperties {
   int get willDelayInterval => _willDelayInterval;
   set willDelayInterval(int delay) {
     if (delay != 0) {
-      final property =
-          MqttFourByteIntegerProperty(MqttPropertyIdentifier.willDelayInterval);
+      final property = MqttFourByteIntegerProperty(
+        MqttPropertyIdentifier.willDelayInterval,
+      );
       property.value = delay;
       _propertySet.add(property);
       _willDelayInterval = delay;
@@ -45,8 +46,9 @@ class MqttWillProperties {
   bool _payloadFormatIndicator = false;
   bool get payloadFormatIndicator => _payloadFormatIndicator;
   set payloadFormatIndicator(bool indicator) {
-    final property =
-        MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
+    final property = MqttByteProperty(
+      MqttPropertyIdentifier.payloadFormatIndicator,
+    );
     property.value = indicator ? 1 : 0;
     _propertySet.add(property);
     _payloadFormatIndicator = indicator;
@@ -63,7 +65,8 @@ class MqttWillProperties {
   set messageExpiryInterval(int interval) {
     if (interval != 0) {
       final property = MqttFourByteIntegerProperty(
-          MqttPropertyIdentifier.messageExpiryInterval);
+        MqttPropertyIdentifier.messageExpiryInterval,
+      );
       property.value = interval;
       _propertySet.add(property);
       _messageExpiryInterval = interval;
@@ -78,8 +81,9 @@ class MqttWillProperties {
   String? get contentType => _contentType;
   set contentType(String? type) {
     if (type != null) {
-      final property =
-          MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
+      final property = MqttUtf8StringProperty(
+        MqttPropertyIdentifier.contentType,
+      );
       property.value = type;
       _propertySet.add(property);
       _contentType = type;
@@ -94,8 +98,9 @@ class MqttWillProperties {
   String? get responseTopic => _responseTopic;
   set responseTopic(String? topic) {
     if (topic != null) {
-      final property =
-          MqttUtf8StringProperty(MqttPropertyIdentifier.responseTopic);
+      final property = MqttUtf8StringProperty(
+        MqttPropertyIdentifier.responseTopic,
+      );
       property.value = topic;
       _propertySet.add(property);
       _responseTopic = topic;
@@ -115,8 +120,9 @@ class MqttWillProperties {
   typed.Uint8Buffer? get correlationData => _correlationData;
   set correlationData(typed.Uint8Buffer? data) {
     if (data != null) {
-      final property =
-          MqttBinaryDataProperty(MqttPropertyIdentifier.correlationdata);
+      final property = MqttBinaryDataProperty(
+        MqttPropertyIdentifier.correlationdata,
+      );
       property.addBytes(data);
       _propertySet.add(property);
       if (_correlationData == null) {

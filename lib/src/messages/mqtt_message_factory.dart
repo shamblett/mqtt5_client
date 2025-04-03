@@ -12,7 +12,9 @@ class MqttMessageFactory {
   /// Gets an instance of an MqttMessage based on the message type requested
   /// from a byte stream.
   static MqttMessage? getMessage(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     MqttMessage? message;
     switch (header.messageType) {
       case MqttMessageType.connect:
@@ -21,7 +23,8 @@ class MqttMessageFactory {
       case MqttMessageType.unsubscribe:
         // Send only messages should not be decoded from a byte stream, i.e. received.
         MqttLogger.log(
-            'MqttMessage::getMessage - ERROR send only message received, returning null');
+          'MqttMessage::getMessage - ERROR send only message received, returning null',
+        );
         break;
       case MqttMessageType.connectAck:
         message = MqttConnectAckMessage.fromByteBuffer(header, messageStream);
@@ -33,23 +36,31 @@ class MqttMessageFactory {
         message = MqttPublishAckMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.publishComplete:
-        message =
-            MqttPublishCompleteMessage.fromByteBuffer(header, messageStream);
+        message = MqttPublishCompleteMessage.fromByteBuffer(
+          header,
+          messageStream,
+        );
         break;
       case MqttMessageType.publishReceived:
-        message =
-            MqttPublishReceivedMessage.fromByteBuffer(header, messageStream);
+        message = MqttPublishReceivedMessage.fromByteBuffer(
+          header,
+          messageStream,
+        );
         break;
       case MqttMessageType.publishRelease:
-        message =
-            MqttPublishReleaseMessage.fromByteBuffer(header, messageStream);
+        message = MqttPublishReleaseMessage.fromByteBuffer(
+          header,
+          messageStream,
+        );
         break;
       case MqttMessageType.subscribeAck:
         message = MqttSubscribeAckMessage.fromByteBuffer(header, messageStream);
         break;
       case MqttMessageType.unsubscribeAck:
-        message =
-            MqttUnsubscribeAckMessage.fromByteBuffer(header, messageStream);
+        message = MqttUnsubscribeAckMessage.fromByteBuffer(
+          header,
+          messageStream,
+        );
         break;
       case MqttMessageType.pingResponse:
         message = MqttPingResponseMessage.fromByteBuffer(header, messageStream);
@@ -62,8 +73,9 @@ class MqttMessageFactory {
         break;
       default:
         throw MqttInvalidHeaderException(
-            'The Message Type specified ($header.messageType) is not a valid '
-            'MQTT Message type or currently not supported.');
+          'The Message Type specified ($header.messageType) is not a valid '
+          'MQTT Message type or currently not supported.',
+        );
     }
     return message;
   }

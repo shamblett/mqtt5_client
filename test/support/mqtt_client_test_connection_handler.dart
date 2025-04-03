@@ -9,14 +9,19 @@ import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 
 class TestConnectionHandlerNoSend extends MqttServerConnectionHandler {
-  TestConnectionHandlerNoSend(super.clientEventBus,
-      {super.maxConnectionAttempts,
-      required super.socketOptions,
-      required super.socketTimeout});
+  TestConnectionHandlerNoSend(
+    super.clientEventBus, {
+    super.maxConnectionAttempts,
+    required super.socketOptions,
+    required super.socketTimeout,
+  });
 
   @override
   Future<MqttConnectionStatus> internalConnect(
-      String? hostname, int? port, MqttConnectMessage? message) {
+    String? hostname,
+    int? port,
+    MqttConnectMessage? message,
+  ) {
     final completer = Completer<MqttConnectionStatus>();
     return completer.future;
   }
@@ -34,10 +39,12 @@ class TestConnectionHandlerNoSend extends MqttServerConnectionHandler {
 }
 
 class TestConnectionHandlerSend extends MqttServerConnectionHandler {
-  TestConnectionHandlerSend(super.clientEventBus,
-      {super.maxConnectionAttempts,
-      required super.socketOptions,
-      required super.socketTimeout});
+  TestConnectionHandlerSend(
+    super.clientEventBus, {
+    super.maxConnectionAttempts,
+    required super.socketOptions,
+    required super.socketTimeout,
+  });
 
   /// Alternate websocket implementation.
   ///
@@ -58,7 +65,10 @@ class TestConnectionHandlerSend extends MqttServerConnectionHandler {
 
   @override
   Future<MqttConnectionStatus> internalConnect(
-      String? hostname, int? port, MqttConnectMessage? message) {
+    String? hostname,
+    int? port,
+    MqttConnectMessage? message,
+  ) {
     final completer = Completer<MqttConnectionStatus>();
     return completer.future;
   }

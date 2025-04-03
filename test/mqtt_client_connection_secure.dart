@@ -25,10 +25,16 @@ class MockCH extends Mock implements MqttServerConnectionHandler {
 }
 
 class MockKA extends Mock implements MqttConnectionKeepAlive {
-  MockKA(MqttIConnectionHandler connectionHandler,
-      events.EventBus clientEventBus, int keepAliveSeconds) {
+  MockKA(
+    MqttIConnectionHandler connectionHandler,
+    events.EventBus clientEventBus,
+    int keepAliveSeconds,
+  ) {
     ka = MqttConnectionKeepAlive(
-        connectionHandler, clientEventBus, keepAliveSeconds);
+      connectionHandler,
+      clientEventBus,
+      keepAliveSeconds,
+    );
   }
 
   late MqttConnectionKeepAlive ka;
@@ -57,15 +63,17 @@ void main() {
     });
     test('Ping response received', () {
       final MqttMessage msg = MqttPingResponseMessage();
-      when(ka.pingResponseReceived(msg))
-          .thenReturn(ka.ka.pingResponseReceived(msg));
+      when(
+        ka.pingResponseReceived(msg),
+      ).thenReturn(ka.ka.pingResponseReceived(msg));
       expect(ka.pingResponseReceived(msg), isTrue);
       verify(ka.pingResponseReceived(msg));
     });
     test('Ping request received', () {
       final MqttMessage msg = MqttPingRequestMessage();
-      when(ka.pingRequestReceived(msg))
-          .thenReturn(ka.ka.pingRequestReceived(msg));
+      when(
+        ka.pingRequestReceived(msg),
+      ).thenReturn(ka.ka.pingRequestReceived(msg));
       expect(ka.pingRequestReceived(msg), isTrue);
       verify(ka.pingRequestReceived(msg));
     });
@@ -82,14 +90,19 @@ void main() {
   group('Synchronous MqttConnectionHandler', () {
     test('Connect to bad host name', () async {
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       ch.secure = true;
       try {
-        await ch.connect(nonExistantHostName, mockBrokerPort,
-            MqttConnectMessage().withClientIdentifier(testClientId));
+        await ch.connect(
+          nonExistantHostName,
+          mockBrokerPort,
+          MqttConnectMessage().withClientIdentifier(testClientId),
+        );
       } on Exception catch (e) {
         expect(e.toString().contains('Failed host lookup'), isTrue);
         expect(e.toString().contains(nonExistantHostName), isTrue);
@@ -103,15 +116,20 @@ void main() {
       }
 
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       ch.secure = true;
       ch.onDisconnected = disconnectCB;
       try {
-        await ch.connect(mockBrokerAddress, badPort,
-            MqttConnectMessage().withClientIdentifier(testClientId));
+        await ch.connect(
+          mockBrokerAddress,
+          badPort,
+          MqttConnectMessage().withClientIdentifier(testClientId),
+        );
       } on Exception catch (e) {
         expect(e.toString().contains('refused'), isTrue);
       }
@@ -146,7 +164,8 @@ void main() {
         final header = MqttHeader.fromByteBuffer(headerStream);
         if (expectRequest <= 3) {
           print(
-              'Connection Keep Alive - Successful response - Ping Request received $expectRequest');
+            'Connection Keep Alive - Successful response - Ping Request received $expectRequest',
+          );
           expect(header.messageType, MqttMessageType.pingRequest);
           expectRequest++;
         }
@@ -154,85 +173,110 @@ void main() {
 
       await broker.start();
       final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
-          maxConnectionAttempts: 3,
-          socketOptions: socketOptions,
-          socketTimeout: null);
+      final ch = MqttSynchronousServerConnectionHandler(
+        clientEventBus,
+        maxConnectionAttempts: 3,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
       ch.secure = true;
       final context = SecurityContext.defaultContext;
       final currDir = path.current + path.separator;
       context.setTrustedCertificates(
-          currDir + path.join('test', 'pem', 'localhost.cert'));
+        currDir + path.join('test', 'pem', 'localhost.cert'),
+      );
       ch.securityContext = context;
-      await ch.connect(mockBrokerAddress, mockBrokerPort,
-          MqttConnectMessage().withClientIdentifier(testClientId));
+      await ch.connect(
+        mockBrokerAddress,
+        mockBrokerPort,
+        MqttConnectMessage().withClientIdentifier(testClientId),
+      );
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
       broker.setMessageHandler = messageHandlerPingRequest;
       final ka = MqttConnectionKeepAlive(ch, clientEventBus, 2);
       print(
-          'Connection Keep Alive - Successful response - keepealive ms is ${ka.keepAlivePeriod}');
+        'Connection Keep Alive - Successful response - keepealive ms is ${ka.keepAlivePeriod}',
+      );
       print(
-          'Connection Keep Alive - Successful response - ping timer active is ${ka.pingTimer!.isActive.toString()}');
+        'Connection Keep Alive - Successful response - ping timer active is ${ka.pingTimer!.isActive.toString()}',
+      );
       final stopwatch = Stopwatch()..start();
       await MqttUtilities.asyncSleep(10);
-      print('Connection Keep Alive - Successful response - Elapsed time '
-          'is ${stopwatch.elapsedMilliseconds / 1000} seconds');
+      print(
+        'Connection Keep Alive - Successful response - Elapsed time '
+        'is ${stopwatch.elapsedMilliseconds / 1000} seconds',
+      );
       ka.stop();
       ch.close();
     });
 
     test(
-        'Self-signed certificate - Failed with error - Handshake error in client',
-        () async {
-      var cbCalled = false;
-      void disconnectCB() {
-        cbCalled = true;
-      }
+      'Self-signed certificate - Failed with error - Handshake error in client',
+      () async {
+        var cbCalled = false;
+        void disconnectCB() {
+          cbCalled = true;
+        }
 
-      broker.pemName = 'self_signed';
-      await broker.start();
-      final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+        broker.pemName = 'self_signed';
+        await broker.start();
+        final clientEventBus = events.EventBus();
+        final ch = MqttSynchronousServerConnectionHandler(
+          clientEventBus,
           maxConnectionAttempts: 3,
           socketOptions: socketOptions,
-          socketTimeout: null);
-      ch.secure = true;
-      ch.onDisconnected = disconnectCB;
-      final context = SecurityContext();
-      final currDir = path.current + path.separator;
-      context.setTrustedCertificates(
-          currDir + path.join('test', 'pem', 'self_signed.cert'));
-      ch.securityContext = context;
-      try {
-        await ch.connect(mockBrokerAddress, mockBrokerPort,
-            MqttConnectMessage().withClientIdentifier(testClientId));
-      } on Exception catch (e) {
-        expect(e.toString().contains('Handshake error in client'), isTrue);
-      }
-      expect(ch.connectionStatus.state, MqttConnectionState.faulted);
-      expect(cbCalled, isTrue);
-    });
-    test('Successfully connected to broker with self-signed certifcate',
-        () async {
-      broker.pemName = 'self_signed';
-      await broker.start();
-      final clientEventBus = events.EventBus();
-      final ch = MqttSynchronousServerConnectionHandler(clientEventBus,
+          socketTimeout: null,
+        );
+        ch.secure = true;
+        ch.onDisconnected = disconnectCB;
+        final context = SecurityContext();
+        final currDir = path.current + path.separator;
+        context.setTrustedCertificates(
+          currDir + path.join('test', 'pem', 'self_signed.cert'),
+        );
+        ch.securityContext = context;
+        try {
+          await ch.connect(
+            mockBrokerAddress,
+            mockBrokerPort,
+            MqttConnectMessage().withClientIdentifier(testClientId),
+          );
+        } on Exception catch (e) {
+          expect(e.toString().contains('Handshake error in client'), isTrue);
+        }
+        expect(ch.connectionStatus.state, MqttConnectionState.faulted);
+        expect(cbCalled, isTrue);
+      },
+    );
+    test(
+      'Successfully connected to broker with self-signed certifcate',
+      () async {
+        broker.pemName = 'self_signed';
+        await broker.start();
+        final clientEventBus = events.EventBus();
+        final ch = MqttSynchronousServerConnectionHandler(
+          clientEventBus,
           maxConnectionAttempts: 3,
           socketOptions: socketOptions,
-          socketTimeout: null);
-      ch.secure = true;
-      // Skip bad certificate
-      ch.onBadCertificate = (_) => true;
-      final context = SecurityContext();
-      final currDir = path.current + path.separator;
-      context.setTrustedCertificates(
-          currDir + path.join('test', 'pem', 'self_signed.cert'));
-      ch.securityContext = context;
-      await ch.connect(mockBrokerAddress, mockBrokerPort,
-          MqttConnectMessage().withClientIdentifier(testClientId));
-      expect(ch.connectionStatus.state, MqttConnectionState.connected);
-      ch.close();
-    });
+          socketTimeout: null,
+        );
+        ch.secure = true;
+        // Skip bad certificate
+        ch.onBadCertificate = (_) => true;
+        final context = SecurityContext();
+        final currDir = path.current + path.separator;
+        context.setTrustedCertificates(
+          currDir + path.join('test', 'pem', 'self_signed.cert'),
+        );
+        ch.securityContext = context;
+        await ch.connect(
+          mockBrokerAddress,
+          mockBrokerPort,
+          MqttConnectMessage().withClientIdentifier(testClientId),
+        );
+        expect(ch.connectionStatus.state, MqttConnectionState.connected);
+        ch.close();
+      },
+    );
   });
 }

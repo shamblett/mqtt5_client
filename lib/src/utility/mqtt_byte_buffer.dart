@@ -72,14 +72,16 @@ class MqttByteBuffer {
     // If the first byte of the header is 0 then skip past it.
     if (peekByte() == 0) {
       MqttLogger.log(
-          'MqttByteBuffer:isMessageAvailable - first header byte is zero, skipping');
+        'MqttByteBuffer:isMessageAvailable - first header byte is zero, skipping',
+      );
       _position++;
       shrink();
     }
 
     // Assume we now have a valid header
     MqttLogger.log(
-        'MqttByteBuffer:isMessageAvailable - assumed valid header, value is ${peekByte()}');
+      'MqttByteBuffer:isMessageAvailable - assumed valid header, value is ${peekByte()}',
+    );
     // Save the position
     var position = _position;
     var header = MqttHeader.fromByteBuffer(this);
@@ -88,8 +90,9 @@ class MqttByteBuffer {
     _position = position;
     if (avibytes < header.messageSize) {
       MqttLogger.log(
-          'MqttByteBuffer:isMessageAvailable - Available bytes($avibytes) is less than the message size'
-          ' ${header.messageSize}');
+        'MqttByteBuffer:isMessageAvailable - Available bytes($avibytes) is less than the message size'
+        ' ${header.messageSize}',
+      );
 
       return false;
     }
@@ -124,9 +127,11 @@ class MqttByteBuffer {
   /// by the number of bytes read.
   typed.Uint8Buffer read(int count) {
     if ((length < count) || (_position + count) > length) {
-      throw Exception('MqttByteBuffer::read: The buffer did not have '
-          'enough bytes for the read operation '
-          'length $length, count $count, position $_position, buffer $buffer');
+      throw Exception(
+        'MqttByteBuffer::read: The buffer did not have '
+        'enough bytes for the read operation '
+        'length $length, count $count, position $_position, buffer $buffer',
+      );
     }
     final tmp = typed.Uint8Buffer();
     tmp.addAll(buffer!.getRange(_position, _position + count));
@@ -184,7 +189,9 @@ class MqttByteBuffer {
   /// stringStream - The stream containing the string to write.
   /// stringToWrite - The string to write.
   static void writeMqttString(
-      MqttByteBuffer stringStream, String? stringToWrite) {
+    MqttByteBuffer stringStream,
+    String? stringToWrite,
+  ) {
     if (stringToWrite != null) {
       final enc = MqttUtf8Encoding();
       final stringBytes = enc.toUtf8(stringToWrite);
@@ -208,7 +215,8 @@ class MqttByteBuffer {
   void clear() {
     if (_position != 0) {
       throw StateError(
-          'MqttByteBuffer::clear - attempt to clear a byte buffer where postion is not zero, it is $_position');
+        'MqttByteBuffer::clear - attempt to clear a byte buffer where postion is not zero, it is $_position',
+      );
     }
     buffer?.clear();
   }

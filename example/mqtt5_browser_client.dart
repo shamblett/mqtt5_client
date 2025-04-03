@@ -57,9 +57,10 @@ Future<int> main() async {
   /// Create a connection message to use or use the default one. The default one sets the
   /// client identifier, any supplied username/password, the default keepalive interval(60s)
   /// and clean session, an example of a specific one below.
-  final connMess = MqttConnectMessage()
-      .withClientIdentifier('Mqtt_MyClientUniqueId')
-      .startClean(); // Non persistent session for testing
+  final connMess =
+      MqttConnectMessage()
+          .withClientIdentifier('Mqtt_MyClientUniqueId')
+          .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 
@@ -79,7 +80,8 @@ Future<int> main() async {
   } else {
     /// Use status here rather than state if you also want the broker return code.
     print(
-        'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
+      'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}',
+    );
     client.disconnect();
     return -1;
   }
@@ -101,7 +103,8 @@ Future<int> main() async {
     /// for a while.
     /// The payload is a byte buffer, this will be specific to the topic
     print(
-        'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+      'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->',
+    );
     print('');
   });
 
@@ -110,7 +113,8 @@ Future<int> main() async {
   /// publishing handshake with the broker.
   client.published!.listen((MqttPublishMessage message) {
     print(
-        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+      'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}',
+    );
   });
 
   /// Lets publish to our topic
@@ -147,7 +151,8 @@ Future<int> main() async {
 /// The subscribed callback
 void onSubscribed(MqttSubscription subscription) {
   print(
-      'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
+    'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}',
+  );
 }
 
 /// The unsolicited disconnect callback
@@ -162,7 +167,8 @@ void onDisconnected() {
 /// The successful connect callback
 void onConnected() {
   print(
-      'EXAMPLE::OnConnected client callback - Client connection was sucessful');
+    'EXAMPLE::OnConnected client callback - Client connection was sucessful',
+  );
 }
 
 /// Pong callback

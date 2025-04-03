@@ -18,10 +18,14 @@ class MqttPublishReceivedMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttPublishReceivedMessage class.
   MqttPublishReceivedMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
-    variableHeader =
-        MqttPublishReceivedVariableHeader.fromByteBuffer(header, messageStream);
+    variableHeader = MqttPublishReceivedVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

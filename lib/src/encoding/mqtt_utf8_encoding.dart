@@ -26,7 +26,8 @@ class MqttUtf8Encoding {
     final stringConverted = utf8.encoder.convert(s);
     if (stringConverted.length > 65535) {
       throw Exception(
-          'MqttUtf8Encoding::toUtf8 -  UTF8 string length is invalid, length is ${stringConverted.length}');
+        'MqttUtf8Encoding::toUtf8 -  UTF8 string length is invalid, length is ${stringConverted.length}',
+      );
     }
     final stringBytes = typed.Uint8Buffer();
     stringBytes.add(stringConverted.length >> 8);
@@ -48,7 +49,8 @@ class MqttUtf8Encoding {
   int length(typed.Uint8Buffer bytes) {
     if (bytes.length < 2) {
       throw Exception(
-          'MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
+        'MqttUtf8Encoding:: Length byte array must comprise 2 bytes',
+      );
     }
     return (bytes[0] << 8) + bytes[1];
   }
@@ -78,9 +80,11 @@ class MqttUtf8Encoding {
   ///         U+007F..U+009F control characters
   void _validateString(String s) {
     if (s.runes.any(
-        (e) => (e >= 0x0000 && e <= 0x001f) || (e >= 0x007f && e <= 0x009f))) {
+      (e) => (e >= 0x0000 && e <= 0x001f) || (e >= 0x007f && e <= 0x009f),
+    )) {
       throw Exception(
-          'MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+        'MqttUtf8Encoding:: UTF8 string is invalid, contains control characters',
+      );
     }
   }
 }

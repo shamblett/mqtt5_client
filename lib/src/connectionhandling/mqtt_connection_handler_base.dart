@@ -11,8 +11,10 @@ part of '../../mqtt5_client.dart';
 ///  to server and browser connection handler implementations.
 abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
-  MqttConnectionHandlerBase(this.clientEventBus,
-      {required this.maxConnectionAttempts});
+  MqttConnectionHandlerBase(
+    this.clientEventBus, {
+    required this.maxConnectionAttempts,
+  });
 
   /// Successful connection callback.
   @override
@@ -99,12 +101,16 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Connect to the specific Mqtt Connection.
   @override
   Future<MqttConnectionStatus> connect(
-      String? server, int? port, MqttConnectMessage? message) async {
+    String? server,
+    int? port,
+    MqttConnectMessage? message,
+  ) async {
     // Save the parameters for auto reconnect.
     this.server = server;
     this.port = port;
     MqttLogger.log(
-        'MqttConnectionHandlerBase::connect - server $server, port $port');
+      'MqttConnectionHandlerBase::connect - server $server, port $port',
+    );
     // ignore: unnecessary_this
     // ignore: unnecessary_this
     this.connectionMessage = message;
@@ -120,7 +126,10 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Connect to the specific Mqtt Connection internally.
   @protected
   Future<MqttConnectionStatus> internalConnect(
-      String? hostname, int? port, MqttConnectMessage? message);
+    String? hostname,
+    int? port,
+    MqttConnectMessage? message,
+  );
 
   /// Auto reconnect
   @protected
@@ -139,15 +148,20 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     // If we are connected disconnect from the broker.
     if (reconnectEvent.wasConnected) {
       MqttLogger.log(
-          'MqttConnectionHandlerBase::autoReconnect - was connected, sending disconnect');
-      sendMessage(MqttDisconnectMessage()
-          .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
+        'MqttConnectionHandlerBase::autoReconnect - was connected, sending disconnect',
+      );
+      sendMessage(
+        MqttDisconnectMessage().withReasonCode(
+          MqttDisconnectReasonCode.normalDisconnection,
+        ),
+      );
       connectionStatus.state = MqttConnectionState.disconnecting;
     }
     connection.disconnect(auto: true);
     connection.onDisconnected = null;
     MqttLogger.log(
-        'MqttConnectionHandlerBase::autoReconnect - attempting reconnection');
+      'MqttConnectionHandlerBase::autoReconnect - attempting reconnection',
+    );
     connectionStatus = await connect(server, port, connectionMessage);
     autoReconnectInProgress = false;
     if (connectionStatus.state == MqttConnectionState.connected) {
@@ -155,14 +169,16 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
       // Fire the re subscribe event.
       clientEventBus!.fire(MqttResubscribe(fromAutoReconnect: true));
       MqttLogger.log(
-          'MqttConnectionHandlerBase::autoReconnect - auto reconnect complete');
+        'MqttConnectionHandlerBase::autoReconnect - auto reconnect complete',
+      );
       // If the auto reconnect callback is set call it
       if (onAutoReconnected != null) {
         onAutoReconnected!();
       }
     } else {
       MqttLogger.log(
-          'MqttConnectionHandlerBase::autoReconnect - auto reconnect failed - re trying');
+        'MqttConnectionHandlerBase::autoReconnect - auto reconnect failed - re trying',
+      );
       clientEventBus?.fire(MqttAutoReconnect());
     }
   }
@@ -171,12 +187,14 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   @override
   void sendMessage(MqttMessage message) {
     MqttLogger.log(
-        'MqttConnectionHandlerBase::sendMessage - sending message started >>> -> ',
-        message);
+      'MqttConnectionHandlerBase::sendMessage - sending message started >>> -> ',
+      message,
+    );
     // Check for validity
     if (!message.isValid) {
       throw ArgumentError(
-          'MqttConnectionHandlerBase::sendMessage - message cannot be sent, not valid');
+        'MqttConnectionHandlerBase::sendMessage - message cannot be sent, not valid',
+      );
     }
     if ((connectionStatus.state == MqttConnectionState.connected) ||
         (connectionStatus.state == MqttConnectionState.connecting)) {
@@ -193,7 +211,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
       MqttLogger.log('MqttConnectionHandler::sendMessage - not connected');
     }
     MqttLogger.log(
-        'MqttConnectionHandlerBase::sendMessage - sending message ended >>>');
+      'MqttConnectionHandlerBase::sendMessage - sending message ended >>>',
+    );
   }
 
   /// Closes the connection to the Mqtt message broker.
@@ -207,7 +226,9 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Registers for the receipt of messages when they arrive.
   @override
   void registerForMessage(
-      MqttMessageType msgType, MessageCallbackFunction callback) {
+    MqttMessageType msgType,
+    MessageCallbackFunction callback,
+  ) {
     messageProcessorRegistry[msgType] = callback;
   }
 
@@ -235,13 +256,15 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   void messageAvailable(MqttMessageAvailable event) {
     final messageType = event.message!.header!.messageType;
     MqttLogger.log(
-        'MqttConnectionHandlerBase::messageAvailable - message type is $messageType');
+      'MqttConnectionHandlerBase::messageAvailable - message type is $messageType',
+    );
     final callback = messageProcessorRegistry[messageType!];
     if (callback != null) {
       callback(event.message!);
     } else {
       MqttLogger.log(
-          'MqttConnectionHandlerBase::messageAvailable - WARN - no registered callback for this message type');
+        'MqttConnectionHandlerBase::messageAvailable - WARN - no registered callback for this message type',
+      );
     }
   }
 
@@ -252,8 +275,11 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     if (connectionStatus.state == MqttConnectionState.connected) {
       // Send a disconnect message to the broker
       if (disconnectMessage == null) {
-        sendMessage(MqttDisconnectMessage()
-            .withReasonCode(MqttDisconnectReasonCode.normalDisconnection));
+        sendMessage(
+          MqttDisconnectMessage().withReasonCode(
+            MqttDisconnectReasonCode.normalDisconnection,
+          ),
+        );
       } else {
         sendMessage(disconnectMessage);
       }
@@ -267,7 +293,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   @protected
   void _performConnectionDisconnect() {
     MqttLogger.log(
-        'MqttConnectionHandlerBase::_performConnectionDisconnect entered');
+      'MqttConnectionHandlerBase::_performConnectionDisconnect entered',
+    );
     connectionStatus.state = MqttConnectionState.disconnected;
     clientEventBus = null;
   }
@@ -280,13 +307,17 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
       final ackMsg = msg as MqttConnectAckMessage;
       // Drop the connection if our connect request has been rejected.
       if (!_reasonCodeOk(msg)) {
-        MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
-            '- reason code check failed, disconnecting');
+        MqttLogger.log(
+          'MqttConnectionHandlerBase::_connectAckProcessor '
+          '- reason code check failed, disconnecting',
+        );
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.
-        MqttLogger.log('MqttConnectionHandlerBase::_connectAckProcessor '
-            '- state = connected');
+        MqttLogger.log(
+          'MqttConnectionHandlerBase::_connectAckProcessor '
+          '- state = connected',
+        );
         connectionStatus.state = MqttConnectionState.connected;
         connectionStatus.reasonCode = ackMsg.variableHeader!.reasonCode;
         connectionStatus.reasonString = ackMsg.variableHeader!.reasonString;
@@ -314,9 +345,9 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   void initialiseListeners() {
     clientEventBus!.on<MqttAutoReconnect>().listen(autoReconnect);
     clientEventBus!.on<MqttMessageAvailable>().listen(messageAvailable);
-    clientEventBus!
-        .on<MqttConnectAckMessageAvailable>()
-        .listen(connectAckReceived);
+    clientEventBus!.on<MqttConnectAckMessageAvailable>().listen(
+      connectAckReceived,
+    );
   }
 
   // Reason code check, returns true if the reason code is valid and not an error
@@ -330,28 +361,33 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
           connectionStatus.reasonString = msg.variableHeader?.reasonString;
           if (MqttReasonCodeUtilities.isError(reasonCodeInt)) {
             MqttLogger.log(
-                'MqttConnectionHandlerBase::_reasonCodeOk - reason code is an error '
-                '${mqttConnectReasonCode.asString(reasonCode)}');
+              'MqttConnectionHandlerBase::_reasonCodeOk - reason code is an error '
+              '${mqttConnectReasonCode.asString(reasonCode)}',
+            );
             return false;
           } else {
             MqttLogger.log(
-                'MqttConnectionHandlerBase::_reasonCodeOk - reason code is ok '
-                '${mqttConnectReasonCode.asString(reasonCode)}');
+              'MqttConnectionHandlerBase::_reasonCodeOk - reason code is ok '
+              '${mqttConnectReasonCode.asString(reasonCode)}',
+            );
             return true;
           }
         } else {
           MqttLogger.log(
-              'MqttConnectionHandlerBase::_reasonCodeOk - reason code has a null integer value');
+            'MqttConnectionHandlerBase::_reasonCodeOk - reason code has a null integer value',
+          );
           return false;
         }
       } else {
         MqttLogger.log(
-            'MqttConnectionHandlerBase::_reasonCodeOk - reason code is null');
+          'MqttConnectionHandlerBase::_reasonCodeOk - reason code is null',
+        );
         return true;
       }
     } else {
       MqttLogger.log(
-          'MqttConnectionHandlerBase::_reasonCodeOk - variable header is null');
+        'MqttConnectionHandlerBase::_reasonCodeOk - variable header is null',
+      );
       return false;
     }
   }

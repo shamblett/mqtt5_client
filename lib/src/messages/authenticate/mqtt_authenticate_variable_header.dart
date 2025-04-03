@@ -15,7 +15,9 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
 
   /// Initializes a new instance of the MqttAuthenticateVariableHeader class.
   MqttAuthenticateVariableHeader.fromByteBuffer(
-      this.header, MqttByteBuffer variableHeaderStream) {
+    this.header,
+    MqttByteBuffer variableHeaderStream,
+  ) {
     readFrom(variableHeaderStream);
   }
 
@@ -42,8 +44,9 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   String? _authenticationMethod;
   String? get authenticationMethod => _authenticationMethod;
   set authenticationMethod(String? method) {
-    var property =
-        MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
+    var property = MqttUtf8StringProperty(
+      MqttPropertyIdentifier.authenticationMethod,
+    );
     property.value = method;
     _propertySet.add(property);
     _authenticationMethod = method;
@@ -56,8 +59,9 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   typed.Uint8Buffer _authenticationData = typed.Uint8Buffer();
   typed.Uint8Buffer get authenticationData => _authenticationData;
   set authenticationData(typed.Uint8Buffer data) {
-    var property =
-        MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
+    var property = MqttBinaryDataProperty(
+      MqttPropertyIdentifier.authenticationData,
+    );
     property.addBytes(data);
     _propertySet.add(property);
     _authenticationData.clear();
@@ -93,7 +97,8 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttAuthenticateVariableHeader::_processProperties, message properties received are invalid');
+        'MqttAuthenticateVariableHeader::_processProperties, message properties received are invalid',
+      );
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -110,8 +115,9 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
         default:
           if (property.identifier != MqttPropertyIdentifier.userProperty) {
             MqttLogger.log(
-                'MqttAuthenticateVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
+              'MqttAuthenticateVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
           }
       }
     }
@@ -174,7 +180,8 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
   String toString() {
     final sb = StringBuffer();
     sb.writeln(
-        'Reason Code  = ${mqttAuthenticateReasonCode.asString(reasonCode)}');
+      'Reason Code  = ${mqttAuthenticateReasonCode.asString(reasonCode)}',
+    );
     sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }

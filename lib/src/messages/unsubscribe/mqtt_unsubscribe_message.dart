@@ -30,8 +30,10 @@ class MqttUnsubscribeMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header!.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
-        messageStream);
+    header!.writeTo(
+      variableHeader.getWriteLength() + payload.getWriteLength(),
+      messageStream,
+    );
     variableHeader.writeTo(messageStream);
     payload.writeTo(messageStream);
   }
@@ -41,7 +43,8 @@ class MqttUnsubscribeMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttUnsubscribeMessage::readFrom - not implemented, message is send only');
+      'MqttUnsubscribeMessage::readFrom - not implemented, message is send only',
+    );
   }
 
   /// Write length
@@ -69,7 +72,8 @@ class MqttUnsubscribeMessage extends MqttMessage {
 
   /// Adds a new unsubscription with the specified subscription list
   MqttUnsubscribeMessage fromSubscriptionList(
-      List<MqttSubscription> subscriptions) {
+    List<MqttSubscription> subscriptions,
+  ) {
     for (final subscription in subscriptions) {
       _payload.addTopicSubscription(subscription.topic);
     }

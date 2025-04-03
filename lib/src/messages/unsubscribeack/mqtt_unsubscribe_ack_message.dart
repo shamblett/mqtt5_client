@@ -18,7 +18,9 @@ class MqttUnsubscribeAckMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttUnsubscribeAckMessage class.
   MqttUnsubscribeAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
     readFrom(messageStream);
     messageStream.shrink();
@@ -49,16 +51,21 @@ class MqttUnsubscribeAckMessage extends MqttMessage {
   @override
   void writeTo(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttUnsubscribeAckMessage::writeTo - not implemented, message is receive only');
+      'MqttUnsubscribeAckMessage::writeTo - not implemented, message is receive only',
+    );
   }
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    _variableHeader =
-        MqttUnsubscribeAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader = MqttUnsubscribeAckVariableHeader.fromByteBuffer(
+      messageStream,
+    );
     _payload = MqttUnsubscribeAckPayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+      header,
+      variableHeader,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

@@ -18,10 +18,14 @@ class MqttPublishCompleteMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttPublishCompleteMessage class.
   MqttPublishCompleteMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
-    variableHeader =
-        MqttPublishCompleteVariableHeader.fromByteBuffer(header, messageStream);
+    variableHeader = MqttPublishCompleteVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

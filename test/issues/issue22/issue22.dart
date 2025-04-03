@@ -27,7 +27,10 @@ Future<int> main() async {
 
   test('Subscribe with option', () async {
     final client = MqttServerClient.withPort(
-        'test.mosquitto.org', 'client-id-123456789', 1883);
+      'test.mosquitto.org',
+      'client-id-123456789',
+      1883,
+    );
     client.autoReconnect = true;
     client.logging(on: true);
     await client.connect();

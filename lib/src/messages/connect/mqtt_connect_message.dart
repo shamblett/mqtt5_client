@@ -52,12 +52,13 @@ class MqttConnectMessage extends MqttMessage {
   /// If 0 is passed the maximum value is used.
   /// Mutually exclusive with [startClean], the last method applied to the message will take
   /// effect.
-  MqttConnectMessage startSession(
-      {int sessionExpiryInterval =
-          MqttConnectVariableHeader.sessionDoesNotExpire}) {
-    final interval = sessionExpiryInterval == 0
-        ? MqttConnectVariableHeader.sessionDoesNotExpire
-        : sessionExpiryInterval;
+  MqttConnectMessage startSession({
+    int sessionExpiryInterval = MqttConnectVariableHeader.sessionDoesNotExpire,
+  }) {
+    final interval =
+        sessionExpiryInterval == 0
+            ? MqttConnectVariableHeader.sessionDoesNotExpire
+            : sessionExpiryInterval;
     _variableHeader!.sessionExpiryInterval = interval;
     _variableHeader!.connectFlags.cleanStart = false;
     return this;
@@ -224,8 +225,9 @@ class MqttConnectMessage extends MqttMessage {
   @override
   void writeTo(MqttByteBuffer messageStream) {
     header!.writeTo(
-        _variableHeader!.getWriteLength() + payload.getWriteLength(),
-        messageStream);
+      _variableHeader!.getWriteLength() + payload.getWriteLength(),
+      messageStream,
+    );
     _variableHeader!.writeTo(messageStream);
     payload.writeTo(messageStream);
   }

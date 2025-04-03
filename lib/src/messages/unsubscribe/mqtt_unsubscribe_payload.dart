@@ -29,7 +29,8 @@ class MqttUnsubscribePayload extends MqttIPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     throw UnimplementedError(
-        'MqttUnsubscribePayload::readFrom - unimplemented, message is send only');
+      'MqttUnsubscribePayload::readFrom - unimplemented, message is send only',
+    );
   }
 
   // Serialize

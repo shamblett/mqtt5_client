@@ -191,7 +191,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttConnectAckVariableHeader::_processProperties, message properties received are invalid');
+        'MqttConnectAckVariableHeader::_processProperties, message properties received are invalid',
+      );
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -247,8 +248,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
         default:
           if (property.identifier != MqttPropertyIdentifier.userProperty) {
             MqttLogger.log(
-                'MqttConnectAckVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
+              'MqttConnectAckVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
           }
       }
       _userProperty = _propertySet.userProperties;
@@ -283,7 +285,8 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     final sb = StringBuffer();
     sb.writeln('Session Present = ${connectAckFlags.sessionPresent}');
     sb.writeln(
-        'Connect Reason Code = ${mqttConnectReasonCode.asString(reasonCode)}');
+      'Connect Reason Code = ${mqttConnectReasonCode.asString(reasonCode)}',
+    );
     sb.writeln('Session Expiry Interval = $sessionExpiryInterval');
     sb.writeln('Receive Maximum = $receiveMaximum');
     sb.writeln('Maximum QoS = $maximumQos');
@@ -293,9 +296,11 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sb.writeln('Topic Alias Maximum = $topicAliasMaximum');
     sb.writeln('Reason String = $reasonString');
     sb.writeln(
-        'Wildcard Subscription Available = $wildcardSubscriptionsAvailable');
+      'Wildcard Subscription Available = $wildcardSubscriptionsAvailable',
+    );
     sb.writeln(
-        'Subscription Identifiers Available = $subscriptionIdentifiersAvailable');
+      'Subscription Identifiers Available = $subscriptionIdentifiersAvailable',
+    );
     sb.writeln('Shared Subscription Available = $sharedSubscriptionAvailable');
     sb.writeln('broker Keep Alive = $serverKeepAlive');
     sb.writeln('Response Information = $responseInformation');

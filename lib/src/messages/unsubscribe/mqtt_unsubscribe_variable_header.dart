@@ -53,7 +53,8 @@ class MqttUnsubscribeVariableHeader implements MqttIVariableHeader {
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
     throw UnimplementedError(
-        'MqttUnubscribeVariableHeader::readFrom - not implemented, message is send only');
+      'MqttUnubscribeVariableHeader::readFrom - not implemented, message is send only',
+    );
   }
 
   /// Write the message identifier.

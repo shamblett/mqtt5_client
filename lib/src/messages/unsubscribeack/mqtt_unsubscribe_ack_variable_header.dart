@@ -51,7 +51,8 @@ class MqttUnsubscribeAckVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttUnsubscribeAckVariableHeader::_processProperties, message properties received are invalid');
+        'MqttUnsubscribeAckVariableHeader::_processProperties, message properties received are invalid',
+      );
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -62,8 +63,9 @@ class MqttUnsubscribeAckVariableHeader implements MqttIVariableHeader {
         default:
           if (property.identifier != MqttPropertyIdentifier.userProperty) {
             MqttLogger.log(
-                'MqttUnsubscribeAckVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
+              'MqttUnsubscribeAckVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
           }
       }
       _userProperty = _propertySet.userProperties;
@@ -86,7 +88,8 @@ class MqttUnsubscribeAckVariableHeader implements MqttIVariableHeader {
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
     throw UnimplementedError(
-        'MqttUnsubscribeAckVariableHeader::writeTo - not implemented, message is receive only');
+      'MqttUnsubscribeAckVariableHeader::writeTo - not implemented, message is receive only',
+    );
   }
 
   /// Gets the length of the write data.

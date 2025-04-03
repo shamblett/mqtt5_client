@@ -15,7 +15,9 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
 
   /// Initializes a new instance of the MqttDisconnectVariableHeader class.
   MqttDisconnectVariableHeader.fromByteBuffer(
-      this.header, MqttByteBuffer variableHeaderStream) {
+    this.header,
+    MqttByteBuffer variableHeaderStream,
+  ) {
     readFrom(variableHeaderStream);
   }
 
@@ -42,7 +44,8 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   int? get sessionExpiryInterval => _sessionExpiryInterval;
   set sessionExpiryInterval(int? interval) {
     var property = MqttFourByteIntegerProperty(
-        MqttPropertyIdentifier.sessionExpiryInterval);
+      MqttPropertyIdentifier.sessionExpiryInterval,
+    );
     property.value = interval;
     _propertySet.add(property);
     _sessionExpiryInterval = interval;
@@ -80,8 +83,9 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   String? _serverReference;
   String? get serverReference => _serverReference;
   set serverReference(String? reference) {
-    var property =
-        MqttUtf8StringProperty(MqttPropertyIdentifier.serverReference);
+    var property = MqttUtf8StringProperty(
+      MqttPropertyIdentifier.serverReference,
+    );
     property.value = reference;
     _propertySet.add(property);
     _serverReference = reference;
@@ -90,7 +94,8 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   void _processProperties() {
     if (!_propertySet.propertiesAreValid()) {
       throw FormatException(
-          'MqttDisconnectVariableHeader::_processProperties, message properties received are invalid');
+        'MqttDisconnectVariableHeader::_processProperties, message properties received are invalid',
+      );
     }
     final properties = _propertySet.toList();
     for (final property in properties) {
@@ -107,8 +112,9 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
         default:
           if (property.identifier != MqttPropertyIdentifier.userProperty) {
             MqttLogger.log(
-                'MqttDisconnectVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
+              'MqttDisconnectVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
           }
       }
       _userProperty = _propertySet.userProperties;
@@ -165,7 +171,8 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   String toString() {
     final sb = StringBuffer();
     sb.writeln(
-        'Reason Code  = ${mqttDisconnectReasonCode.asString(reasonCode)}');
+      'Reason Code  = ${mqttDisconnectReasonCode.asString(reasonCode)}',
+    );
     sb.write('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }

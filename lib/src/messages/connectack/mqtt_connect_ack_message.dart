@@ -22,7 +22,9 @@ class MqttConnectAckMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttConnectAckMessage from a byte buffer
   MqttConnectAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
     readFrom(messageStream);
   }
@@ -96,8 +98,9 @@ class MqttConnectAckMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     super.readFrom(messageStream);
-    _variableHeader =
-        MqttConnectAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader = MqttConnectAckVariableHeader.fromByteBuffer(
+      messageStream,
+    );
     messageStream.shrink();
   }
 
