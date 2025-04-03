@@ -10,12 +10,6 @@ part of '../../mqtt5_client.dart';
 ///  This class provides shared connection functionality
 ///  to server and browser connection handler implementations.
 abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
-  /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
-  MqttConnectionHandlerBase(
-    this.clientEventBus, {
-    required this.maxConnectionAttempts,
-  });
-
   /// Successful connection callback.
   @override
   ConnectCallback? onConnected;
@@ -97,6 +91,12 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
   /// Connection status
   @override
   MqttConnectionStatus connectionStatus = MqttConnectionStatus();
+
+  /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
+  MqttConnectionHandlerBase(
+    this.clientEventBus, {
+    required this.maxConnectionAttempts,
+  });
 
   /// Connect to the specific Mqtt Connection.
   @override
@@ -289,16 +289,6 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     return connectionStatus.state;
   }
 
-  /// Disconnects the underlying connection object.
-  @protected
-  void _performConnectionDisconnect() {
-    MqttLogger.log(
-      'MqttConnectionHandlerBase::_performConnectionDisconnect entered',
-    );
-    connectionStatus.state = MqttConnectionState.disconnected;
-    clientEventBus = null;
-  }
-
   /// Processes the connect acknowledgement message.
   @protected
   bool connectAckProcessor(MqttMessage msg) {
@@ -390,5 +380,15 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
       );
       return false;
     }
+  }
+
+  // Disconnects the underlying connection object.
+  @protected
+  void _performConnectionDisconnect() {
+    MqttLogger.log(
+      'MqttConnectionHandlerBase::_performConnectionDisconnect entered',
+    );
+    connectionStatus.state = MqttConnectionState.disconnected;
+    clientEventBus = null;
   }
 }

@@ -9,14 +9,6 @@ part of '../../mqtt5_client.dart';
 
 /// The MQTT client connection base class
 class MqttConnectionBase {
-  /// Default constructor
-  MqttConnectionBase(this.clientEventBus);
-
-  /// Initializes a new instance of the MqttConnection class.
-  MqttConnectionBase.fromConnect(String server, int port, this.clientEventBus) {
-    connect(server, port);
-  }
-
   /// The socket that maintains the connection to the MQTT broker.
   @protected
   dynamic client;
@@ -36,6 +28,14 @@ class MqttConnectionBase {
   /// The event bus
   @protected
   events.EventBus? clientEventBus;
+
+  /// Default constructor
+  MqttConnectionBase(this.clientEventBus);
+
+  /// Initializes a new instance of the MqttConnection class.
+  MqttConnectionBase.fromConnect(String server, int port, this.clientEventBus) {
+    connect(server, port);
+  }
 
   /// Connect for auto reconnect , must be overridden in connection classes
   @protected
@@ -75,6 +75,16 @@ class MqttConnectionBase {
     }
   }
 
+  /// User requested or auto disconnect disconnection
+  @protected
+  void disconnect({bool auto = false}) {
+    if (auto) {
+      _disconnect();
+    } else {
+      onDone();
+    }
+  }
+
   void _disconnect() {
     // On disconnect clean(discard) anything in the message stream
     messageStream.clean();
@@ -86,16 +96,6 @@ class MqttConnectionBase {
         client.close();
       }
       client = null;
-    }
-  }
-
-  /// User requested or auto disconnect disconnection
-  @protected
-  void disconnect({bool auto = false}) {
-    if (auto) {
-      _disconnect();
-    } else {
-      onDone();
     }
   }
 }

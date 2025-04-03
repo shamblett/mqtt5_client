@@ -12,9 +12,6 @@ typedef MessageCallbackFunction = bool Function(MqttMessage message);
 
 /// The connection handler interface class
 abstract class MqttIConnectionHandler {
-  /// The connection status
-  MqttConnectionStatus get connectionStatus;
-
   /// Successful connection callback
   ConnectCallback? onConnected;
 
@@ -45,13 +42,16 @@ abstract class MqttIConnectionHandler {
   /// Callback function to handle bad certificate. if true, ignore the error.
   bool Function(dynamic certificate)? onBadCertificate;
 
-  /// Runs the disconnection process to stop communicating
-  /// with a message broker.
-  MqttConnectionState disconnect([MqttDisconnectMessage disconnectMessage]);
-
   /// Indicates if the connect message has an authentication method
   /// i.e. authentication has been requested.
   bool? authenticationRequested;
+
+  /// The connection status
+  MqttConnectionStatus get connectionStatus;
+
+  /// Runs the disconnection process to stop communicating
+  /// with a message broker.
+  MqttConnectionState disconnect([MqttDisconnectMessage disconnectMessage]);
 
   /// Closes a connection.
   void close();

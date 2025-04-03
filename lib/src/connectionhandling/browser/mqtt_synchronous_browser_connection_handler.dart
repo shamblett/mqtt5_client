@@ -17,7 +17,9 @@ class MqttSynchronousBrowserConnectionHandler
     required int maxConnectionAttempts,
   }) : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts) {
     this.clientEventBus = clientEventBus;
-    connectTimer = MqttCancellableAsyncSleep(5000);
+    connectTimer = MqttCancellableAsyncSleep(
+      MqttConstants.defaultConnectionAttemptTimeoutPeriod,
+    );
     initialiseListeners();
   }
 

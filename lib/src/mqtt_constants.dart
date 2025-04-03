@@ -29,10 +29,16 @@ class MqttConstants {
 
   /// Default keep alive in seconds.
   /// The value of zero disables the keep alive mechanism.
-  static int defaultKeepAlive = 0;
+  static const int defaultKeepAlive = 0;
 
   /// Default maximum connection attempts
   static const int defaultMaxConnectionAttempts = 3;
+
+  /// Default connection attempt timeout period, milliseconds,
+  static const int defaultConnectionAttemptTimeoutPeriod = 5000;
+
+  /// Disabled connection attempt timeout period, milliseconds,
+  static const int disabledConnectionAttemptTimeoutPeriod = 10;
 
   /// V4
   static const int mqttProtocolVersion = 5;
@@ -49,4 +55,7 @@ class MqttConstants {
   /// The default websocket subprotocol list for brokers who expect
   /// this field to be a single entry
   static const List<String> protocolsSingleDefault = <String>['mqtt'];
+
+  /// Seconds to milliseconds multiplier
+  static const int millisecondsMultiplier = 1000;
 }
