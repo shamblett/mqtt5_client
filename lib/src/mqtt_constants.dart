@@ -24,6 +24,12 @@ class MqttConstants {
   /// Minimum message binary data length
   static const minBinaryDataLength = 2;
 
+  /// Maximum message UTF8 string length
+  static const maxUTF8StringLength = 65535;
+
+  /// Minimum message UTF8 string length
+  static const minUTF8StringLength = 2;
+
   /// Specification length
   static const int maxClientIdentifierLengthSpec = 23;
 
