@@ -18,6 +18,12 @@ class MqttConstants {
   /// NOte: this is only a warning, it changes no client behaviour.
   static const int maxClientIdentifierLength = 1024;
 
+  /// Maximum message binary data length
+  static const maxBinaryDataLength = 65535;
+
+  /// Minimum message binary data length
+  static const minBinaryDataLength = 2;
+
   /// Specification length
   static const int maxClientIdentifierLengthSpec = 23;
 
@@ -37,7 +43,8 @@ class MqttConstants {
   /// Default connection attempt timeout period, milliseconds,
   static const int defaultConnectionAttemptTimeoutPeriod = 5000;
 
-  /// Disabled connection attempt timeout period, milliseconds,
+  /// Disabled connection attempt timeout period, milliseconds.
+  /// Used when a socket timeout period has been set.
   static const int disabledConnectionAttemptTimeoutPeriod = 10;
 
   /// V4

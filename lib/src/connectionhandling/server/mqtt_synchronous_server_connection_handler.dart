@@ -24,11 +24,14 @@ class MqttSynchronousServerConnectionHandler
          socketTimeout: socketTimeout,
        ) {
     this.clientEventBus = clientEventBus;
-    if (socketTimeout == null) {
-      connectTimer = MqttCancellableAsyncSleep(5000);
-    } else {
-      connectTimer = MqttCancellableAsyncSleep(10);
-    }
+    connectTimer =
+        socketTimeout == null
+            ? MqttCancellableAsyncSleep(
+              MqttConstants.defaultConnectionAttemptTimeoutPeriod,
+            )
+            : MqttCancellableAsyncSleep(
+              MqttConstants.disabledConnectionAttemptTimeoutPeriod,
+            );
     initialiseListeners();
   }
 
@@ -160,7 +163,9 @@ class MqttSynchronousServerConnectionHandler
           MqttLogger.log(
             'MqttSynchronousServerConnectionHandler::internalConnect - awaiting end of authentication sequence',
           );
-          connectTimer = MqttCancellableAsyncSleep(1000);
+          connectTimer = MqttCancellableAsyncSleep(
+            MqttConstants.millisecondsMultiplier,
+          );
           await connectTimer.sleep();
         } while (connectionStatus.state != MqttConnectionState.connected);
       }

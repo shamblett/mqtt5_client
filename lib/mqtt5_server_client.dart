@@ -12,6 +12,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
+import 'package:characters/characters.dart';
 import 'package:event_bus/event_bus.dart' as events;
 import 'mqtt5_client.dart';
 
