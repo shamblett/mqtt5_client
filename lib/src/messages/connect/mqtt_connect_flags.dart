@@ -1,3 +1,5 @@
+// ignore_for_file: binary-expression-operand-order, no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -9,14 +11,6 @@ part of '../../../mqtt5_client.dart';
 
 /// Represents the connect flags part of the MQTT Variable Header
 class MqttConnectFlags {
-  /// Initializes a new instance of the MqttConnectFlags class.
-  MqttConnectFlags();
-
-  /// Initializes a new instance of the MqttConnectFlags class configured
-  /// as per the supplied stream.
-  MqttConnectFlags.fromByteBuffer(MqttByteBuffer connectFlagsStream) {
-    readFrom(connectFlagsStream);
-  }
 
   /// Clean start.
   ///
@@ -59,6 +53,16 @@ class MqttConnectFlags {
   /// If the User Name Flag false, a User Name MUST NOT be present in the payload.
   /// If the User Name Flag is true, a User Name MUST be present in the payload.
   bool usernameFlag = false;
+
+
+  /// Initializes a new instance of the MqttConnectFlags class.
+  MqttConnectFlags();
+
+  /// Initializes a new instance of the MqttConnectFlags class configured
+  /// as per the supplied stream.
+  MqttConnectFlags.fromByteBuffer(MqttByteBuffer connectFlagsStream) {
+    readFrom(connectFlagsStream);
+  }
 
   /// Return the connect flag value
   int connectFlagByte() =>

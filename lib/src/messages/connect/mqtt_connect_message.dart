@@ -22,12 +22,9 @@ part of '../../../mqtt5_client.dart';
 /// In particular if using a will message refer to the [MqttWillProperties] class for details
 /// of the options in this area.
 class MqttConnectMessage extends MqttMessage {
-  /// Initializes a new instance of the MqttConnectMessage class.
-  MqttConnectMessage() {
-    header = MqttHeader().asType(MqttMessageType.connect);
-    _variableHeader = MqttConnectVariableHeader();
-    payload = MqttConnectPayload(_variableHeader);
-  }
+
+  /// The payload of the message.
+  late MqttConnectPayload payload;
 
   MqttConnectVariableHeader? _variableHeader;
 
@@ -35,8 +32,16 @@ class MqttConnectMessage extends MqttMessage {
   /// Contains extended metadata about the message.
   MqttConnectVariableHeader? get variableHeader => _variableHeader;
 
-  /// The payload of the message.
-  late MqttConnectPayload payload;
+  /// Indicates if an authentication method is set
+  bool get authenticationRequested =>
+      variableHeader!.authenticationMethod.isNotEmpty;
+
+  /// Initializes a new instance of the MqttConnectMessage class.
+  MqttConnectMessage() {
+    header = MqttHeader().asType(MqttMessageType.connect);
+    _variableHeader = MqttConnectVariableHeader();
+    payload = MqttConnectPayload(_variableHeader);
+  }
 
   /// Sets the clean start flag to clear any persistent session for the client.
   /// Mutually exclusive with [startSession]the last method applied to the message will take
@@ -203,10 +208,6 @@ class MqttConnectMessage extends MqttMessage {
     _variableHeader!.authenticationData = data;
     return this;
   }
-
-  /// Indicates if an authentication method is set
-  bool get authenticationRequested =>
-      variableHeader!.authenticationMethod.isNotEmpty;
 
   /// Sets the authentication details
   MqttConnectMessage authenticateAs(String? username, String? password) {

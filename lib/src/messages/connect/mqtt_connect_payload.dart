@@ -16,9 +16,6 @@ part of '../../../mqtt5_client.dart';
 /// These fields, if present, MUST appear in the order client Identifier,
 /// Will Properties, Will Topic, Will Payload, User Name, Password.
 class MqttConnectPayload implements MqttIPayload {
-  /// Initializes a new instance of the MqttConnectPayload class.
-  MqttConnectPayload(this.variableHeader);
-
   /// Variable header, needed for payload encoding
   MqttConnectVariableHeader? variableHeader = MqttConnectVariableHeader();
 
@@ -69,16 +66,20 @@ class MqttConnectPayload implements MqttIPayload {
 
   String? _username;
 
+  String? _password;
+
   /// User name
   String? get username => _username;
-
-  set username(String? name) => _username = name != null ? name.trim() : name;
-  String? _password;
 
   /// Password
   String? get password => _password;
 
   set password(String? pwd) => _password = pwd != null ? pwd.trim() : pwd;
+
+  set username(String? name) => _username = name != null ? name.trim() : name;
+
+  /// Initializes a new instance of the MqttConnectPayload class.
+  MqttConnectPayload(this.variableHeader);
 
   /// Creates a payload from the specified header stream.
   @override
@@ -86,27 +87,6 @@ class MqttConnectPayload implements MqttIPayload {
     throw UnimplementedError(
       'MqttConnectPayload::readFrom - message is transmit only',
     );
-  }
-
-  void _serialize(MqttByteBuffer payloadStream) {
-    payloadStream.writeMqttStringM(clientIdentifier);
-    if (variableHeader!.connectFlags.willFlag) {
-      willProperties.writeTo(payloadStream);
-      payloadStream.writeMqttStringM(willTopic);
-      if (willPayload.length > 65535) {
-        throw Exception(
-          'MqttConnectPayload::_serialize -  willPayload length is invalid, length is ${willPayload.length}',
-        );
-      }
-      payloadStream.writeShort(willPayload.length);
-      payloadStream.write(willPayload);
-    }
-    if (variableHeader!.connectFlags.usernameFlag) {
-      payloadStream.writeMqttStringM(username);
-    }
-    if (variableHeader!.connectFlags.passwordFlag) {
-      payloadStream.writeMqttStringM(password);
-    }
   }
 
   /// Writes the connect message payload to the supplied stream.
@@ -130,5 +110,26 @@ class MqttConnectPayload implements MqttIPayload {
     sb.write('Password = ');
     password != null ? sb.writeln('$password') : sb.writeln('not set');
     return sb.toString();
+  }
+
+  void _serialize(MqttByteBuffer payloadStream) {
+    payloadStream.writeMqttStringM(clientIdentifier);
+    if (variableHeader!.connectFlags.willFlag) {
+      willProperties.writeTo(payloadStream);
+      payloadStream.writeMqttStringM(willTopic);
+      if (willPayload.length > MqttConstants.maxUTF8StringLength) {
+        throw Exception(
+          'MqttConnectPayload::_serialize -  willPayload length is invalid, length is ${willPayload.length}',
+        );
+      }
+      payloadStream.writeShort(willPayload.length);
+      payloadStream.write(willPayload);
+    }
+    if (variableHeader!.connectFlags.usernameFlag) {
+      payloadStream.writeMqttStringM(username);
+    }
+    if (variableHeader!.connectFlags.passwordFlag) {
+      payloadStream.writeMqttStringM(password);
+    }
   }
 }
