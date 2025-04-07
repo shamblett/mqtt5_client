@@ -9,6 +9,8 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when the connection state is incorrect.
 class MqttConnectionException implements Exception {
+  late String _message;
+
   /// Construct
   MqttConnectionException(MqttConnectionState? state) {
     _message =
@@ -18,8 +20,6 @@ class MqttConnectionException implements Exception {
       _message = '$_message Current state is ${state.toString().split('.')[1]}';
     }
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

@@ -9,12 +9,12 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when the client fails to connect
 class MqttNoConnectionException implements Exception {
+  late String _message;
+
   /// Construct
   MqttNoConnectionException(String message) {
     _message = 'mqtt-client::NoConnectionException: $message';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

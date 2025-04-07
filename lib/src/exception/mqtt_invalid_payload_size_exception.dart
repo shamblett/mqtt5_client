@@ -10,6 +10,8 @@ part of '../../mqtt5_client.dart';
 /// Exception that is thrown when the payload of a message
 /// is not the correct size.
 class MqttInvalidPayloadSizeException implements Exception {
+  late String _message;
+
   /// Construct
   MqttInvalidPayloadSizeException(int size, int max) {
     _message =
@@ -17,8 +19,6 @@ class MqttInvalidPayloadSizeException implements Exception {
         'payload ($size bytes) must '
         'be equal to or greater than 0 and less than $max bytes';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

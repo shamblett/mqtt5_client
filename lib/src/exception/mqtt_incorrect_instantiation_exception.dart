@@ -9,14 +9,14 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when a browser or server client is instantiated incorrectly.
 class MqttIncorrectInstantiationException implements Exception {
+  late String _message;
+
   /// Construct
   MqttIncorrectInstantiationException() {
     _message =
         'mqtt-client::ClientIncorrectInstantiationException: Incorrect instantiation, do not'
         'instantiate MqttClient directly, use MqttServerClient or MqttBrowserClient';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

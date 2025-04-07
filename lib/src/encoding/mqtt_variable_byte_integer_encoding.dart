@@ -18,6 +18,9 @@ part of '../../mqtt5_client.dart';
 /// represent the value [MQTT-1.5.5-1].
 class MqttVariableByteIntegerEncoding {
   static const maxConvertibleValue = 268435455;
+  static const maxLength = 4;
+  static const singleValue = 127;
+  static const multiValue = 128;
 
   /// Byte integer to integer
   int toInt(typed.Uint8Buffer? byteInteger) {
@@ -33,25 +36,28 @@ class MqttVariableByteIntegerEncoding {
     try {
       do {
         // Must be a maximum length of 4
-        if (index > 4) {
+        if (index > maxLength) {
           break;
         }
         encodedByte = byteInteger[index];
-        value += (encodedByte & 127) * multiplier;
-        if (multiplier > 128 * 128 * 128) {
+        value += (encodedByte & singleValue) * multiplier;
+        if (multiplier > multiValue * multiValue * multiValue) {
           throw ArgumentError(
             'MqttByteIntegerEncoding::toInt Malformed Variable Byte Integer',
           );
         }
-        multiplier *= 128;
+        multiplier *= multiValue;
         index++;
-      } while ((encodedByte & 128) != 0);
-    } on Error {
-      throw ArgumentError(
-        'MqttByteIntegerEncoding::toInt invalid byte sequence $byteInteger',
+      } while ((encodedByte & multiValue) != 0);
+    } on Error catch (_, stack) {
+      Error.throwWithStackTrace(
+        ArgumentError(
+          'MqttByteIntegerEncoding::toInt invalid byte sequence $byteInteger',
+        ),
+        stack,
       );
     }
-    if (index > 4) {
+    if (index > maxLength) {
       throw FormatException(
         'MqttByteIntegerEncoding::toInt - variable byte integer is incorrectly formatted',
       );
@@ -74,14 +80,14 @@ class MqttVariableByteIntegerEncoding {
 
     do {
       // We can't encode more than 4 bytes
-      if (count > 4) {
+      if (count > maxLength) {
         break;
       }
-      encodedByte = x % 128;
-      x = x ~/ 128;
+      encodedByte = x % multiValue;
+      x = x ~/ multiValue;
       // if there is more data to encode, set the top bit of this byte
       if (x > 0) {
-        encodedByte = encodedByte | 128;
+        encodedByte = encodedByte | multiValue;
       }
 
       result.add(encodedByte);
@@ -89,7 +95,7 @@ class MqttVariableByteIntegerEncoding {
     } while (x > 0);
 
     // Must be a maximum length of 4
-    if (result.isEmpty || count > 4) {
+    if (result.isEmpty || count > maxLength) {
       throw ArgumentError(
         'MqttByteIntegerEncoding::fromInt byte integer has an invalid length ${result.length}, value is $value',
       );
