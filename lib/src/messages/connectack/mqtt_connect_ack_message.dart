@@ -12,28 +12,7 @@ part of '../../../mqtt5_client.dart';
 /// The connection acknowledgement message is the message sent by the broker in response
 /// to a connect message received from the client.
 class MqttConnectAckMessage extends MqttMessage {
-  /// Initializes a new instance of the MqttConnectAckMessage class.
-  /// Only called via the MqttMessage.Create operation during processing
-  /// of an Mqtt message stream.
-  MqttConnectAckMessage() {
-    header = MqttHeader().asType(MqttMessageType.connectAck);
-    _variableHeader = MqttConnectAckVariableHeader();
-  }
-
-  /// Initializes a new instance of the MqttConnectAckMessage from a byte buffer
-  MqttConnectAckMessage.fromByteBuffer(
-    MqttHeader header,
-    MqttByteBuffer messageStream,
-  ) {
-    this.header = header;
-    readFrom(messageStream);
-  }
-
   MqttConnectAckVariableHeader? _variableHeader;
-
-  /// Reason code
-  withReasonCode(MqttConnectReasonCode code) =>
-      _variableHeader?.reasonCode = code;
 
   /// The variable header contents.
   MqttConnectAckVariableHeader? get variableHeader => _variableHeader;
@@ -93,6 +72,27 @@ class MqttConnectAckMessage extends MqttMessage {
   /// Authentication Data.
   typed.Uint8Buffer? get authenticationData =>
       _variableHeader!.authenticationData;
+
+  /// Initializes a new instance of the MqttConnectAckMessage class.
+  /// Only called via the MqttMessage.Create operation during processing
+  /// of an Mqtt message stream.
+  MqttConnectAckMessage() {
+    header = MqttHeader().asType(MqttMessageType.connectAck);
+    _variableHeader = MqttConnectAckVariableHeader();
+  }
+
+  /// Initializes a new instance of the MqttConnectAckMessage from a byte buffer
+  MqttConnectAckMessage.fromByteBuffer(
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
+    this.header = header;
+    readFrom(messageStream);
+  }
+
+  /// Reason code
+  withReasonCode(MqttConnectReasonCode code) =>
+      _variableHeader?.reasonCode = code;
 
   /// Reads a message from the supplied stream.
   @override
