@@ -22,14 +22,17 @@ part of '../../mqtt5_client.dart';
 /// ----------------------------
 
 class MqttMessage {
+  /// The header of the MQTT Message. Contains metadata about the message
+  MqttHeader? header;
+
+  /// Is valid
+  bool get isValid => true;
+
   /// Initializes a new instance of the MqttMessage class.
   MqttMessage();
 
   /// Initializes a new instance of the MqttMessage class.
   MqttMessage.fromHeader(this.header);
-
-  /// The header of the MQTT Message. Contains metadata about the message
-  MqttHeader? header;
 
   /// Creates a new instance of an MQTT Message based on a raw message stream.
   static MqttMessage? createFrom(MqttByteBuffer messageStream) {
@@ -45,17 +48,19 @@ class MqttMessage {
           'Available bytes is less than the message size',
         );
       }
-      final message = MqttMessageFactory.getMessage(header, messageStream);
-      return message;
+      return MqttMessageFactory.getMessage(header, messageStream);
       // Rethrow incomplete message
     } on MqttIncompleteMessageException {
       rethrow;
       // Catch anything else
-    } on Exception catch (e) {
-      throw MqttInvalidMessageException(
-        'The data provided in the message stream was not a '
-        'valid MQTT Message, '
-        'exception is $e, bytestream is $messageStream',
+    } on Exception catch (e, stack) {
+      Error.throwWithStackTrace(
+        MqttInvalidMessageException(
+          'The data provided in the message stream was not a '
+          'valid MQTT Message, '
+          'exception is $e, bytestream is $messageStream',
+        ),
+        stack,
       );
     }
   }
@@ -66,10 +71,9 @@ class MqttMessage {
   }
 
   /// Reads a message from the supplied stream.
-  void readFrom(MqttByteBuffer messageStream) {}
-
-  /// Is valid
-  bool get isValid => true;
+  void readFrom(MqttByteBuffer messageStream) {
+    return;
+  }
 
   @override
   String toString() {

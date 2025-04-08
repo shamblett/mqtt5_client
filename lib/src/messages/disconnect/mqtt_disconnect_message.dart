@@ -15,6 +15,31 @@ part of '../../../mqtt5_client.dart';
 /// with reason code normal disconnection and the connection has a will message,
 /// the will message is published.
 class MqttDisconnectMessage extends MqttMessage {
+  MqttDisconnectVariableHeader? _variableHeader;
+
+  /// Variable header.
+  MqttDisconnectVariableHeader? get variableHeader => _variableHeader;
+
+  /// Gets the reason code of the message.
+  MqttDisconnectReasonCode? get reasonCode => _variableHeader!.reasonCode;
+
+  /// Gets the session expiry interval.
+  int? get sessionExpiryInterval => _variableHeader!.sessionExpiryInterval;
+
+  /// Gets the reason string
+  String? get reasonString => _variableHeader!.reasonString;
+
+  /// Gets the server reference.
+  String? get serverReference => _variableHeader!.serverReference;
+
+  /// Get the user properties
+  List<MqttUserProperty> get userProperties => _variableHeader!.userProperty;
+
+  /// Is valid
+  @override
+  bool get isValid =>
+      variableHeader!.reasonCode != MqttDisconnectReasonCode.notSet;
+
   /// Initializes a new instance of the MqttDisconnectMessage class.
   MqttDisconnectMessage() {
     header = MqttHeader().asType(MqttMessageType.disconnect);
@@ -38,10 +63,11 @@ class MqttDisconnectMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  MqttDisconnectVariableHeader? _variableHeader;
-
-  // Variable header.
-  MqttDisconnectVariableHeader? get variableHeader => _variableHeader;
+  /// Sets the session expiry interval.
+  MqttDisconnectMessage withSessionExpiryInterval(int interval) {
+    variableHeader!.sessionExpiryInterval = interval;
+    return this;
+  }
 
   /// Reads a message from the supplied stream.
   @override
@@ -67,26 +93,11 @@ class MqttDisconnectMessage extends MqttMessage {
     return this;
   }
 
-  /// Gets the reason code of the message.
-  MqttDisconnectReasonCode? get reasonCode => _variableHeader!.reasonCode;
-
-  /// Sets the session expiry interval.
-  MqttDisconnectMessage withSessionExpiryInterval(int interval) {
-    variableHeader!.sessionExpiryInterval = interval;
-    return this;
-  }
-
-  /// Gets the session expiry interval.
-  int? get sessionExpiryInterval => _variableHeader!.sessionExpiryInterval;
-
   /// Sets the reason string
   MqttDisconnectMessage withReasonString(String reason) {
     variableHeader!.reasonString = reason;
     return this;
   }
-
-  /// Gets the reason string
-  String? get reasonString => _variableHeader!.reasonString;
 
   /// Sets the server reference.
   MqttDisconnectMessage withServerReference(String reference) {
@@ -94,27 +105,16 @@ class MqttDisconnectMessage extends MqttMessage {
     return this;
   }
 
-  /// Gets the server reference.
-  String? get serverReference => _variableHeader!.serverReference;
-
   /// Sets a list of user properties
   MqttDisconnectMessage withUserProperties(List<MqttUserProperty> properties) {
     _variableHeader!.userProperty = properties;
     return this;
   }
 
-  /// Get the user properties
-  List<MqttUserProperty> get userProperties => _variableHeader!.userProperty;
-
   /// Add a specific user property
   void addUserProperty(MqttUserProperty property) {
     _variableHeader!.userProperty = [property];
   }
-
-  /// Is valid
-  @override
-  bool get isValid =>
-      variableHeader!.reasonCode != MqttDisconnectReasonCode.notSet;
 
   @override
   String toString() {

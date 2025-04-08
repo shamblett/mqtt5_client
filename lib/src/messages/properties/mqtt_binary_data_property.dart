@@ -9,9 +9,6 @@ part of '../../../mqtt5_client.dart';
 
 /// Binary data property
 class MqttBinaryDataProperty implements MqttIProperty {
-  /// Construction
-  MqttBinaryDataProperty([this.identifier]);
-
   /// Identifier
   @override
   MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
@@ -21,6 +18,9 @@ class MqttBinaryDataProperty implements MqttIProperty {
   final dynamic value = typed.Uint8Buffer();
 
   final _enc = MqttBinaryDataEncoding();
+
+  /// Construction
+  MqttBinaryDataProperty([this.identifier]);
 
   /// Serialize to a byte buffer stream
   @override
@@ -33,7 +33,7 @@ class MqttBinaryDataProperty implements MqttIProperty {
   @override
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
-    final lenBuffer = stream.read(2);
+    final lenBuffer = stream.read(1 + 1);
     final length = _enc.length(lenBuffer);
     value.clear();
     value.addAll(stream.read(length));
