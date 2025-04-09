@@ -9,7 +9,7 @@ part of '../mqtt5_client.dart';
 
 /// Library wide constants
 class MqttConstants {
-  /// The Maximum allowed message size as defined by the MQTT v3 Spec (256MB).
+  /// The Maximum allowed message size as defined by the MQTT v5 Spec (256MB).
   static const int maxMessageSize = 268435455;
 
   /// The Maximum allowed client identifier length as specified by the 3.1

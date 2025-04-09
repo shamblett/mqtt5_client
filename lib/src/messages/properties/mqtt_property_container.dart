@@ -25,6 +25,9 @@ class MqttPropertyContainer {
   /// Is Empty
   bool get isEmpty => _container.isEmpty && _userProperties.isEmpty;
 
+  /// Is Not Empty
+  bool get isNotEmpty => !isEmpty;
+
   /// Add a property.
   /// Note that the container will hold the last added property of any type
   /// except user properties.
