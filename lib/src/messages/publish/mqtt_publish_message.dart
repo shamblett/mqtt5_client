@@ -14,6 +14,14 @@ part of '../../../mqtt5_client.dart';
 /// specifically [MqttPublishVariableHeader] and [MqttPublishPayload].
 
 class MqttPublishMessage extends MqttMessage {
+  /// Gets or sets the payload of the Mqtt Message.
+  late MqttPublishPayload payload;
+
+  MqttPublishVariableHeader? _variableHeader;
+
+  /// The variable header contents. Contains extended metadata about the message.
+  MqttPublishVariableHeader? get variableHeader => _variableHeader;
+
   /// Initializes a new instance of the MqttPublishMessage class.
   MqttPublishMessage() {
     header = MqttHeader().asType(MqttMessageType.publish);
@@ -29,14 +37,6 @@ class MqttPublishMessage extends MqttMessage {
     this.header = header;
     readFrom(messageStream);
   }
-
-  MqttPublishVariableHeader? _variableHeader;
-
-  /// The variable header contents. Contains extended metadata about the message.
-  MqttPublishVariableHeader? get variableHeader => _variableHeader;
-
-  /// Gets or sets the payload of the Mqtt Message.
-  late MqttPublishPayload payload;
 
   /// Reads a message from the supplied stream.
   @override

@@ -9,9 +9,6 @@ part of '../../../mqtt5_client.dart';
 
 /// UTF8 String property
 class MqttUtf8StringProperty implements MqttIProperty {
-  /// Construction
-  MqttUtf8StringProperty([this.identifier]);
-
   /// Identifier
   @override
   MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
@@ -21,6 +18,9 @@ class MqttUtf8StringProperty implements MqttIProperty {
   String? value;
 
   final _enc = MqttUtf8Encoding();
+
+  /// Construction
+  MqttUtf8StringProperty([this.identifier]);
 
   /// Serialize to a byte buffer stream
   @override
@@ -33,7 +33,7 @@ class MqttUtf8StringProperty implements MqttIProperty {
   @override
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
-    final lenBuffer = stream.read(2);
+    final lenBuffer = stream.read(1 + 1);
     final length = _enc.length(lenBuffer);
     final buffer = stream.read(length);
     final stringBuffer = typed.Uint8Buffer();

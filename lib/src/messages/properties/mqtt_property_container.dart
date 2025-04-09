@@ -14,9 +14,16 @@ class MqttPropertyContainer {
   final _container = <MqttPropertyIdentifier?, MqttIProperty>{};
 
   final _userProperties = <MqttUserProperty>[];
-  List<MqttUserProperty> get userProperties => _userProperties;
 
   final _enc = MqttVariableByteIntegerEncoding();
+
+  List<MqttUserProperty> get userProperties => _userProperties;
+
+  /// Number of properties
+  int get count => _container.length + _userProperties.length;
+
+  /// Is Empty
+  bool get isEmpty => _container.isEmpty && _userProperties.isEmpty;
 
   /// Add a property.
   /// Note that the container will hold the last added property of any type
@@ -34,11 +41,10 @@ class MqttPropertyContainer {
   /// already exist
   bool delete(MqttIProperty property) {
     var ok = false;
-    if (property.identifier != MqttPropertyIdentifier.userProperty) {
-      ok = _container.remove(property.identifier) != null;
-    } else {
-      ok = _userProperties.remove(property);
-    }
+    ok =
+        property.identifier != MqttPropertyIdentifier.userProperty
+            ? _container.remove(property.identifier) != null
+            : _userProperties.remove(property);
     return ok;
   }
 
@@ -51,16 +57,12 @@ class MqttPropertyContainer {
   /// Contains
   bool contains(MqttIProperty property) {
     var ok = false;
-    if (property.identifier != MqttPropertyIdentifier.userProperty) {
-      ok = _container.containsKey(property.identifier);
-    } else {
-      ok = _userProperties.contains(property);
-    }
+    ok =
+        property.identifier != MqttPropertyIdentifier.userProperty
+            ? _container.containsKey(property.identifier)
+            : _userProperties.contains(property);
     return ok;
   }
-
-  /// Number of properties
-  int get count => _container.length + _userProperties.length;
 
   /// To byte buffer
   /// Complete serialization of the properties including the property length bytes
@@ -124,9 +126,6 @@ class MqttPropertyContainer {
   /// To list
   List<MqttIProperty> toList() =>
       _container.values.toList()..addAll(_userProperties);
-
-  /// Is Empty
-  bool get isEmpty => _container.isEmpty && _userProperties.isEmpty;
 
   @override
   String toString() {

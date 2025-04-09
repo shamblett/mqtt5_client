@@ -9,6 +9,18 @@ part of '../../../mqtt5_client.dart';
 
 /// Class that contains details related to an MQTT Publish message payload
 class MqttPublishPayload implements MqttIPayload {
+  /// Receive length
+  int length = 0;
+
+  /// Message header
+  MqttHeader? header;
+
+  /// Variable header
+  MqttPublishVariableHeader? variableHeader;
+
+  /// The message that forms the payload of the publish message.
+  typed.Uint8Buffer? message;
+
   /// Initializes a new instance of the MqttPublishPayload class.
   MqttPublishPayload() {
     message = typed.Uint8Buffer();
@@ -22,18 +34,6 @@ class MqttPublishPayload implements MqttIPayload {
   ) {
     readFrom(payloadStream);
   }
-
-  /// Receive length
-  int length = 0;
-
-  /// Message header
-  MqttHeader? header;
-
-  /// Variable header
-  MqttPublishVariableHeader? variableHeader;
-
-  /// The message that forms the payload of the publish message.
-  typed.Uint8Buffer? message;
 
   /// Creates a payload from the specified header stream.
   @override

@@ -128,5 +128,5 @@ const Map<int, MqttPropertyIdentifier> _mqttPropertyIdentifierValues =
     };
 
 /// MQTT property identifier helper
-MqttEnumHelper<MqttPropertyIdentifier?> mqttPropertyIdentifier =
+final MqttEnumHelper<MqttPropertyIdentifier?> mqttPropertyIdentifier =
     MqttEnumHelper<MqttPropertyIdentifier?>(_mqttPropertyIdentifierValues);
