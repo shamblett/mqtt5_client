@@ -10,6 +10,26 @@ part of '../../../mqtt5_client.dart';
 /// A publish release message is the response to a publish received message.
 /// It is the third packet of the QoS 2 protocol exchange.
 class MqttPublishReleaseMessage extends MqttMessage {
+  /// Gets or sets the variable header contents. Contains extended
+  /// metadata about the message.
+  late MqttPublishReleaseVariableHeader variableHeader;
+
+  /// The message identifier
+  int get messageIdentifier => variableHeader.messageIdentifier;
+
+  /// Publish reason code
+  MqttPublishReasonCode? get reasonCode => variableHeader.reasonCode;
+
+  /// Reason String.
+  String? get reasonString => variableHeader.reasonString;
+
+  /// User Property.
+  List<MqttUserProperty> get userProperty => variableHeader.userProperty;
+
+  /// Is valid
+  @override
+  bool get isValid => variableHeader.reasonCode != MqttPublishReasonCode.notSet;
+
   /// Initializes a new instance of the MqttPublishReleaseMessage class.
   MqttPublishReleaseMessage() {
     header = MqttHeader().asType(MqttMessageType.publishRelease);
@@ -31,10 +51,6 @@ class MqttPublishReleaseMessage extends MqttMessage {
     messageStream.shrink();
   }
 
-  /// Gets or sets the variable header contents. Contains extended
-  /// metadata about the message.
-  late MqttPublishReleaseVariableHeader variableHeader;
-
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
@@ -53,22 +69,6 @@ class MqttPublishReleaseMessage extends MqttMessage {
     variableHeader.reasonCode = reason;
     return this;
   }
-
-  /// The message identifier
-  int get messageIdentifier => variableHeader.messageIdentifier;
-
-  /// Publish reason code
-  MqttPublishReasonCode? get reasonCode => variableHeader.reasonCode;
-
-  /// Reason String.
-  String? get reasonString => variableHeader.reasonString;
-
-  /// User Property.
-  List<MqttUserProperty> get userProperty => variableHeader.userProperty;
-
-  /// Is valid
-  @override
-  bool get isValid => variableHeader.reasonCode != MqttPublishReasonCode.notSet;
 
   @override
   String toString() {
