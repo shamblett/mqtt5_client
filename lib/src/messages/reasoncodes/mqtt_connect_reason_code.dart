@@ -122,5 +122,5 @@ const Map<int, MqttConnectReasonCode> _mqttConnectReasonCodeValues =
     };
 
 /// MQTT connect reason code helper
-MqttEnumHelper<MqttConnectReasonCode?> mqttConnectReasonCode =
+final MqttEnumHelper<MqttConnectReasonCode?> mqttConnectReasonCode =
     MqttEnumHelper<MqttConnectReasonCode?>(_mqttConnectReasonCodeValues);

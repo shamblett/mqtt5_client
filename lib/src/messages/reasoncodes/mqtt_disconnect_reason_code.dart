@@ -158,5 +158,5 @@ const Map<int, MqttDisconnectReasonCode> _mqttDisconnectReasonCodeValues =
     };
 
 /// MQTT disconnect reason code helper
-MqttEnumHelper<MqttDisconnectReasonCode?> mqttDisconnectReasonCode =
+final MqttEnumHelper<MqttDisconnectReasonCode?> mqttDisconnectReasonCode =
     MqttEnumHelper<MqttDisconnectReasonCode?>(_mqttDisconnectReasonCodeValues);
