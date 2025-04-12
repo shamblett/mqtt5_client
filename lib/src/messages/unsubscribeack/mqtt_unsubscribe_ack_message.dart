@@ -10,6 +10,28 @@ part of '../../../mqtt5_client.dart';
 /// The unsubscribe acknowledgement message is sent by the broker to the client to confirm receipt
 /// of an unsubscribe message.
 class MqttUnsubscribeAckMessage extends MqttMessage {
+  MqttUnsubscribeAckVariableHeader? _variableHeader;
+
+  MqttUnsubscribeAckPayload? _payload;
+
+  /// Variable Header
+  MqttUnsubscribeAckVariableHeader? get variableHeader => _variableHeader;
+
+  /// Payload
+  MqttUnsubscribeAckPayload? get payload => _payload;
+
+  /// The message identifier
+  int get messageIdentifier => _variableHeader!.messageIdentifier;
+
+  /// Reason codes, one for each topic subscribed
+  List<MqttSubscribeReasonCode?> get reasonCodes => _payload!.reasonCodes;
+
+  /// Reason String.
+  String? get reasonString => _variableHeader!.reasonString;
+
+  /// User Property.
+  List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
+
   /// Initializes a new instance of the MqttUnsubscribeAckMessage class.
   MqttUnsubscribeAckMessage() {
     header = MqttHeader().asType(MqttMessageType.unsubscribeAck);
@@ -25,26 +47,6 @@ class MqttUnsubscribeAckMessage extends MqttMessage {
     readFrom(messageStream);
     messageStream.shrink();
   }
-
-  /// Variable Header
-  MqttUnsubscribeAckVariableHeader? _variableHeader;
-  MqttUnsubscribeAckVariableHeader? get variableHeader => _variableHeader;
-
-  /// Payload
-  MqttUnsubscribeAckPayload? _payload;
-  MqttUnsubscribeAckPayload? get payload => _payload;
-
-  /// The message identifier
-  int get messageIdentifier => _variableHeader!.messageIdentifier;
-
-  /// Reason codes, one for each topic subscribed
-  List<MqttSubscribeReasonCode?> get reasonCodes => _payload!.reasonCodes;
-
-  /// Reason String.
-  String? get reasonString => _variableHeader!.reasonString;
-
-  /// User Property.
-  List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
 
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.

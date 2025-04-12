@@ -8,6 +8,10 @@
 part of '../mqtt5_browser_client.dart';
 
 class MqttBrowserClient extends MqttClient {
+
+  /// Max connection attempts
+  final int maxConnectionAttempts;
+
   /// Initializes a new instance of the MqttServerClient class using the
   /// default Mqtt Port.
   /// The server hostname to connect to
@@ -29,9 +33,6 @@ class MqttBrowserClient extends MqttClient {
     int super.port, {
     this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
   }) : super.withPort();
-
-  /// Max connection attempts
-  final int maxConnectionAttempts;
 
   /// Performs a connect to the message broker with an optional
   /// username and password for the purposes of authentication.

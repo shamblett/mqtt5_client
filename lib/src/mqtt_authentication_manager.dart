@@ -15,6 +15,11 @@ part of '../mqtt5_client.dart';
 class MqttAuthenticationManager {
   dynamic _connectionHandler;
 
+  final _authenticated = StreamController<MqttAuthenticateMessage>.broadcast();
+
+  /// The stream on which all received authenticate messages are added to
+  StreamController<MqttAuthenticateMessage> get authenticated => _authenticated;
+
   /// The current connection handler.
   set connectionHandler(dynamic handler) {
     _connectionHandler = handler;
@@ -23,11 +28,6 @@ class MqttAuthenticationManager {
       handleAuthentication,
     );
   }
-
-  final _authenticated = StreamController<MqttAuthenticateMessage>.broadcast();
-
-  /// The stream on which all received authenticate messages are added to
-  StreamController<MqttAuthenticateMessage> get authenticated => _authenticated;
 
   /// Handles the receipt of authentication messages from a message broker.
   bool handleAuthentication(MqttMessage msg) {
@@ -57,7 +57,7 @@ class MqttAuthenticationManager {
   /// indicator set.
   Future<MqttAuthenticateMessage> reauthenticate(
     MqttAuthenticateMessage msg, {
-    int waitTimeInSeconds = 30,
+    int waitTimeInSeconds = MqttConstants.defaultReauthenticateTimeout,
   }) {
     final completer = Completer<MqttAuthenticateMessage>();
     send(msg);

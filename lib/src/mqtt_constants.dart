@@ -53,6 +53,8 @@ class MqttConstants {
   /// Used when a socket timeout period has been set.
   static const int disabledConnectionAttemptTimeoutPeriod = 10;
 
+  static const defaultReauthenticateTimeout = 30; // seconds
+
   /// V4
   static const int mqttProtocolVersion = 5;
 

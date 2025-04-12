@@ -10,6 +10,22 @@ part of '../../../mqtt5_client.dart';
 /// The payload contains a list of reason codes. Each reason code corresponds to a
 /// topic filter in the unsubscribe message being acknowledged.
 class MqttUnsubscribeAckPayload extends MqttIPayload {
+  /// Message header
+  MqttHeader? header;
+
+  /// Variable header
+  MqttUnsubscribeAckVariableHeader? variableHeader;
+
+  int _length = 0;
+
+  final _reasonCodes = <MqttSubscribeReasonCode?>[];
+
+  /// Receive length
+  int get length => _length;
+
+  /// Reason codes, one for each topic subscribed
+  List<MqttSubscribeReasonCode?> get reasonCodes => _reasonCodes;
+
   /// Initializes a new instance of the MqttUnsubscribeAckPayload class.
   MqttUnsubscribeAckPayload();
 
@@ -21,21 +37,6 @@ class MqttUnsubscribeAckPayload extends MqttIPayload {
   ) {
     readFrom(payloadStream);
   }
-
-  int _length = 0;
-
-  /// Receive length
-  int get length => _length;
-
-  /// Message header
-  MqttHeader? header;
-
-  /// Variable header
-  MqttUnsubscribeAckVariableHeader? variableHeader;
-
-  /// Reason codes, one for each topic subscribed
-  final _reasonCodes = <MqttSubscribeReasonCode?>[];
-  List<MqttSubscribeReasonCode?> get reasonCodes => _reasonCodes;
 
   /// Writes the payload to the supplied stream.
   /// Not implemented, message is receive only.
