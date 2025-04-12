@@ -10,6 +10,22 @@ part of '../../../mqtt5_client.dart';
 /// The payload contains a list of reason codes. Each reason code corresponds to a
 /// topic filter in the subscribe message being acknowledged.
 class MqttSubscribeAckPayload extends MqttIPayload {
+  /// Message header
+  MqttHeader? header;
+
+  /// Variable header
+  MqttSubscribeAckVariableHeader? variableHeader;
+
+  int _length = 0;
+
+  final _reasonCodes = <MqttSubscribeReasonCode?>[];
+
+  /// Receive length
+  int get length => _length;
+
+  /// Reason codes, one for each topic subscribed
+  List<MqttSubscribeReasonCode?> get reasonCodes => _reasonCodes;
+
   /// Initializes a new instance of the MqttSubscribeAckPayload class.
   MqttSubscribeAckPayload();
 
@@ -22,23 +38,8 @@ class MqttSubscribeAckPayload extends MqttIPayload {
     readFrom(payloadStream);
   }
 
-  int _length = 0;
-
-  /// Receive length
-  int get length => _length;
-
-  /// Message header
-  MqttHeader? header;
-
-  /// Variable header
-  MqttSubscribeAckVariableHeader? variableHeader;
-
-  /// Reason codes, one for each topic subscribed
-  final _reasonCodes = <MqttSubscribeReasonCode?>[];
-  List<MqttSubscribeReasonCode?> get reasonCodes => _reasonCodes;
-
   /// Writes the payload to the supplied stream.
-  /// Not impemented, message is receive only.
+  /// Not implemented, message is receive only.
   @override
   void writeTo(MqttByteBuffer payloadStream) {
     throw UnimplementedError(

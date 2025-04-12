@@ -14,6 +14,29 @@ part of '../../../mqtt5_client.dart';
 /// the maximum QoS level that was granted or the error which was found for
 /// each Subscription that was requested by the subscribe message.
 class MqttSubscribeAckMessage extends MqttMessage {
+  // Variable Header
+  MqttSubscribeAckVariableHeader? _variableHeader;
+
+  // Payload
+  MqttSubscribeAckPayload? _payload;
+
+  MqttSubscribeAckVariableHeader? get variableHeader => _variableHeader;
+
+  /// The message identifier
+  int get messageIdentifier => _variableHeader!.messageIdentifier;
+
+  /// Reason codes, one for each topic subscribed
+  List<MqttSubscribeReasonCode?> get reasonCodes => _payload!.reasonCodes;
+
+  /// Reason String.
+  String? get reasonString => _variableHeader!.reasonString;
+
+  /// User Property.
+  List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
+
+  /// Payload
+  MqttSubscribeAckPayload? get payload => _payload;
+
   /// Initializes a new instance of the MqttSubscribeAckMessage class.
   MqttSubscribeAckMessage() {
     header = MqttHeader().asType(MqttMessageType.subscribeAck);
@@ -29,26 +52,6 @@ class MqttSubscribeAckMessage extends MqttMessage {
     this.header = header;
     readFrom(messageStream);
   }
-
-  /// Variable Header
-  MqttSubscribeAckVariableHeader? _variableHeader;
-  MqttSubscribeAckVariableHeader? get variableHeader => _variableHeader;
-
-  /// Payload
-  MqttSubscribeAckPayload? _payload;
-  MqttSubscribeAckPayload? get payload => _payload;
-
-  /// The message identifier
-  int get messageIdentifier => _variableHeader!.messageIdentifier;
-
-  /// Reason codes, one for each topic subscribed
-  List<MqttSubscribeReasonCode?> get reasonCodes => _payload!.reasonCodes;
-
-  /// Reason String.
-  String? get reasonString => _variableHeader!.reasonString;
-
-  /// User Property.
-  List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
 
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.

@@ -11,18 +11,18 @@ part of '../../../mqtt5_client.dart';
 /// The subscription payload topic class.
 /// Comprises a topic and its associated topic option.
 class MqttSubscribePayloadTopic {
+  /// The topic
+  MqttSubscriptionTopic topic;
+
+  /// The Subscription option
+  MqttSubscriptionOption option = MqttSubscriptionOption();
+
   /// Construction
   MqttSubscribePayloadTopic(this.topic, [MqttSubscriptionOption? option]) {
     if (option != null) {
       this.option = option;
     }
   }
-
-  /// The topic
-  MqttSubscriptionTopic topic;
-
-  /// The Subscription option
-  MqttSubscriptionOption option = MqttSubscriptionOption();
 }
 
 /// The payload of a subscribe message  contains a list of topic filters indicating the
@@ -32,34 +32,30 @@ class MqttSubscribePayloadTopic {
 /// The payload must contain at least one topic filter and subscription
 /// options pair.
 class MqttSubscribePayload implements MqttIPayload {
-  /// Initializes a new instance of the MqttSubscribePayload class.
-  MqttSubscribePayload();
-
   /// Variable header
   MqttIVariableHeader? variableHeader;
 
   /// Message header
   MqttHeader? header;
 
-  // The list of subscriptions.
   final _subscriptions = <MqttSubscribePayloadTopic>[];
-  List<MqttSubscribePayloadTopic> get subscriptions => _subscriptions;
 
   // UTF8 encoder
   final _enc = MqttUtf8Encoding();
 
-  // Serialize the topics.
-  typed.Uint8Buffer _serialize() {
-    final buffer = typed.Uint8Buffer();
-    if (!isValid) {
-      return buffer;
-    }
-    for (final topic in _subscriptions) {
-      buffer.addAll(_enc.toUtf8(topic.topic.rawTopic!));
-      buffer.add(topic.option.serialize());
-    }
-    return buffer;
-  }
+  /// The list of subscriptions.
+  List<MqttSubscribePayloadTopic> get subscriptions => _subscriptions;
+
+  /// Check validity, there must be at least one subscription topic before the
+  /// subscription message can be sent.
+  bool get isValid => _subscriptions.isNotEmpty;
+
+  ///
+  /// Number of topic subscriptions
+  int get count => _subscriptions.length;
+
+  /// Initializes a new instance of the MqttSubscribePayload class.
+  MqttSubscribePayload();
 
   /// Writes the payload to the supplied stream.
   @override
@@ -97,14 +93,6 @@ class MqttSubscribePayload implements MqttIPayload {
     _subscriptions.clear();
   }
 
-  /// Check validity, there must be at least one subscription topic before the
-  /// subscription message can be sent.
-  bool get isValid => _subscriptions.isNotEmpty;
-
-  ///
-  /// Number of topic subscriptions
-  int get count => _subscriptions.length;
-
   @override
   String toString() {
     final sb = StringBuffer();
@@ -112,5 +100,18 @@ class MqttSubscribePayload implements MqttIPayload {
       sb.write('Topic = ${topic.topic}, Option = ${topic.option}');
     }
     return sb.toString();
+  }
+
+  // Serialize the topics.
+  typed.Uint8Buffer _serialize() {
+    final buffer = typed.Uint8Buffer();
+    if (!isValid) {
+      return buffer;
+    }
+    for (final topic in _subscriptions) {
+      buffer.addAll(_enc.toUtf8(topic.topic.rawTopic!));
+      buffer.add(topic.option.serialize());
+    }
+    return buffer;
   }
 }
