@@ -10,8 +10,8 @@ part of '../mqtt5_client.dart';
 /// Protocol selection helper class, protocol defaults V5
 class MqttProtocol {
   /// Version
-  static int version = MqttConstants.mqttProtocolVersion;
+  static const int version = MqttConstants.mqttProtocolVersion;
 
   /// Name
-  static String name = MqttConstants.mqttProtocolName;
+  static const String name = MqttConstants.mqttProtocolName;
 }

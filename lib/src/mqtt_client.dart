@@ -428,8 +428,11 @@ class MqttClient {
         retain: retain,
         userProperties: userProperties,
       );
-    } on Exception catch (e) {
-      throw MqttInvalidTopicException(e.toString(), topic);
+    } on Exception catch (e, stack) {
+      Error.throwWithStackTrace(
+        MqttInvalidTopicException(e.toString(), topic),
+        stack,
+      );
     }
   }
 
@@ -505,7 +508,7 @@ class MqttClient {
   /// indicator set.
   Future<MqttAuthenticateMessage> reauthenticate(
     MqttAuthenticateMessage msg, {
-    int waitTimeInSeconds = 30,
+    int waitTimeInSeconds = MqttConstants.defaultReauthenticateTimeout,
   }) {
     return authenticationManager!.reauthenticate(
       msg,

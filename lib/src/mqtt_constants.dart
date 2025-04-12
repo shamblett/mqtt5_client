@@ -73,4 +73,7 @@ class MqttConstants {
 
   /// Seconds to milliseconds multiplier
   static const int millisecondsMultiplier = 1000;
+
+  /// Minimum socket timeout period
+  static const minimumSocketTimeoutPeriod = 1000; //ms
 }
