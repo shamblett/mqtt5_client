@@ -19,47 +19,6 @@ class MqttSubscriptionTopic extends MqttTopic {
         _validateFragments,
       ]);
 
-  /// Validates all unique fragments in the topic match the
-  /// MQTT spec requirements.
-  static void _validateFragments(MqttTopic topicInstance) {
-    // If any fragment contains a wildcard or a multi wildcard
-    // but is greater than 1 character long, then it's an error -
-    // wildcards must appear by themselves.
-    final invalidFragment = topicInstance.topicFragments.any(
-      (String fragment) =>
-          (fragment.contains(MqttTopic.multiWildcard) ||
-              fragment.contains(MqttTopic.wildcard)) &&
-          fragment.length > 1,
-    );
-    if (invalidFragment) {
-      throw Exception(
-        'mqtt_client::SubscriptionTopic: rawTopic Fragment contains '
-        'a wildcard but is more than one character long',
-      );
-    }
-  }
-
-  /// Validates the placement of the multi-wildcard character
-  /// in subscription topics.
-  static void _validateMultiWildcard(MqttTopic topicInstance) {
-    if (topicInstance.rawTopic!.contains(MqttTopic.multiWildcard) &&
-        !topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcard)) {
-      throw Exception(
-        'mqtt_client::SubscriptionTopic: The rawTopic wildcard # '
-        'can only be present at the end of a topic',
-      );
-    }
-    if (topicInstance.rawTopic!.length > 1 &&
-        topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcard) &&
-        !topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcardValidEnd)) {
-      throw Exception(
-        'mqtt_client::SubscriptionTopic: Topics using the # wildcard '
-        'longer than 1 character must '
-        'be immediately preceeded by a the rawTopic separator /',
-      );
-    }
-  }
-
   /// Checks if the rawTopic matches the supplied rawTopic using
   /// the MQTT rawTopic matching rules.
   /// Returns true if the rawTopic matches based on the MQTT rawTopic
@@ -120,5 +79,46 @@ class MqttSubscriptionTopic extends MqttTopic {
     // If we exit out of the loop without a return then we have a full match rawTopic/rawTopic which would
     // have been caught by the original exact match check at the top anyway.
     return true;
+  }
+
+  // Validates all unique fragments in the topic match the
+  // MQTT spec requirements.
+  static void _validateFragments(MqttTopic topicInstance) {
+    // If any fragment contains a wildcard or a multi wildcard
+    // but is greater than 1 character long, then it's an error -
+    // wildcards must appear by themselves.
+    final invalidFragment = topicInstance.topicFragments.any(
+      (String fragment) =>
+          (fragment.contains(MqttTopic.multiWildcard) ||
+              fragment.contains(MqttTopic.wildcard)) &&
+          fragment.length > 1,
+    );
+    if (invalidFragment) {
+      throw Exception(
+        'mqtt_client::SubscriptionTopic: rawTopic Fragment contains '
+        'a wildcard but is more than one character long',
+      );
+    }
+  }
+
+  // Validates the placement of the multi-wildcard character
+  // in subscription topics.
+  static void _validateMultiWildcard(MqttTopic topicInstance) {
+    if (topicInstance.rawTopic!.contains(MqttTopic.multiWildcard) &&
+        !topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcard)) {
+      throw Exception(
+        'mqtt_client::SubscriptionTopic: The rawTopic wildcard # '
+        'can only be present at the end of a topic',
+      );
+    }
+    if (topicInstance.rawTopic!.length > 1 &&
+        topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcard) &&
+        !topicInstance.rawTopic!.endsWith(MqttTopic.multiWildcardValidEnd)) {
+      throw Exception(
+        'mqtt_client::SubscriptionTopic: Topics using the # wildcard '
+        'longer than 1 character must '
+        'be immediately preceeded by a the rawTopic separator /',
+      );
+    }
   }
 }

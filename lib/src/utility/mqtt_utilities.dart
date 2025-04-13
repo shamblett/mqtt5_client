@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -50,26 +52,26 @@ class MqttUtilities {
 
 /// Cancellable asynchronous sleep support class
 class MqttCancellableAsyncSleep {
-  /// Timeout value in milliseconds
-  MqttCancellableAsyncSleep(this._timeout);
-
-  /// Millisecond timeout
+  // Millisecond timeout
   final int _timeout;
+
+  // The completer
+  late Completer<void> _completer;
+
+  // The timer
+  late Timer _timer;
+
+  // Timer running flag
+  bool _running = false;
 
   /// Timeout
   int get timeout => _timeout;
 
-  /// The completer
-  late Completer<void> _completer;
-
-  /// The timer
-  late Timer _timer;
-
-  /// Timer running flag
-  bool _running = false;
-
   /// Running
   bool get isRunning => _running;
+
+  /// Timeout value in milliseconds
+  MqttCancellableAsyncSleep(this._timeout);
 
   /// Start the timer
   Future<void> sleep() {

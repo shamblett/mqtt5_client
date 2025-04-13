@@ -11,20 +11,14 @@ part of '../../mqtt5_client.dart';
 /// This class is in effect a cut-down implementation of the C# NET
 /// System.IO class with Mqtt client specific extensions.
 class MqttByteBuffer {
-  /// The byte buffer
-  MqttByteBuffer(this.buffer);
-
-  /// From a list
-  MqttByteBuffer.fromList(List<int> data) {
-    buffer = typed.Uint8Buffer();
-    buffer!.addAll(data);
-  }
-
-  /// The current position within the buffer.
-  int _position = 0;
+  static const int byteLength = 8;
+  static const int byteMask = 0xFF;
 
   /// The underlying byte buffer
   typed.Uint8Buffer? buffer;
+
+  /// The current position within the buffer.
+  int _position = 0;
 
   /// Position
   int get position => _position;
@@ -35,13 +29,22 @@ class MqttByteBuffer {
   /// Available bytes
   int get availableBytes => length - _position;
 
+  /// Skip bytes
+  set skipBytes(int bytes) => _position += bytes;
+
+  /// The byte buffer
+  MqttByteBuffer(this.buffer);
+
+  /// From a list
+  MqttByteBuffer.fromList(List<int> data) {
+    buffer = typed.Uint8Buffer();
+    buffer!.addAll(data);
+  }
+
   /// Resets the position to 0
   void reset() {
     _position = 0;
   }
-
-  /// Skip bytes
-  set skipBytes(int bytes) => _position += bytes;
 
   /// Add a list
   void addAll(List<int> data) {
@@ -62,7 +65,7 @@ class MqttByteBuffer {
 
     // If we do not have 2 bytes we do not have a complete header, so no
     // message is available.
-    if (length < 2) {
+    if (length < MqttConstants.minHeaderLength) {
       return false;
     }
 
@@ -119,7 +122,7 @@ class MqttByteBuffer {
   int readShort() {
     final high = readByte();
     final low = readByte();
-    return (high << 8) + low;
+    return (high << byteLength) + low;
   }
 
   /// Reads a sequence of bytes from the current
@@ -154,8 +157,8 @@ class MqttByteBuffer {
 
   /// Write a short(16 bit)
   void writeShort(int short) {
-    writeByte(short >> 8);
-    writeByte(short & 0xFF);
+    writeByte(short >> byteLength);
+    writeByte(short & byteMask);
   }
 
   /// Writes a sequence of bytes to the current
@@ -173,11 +176,7 @@ class MqttByteBuffer {
   /// Seek. Sets the position in the buffer. If overflow occurs
   /// the position is set to the end of the buffer.
   void seek(int seek) {
-    if ((seek <= length) && (seek >= 0)) {
-      _position = seek;
-    } else {
-      _position = length;
-    }
+    _position = (seek <= length) && (seek >= 0) ? seek : length;
   }
 
   /// Writes an MQTT string member
@@ -205,7 +204,7 @@ class MqttByteBuffer {
   /// Reads an MQTT string from the underlying stream.
   static String readMqttString(MqttByteBuffer buffer) {
     final enc = MqttUtf8Encoding();
-    final stringBuff = buffer.read(2);
+    final stringBuff = buffer.read(MqttConstants.minUTF8StringLength);
     final length = enc.length(stringBuff);
     stringBuff.addAll(buffer.read(length));
     return enc.fromUtf8(stringBuff);
@@ -229,10 +228,8 @@ class MqttByteBuffer {
 
   @override
   String toString() {
-    if (buffer == null || buffer!.isEmpty) {
-      return 'null or empty';
-    } else {
-      return buffer!.toList().toString();
-    }
+    return buffer == null || buffer!.isEmpty
+        ? 'null or empty'
+        : buffer!.toList().toString();
   }
 }

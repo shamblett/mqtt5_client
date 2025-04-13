@@ -14,6 +14,59 @@ typedef UnsubscribeCallback = void Function(MqttSubscription subscription);
 
 /// A class that manages the topic subscription process.
 class MqttSubscriptionManager {
+
+  /// Subscribe and Unsubscribe callbacks
+  SubscribeCallback? onSubscribed;
+
+  /// Unsubscribed
+  UnsubscribeCallback? onUnsubscribed;
+
+  /// Subscription failed callback
+  SubscribeFailCallback? onSubscribeFail;
+
+  /// Re subscribe on auto reconnect.
+  bool resubscribeOnAutoReconnect = true;
+
+  // The connection handler that we use to subscribe to subscription
+  // acknowledgements.
+  final dynamic _connectionHandler;
+
+  final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
+
+  final _subscriptions = <String?, MqttSubscription>{};
+  final _pendingSubscriptions = <int, List<MqttSubscription>>{};
+
+  final _pendingUnsubscriptions = <int, List<MqttSubscription>>{};
+
+  // The event bus
+  final dynamic _clientEventBus;
+
+  // Observable change notifier for all subscribed topics
+  final StreamController<List<MqttReceivedMessage<MqttMessage>>>
+  _subscriptionNotifier =
+  StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
+
+  /// A list of subscriptions that are pending acknowledgement, keyed
+  /// on the message identifier.
+  Map<int, List<MqttSubscription>> get pendingSubscriptions =>
+      _pendingSubscriptions;
+
+  /// Dispenser used for keeping track of subscription ids and generating
+  /// message identifiers.
+  MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
+      _messageIdentifierDispenser;
+
+  /// List of confirmed subscriptions, keyed on the topic name.
+  Map<String?, MqttSubscription> get subscriptions => _subscriptions;
+
+  /// A list of unsubscribe requests waiting for an unsubscribe ack message.
+  /// Index is the message identifier of the unsubscribe message.
+  Map<int, List<MqttSubscription>> get pendingUnsubscriptions =>
+      _pendingUnsubscriptions;
+  /// Subscription notifier
+  Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
+      _subscriptionNotifier.stream;
+
   ///  Creates a new instance of a SubscriptionsManager that uses the
   ///  specified connection to manage subscriptions.
   MqttSubscriptionManager(this._connectionHandler, this._clientEventBus) {
@@ -29,60 +82,6 @@ class MqttSubscriptionManager {
     _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
     _clientEventBus.on<MqttResubscribe>().listen(_resubscribe);
   }
-
-  final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
-
-  /// Dispenser used for keeping track of subscription ids and generating
-  /// message identifiers.
-  MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
-      _messageIdentifierDispenser;
-
-  final _subscriptions = <String?, MqttSubscription>{};
-
-  /// List of confirmed subscriptions, keyed on the topic name.
-  Map<String?, MqttSubscription> get subscriptions => _subscriptions;
-
-  final _pendingSubscriptions = <int, List<MqttSubscription>>{};
-
-  /// A list of subscriptions that are pending acknowledgement, keyed
-  /// on the message identifier.
-  Map<int, List<MqttSubscription>> get pendingSubscriptions =>
-      _pendingSubscriptions;
-
-  final _pendingUnsubscriptions = <int, List<MqttSubscription>>{};
-
-  /// A list of unsubscribe requests waiting for an unsubscribe ack message.
-  /// Index is the message identifier of the unsubscribe message.
-  Map<int, List<MqttSubscription>> get pendingUnsubscriptions =>
-      _pendingUnsubscriptions;
-
-  /// The connection handler that we use to subscribe to subscription
-  /// acknowledgements.
-  final dynamic _connectionHandler;
-
-  /// Subscribe and Unsubscribe callbacks
-  SubscribeCallback? onSubscribed;
-
-  /// Unsubscribed
-  UnsubscribeCallback? onUnsubscribed;
-
-  /// Subscription failed callback
-  SubscribeFailCallback? onSubscribeFail;
-
-  /// Re subscribe on auto reconnect.
-  bool resubscribeOnAutoReconnect = true;
-
-  /// The event bus
-  final dynamic _clientEventBus;
-
-  /// Observable change notifier for all subscribed topics
-  final StreamController<List<MqttReceivedMessage<MqttMessage>>>
-  _subscriptionNotifier =
-      StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
-
-  /// Subscription notifier
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
-      _subscriptionNotifier.stream;
 
   /// Registers a new subscription with the subscription manager from a topic
   /// and a maximum Qos.
@@ -157,65 +156,6 @@ class MqttSubscriptionManager {
     } on Exception catch (e) {
       MqttLogger.log(
         'MqttSubscriptionManager::registerSubscriptionList'
-        'exception raised, text is $e',
-      );
-      return null;
-    }
-  }
-
-  /// Gets a view on the existing observable, if the subscription
-  /// already exists.
-  MqttSubscription? _tryGetExistingSubscription(String? topic) {
-    final retSub = subscriptions[topic];
-    if (retSub == null) {
-      // Search the pending subscriptions
-      for (final subList in pendingSubscriptions.values) {
-        for (final sub in subList) {
-          if (sub.topic.rawTopic == topic) {
-            return sub;
-          }
-        }
-      }
-    }
-    return retSub;
-  }
-
-  /// Creates a new subscription for the specified topic and Qos.
-  /// If the subscription cannot be created null is returned.
-  MqttSubscription? _createNewSubscription(
-    String? topic,
-    MqttQos? qos, {
-    List<MqttUserProperty>? userProperties,
-    MqttSubscriptionOption? option,
-  }) {
-    try {
-      final subscriptionTopic = MqttSubscriptionTopic(topic);
-      final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
-      if (userProperties != null) {
-        sub.userProperties = userProperties;
-      }
-      if (option != null) {
-        sub.option = option;
-      }
-      final msgId = messageIdentifierDispenser.nextMessageIdentifier;
-      pendingSubscriptions[msgId] = <MqttSubscription>[sub];
-      dynamic msg;
-      if (option == null) {
-        // Build a subscribe message for the caller and send it to the broker.
-        msg = MqttSubscribeMessage()
-            .toTopicWithQos(sub.topic.rawTopic, qos)
-            .withUserProperties(userProperties);
-      } else {
-        msg = MqttSubscribeMessage()
-            .toTopicWithOption(sub.topic.rawTopic, option)
-            .withUserProperties(userProperties);
-      }
-      msg.messageIdentifier = msgId;
-      _connectionHandler.sendMessage(msg);
-      return sub;
-    } on Exception catch (e) {
-      MqttLogger.log(
-        'MqttSubscriptionManager::_createNewSubscription '
         'exception raised, text is $e',
       );
       return null;
@@ -441,5 +381,59 @@ class MqttSubscriptionManager {
         'NOT resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}, resubscribeOnAutoReconnect is false',
       );
     }
+  }
+
+  // Creates a new subscription for the specified topic and Qos.
+  // If the subscription cannot be created null is returned.
+  MqttSubscription? _createNewSubscription(
+      String? topic,
+      MqttQos? qos, {
+        List<MqttUserProperty>? userProperties,
+        MqttSubscriptionOption? option,
+      }) {
+    try {
+      final subscriptionTopic = MqttSubscriptionTopic(topic);
+      final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
+      if (userProperties != null) {
+        sub.userProperties = userProperties;
+      }
+      if (option != null) {
+        sub.option = option;
+      }
+      final msgId = messageIdentifierDispenser.nextMessageIdentifier;
+      pendingSubscriptions[msgId] = <MqttSubscription>[sub];
+      dynamic msg;
+      msg = option == null ? MqttSubscribeMessage()
+          .toTopicWithQos(sub.topic.rawTopic, qos)
+          .withUserProperties(userProperties) : MqttSubscribeMessage()
+          .toTopicWithOption(sub.topic.rawTopic, option)
+          .withUserProperties(userProperties);
+      msg.messageIdentifier = msgId;
+      _connectionHandler.sendMessage(msg);
+      return sub;
+    } on Exception catch (e) {
+      MqttLogger.log(
+        'MqttSubscriptionManager::_createNewSubscription '
+            'exception raised, text is $e',
+      );
+      return null;
+    }
+  }
+
+  // Gets a view on the existing observable, if the subscription
+  // already exists.
+  MqttSubscription? _tryGetExistingSubscription(String? topic) {
+    final retSub = subscriptions[topic];
+    if (retSub == null) {
+      // Search the pending subscriptions
+      for (final subList in pendingSubscriptions.values) {
+        for (final sub in subList) {
+          if (sub.topic.rawTopic == topic) {
+            return sub;
+          }
+        }
+      }
+    }
+    return retSub;
   }
 }

@@ -22,6 +22,9 @@ class MqttConstants {
   static const maxBinaryDataLength = 65535;
 
   /// Minimum message binary data length
+  static const minHeaderLength = 2;
+
+  /// Minimum message binary data length
   static const minBinaryDataLength = 2;
 
   /// Maximum message UTF8 string length

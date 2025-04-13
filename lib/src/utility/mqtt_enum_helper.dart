@@ -9,11 +9,11 @@ part of '../../mqtt5_client.dart';
 
 /// Generic enumeration helper class
 class MqttEnumHelper<T extends dynamic> {
-  /// Construction
-  MqttEnumHelper(this._valuesMap);
-
   /// Values map
   final Map<int, T> _valuesMap;
+
+  /// Construction
+  MqttEnumHelper(this._valuesMap);
 
   /// From int
   T? fromInt(int index) {

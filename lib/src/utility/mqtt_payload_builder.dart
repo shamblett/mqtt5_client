@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -9,10 +11,6 @@ part of '../../mqtt5_client.dart';
 
 /// Utility class to assist with the build in of message topic payloads.
 class MqttPayloadBuilder {
-  /// Construction
-  MqttPayloadBuilder() {
-    _payload = typed.Uint8Buffer();
-  }
 
   typed.Uint8Buffer? _payload;
 
@@ -22,6 +20,11 @@ class MqttPayloadBuilder {
   /// Length
   int get length => _payload!.length;
 
+  /// Construction
+  MqttPayloadBuilder() {
+    _payload = typed.Uint8Buffer();
+  }
+  
   /// Add a buffer
   void addBuffer(typed.Uint8Buffer buffer) {
     _payload!.addAll(buffer);
