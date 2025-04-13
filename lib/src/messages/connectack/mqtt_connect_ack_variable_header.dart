@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -225,7 +227,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
 
   /// Gets the length of the write data when WriteTo will be called.
   @override
-  int getWriteLength() => 1 + 1 + _propertySet.length();
+  int getWriteLength() => _propertySet.length() + 2;
 
   @override
   String toString() {

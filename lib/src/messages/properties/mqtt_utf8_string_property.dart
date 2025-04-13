@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -33,7 +35,7 @@ class MqttUtf8StringProperty implements MqttIProperty {
   @override
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
-    final lenBuffer = stream.read(1 + 1);
+    final lenBuffer = stream.read(2);
     final length = _enc.length(lenBuffer);
     final buffer = stream.read(length);
     final stringBuffer = typed.Uint8Buffer();

@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -238,7 +240,7 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
     headerLength += _enc.byteCount(topicName);
     if (header!.qos == MqttQos.atLeastOnce ||
         header!.qos == MqttQos.exactlyOnce) {
-      headerLength += 1 + 1;
+      headerLength += 2;
     }
     headerLength += _propertySet.getWriteLength();
     return headerLength;
@@ -248,13 +250,13 @@ class MqttPublishVariableHeader implements MqttIVariableHeader {
   void readTopicName(MqttByteBuffer stream) {
     topicName = MqttByteBuffer.readMqttString(stream);
     final enc = MqttUtf8Encoding();
-    _length = enc.length(enc.toUtf8(topicName)) + 1 + 1;
+    _length = enc.length(enc.toUtf8(topicName)) + 2;
   }
 
   /// Message identifier
   void readMessageIdentifier(MqttByteBuffer stream) {
     messageIdentifier = stream.readShort();
-    _length += 1 + 1;
+    _length += 2;
   }
 
   /// Topic name

@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -306,7 +308,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
     headerLength += enc.byteCount(_protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
-    headerLength += 1 + 1; // keepAlive
+    headerLength += 2; // keepAlive
     headerLength += _propertySet.getWriteLength();
     return headerLength;
   }
