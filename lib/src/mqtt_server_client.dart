@@ -8,28 +8,6 @@
 part of '../mqtt5_server_client.dart';
 
 class MqttServerClient extends MqttClient {
-  /// Initializes a new instance of the MqttServerClient class using the
-  /// default Mqtt Port.
-  /// The server hostname to connect to
-  /// The client identifier to use to connect with
-  MqttServerClient(
-    super.server,
-    super.clientIdentifier, {
-    this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
-  });
-
-  /// Initializes a new instance of the MqttServerClient class using
-  /// the supplied Mqtt Port.
-  /// The server hostname to connect to
-  /// The client identifier to use to connect with
-  /// The port to use
-  MqttServerClient.withPort(
-    super.server,
-    super.clientIdentifier,
-    int super.port, {
-    this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
-  }) : super.withPort();
-
   /// The security context for secure usage
   SecurityContext securityContext = SecurityContext.defaultContext;
 
@@ -62,6 +40,8 @@ class MqttServerClient extends MqttClient {
   /// Applicable only to TCP sockets
   List<RawSocketOption> socketOptions = <RawSocketOption>[];
 
+  int? _socketTimeout;
+
   /// Socket timeout period.
   ///
   /// Specifies the maximum time in milliseconds a connect call will wait for socket connection.
@@ -70,13 +50,34 @@ class MqttServerClient extends MqttClient {
   /// For TCP sockets only, not websockets.
   ///
   /// Minimum value is 1000ms.
-  int? _socketTimeout;
   int? get socketTimeout => _socketTimeout;
   set socketTimeout(int? period) {
-    if (period != null && period >= 1000) {
+    if (period != null && period >= MqttConstants.minimumSocketTimeoutPeriod) {
       _socketTimeout = period;
     }
   }
+
+  /// Initializes a new instance of the MqttServerClient class using the
+  /// default Mqtt Port.
+  /// The server hostname to connect to
+  /// The client identifier to use to connect with
+  MqttServerClient(
+    super.server,
+    super.clientIdentifier, {
+    this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
+  });
+
+  /// Initializes a new instance of the MqttServerClient class using
+  /// the supplied Mqtt Port.
+  /// The server hostname to connect to
+  /// The client identifier to use to connect with
+  /// The port to use
+  MqttServerClient.withPort(
+    super.server,
+    super.clientIdentifier,
+    int super.port, {
+    this.maxConnectionAttempts = MqttConstants.defaultMaxConnectionAttempts,
+  }) : super.withPort();
 
   /// Performs a connect to the message broker with an optional
   /// username and password for the purposes of authentication.
@@ -85,19 +86,22 @@ class MqttServerClient extends MqttClient {
   /// supply your own connection message and use the authenticateAs method to
   /// set these parameters do not set them again here.
   @override
-  Future<MqttConnectionStatus?> connect(
-      [String? username, String? password]) async {
+  Future<MqttConnectionStatus?> connect([
+    String? username,
+    String? password,
+  ]) async {
     instantiationCorrect = true;
     clientEventBus = events.EventBus();
-    clientEventBus
-        ?.on<DisconnectOnNoPingResponse>()
-        .listen(disconnectOnNoPingResponse);
-    connectionHandler = MqttSynchronousServerConnectionHandler(clientEventBus,
-        maxConnectionAttempts: maxConnectionAttempts,
-        socketOptions: socketOptions,
-        socketTimeout: socketTimeout != null
-            ? Duration(milliseconds: socketTimeout!)
-            : null);
+    clientEventBus?.on<DisconnectOnNoPingResponse>().listen(
+      disconnectOnNoPingResponse,
+    );
+    connectionHandler = MqttSynchronousServerConnectionHandler(
+      clientEventBus,
+      maxConnectionAttempts: maxConnectionAttempts,
+      socketOptions: socketOptions,
+      socketTimeout:
+          socketTimeout != null ? Duration(milliseconds: socketTimeout!) : null,
+    );
     if (useWebSocket) {
       connectionHandler.secure = false;
       connectionHandler.useWebSocket = true;

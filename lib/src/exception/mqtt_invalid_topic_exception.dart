@@ -9,12 +9,12 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when the topic of a message is invalid
 class MqttInvalidTopicException implements Exception {
+  late String _message;
+
   /// Construct
   MqttInvalidTopicException(String message, String topic) {
     _message = 'mqtt-client::InvalidTopicException: Topic $topic is $message';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

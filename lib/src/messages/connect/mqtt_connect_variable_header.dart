@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -11,19 +13,7 @@ part of '../../../mqtt5_client.dart';
 /// in this order: Protocol Name, Protocol Level, Connect Flags,
 /// Keep Alive, and Properties.
 class MqttConnectVariableHeader implements MqttIVariableHeader {
-  // The property set
-  final _propertySet = MqttPropertyContainer();
-
-  /// The length of the variable header, as this is a send only message
-  /// this is always the write length.
-  @override
-  int get length => getWriteLength();
-
-  /// Protocol name
-  final _protocolName = MqttProtocol.name;
-
-  /// Protocol version
-  final _protocolVersion = MqttProtocol.version;
+  static const sessionDoesNotExpire = 4294967295;
 
   /// Connect flags
   ///
@@ -65,7 +55,48 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// send control packets within the keep alive time period.
   int keepAlive = 0;
 
-  static const sessionDoesNotExpire = 4294967295;
+  // The property set
+  final _propertySet = MqttPropertyContainer();
+
+  // Protocol name
+  final _protocolName = MqttProtocol.name;
+
+  // Protocol version
+  final _protocolVersion = MqttProtocol.version;
+
+  int _sessionExpiryInterval = 0;
+
+  int _receiveMaximum = 0;
+
+  int _maximumPacketSize = 0;
+
+  int _topicAliasMaximum = 0;
+
+  bool _requestResponseInformation = false;
+
+  bool _requestProblemInformation = true;
+
+  final _userProperty = <MqttUserProperty>[];
+
+  String _authenticationMethod = '';
+
+  final _authenticationData = typed.Uint8Buffer();
+
+  /// The length of the variable header, as this is a send only message
+  /// this is always the write length.
+  @override
+  int get length => getWriteLength();
+
+  /// Receive Maximum
+  ///
+  /// The client uses this value to limit the number of QoS 1 and QoS 2 publications that it
+  /// is willing to process concurrently. There is no mechanism to limit the QoS 0
+  /// publications that the broker might try to send hence a value of 0 is an error.
+  ///
+  /// The value of Receive Maximum applies only to the current network connection.
+  /// If the Receive Maximum value is absent then its value defaults to its
+  /// maximum value of 65,535.
+  int get receiveMaximum => _receiveMaximum;
 
   /// Session Expiry Interval
   ///
@@ -99,37 +130,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// long Session Expiry Interval if they intend to reconnect to the broker at some
   /// later point in time. When a client has determined that it has no further
   /// use for the Session it should disconnect with a Session Expiry Interval set to 0.
-  int _sessionExpiryInterval = 0;
   int get sessionExpiryInterval => _sessionExpiryInterval;
-  set sessionExpiryInterval(int interval) {
-    var property = MqttFourByteIntegerProperty(
-        MqttPropertyIdentifier.sessionExpiryInterval);
-    property.value = interval;
-    _propertySet.add(property);
-    _sessionExpiryInterval = interval;
-  }
-
-  /// Receive Maximum
-  ///
-  /// The client uses this value to limit the number of QoS 1 and QoS 2 publications that it
-  /// is willing to process concurrently. There is no mechanism to limit the QoS 0
-  /// publications that the broker might try to send hence a value of 0 is an error.
-  ///
-  /// The value of Receive Maximum applies only to the current network connection.
-  /// If the Receive Maximum value is absent then its value defaults to its
-  /// maximum value of 65,535.
-  int _receiveMaximum = 0;
-  int get receiveMaximum => _receiveMaximum;
-  set receiveMaximum(int maximum) {
-    if (maximum <= 0 || maximum > 65535) {
-      throw ArgumentError.value(maximum, 'value must be between 1 and 65535');
-    }
-    var property =
-        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.receiveMaximum);
-    property.value = maximum;
-    _propertySet.add(property);
-    _receiveMaximum = maximum;
-  }
 
   /// Maximum Message Size
   ///
@@ -142,18 +143,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// will not process messages exceeding this limit.
   ///
   ///  A value of 0 is an error.
-  int _maximumPacketSize = 0;
   int get maximumPacketSize => _maximumPacketSize;
-  set maximumPacketSize(int size) {
-    if (size == 0) {
-      throw ArgumentError.value(size, 'value must not be 0');
-    }
-    var property =
-        MqttFourByteIntegerProperty(MqttPropertyIdentifier.maximumPacketSize);
-    property.value = size;
-    _propertySet.add(property);
-    _maximumPacketSize = size;
-  }
 
   /// Topic Alias Maximum
   ///
@@ -163,15 +153,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// A value of 0 indicates that the client does not accept any Topic
   /// Aliases on this connection.
-  int _topicAliasMaximum = 0;
   int get topicAliasMaximum => _topicAliasMaximum;
-  set topicAliasMaximum(int maximum) {
-    var property =
-        MqttTwoByteIntegerProperty(MqttPropertyIdentifier.topicAliasMaximum);
-    property.value = maximum;
-    _propertySet.add(property);
-    _topicAliasMaximum = maximum;
-  }
 
   /// Request Response Information.
   ///
@@ -179,15 +161,7 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   /// the connection acknowledgement message. False indicates that the broker MUST NOT return
   /// Response Information. If true the broker MAY return Response Information
   /// in the connection acknowledgement message.
-  bool _requestResponseInformation = false;
   bool get requestResponseInformation => _requestResponseInformation;
-  set requestResponseInformation(bool request) {
-    var property =
-        MqttByteProperty(MqttPropertyIdentifier.requestResponseInformation);
-    property.value = request ? 1 : 0;
-    _propertySet.add(property);
-    _requestResponseInformation = request;
-  }
 
   /// Request problem information property
   ///
@@ -196,29 +170,14 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// If this value is true, the broker MAY return a Reason String or
   /// User Properties on any message where it is allowed.
-  bool _requestProblemInformation = true;
   bool get requestProblemInformation => _requestProblemInformation;
-  set requestProblemInformation(bool request) {
-    var property =
-        MqttByteProperty(MqttPropertyIdentifier.requestProblemInformation);
-    property.value = request ? 1 : 0;
-    _propertySet.add(property);
-    _requestProblemInformation = request;
-  }
 
   /// User Property.
   ///
   /// The user property is allowed to appear multiple times to represent
   /// multiple name, value pairs. The same name is allowed to appear
   /// more than once.
-  final _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
-  set userProperty(List<MqttUserProperty> properties) {
-    for (var userProperty in properties) {
-      _propertySet.add(userProperty);
-    }
-    _userProperty.addAll(properties);
-  }
 
   /// Authentication Method.
   ///
@@ -227,26 +186,95 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   ///
   /// If Authentication Method is absent, extended authentication is
   /// not performed.
-  String _authenticationMethod = '';
   String get authenticationMethod => _authenticationMethod;
-  set authenticationMethod(String method) {
-    var property =
-        MqttUtf8StringProperty(MqttPropertyIdentifier.authenticationMethod);
-    property.value = method;
-    _propertySet.add(property);
-    _authenticationMethod = method;
-  }
 
   /// Authentication Data.
   ///
   /// Binary Data containing authentication data. It is a
   /// Protocol Error to include Authentication Data if there is no
   /// Authentication Method.
-  final _authenticationData = typed.Uint8Buffer();
   typed.Uint8Buffer get authenticationData => _authenticationData;
+
+  set sessionExpiryInterval(int interval) {
+    var property = MqttFourByteIntegerProperty(
+      MqttPropertyIdentifier.sessionExpiryInterval,
+    );
+    property.value = interval;
+    _propertySet.add(property);
+    _sessionExpiryInterval = interval;
+  }
+
+  set receiveMaximum(int maximum) {
+    if (maximum <= 0 || maximum > MqttConstants.maxUTF8StringLength) {
+      throw ArgumentError.value(maximum, 'value must be between 1 and 65535');
+    }
+    var property = MqttTwoByteIntegerProperty(
+      MqttPropertyIdentifier.receiveMaximum,
+    );
+    property.value = maximum;
+    _propertySet.add(property);
+    _receiveMaximum = maximum;
+  }
+
+  set maximumPacketSize(int size) {
+    if (size == 0) {
+      throw ArgumentError.value(size, 'value must not be 0');
+    }
+    var property = MqttFourByteIntegerProperty(
+      MqttPropertyIdentifier.maximumPacketSize,
+    );
+    property.value = size;
+    _propertySet.add(property);
+    _maximumPacketSize = size;
+  }
+
+  set topicAliasMaximum(int maximum) {
+    var property = MqttTwoByteIntegerProperty(
+      MqttPropertyIdentifier.topicAliasMaximum,
+    );
+    property.value = maximum;
+    _propertySet.add(property);
+    _topicAliasMaximum = maximum;
+  }
+
+  set requestResponseInformation(bool request) {
+    var property = MqttByteProperty(
+      MqttPropertyIdentifier.requestResponseInformation,
+    );
+    property.value = request ? 1 : 0;
+    _propertySet.add(property);
+    _requestResponseInformation = request;
+  }
+
+  set requestProblemInformation(bool request) {
+    var property = MqttByteProperty(
+      MqttPropertyIdentifier.requestProblemInformation,
+    );
+    property.value = request ? 1 : 0;
+    _propertySet.add(property);
+    _requestProblemInformation = request;
+  }
+
+  set userProperty(List<MqttUserProperty> properties) {
+    for (var userProperty in properties) {
+      _propertySet.add(userProperty);
+    }
+    _userProperty.addAll(properties);
+  }
+
+  set authenticationMethod(String method) {
+    var property = MqttUtf8StringProperty(
+      MqttPropertyIdentifier.authenticationMethod,
+    );
+    property.value = method;
+    _propertySet.add(property);
+    _authenticationMethod = method;
+  }
+
   set authenticationData(typed.Uint8Buffer data) {
-    var property =
-        MqttBinaryDataProperty(MqttPropertyIdentifier.authenticationData);
+    var property = MqttBinaryDataProperty(
+      MqttPropertyIdentifier.authenticationData,
+    );
     property.addBytes(data);
     _propertySet.add(property);
     _authenticationData.clear();
@@ -258,7 +286,8 @@ class MqttConnectVariableHeader implements MqttIVariableHeader {
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
     throw UnimplementedError(
-        'MqttConnectVariableHeader::readFrom - not implemented on this message type');
+      'MqttConnectVariableHeader::readFrom - not implemented on this message type',
+    );
   }
 
   /// Writes the variable header to the supplied stream.

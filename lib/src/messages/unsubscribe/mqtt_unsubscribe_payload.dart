@@ -10,13 +10,16 @@ part of '../../../mqtt5_client.dart';
 /// The payload for the unsubscribe message contains the list of
 /// topic filters that the client wishes to unsubscribe from
 class MqttUnsubscribePayload extends MqttIPayload {
-  /// Initializes a new instance of the MqttUnsubscribePayload class.
-  MqttUnsubscribePayload();
-
   final _subscriptions = <MqttSubscriptionTopic>[];
 
   /// The subscribe topics to unsubscribe.
   List<MqttSubscriptionTopic> get subscriptions => _subscriptions;
+
+  /// Is valid, there must be at least one topic
+  bool get isValid => _subscriptions.isNotEmpty;
+
+  /// Initializes a new instance of the MqttUnsubscribePayload class.
+  MqttUnsubscribePayload();
 
   /// Writes the payload to the supplied stream.
   @override
@@ -29,20 +32,8 @@ class MqttUnsubscribePayload extends MqttIPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     throw UnimplementedError(
-        'MqttUnsubscribePayload::readFrom - unimplemented, message is send only');
-  }
-
-  // Serialize
-  typed.Uint8Buffer _serialize() {
-    final buffer = typed.Uint8Buffer();
-    if (_subscriptions.isEmpty) {
-      return buffer;
-    }
-    final stream = MqttByteBuffer(buffer);
-    for (final topic in _subscriptions) {
-      stream.writeMqttStringM(topic.rawTopic);
-    }
-    return buffer;
+      'MqttUnsubscribePayload::readFrom - unimplemented, message is send only',
+    );
   }
 
   /// Gets the length of the payload in bytes when written to a stream.
@@ -64,9 +55,6 @@ class MqttUnsubscribePayload extends MqttIPayload {
     _subscriptions.clear();
   }
 
-  /// Is valid, there must be at least one topic
-  bool get isValid => _subscriptions.isNotEmpty;
-
   @override
   String toString() {
     final sb = StringBuffer();
@@ -74,5 +62,18 @@ class MqttUnsubscribePayload extends MqttIPayload {
       sb.writeln('Subscription = $subscription');
     }
     return sb.toString();
+  }
+
+  // Serialize
+  typed.Uint8Buffer _serialize() {
+    final buffer = typed.Uint8Buffer();
+    if (_subscriptions.isEmpty) {
+      return buffer;
+    }
+    final stream = MqttByteBuffer(buffer);
+    for (final topic in _subscriptions) {
+      stream.writeMqttStringM(topic.rawTopic);
+    }
+    return buffer;
   }
 }

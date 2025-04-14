@@ -91,42 +91,42 @@ enum MqttPropertyIdentifier {
   sharedSubscriptionAvailable,
 
   /// Not set indicator
-  notSet
+  notSet,
 }
 
 /// MQTT property identifier support
 const Map<int, MqttPropertyIdentifier> _mqttPropertyIdentifierValues =
     <int, MqttPropertyIdentifier>{
-  0x01: MqttPropertyIdentifier.payloadFormatIndicator,
-  0x02: MqttPropertyIdentifier.messageExpiryInterval,
-  0x03: MqttPropertyIdentifier.contentType,
-  0x08: MqttPropertyIdentifier.responseTopic,
-  0x09: MqttPropertyIdentifier.correlationdata,
-  0x0b: MqttPropertyIdentifier.subscriptionIdentifier,
-  0x11: MqttPropertyIdentifier.sessionExpiryInterval,
-  0x12: MqttPropertyIdentifier.assignedClientIdentifier,
-  0x13: MqttPropertyIdentifier.serverKeepAlive,
-  0x15: MqttPropertyIdentifier.authenticationMethod,
-  0x16: MqttPropertyIdentifier.authenticationData,
-  0x17: MqttPropertyIdentifier.requestProblemInformation,
-  0x18: MqttPropertyIdentifier.willDelayInterval,
-  0x19: MqttPropertyIdentifier.requestResponseInformation,
-  0x1a: MqttPropertyIdentifier.responseInformation,
-  0x1c: MqttPropertyIdentifier.serverReference,
-  0x1f: MqttPropertyIdentifier.reasonString,
-  0x21: MqttPropertyIdentifier.receiveMaximum,
-  0x22: MqttPropertyIdentifier.topicAliasMaximum,
-  0x23: MqttPropertyIdentifier.topicAlias,
-  0x24: MqttPropertyIdentifier.maximumQos,
-  0x25: MqttPropertyIdentifier.retainAvailable,
-  0x26: MqttPropertyIdentifier.userProperty,
-  0x27: MqttPropertyIdentifier.maximumPacketSize,
-  0x28: MqttPropertyIdentifier.wildcardSubscriptionAvailable,
-  0x29: MqttPropertyIdentifier.subscriptionIdentifierAvailable,
-  0x2a: MqttPropertyIdentifier.sharedSubscriptionAvailable,
-  0xff: MqttPropertyIdentifier.notSet
-};
+      0x01: MqttPropertyIdentifier.payloadFormatIndicator,
+      0x02: MqttPropertyIdentifier.messageExpiryInterval,
+      0x03: MqttPropertyIdentifier.contentType,
+      0x08: MqttPropertyIdentifier.responseTopic,
+      0x09: MqttPropertyIdentifier.correlationdata,
+      0x0b: MqttPropertyIdentifier.subscriptionIdentifier,
+      0x11: MqttPropertyIdentifier.sessionExpiryInterval,
+      0x12: MqttPropertyIdentifier.assignedClientIdentifier,
+      0x13: MqttPropertyIdentifier.serverKeepAlive,
+      0x15: MqttPropertyIdentifier.authenticationMethod,
+      0x16: MqttPropertyIdentifier.authenticationData,
+      0x17: MqttPropertyIdentifier.requestProblemInformation,
+      0x18: MqttPropertyIdentifier.willDelayInterval,
+      0x19: MqttPropertyIdentifier.requestResponseInformation,
+      0x1a: MqttPropertyIdentifier.responseInformation,
+      0x1c: MqttPropertyIdentifier.serverReference,
+      0x1f: MqttPropertyIdentifier.reasonString,
+      0x21: MqttPropertyIdentifier.receiveMaximum,
+      0x22: MqttPropertyIdentifier.topicAliasMaximum,
+      0x23: MqttPropertyIdentifier.topicAlias,
+      0x24: MqttPropertyIdentifier.maximumQos,
+      0x25: MqttPropertyIdentifier.retainAvailable,
+      0x26: MqttPropertyIdentifier.userProperty,
+      0x27: MqttPropertyIdentifier.maximumPacketSize,
+      0x28: MqttPropertyIdentifier.wildcardSubscriptionAvailable,
+      0x29: MqttPropertyIdentifier.subscriptionIdentifierAvailable,
+      0x2a: MqttPropertyIdentifier.sharedSubscriptionAvailable,
+      0xff: MqttPropertyIdentifier.notSet,
+    };
 
 /// MQTT property identifier helper
-MqttEnumHelper<MqttPropertyIdentifier?> mqttPropertyIdentifier =
+final MqttEnumHelper<MqttPropertyIdentifier?> mqttPropertyIdentifier =
     MqttEnumHelper<MqttPropertyIdentifier?>(_mqttPropertyIdentifierValues);

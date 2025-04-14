@@ -55,5 +55,5 @@ enum MqttMessageType {
   disconnect,
 
   ///Authentication
-  auth
+  auth,
 }

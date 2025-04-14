@@ -9,8 +9,7 @@ part of '../../../mqtt5_client.dart';
 
 /// Variable byte integer property
 class MqttVariableByteIntegerProperty implements MqttIProperty {
-  /// Construction
-  MqttVariableByteIntegerProperty([this.identifier]);
+  static const endMarker = 128;
 
   /// Identifier
   @override
@@ -21,6 +20,9 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
   int value = 0;
 
   final _enc = MqttVariableByteIntegerEncoding();
+
+  /// Construction
+  MqttVariableByteIntegerProperty([this.identifier]);
 
   /// Serialize to a byte buffer stream
   @override
@@ -38,7 +40,7 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
     while (!end) {
       var byte = stream.readByte();
       buffer.add(byte);
-      if (byte < 128) {
+      if (byte < endMarker) {
         end = true;
       }
     }

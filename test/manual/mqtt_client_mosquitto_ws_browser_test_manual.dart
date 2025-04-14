@@ -37,9 +37,10 @@ void main() {
       client.pongCallback = pongCallback;
       client.keepAlivePeriod = 10;
       client.websocketProtocols = MqttConstants.protocolsSingleDefault;
-      final connMess = MqttConnectMessage()
-          .withClientIdentifier(testClientId)
-          .startClean(); // Non persistent session for testing
+      final connMess =
+          MqttConnectMessage()
+              .withClientIdentifier(testClientId)
+              .startClean(); // Non persistent session for testing
       client.connectionMessage = connMess;
       var ok = true;
       try {
@@ -50,7 +51,8 @@ void main() {
           connectionOK = true;
         } else {
           print(
-              'Browser client connection failed - disconnecting, status is ${client.connectionStatus}');
+            'Browser client connection failed - disconnecting, status is ${client.connectionStatus}',
+          );
           client.disconnect();
         }
         await sleeper.sleep();
@@ -62,7 +64,8 @@ void main() {
         }
       } on MqttNoConnectionException {
         print(
-            '>>>>> TEST NOT OK - No connection exception thrown, cannot connect to Mosquitto');
+          '>>>>> TEST NOT OK - No connection exception thrown, cannot connect to Mosquitto',
+        );
         ok = false;
       }
       expect(ok, isTrue);

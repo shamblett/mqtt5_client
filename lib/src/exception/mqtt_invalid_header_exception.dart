@@ -9,12 +9,12 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when processing a header that is invalid in some way.
 class MqttInvalidHeaderException implements Exception {
+  late String _message;
+
   /// Construct
   MqttInvalidHeaderException(String text) {
     _message = 'mqtt-client::InvalidHeaderException: $text';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

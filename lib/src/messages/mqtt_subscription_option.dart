@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -9,9 +11,6 @@ part of '../../mqtt5_client.dart';
 
 /// Subscription option for a subscribe message topic
 class MqttSubscriptionOption {
-  /// Construction
-  MqttSubscriptionOption();
-
   /// Maximum QoS.
   ///
   /// Gives the maximum QoS level at which the broker can send
@@ -38,6 +37,9 @@ class MqttSubscriptionOption {
   /// established. This does not affect the sending of retained messages at any
   /// point after the subscribe.
   MqttRetainHandling retainHandling = MqttRetainHandling.sendRetained;
+
+  /// Construction
+  MqttSubscriptionOption();
 
   /// Serialize
   int serialize() {

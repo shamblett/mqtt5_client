@@ -14,48 +14,6 @@ typedef UnsubscribeCallback = void Function(MqttSubscription subscription);
 
 /// A class that manages the topic subscription process.
 class MqttSubscriptionManager {
-  ///  Creates a new instance of a SubscriptionsManager that uses the
-  ///  specified connection to manage subscriptions.
-  MqttSubscriptionManager(this._connectionHandler, this._clientEventBus) {
-    _connectionHandler.registerForMessage(
-        MqttMessageType.subscribeAck, confirmSubscription);
-    _connectionHandler.registerForMessage(
-        MqttMessageType.unsubscribeAck, confirmUnsubscribe);
-    // Start listening for published messages
-    _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
-    _clientEventBus.on<MqttResubscribe>().listen(_resubscribe);
-  }
-
-  final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
-
-  /// Dispenser used for keeping track of subscription ids and generating
-  /// message identifiers.
-  MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
-      _messageIdentifierDispenser;
-
-  final _subscriptions = <String?, MqttSubscription>{};
-
-  /// List of confirmed subscriptions, keyed on the topic name.
-  Map<String?, MqttSubscription> get subscriptions => _subscriptions;
-
-  final _pendingSubscriptions = <int, List<MqttSubscription>>{};
-
-  /// A list of subscriptions that are pending acknowledgement, keyed
-  /// on the message identifier.
-  Map<int, List<MqttSubscription>> get pendingSubscriptions =>
-      _pendingSubscriptions;
-
-  final _pendingUnsubscriptions = <int, List<MqttSubscription>>{};
-
-  /// A list of unsubscribe requests waiting for an unsubscribe ack message.
-  /// Index is the message identifier of the unsubscribe message.
-  Map<int, List<MqttSubscription>> get pendingUnsubscriptions =>
-      _pendingUnsubscriptions;
-
-  /// The connection handler that we use to subscribe to subscription
-  /// acknowledgements.
-  final dynamic _connectionHandler;
-
   /// Subscribe and Unsubscribe callbacks
   SubscribeCallback? onSubscribed;
 
@@ -68,17 +26,62 @@ class MqttSubscriptionManager {
   /// Re subscribe on auto reconnect.
   bool resubscribeOnAutoReconnect = true;
 
-  /// The event bus
+  // The connection handler that we use to subscribe to subscription
+  // acknowledgements.
+  final dynamic _connectionHandler;
+
+  final _messageIdentifierDispenser = MqttMessageIdentifierDispenser();
+
+  final _subscriptions = <String?, MqttSubscription>{};
+  final _pendingSubscriptions = <int, List<MqttSubscription>>{};
+
+  final _pendingUnsubscriptions = <int, List<MqttSubscription>>{};
+
+  // The event bus
   final dynamic _clientEventBus;
 
-  /// Observable change notifier for all subscribed topics
+  // Observable change notifier for all subscribed topics
   final StreamController<List<MqttReceivedMessage<MqttMessage>>>
-      _subscriptionNotifier =
+  _subscriptionNotifier =
       StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
+
+  /// A list of subscriptions that are pending acknowledgement, keyed
+  /// on the message identifier.
+  Map<int, List<MqttSubscription>> get pendingSubscriptions =>
+      _pendingSubscriptions;
+
+  /// Dispenser used for keeping track of subscription ids and generating
+  /// message identifiers.
+  MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
+      _messageIdentifierDispenser;
+
+  /// List of confirmed subscriptions, keyed on the topic name.
+  Map<String?, MqttSubscription> get subscriptions => _subscriptions;
+
+  /// A list of unsubscribe requests waiting for an unsubscribe ack message.
+  /// Index is the message identifier of the unsubscribe message.
+  Map<int, List<MqttSubscription>> get pendingUnsubscriptions =>
+      _pendingUnsubscriptions;
 
   /// Subscription notifier
   Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
       _subscriptionNotifier.stream;
+
+  ///  Creates a new instance of a SubscriptionsManager that uses the
+  ///  specified connection to manage subscriptions.
+  MqttSubscriptionManager(this._connectionHandler, this._clientEventBus) {
+    _connectionHandler.registerForMessage(
+      MqttMessageType.subscribeAck,
+      confirmSubscription,
+    );
+    _connectionHandler.registerForMessage(
+      MqttMessageType.unsubscribeAck,
+      confirmUnsubscribe,
+    );
+    // Start listening for published messages
+    _clientEventBus.on<MqttMessageReceived>().listen(publishMessageReceived);
+    _clientEventBus.on<MqttResubscribe>().listen(_resubscribe);
+  }
 
   /// Registers a new subscription with the subscription manager from a topic
   /// and a maximum Qos.
@@ -86,7 +89,8 @@ class MqttSubscriptionManager {
   MqttSubscription? subscribeSubscriptionTopic(String? topic, MqttQos? qos) {
     if (topic == null) {
       throw ArgumentError(
-          'MqttSubscriptionManager::subscribeSubscriptionTopic - topic is null');
+        'MqttSubscriptionManager::subscribeSubscriptionTopic - topic is null',
+      );
     }
     var cn = _tryGetExistingSubscription(topic);
     return cn ??= _createNewSubscription(topic, qos);
@@ -98,13 +102,16 @@ class MqttSubscriptionManager {
   MqttSubscription? subscribeSubscription(MqttSubscription? subscription) {
     if (subscription == null) {
       throw ArgumentError(
-          'MqttSubscriptionManager::subscribeSubscription - subscription is null');
+        'MqttSubscriptionManager::subscribeSubscription - subscription is null',
+      );
     }
     var cn = _tryGetExistingSubscription(subscription.topic.rawTopic);
     return cn ??= _createNewSubscription(
-        subscription.topic.rawTopic, subscription.maximumQos,
-        userProperties: subscription.userProperties,
-        option: subscription.option);
+      subscription.topic.rawTopic,
+      subscription.maximumQos,
+      userProperties: subscription.userProperties,
+      option: subscription.option,
+    );
   }
 
   /// Registers a new subscription with the subscription manager from a
@@ -114,10 +121,12 @@ class MqttSubscriptionManager {
   /// them on the first subscription in the list.
   /// Returns the actual subscriptions subscribed to or null if none.
   List<MqttSubscription>? subscribeSubscriptionList(
-      List<MqttSubscription>? subscriptions) {
+    List<MqttSubscription>? subscriptions,
+  ) {
     if (subscriptions == null) {
       throw ArgumentError(
-          'MqttSubscriptionManager::subscribeSubscriptionList - subscription list is null');
+        'MqttSubscriptionManager::subscribeSubscriptionList - subscription list is null',
+      );
     }
     // Don't recreate a subscription we already have.
     final subscriptionsToCreate = <MqttSubscription>[];
@@ -130,7 +139,8 @@ class MqttSubscriptionManager {
     if (subscriptionsToCreate.isEmpty) {
       // No subscriptions created.
       MqttLogger.log(
-          'MqttSubscriptionManager::registerSubscriptionList - no subscriptions are valid');
+        'MqttSubscriptionManager::registerSubscriptionList - no subscriptions are valid',
+      );
       return null;
     }
     // Build a subscription message and send it.
@@ -144,62 +154,10 @@ class MqttSubscriptionManager {
       _connectionHandler.sendMessage(msg);
       return subscriptionsToCreate;
     } on Exception catch (e) {
-      MqttLogger.log('MqttSubscriptionManager::registerSubscriptionList'
-          'exception raised, text is $e');
-      return null;
-    }
-  }
-
-  /// Gets a view on the existing observable, if the subscription
-  /// already exists.
-  MqttSubscription? _tryGetExistingSubscription(String? topic) {
-    final retSub = subscriptions[topic];
-    if (retSub == null) {
-      // Search the pending subscriptions
-      for (final subList in pendingSubscriptions.values) {
-        for (final sub in subList) {
-          if (sub.topic.rawTopic == topic) {
-            return sub;
-          }
-        }
-      }
-    }
-    return retSub;
-  }
-
-  /// Creates a new subscription for the specified topic and Qos.
-  /// If the subscription cannot be created null is returned.
-  MqttSubscription? _createNewSubscription(String? topic, MqttQos? qos,
-      {List<MqttUserProperty>? userProperties,
-      MqttSubscriptionOption? option}) {
-    try {
-      final subscriptionTopic = MqttSubscriptionTopic(topic);
-      final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
-      if (userProperties != null) {
-        sub.userProperties = userProperties;
-      }
-      if (option != null) {
-        sub.option = option;
-      }
-      final msgId = messageIdentifierDispenser.nextMessageIdentifier;
-      pendingSubscriptions[msgId] = <MqttSubscription>[sub];
-      dynamic msg;
-      if (option == null) {
-        // Build a subscribe message for the caller and send it to the broker.
-        msg = MqttSubscribeMessage()
-            .toTopicWithQos(sub.topic.rawTopic, qos)
-            .withUserProperties(userProperties);
-      } else {
-        msg = MqttSubscribeMessage()
-            .toTopicWithOption(sub.topic.rawTopic, option)
-            .withUserProperties(userProperties);
-      }
-      msg.messageIdentifier = msgId;
-      _connectionHandler.sendMessage(msg);
-      return sub;
-    } on Exception catch (e) {
-      MqttLogger.log('MqttSubscriptionManager::_createNewSubscription '
-          'exception raised, text is $e');
+      MqttLogger.log(
+        'MqttSubscriptionManager::registerSubscriptionList'
+        'exception raised, text is $e',
+      );
       return null;
     }
   }
@@ -207,8 +165,10 @@ class MqttSubscriptionManager {
   /// Publish message received
   void publishMessageReceived(MqttMessageReceived event) {
     final topic = event.topic;
-    MqttLogger.log('MqttSubscriptionManager::publishMessageReceived '
-        'topic is $topic');
+    MqttLogger.log(
+      'MqttSubscriptionManager::publishMessageReceived '
+      'topic is $topic',
+    );
     final msg = MqttReceivedMessage<MqttMessage>(topic.rawTopic, event.message);
     _subscriptionNotifier.add([msg]);
   }
@@ -217,7 +177,8 @@ class MqttSubscriptionManager {
   void unsubscribeTopic(String? topic) {
     if (topic == null) {
       throw ArgumentError(
-          'MqttSubscriptionManager::unsubscribeStringTopic - topic is null');
+        'MqttSubscriptionManager::unsubscribeStringTopic - topic is null',
+      );
     }
     final subscriptionTopic = MqttSubscriptionTopic(topic);
     final sub = MqttSubscription(subscriptionTopic);
@@ -226,23 +187,26 @@ class MqttSubscriptionManager {
         .withMessageIdentifier(msgId)
         .fromStringTopic(topic);
     _connectionHandler.sendMessage(unsubscribeMsg);
-    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
-        <MqttSubscription>[sub];
+    pendingUnsubscriptions[unsubscribeMsg
+        .variableHeader
+        .messageIdentifier] = <MqttSubscription>[sub];
   }
 
   /// Unsubscribe from a subscription.
   void unsubscribeSubscription(MqttSubscription? subscription) {
     if (subscription == null) {
       throw ArgumentError(
-          'MqttSubscriptionManager::unsubscribeSubscription - subscription is null');
+        'MqttSubscriptionManager::unsubscribeSubscription - subscription is null',
+      );
     }
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
         .fromTopic(subscription.topic)
         .withUserProperties(subscription.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);
-    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
-        <MqttSubscription>[subscription];
+    pendingUnsubscriptions[unsubscribeMsg
+        .variableHeader
+        .messageIdentifier] = <MqttSubscription>[subscription];
   }
 
   /// Unsubscribe from a subscription list.
@@ -252,7 +216,8 @@ class MqttSubscriptionManager {
   void unsubscribeSubscriptionList(List<MqttSubscription>? subscriptions) {
     if (subscriptions == null) {
       throw ArgumentError(
-          'MqttSubscriptionManager::unsubscribeSubscriptionList - subscription list is null');
+        'MqttSubscriptionManager::unsubscribeSubscriptionList - subscription list is null',
+      );
     }
     final unsubscribeMsg = MqttUnsubscribeMessage()
         .withMessageIdentifier(messageIdentifierDispenser.nextMessageIdentifier)
@@ -269,9 +234,11 @@ class MqttSubscriptionManager {
   void resubscribe() {
     for (final subscription in subscriptions.values) {
       _createNewSubscription(
-          subscription.topic.rawTopic, subscription.maximumQos,
-          userProperties: subscription.userProperties,
-          option: subscription.option);
+        subscription.topic.rawTopic,
+        subscription.maximumQos,
+        userProperties: subscription.userProperties,
+        option: subscription.option,
+      );
     }
     subscriptions.clear();
   }
@@ -293,7 +260,8 @@ class MqttSubscriptionManager {
         pendingTopic.userProperties = subAck.userProperty;
         // Check for a successful subscribe
         if (!MqttReasonCodeUtilities.isError(
-            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!)) {
+          mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!,
+        )) {
           subscriptions[topic] = pendingTopic;
           if (onSubscribed != null) {
             onSubscribed!(pendingTopic);
@@ -310,7 +278,8 @@ class MqttSubscriptionManager {
       pendingSubscriptions.remove(messageIdentifier);
     } else {
       MqttLogger.log(
-          'MqttSubscriptionManager::confirmSubscription - message identifier $messageIdentifier has no pending subscriptions');
+        'MqttSubscriptionManager::confirmSubscription - message identifier $messageIdentifier has no pending subscriptions',
+      );
       return false;
     }
 
@@ -334,7 +303,8 @@ class MqttSubscriptionManager {
         pendingTopic.userProperties = unSubAck.userProperty;
         // Check for a successful unsubscribe
         if (!MqttReasonCodeUtilities.isError(
-            mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!)) {
+          mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!,
+        )) {
           if (onUnsubscribed != null) {
             onUnsubscribed!(pendingTopic);
           }
@@ -347,7 +317,8 @@ class MqttSubscriptionManager {
       pendingUnsubscriptions.remove(messageIdentifier);
     } else {
       MqttLogger.log(
-          'MqttSubscriptionManager::confirmUnsubscription - message identifier $messageIdentifier has no pending unsubscriptions');
+        'MqttSubscriptionManager::confirmUnsubscription - message identifier $messageIdentifier has no pending unsubscriptions',
+      );
       return false;
     }
 
@@ -393,17 +364,79 @@ class MqttSubscriptionManager {
   void _resubscribe(MqttResubscribe resubscribeEvent) {
     if (resubscribeOnAutoReconnect) {
       MqttLogger.log(
-          'MttSubscriptionManager::_resubscribe - resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}');
+        'MttSubscriptionManager::_resubscribe - resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}',
+      );
       for (final subscription in subscriptions.values) {
         _createNewSubscription(
-            subscription.topic.rawTopic, subscription.maximumQos,
-            userProperties: subscription.userProperties,
-            option: subscription.option);
+          subscription.topic.rawTopic,
+          subscription.maximumQos,
+          userProperties: subscription.userProperties,
+          option: subscription.option,
+        );
       }
       subscriptions.clear();
     } else {
-      MqttLogger.log('MttSubscriptionManager::_resubscribe - '
-          'NOT resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}, resubscribeOnAutoReconnect is false');
+      MqttLogger.log(
+        'MttSubscriptionManager::_resubscribe - '
+        'NOT resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}, resubscribeOnAutoReconnect is false',
+      );
     }
+  }
+
+  // Creates a new subscription for the specified topic and Qos.
+  // If the subscription cannot be created null is returned.
+  MqttSubscription? _createNewSubscription(
+    String? topic,
+    MqttQos? qos, {
+    List<MqttUserProperty>? userProperties,
+    MqttSubscriptionOption? option,
+  }) {
+    try {
+      final subscriptionTopic = MqttSubscriptionTopic(topic);
+      final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
+      if (userProperties != null) {
+        sub.userProperties = userProperties;
+      }
+      if (option != null) {
+        sub.option = option;
+      }
+      final msgId = messageIdentifierDispenser.nextMessageIdentifier;
+      pendingSubscriptions[msgId] = <MqttSubscription>[sub];
+      dynamic msg;
+      msg =
+          option == null
+              ? MqttSubscribeMessage()
+                  .toTopicWithQos(sub.topic.rawTopic, qos)
+                  .withUserProperties(userProperties)
+              : MqttSubscribeMessage()
+                  .toTopicWithOption(sub.topic.rawTopic, option)
+                  .withUserProperties(userProperties);
+      msg.messageIdentifier = msgId;
+      _connectionHandler.sendMessage(msg);
+      return sub;
+    } on Exception catch (e) {
+      MqttLogger.log(
+        'MqttSubscriptionManager::_createNewSubscription '
+        'exception raised, text is $e',
+      );
+      return null;
+    }
+  }
+
+  // Gets a view on the existing observable, if the subscription
+  // already exists.
+  MqttSubscription? _tryGetExistingSubscription(String? topic) {
+    final retSub = subscriptions[topic];
+    if (retSub == null) {
+      // Search the pending subscriptions
+      for (final subList in pendingSubscriptions.values) {
+        for (final sub in subList) {
+          if (sub.topic.rawTopic == topic) {
+            return sub;
+          }
+        }
+      }
+    }
+    return retSub;
   }
 }

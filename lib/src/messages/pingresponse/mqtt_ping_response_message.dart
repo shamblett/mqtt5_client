@@ -23,7 +23,9 @@ class MqttPingResponseMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttPingResponseMessage class.
   MqttPingResponseMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer stream) {
+    MqttHeader header,
+    MqttByteBuffer stream,
+  ) {
     this.header = header;
     readFrom(stream);
   }
@@ -33,7 +35,8 @@ class MqttPingResponseMessage extends MqttMessage {
   @override
   void writeTo(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttPingRequestMessage::readFrom - not implemented, message is receive only');
+      'MqttPingRequestMessage::readFrom - not implemented, message is receive only',
+    );
   }
 
   /// Read from a message stream.

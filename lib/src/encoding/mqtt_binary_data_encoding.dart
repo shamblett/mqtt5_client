@@ -11,19 +11,24 @@ part of '../../mqtt5_client.dart';
 /// followed by that number of bytes. Thus, the length of Binary Data is limited
 /// to the range of 0 to 65,535 Bytes.
 class MqttBinaryDataEncoding {
+  static const byteLength = 8;
+  static const byteMask = 0xFF;
+
   /// To binary data
   typed.Uint8Buffer toBinaryData(typed.Uint8Buffer? data) {
     if (data == null || data.isEmpty) {
       throw Exception(
-          'MqttBinaryDataEncoding::toBinaryData  -  data is null or empty');
+        'MqttBinaryDataEncoding::toBinaryData  -  data is null or empty',
+      );
     }
-    if (data.length > 65535) {
+    if (data.length > MqttConstants.maxBinaryDataLength) {
       throw Exception(
-          'MqttBinaryDataEncoding::toBinaryData  -  data length is invalid, length is ${data.length}');
+        'MqttBinaryDataEncoding::toBinaryData  -  data length is invalid, length is ${data.length}',
+      );
     }
     final dataBytes = typed.Uint8Buffer();
-    dataBytes.add(data.length >> 8);
-    dataBytes.add(data.length & 0xFF);
+    dataBytes.add(data.length >> byteLength);
+    dataBytes.add(data.length & byteMask);
     dataBytes.addAll(data);
     return dataBytes;
   }
@@ -31,15 +36,21 @@ class MqttBinaryDataEncoding {
   /// From binary data
   typed.Uint8Buffer fromBinaryData(typed.Uint8Buffer data) {
     var len = length(data);
-    return typed.Uint8Buffer()..addAll(data.getRange(2, 2 + len));
+    return typed.Uint8Buffer()..addAll(
+      data.getRange(
+        MqttConstants.minBinaryDataLength,
+        MqttConstants.minBinaryDataLength + len,
+      ),
+    );
   }
 
   /// Length of a binary data sequence
   int length(typed.Uint8Buffer data) {
-    if (data.length < 2) {
+    if (data.length < MqttConstants.minBinaryDataLength) {
       throw Exception(
-          'MqttBinaryDataEncoding::length length byte array must comprise 2 bytes');
+        'MqttBinaryDataEncoding::length length byte array must comprise 2 bytes',
+      );
     }
-    return (data[0] << 8) + data[1];
+    return (data.first << byteLength) + data[1];
   }
 }

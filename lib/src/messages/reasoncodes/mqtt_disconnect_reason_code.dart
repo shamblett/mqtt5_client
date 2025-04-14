@@ -119,44 +119,44 @@ enum MqttDisconnectReasonCode {
 
   /// Not set indication, not part of the MQTT specification,
   /// used by the client to indicate a field has not yet been set.
-  notSet
+  notSet,
 }
 
 /// MQTT disconnect reason code support
 const Map<int, MqttDisconnectReasonCode> _mqttDisconnectReasonCodeValues =
     <int, MqttDisconnectReasonCode>{
-  0x00: MqttDisconnectReasonCode.normalDisconnection,
-  0x04: MqttDisconnectReasonCode.disconnectWithWillMessage,
-  0x80: MqttDisconnectReasonCode.unspecifiedError,
-  0x81: MqttDisconnectReasonCode.malformedPacket,
-  0x82: MqttDisconnectReasonCode.protocolError,
-  0x83: MqttDisconnectReasonCode.implementationSpecificError,
-  0x87: MqttDisconnectReasonCode.notAuthorized,
-  0x89: MqttDisconnectReasonCode.serverBusy,
-  0x8b: MqttDisconnectReasonCode.serverShuttingDown,
-  0x8d: MqttDisconnectReasonCode.keepAliveTimeout,
-  0x8e: MqttDisconnectReasonCode.sessionTakenOver,
-  0x8f: MqttDisconnectReasonCode.topicFilterInvalid,
-  0x90: MqttDisconnectReasonCode.topicNameInvalid,
-  0x93: MqttDisconnectReasonCode.receiveMaximumExceeded,
-  0x94: MqttDisconnectReasonCode.topicAliasInvalid,
-  0x95: MqttDisconnectReasonCode.packetTooLarge,
-  0x96: MqttDisconnectReasonCode.messageRateTooHigh,
-  0x97: MqttDisconnectReasonCode.quotaExceeded,
-  0x98: MqttDisconnectReasonCode.administrativeAction,
-  0x99: MqttDisconnectReasonCode.payloadFormatInvalid,
-  0x9a: MqttDisconnectReasonCode.retainNotSupported,
-  0x9b: MqttDisconnectReasonCode.qosNotSupported,
-  0x9c: MqttDisconnectReasonCode.useAnotherServer,
-  0x9d: MqttDisconnectReasonCode.serverMoved,
-  0x9e: MqttDisconnectReasonCode.sharedSubscriptionsNotSupported,
-  0x9f: MqttDisconnectReasonCode.connectionRateExceeded,
-  0xa0: MqttDisconnectReasonCode.maximumConnectTime,
-  0xa1: MqttDisconnectReasonCode.subscriptionIdentifiersNotSupported,
-  0xa2: MqttDisconnectReasonCode.wildcardSubscriptionsNotSupported,
-  0xff: MqttDisconnectReasonCode.notSet
-};
+      0x00: MqttDisconnectReasonCode.normalDisconnection,
+      0x04: MqttDisconnectReasonCode.disconnectWithWillMessage,
+      0x80: MqttDisconnectReasonCode.unspecifiedError,
+      0x81: MqttDisconnectReasonCode.malformedPacket,
+      0x82: MqttDisconnectReasonCode.protocolError,
+      0x83: MqttDisconnectReasonCode.implementationSpecificError,
+      0x87: MqttDisconnectReasonCode.notAuthorized,
+      0x89: MqttDisconnectReasonCode.serverBusy,
+      0x8b: MqttDisconnectReasonCode.serverShuttingDown,
+      0x8d: MqttDisconnectReasonCode.keepAliveTimeout,
+      0x8e: MqttDisconnectReasonCode.sessionTakenOver,
+      0x8f: MqttDisconnectReasonCode.topicFilterInvalid,
+      0x90: MqttDisconnectReasonCode.topicNameInvalid,
+      0x93: MqttDisconnectReasonCode.receiveMaximumExceeded,
+      0x94: MqttDisconnectReasonCode.topicAliasInvalid,
+      0x95: MqttDisconnectReasonCode.packetTooLarge,
+      0x96: MqttDisconnectReasonCode.messageRateTooHigh,
+      0x97: MqttDisconnectReasonCode.quotaExceeded,
+      0x98: MqttDisconnectReasonCode.administrativeAction,
+      0x99: MqttDisconnectReasonCode.payloadFormatInvalid,
+      0x9a: MqttDisconnectReasonCode.retainNotSupported,
+      0x9b: MqttDisconnectReasonCode.qosNotSupported,
+      0x9c: MqttDisconnectReasonCode.useAnotherServer,
+      0x9d: MqttDisconnectReasonCode.serverMoved,
+      0x9e: MqttDisconnectReasonCode.sharedSubscriptionsNotSupported,
+      0x9f: MqttDisconnectReasonCode.connectionRateExceeded,
+      0xa0: MqttDisconnectReasonCode.maximumConnectTime,
+      0xa1: MqttDisconnectReasonCode.subscriptionIdentifiersNotSupported,
+      0xa2: MqttDisconnectReasonCode.wildcardSubscriptionsNotSupported,
+      0xff: MqttDisconnectReasonCode.notSet,
+    };
 
 /// MQTT disconnect reason code helper
-MqttEnumHelper<MqttDisconnectReasonCode?> mqttDisconnectReasonCode =
+final MqttEnumHelper<MqttDisconnectReasonCode?> mqttDisconnectReasonCode =
     MqttEnumHelper<MqttDisconnectReasonCode?>(_mqttDisconnectReasonCodeValues);

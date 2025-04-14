@@ -9,22 +9,29 @@ part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT client server connection base class
 class MqttServerConnection extends MqttConnectionBase {
-  /// Default constructor
-  MqttServerConnection(
-      super.clientEventBus, this.socketOptions, this.socketTimeout);
-
-  /// Initializes a new instance of the MqttConnection class.
-  MqttServerConnection.fromConnect(
-      server, int port, clientEventBus, this.socketOptions, this.socketTimeout)
-      : super(clientEventBus) {
-    connect(server, port);
-  }
-
   /// Socket options, applicable only to TCP sockets
   List<RawSocketOption> socketOptions = <RawSocketOption>[];
 
   /// Socket timeout duration.
   Duration? socketTimeout;
+
+  /// Default constructor
+  MqttServerConnection(
+    super.clientEventBus,
+    this.socketOptions,
+    this.socketTimeout,
+  );
+
+  /// Initializes a new instance of the MqttConnection class.
+  MqttServerConnection.fromConnect(
+    server,
+    int port,
+    clientEventBus,
+    this.socketOptions,
+    this.socketTimeout,
+  ) : super(clientEventBus) {
+    connect(server, port);
+  }
 
   /// Connect, must be overridden in connection classes
   @override
@@ -40,7 +47,13 @@ class MqttServerConnection extends MqttConnectionBase {
     return completer.future;
   }
 
-  /// Create the listening stream subscription and subscribe the callbacks
+  /// Sends the message in the stream to the broker.
+  void send(MqttByteBuffer message) {
+    final messageBytes = message.read(message.length);
+    client?.add(messageBytes.toList());
+  }
+
+  // Create the listening stream subscription and subscribe the callbacks
   void _startListening() {
     MqttLogger.log('MqttServerConnection::_startListening');
     try {
@@ -50,23 +63,27 @@ class MqttServerConnection extends MqttConnectionBase {
     }
   }
 
-  /// OnData listener callback
+  // OnData listener callback
   void _onData(dynamic data) {
     MqttLogger.log(
-        'MqttServerConnection::_onData - Message Received Started <<< ');
+      'MqttServerConnection::_onData - Message Received Started <<< ',
+    );
     // Protect against 0 bytes but should never happen.
     if (data.isEmpty) {
       MqttLogger.log('MqttServerConnection::_ondata - Error - 0 byte message');
       return;
     }
     MqttLogger.log(
-        'MqttServerConnection::_ondata - adding incoming data, data length is ${data.length},'
-        ' message stream length is ${messageStream.length}, '
-        'message stream position is ${messageStream.position}');
+      'MqttServerConnection::_ondata - adding incoming data, data length is ${data.length},'
+      ' message stream length is ${messageStream.length}, '
+      'message stream position is ${messageStream.position}',
+    );
     messageStream.addAll(data);
-    MqttLogger.log('MqttServerConnection::_ondata - added incoming data'
-        ' message stream length is ${messageStream.length}, '
-        'message stream position is ${messageStream.position}');
+    MqttLogger.log(
+      'MqttServerConnection::_ondata - added incoming data'
+      ' message stream length is ${messageStream.length}, '
+      'message stream position is ${messageStream.position}',
+    );
 
     // Catch all unexpected exceptions, if any send a disconnect message
     try {
@@ -81,12 +98,14 @@ class MqttServerConnection extends MqttConnectionBase {
           }
         } on MqttIncompleteMessageException {
           MqttLogger.log(
-              'MqttServerConnection::_ondata - message is not yet valid, '
-              'waiting for more data ...');
+            'MqttServerConnection::_ondata - message is not yet valid, '
+            'waiting for more data ...',
+          );
           messageIsValid = false;
         } catch (e) {
           MqttLogger.log(
-              'MqttServerConnection::_ondata - exception raised is $e');
+            'MqttServerConnection::_ondata - exception raised is $e',
+          );
           rethrow;
         }
         if (!messageIsValid) {
@@ -95,7 +114,9 @@ class MqttServerConnection extends MqttConnectionBase {
         }
         if (messageIsValid) {
           MqttLogger.log(
-              'MqttServerConnection::_onData - MESSAGE RECEIVED -> ', msg);
+            'MqttServerConnection::_onData - MESSAGE RECEIVED -> ',
+            msg,
+          );
           // If we have received a valid message we must shrink the stream
           messageStream.shrink();
           if (clientEventBus != null) {
@@ -106,43 +127,44 @@ class MqttServerConnection extends MqttConnectionBase {
                 clientEventBus!.fire(MqttMessageAvailable(msg));
               }
               MqttLogger.log(
-                  'MqttServerConnection::_onData - message available event fired');
+                'MqttServerConnection::_onData - message available event fired',
+              );
             } else {
               MqttLogger.log(
-                  'MqttServerConnection::_onData - message not processed, event bus is closed');
+                'MqttServerConnection::_onData - message not processed, event bus is closed',
+              );
             }
           } else {
             MqttLogger.log(
-                'MqttServerConnection::_onData - message not processed, event bus is null');
+              'MqttServerConnection::_onData - message not processed, event bus is null',
+            );
           }
         }
       }
     } catch (e) {
       MqttLogger.log(
-          'MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect $e');
+        'MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect $e',
+      );
       // Send disconnect
-      final disconnect = MqttDisconnectMessage()
-        ..withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
+      final disconnect =
+          MqttDisconnectMessage()
+            ..withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
       messageStream.reset();
       disconnect.writeTo(messageStream);
       messageStream.seek(0);
       send(messageStream);
     }
     MqttLogger.log(
-        'MqttServerConnection::_onData - Message Received Ended <<< ');
-  }
-
-  /// Sends the message in the stream to the broker.
-  void send(MqttByteBuffer message) {
-    final messageBytes = message.read(message.length);
-    client?.add(messageBytes.toList());
+      'MqttServerConnection::_onData - Message Received Ended <<< ',
+    );
   }
 
   // Apply any socket options, true indicates options applied
   bool _applySocketOptions(Socket socket, List<RawSocketOption> socketOptions) {
     if (socketOptions.isNotEmpty) {
       MqttLogger.log(
-          'MqttServerConnection::__applySocketOptions - Socket options supplied, applying');
+        'MqttServerConnection::__applySocketOptions - Socket options supplied, applying',
+      );
       for (final option in socketOptions) {
         socket.setRawOption(option);
       }

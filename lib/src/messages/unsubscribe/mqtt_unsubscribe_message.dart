@@ -10,6 +10,16 @@ part of '../../../mqtt5_client.dart';
 /// An unsubscribe message is sent by the client to the broker,
 /// to unsubscribe from topics.
 class MqttUnsubscribeMessage extends MqttMessage {
+  final _variableHeader = MqttUnsubscribeVariableHeader();
+
+  final _payload = MqttUnsubscribePayload();
+
+  /// Gets the variable header.
+  MqttUnsubscribeVariableHeader get variableHeader => _variableHeader;
+
+  /// Gets the payload.
+  MqttUnsubscribePayload get payload => _payload;
+
   /// Initializes a new instance of the MqttUnsubscribeMessage class.
   MqttUnsubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.unsubscribe);
@@ -17,21 +27,13 @@ class MqttUnsubscribeMessage extends MqttMessage {
     header!.qos = MqttQos.atLeastOnce;
   }
 
-  final _variableHeader = MqttUnsubscribeVariableHeader();
-
-  /// Gets the variable header.
-  MqttUnsubscribeVariableHeader get variableHeader => _variableHeader;
-
-  final _payload = MqttUnsubscribePayload();
-
-  /// Gets the payload.
-  MqttUnsubscribePayload get payload => _payload;
-
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header!.writeTo(variableHeader.getWriteLength() + payload.getWriteLength(),
-        messageStream);
+    header!.writeTo(
+      variableHeader.getWriteLength() + payload.getWriteLength(),
+      messageStream,
+    );
     variableHeader.writeTo(messageStream);
     payload.writeTo(messageStream);
   }
@@ -41,7 +43,8 @@ class MqttUnsubscribeMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttUnsubscribeMessage::readFrom - not implemented, message is send only');
+      'MqttUnsubscribeMessage::readFrom - not implemented, message is send only',
+    );
   }
 
   /// Write length
@@ -69,7 +72,8 @@ class MqttUnsubscribeMessage extends MqttMessage {
 
   /// Adds a new unsubscription with the specified subscription list
   MqttUnsubscribeMessage fromSubscriptionList(
-      List<MqttSubscription> subscriptions) {
+    List<MqttSubscription> subscriptions,
+  ) {
     for (final subscription in subscriptions) {
       _payload.addTopicSubscription(subscription.topic);
     }

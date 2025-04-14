@@ -14,27 +14,13 @@ part of '../../../mqtt5_client.dart';
 /// the maximum QoS level that was granted or the error which was found for
 /// each Subscription that was requested by the subscribe message.
 class MqttSubscribeAckMessage extends MqttMessage {
-  /// Initializes a new instance of the MqttSubscribeAckMessage class.
-  MqttSubscribeAckMessage() {
-    header = MqttHeader().asType(MqttMessageType.subscribeAck);
-    _variableHeader = MqttSubscribeAckVariableHeader();
-    _payload = MqttSubscribeAckPayload();
-  }
-
-  /// Initializes a new instance of the MqttSubscribeAckMessage class.
-  MqttSubscribeAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
-    this.header = header;
-    readFrom(messageStream);
-  }
-
-  /// Variable Header
+  // Variable Header
   MqttSubscribeAckVariableHeader? _variableHeader;
-  MqttSubscribeAckVariableHeader? get variableHeader => _variableHeader;
 
-  /// Payload
+  // Payload
   MqttSubscribeAckPayload? _payload;
-  MqttSubscribeAckPayload? get payload => _payload;
+
+  MqttSubscribeAckVariableHeader? get variableHeader => _variableHeader;
 
   /// The message identifier
   int get messageIdentifier => _variableHeader!.messageIdentifier;
@@ -48,21 +34,45 @@ class MqttSubscribeAckMessage extends MqttMessage {
   /// User Property.
   List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
 
+  /// Payload
+  MqttSubscribeAckPayload? get payload => _payload;
+
+  /// Initializes a new instance of the MqttSubscribeAckMessage class.
+  MqttSubscribeAckMessage() {
+    header = MqttHeader().asType(MqttMessageType.subscribeAck);
+    _variableHeader = MqttSubscribeAckVariableHeader();
+    _payload = MqttSubscribeAckPayload();
+  }
+
+  /// Initializes a new instance of the MqttSubscribeAckMessage class.
+  MqttSubscribeAckMessage.fromByteBuffer(
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
+    this.header = header;
+    readFrom(messageStream);
+  }
+
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.
   @override
   void writeTo(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttSubscribeAckMessage::writeTo - not implemented, message is receive only');
+      'MqttSubscribeAckMessage::writeTo - not implemented, message is receive only',
+    );
   }
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    _variableHeader =
-        MqttSubscribeAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader = MqttSubscribeAckVariableHeader.fromByteBuffer(
+      messageStream,
+    );
     _payload = MqttSubscribeAckPayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+      header,
+      variableHeader,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

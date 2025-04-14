@@ -10,14 +10,6 @@ part of '../../../mqtt5_client.dart';
 /// String pair property.
 /// Typically used to add user properties to a message.
 class MqttStringPairProperty implements MqttIProperty {
-  /// Construction
-  MqttStringPairProperty([this.identifier]);
-
-  /// As a user property
-  MqttStringPairProperty.asUserProperty() {
-    identifier = MqttPropertyIdentifier.userProperty;
-  }
-
   /// Identifier
   @override
   MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
@@ -25,6 +17,26 @@ class MqttStringPairProperty implements MqttIProperty {
   /// The value
   @override
   final dynamic value = MqttStringPair();
+
+  /// Get the name
+  String? get pairName => value.name;
+
+  /// Get the value
+  String? get pairValue => value.value;
+
+  /// Set the name
+  set pairName(String? val) => value.name = val;
+
+  /// Set the value
+  set pairValue(String? val) => value.value = val;
+
+  /// Construction
+  MqttStringPairProperty([this.identifier]);
+
+  /// As a user property
+  MqttStringPairProperty.asUserProperty() {
+    identifier = MqttPropertyIdentifier.userProperty;
+  }
 
   /// Serialize to a byte buffer stream
   @override
@@ -48,23 +60,12 @@ class MqttStringPairProperty implements MqttIProperty {
   int? getWriteLength() =>
       value.nameAsUtf8.length + value.valueAsUtf8.length + 1;
 
-  /// Set the name
-  set pairName(String? val) => value.name = val;
-
-  /// Set the value
-  set pairValue(String? val) => value.value = val;
-
-  /// Get the name
-  String? get pairName => value.name;
-
-  /// Get the value
-  String? get pairValue => value.value;
-
   @override
   String toString() {
     final sb = StringBuffer();
     sb.write(
-        'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, Name : "$pairName" Value : "$pairValue"');
+      'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, Name : "$pairName" Value : "$pairValue"',
+    );
     return sb.toString();
   }
 }

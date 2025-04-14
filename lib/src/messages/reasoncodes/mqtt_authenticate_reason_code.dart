@@ -27,19 +27,20 @@ enum MqttAuthenticateReasonCode {
 
   /// Not set indication, not part of the MQTT specification,
   /// used by the client to indicate a field has not yet been set.
-  notSet
+  notSet,
 }
 
 /// MQTT authenticate reason code support
 const Map<int, MqttAuthenticateReasonCode> _mqttAuthenticateReasonCodeValues =
     <int, MqttAuthenticateReasonCode>{
-  0x00: MqttAuthenticateReasonCode.success,
-  0x18: MqttAuthenticateReasonCode.continueAuthentication,
-  0x19: MqttAuthenticateReasonCode.reAuthenticate,
-  0x0ff: MqttAuthenticateReasonCode.notSet
-};
+      0x00: MqttAuthenticateReasonCode.success,
+      0x18: MqttAuthenticateReasonCode.continueAuthentication,
+      0x19: MqttAuthenticateReasonCode.reAuthenticate,
+      0x0ff: MqttAuthenticateReasonCode.notSet,
+    };
 
 // MQTT authenticate reason code helper
-MqttEnumHelper<MqttAuthenticateReasonCode?> mqttAuthenticateReasonCode =
+final MqttEnumHelper<MqttAuthenticateReasonCode?> mqttAuthenticateReasonCode =
     MqttEnumHelper<MqttAuthenticateReasonCode?>(
-        _mqttAuthenticateReasonCodeValues);
+      _mqttAuthenticateReasonCodeValues,
+    );

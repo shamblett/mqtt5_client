@@ -17,22 +17,22 @@ part of '../../../mqtt5_client.dart';
 class MqttWillProperties {
   final _propertySet = MqttPropertyContainer();
 
-  /// Will Delay Interval
-  ///
-  /// The Will Delay Interval in seconds. If the Will Delay Interval is absent,
-  /// the default value is 0 and there is no delay before the Will Message
-  /// is published.
+  bool _payloadFormatIndicator = false;
+
   int _willDelayInterval = 0;
-  int get willDelayInterval => _willDelayInterval;
-  set willDelayInterval(int delay) {
-    if (delay != 0) {
-      final property =
-          MqttFourByteIntegerProperty(MqttPropertyIdentifier.willDelayInterval);
-      property.value = delay;
-      _propertySet.add(property);
-      _willDelayInterval = delay;
-    }
-  }
+
+  int _messageExpiryInterval = 0;
+
+  String? _contentType;
+
+  String? _responseTopic;
+
+  typed.Uint8Buffer? _correlationData;
+
+  final _userProperties = <MqttUserProperty>[];
+
+  /// Length of the properties
+  int get length => _propertySet.length();
 
   /// Payload Format Indicator
   ///
@@ -42,15 +42,7 @@ class MqttWillProperties {
   ///  The broker MAY validate that the Will Message is of the format indicated,
   ///  and if it is not send a Connect Acknowledgement message [MqttConnectAckMessage]
   ///  with the Reason Code of 0x99 (Payload format invalid).
-  bool _payloadFormatIndicator = false;
   bool get payloadFormatIndicator => _payloadFormatIndicator;
-  set payloadFormatIndicator(bool indicator) {
-    final property =
-        MqttByteProperty(MqttPropertyIdentifier.payloadFormatIndicator);
-    property.value = indicator ? 1 : 0;
-    _propertySet.add(property);
-    _payloadFormatIndicator = indicator;
-  }
 
   /// Message Expiry Interval
   ///
@@ -58,49 +50,19 @@ class MqttWillProperties {
   ///  Publication Expiry Interval when the broker publishes the Will Message.
   ///  If absent(value = 0), no Message Expiry Interval is sent when the broker
   ///  publishes the Will Message.
-  int _messageExpiryInterval = 0;
   int get messageExpiryInterval => _messageExpiryInterval;
-  set messageExpiryInterval(int interval) {
-    if (interval != 0) {
-      final property = MqttFourByteIntegerProperty(
-          MqttPropertyIdentifier.messageExpiryInterval);
-      property.value = interval;
-      _propertySet.add(property);
-      _messageExpiryInterval = interval;
-    }
-  }
 
   /// Content Type
   ///
   /// The value of the Content Type is defined by the sending and
   /// receiving application.
-  String? _contentType;
   String? get contentType => _contentType;
-  set contentType(String? type) {
-    if (type != null) {
-      final property =
-          MqttUtf8StringProperty(MqttPropertyIdentifier.contentType);
-      property.value = type;
-      _propertySet.add(property);
-      _contentType = type;
-    }
-  }
 
   /// Response Topic
   ///
   /// The Topic Name for a response message. The presence of a Response Topic
   /// identifies the Will Message as a Request.
-  String? _responseTopic;
   String? get responseTopic => _responseTopic;
-  set responseTopic(String? topic) {
-    if (topic != null) {
-      final property =
-          MqttUtf8StringProperty(MqttPropertyIdentifier.responseTopic);
-      property.value = topic;
-      _propertySet.add(property);
-      _responseTopic = topic;
-    }
-  }
 
   /// Correlation Data
   ///
@@ -111,12 +73,80 @@ class MqttWillProperties {
   ///  any correlation data.
   ///  The value of the Correlation Data only has meaning to the sender of the
   ///  Request Message and receiver of the Response Message.
-  typed.Uint8Buffer? _correlationData;
   typed.Uint8Buffer? get correlationData => _correlationData;
+
+  /// User property
+  ///
+  /// The User Property is allowed to appear multiple times to represent
+  /// multiple name, value pairs. The same name is allowed to appear
+  /// more than once.
+  List<MqttUserProperty> get userProperties => _userProperties;
+
+  /// Will Delay Interval
+  ///
+  /// The Will Delay Interval in seconds. If the Will Delay Interval is absent,
+  /// the default value is 0 and there is no delay before the Will Message
+  /// is published.
+  int get willDelayInterval => _willDelayInterval;
+
+  set willDelayInterval(int delay) {
+    if (delay != 0) {
+      final property = MqttFourByteIntegerProperty(
+        MqttPropertyIdentifier.willDelayInterval,
+      );
+      property.value = delay;
+      _propertySet.add(property);
+      _willDelayInterval = delay;
+    }
+  }
+
+  set payloadFormatIndicator(bool indicator) {
+    final property = MqttByteProperty(
+      MqttPropertyIdentifier.payloadFormatIndicator,
+    );
+    property.value = indicator ? 1 : 0;
+    _propertySet.add(property);
+    _payloadFormatIndicator = indicator;
+  }
+
+  set messageExpiryInterval(int interval) {
+    if (interval != 0) {
+      final property = MqttFourByteIntegerProperty(
+        MqttPropertyIdentifier.messageExpiryInterval,
+      );
+      property.value = interval;
+      _propertySet.add(property);
+      _messageExpiryInterval = interval;
+    }
+  }
+
+  set contentType(String? type) {
+    if (type != null) {
+      final property = MqttUtf8StringProperty(
+        MqttPropertyIdentifier.contentType,
+      );
+      property.value = type;
+      _propertySet.add(property);
+      _contentType = type;
+    }
+  }
+
+  set responseTopic(String? topic) {
+    if (topic != null) {
+      final property = MqttUtf8StringProperty(
+        MqttPropertyIdentifier.responseTopic,
+      );
+      property.value = topic;
+      _propertySet.add(property);
+      _responseTopic = topic;
+    }
+  }
+
   set correlationData(typed.Uint8Buffer? data) {
     if (data != null) {
-      final property =
-          MqttBinaryDataProperty(MqttPropertyIdentifier.correlationdata);
+      final property = MqttBinaryDataProperty(
+        MqttPropertyIdentifier.correlationdata,
+      );
       property.addBytes(data);
       _propertySet.add(property);
       if (_correlationData == null) {
@@ -128,13 +158,6 @@ class MqttWillProperties {
     }
   }
 
-  /// User property
-  ///
-  /// The User Property is allowed to appear multiple times to represent
-  /// multiple name, value pairs. The same name is allowed to appear
-  /// more than once.
-  final _userProperties = <MqttUserProperty>[];
-  List<MqttUserProperty> get userProperties => _userProperties;
   set userProperties(List<MqttUserProperty> properties) {
     for (var userProperty in properties) {
       _propertySet.add(userProperty);
@@ -147,9 +170,6 @@ class MqttWillProperties {
 
   /// Write length
   int getWriteLength() => _propertySet.getWriteLength();
-
-  /// Length of the properties
-  int get length => _propertySet.length();
 
   @override
   String toString() {

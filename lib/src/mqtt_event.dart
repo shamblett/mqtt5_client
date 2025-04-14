@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-match-file-name
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -9,66 +11,66 @@ part of '../mqtt5_client.dart';
 
 /// The message available event.
 class MqttMessageAvailable {
-  /// Constructor
-  MqttMessageAvailable(this._message);
-
   /// The message associated with the event
   final MqttMessage? _message;
 
   /// Message
   MqttMessage? get message => _message;
+
+  /// Constructor
+  MqttMessageAvailable(this._message);
 }
 
 /// The connect acknowledge message available event raised by the Connection class
 class MqttConnectAckMessageAvailable {
-  /// Constructor
-  MqttConnectAckMessageAvailable(this._message);
-
   /// The message associated with the event
   final MqttMessage? _message;
 
   /// Message
   MqttMessage? get message => _message;
+
+  /// Constructor
+  MqttConnectAckMessageAvailable(this._message);
 }
 
-/// Message recieved for publishing event.
+/// Message received for publishing event.
 class MqttMessageReceived {
-  /// Constructor
-  MqttMessageReceived(this._topic, this._message);
-
-  /// The message associated with the event
+  // The message associated with the event
   final MqttMessage _message;
+
+  // The topic
+  final MqttPublicationTopic _topic;
 
   /// Message
   MqttMessage get message => _message;
 
-  /// The topic
-  final MqttPublicationTopic _topic;
-
   /// Topic
   MqttPublicationTopic get topic => _topic;
+
+  /// Constructor
+  MqttMessageReceived(this._topic, this._message);
 }
 
 /// Auto reconnect event
 class MqttAutoReconnect {
-  /// Constructor
-  MqttAutoReconnect({this.userRequested = false, this.wasConnected = false});
-
   /// If set auto reconnect has been invoked through the client
   /// [doAutoReconnect] method, i.e. a user request.
   bool userRequested = false;
 
   /// True if the previous state was connected
   bool wasConnected = false;
+
+  /// Constructor
+  MqttAutoReconnect({this.userRequested = false, this.wasConnected = false});
 }
 
 /// Re subscribe event
 class MqttResubscribe {
-  /// Constructor
-  MqttResubscribe({this.fromAutoReconnect = false});
-
   /// If set re subscribe has been triggered from auto reconnect.
   bool fromAutoReconnect = false;
+
+  /// Constructor
+  MqttResubscribe({this.fromAutoReconnect = false});
 }
 
 /// Disconnect on keep alive on no ping response event

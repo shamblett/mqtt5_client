@@ -9,6 +9,8 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when a client identifier included in a message is too long.
 class MqttIdentifierException implements Exception {
+  late String _message;
+
   /// Construct
   MqttIdentifierException(String clientIdentifier) {
     _message =
@@ -17,8 +19,6 @@ class MqttIdentifierException implements Exception {
         'Maximum ClientIdentifier length is '
         '${MqttConstants.maxClientIdentifierLength}';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

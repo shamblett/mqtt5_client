@@ -21,8 +21,11 @@ void main() {
   test('On Authentication Message Received', () async {
     final authManager = MqttAuthenticationManager();
     final clientEventBus = events.EventBus();
-    final testCHS = TestConnectionHandlerSend(clientEventBus,
-        socketOptions: socketOptions, socketTimeout: null);
+    final testCHS = TestConnectionHandlerSend(
+      clientEventBus,
+      socketOptions: socketOptions,
+      socketTimeout: null,
+    );
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
@@ -38,23 +41,31 @@ void main() {
   test('Reauthenticate - Timeout No Message', () async {
     final authManager = MqttAuthenticationManager();
     final clientEventBus = events.EventBus();
-    final testCHS = TestConnectionHandlerSend(clientEventBus,
-        socketOptions: socketOptions, socketTimeout: null);
+    final testCHS = TestConnectionHandlerSend(
+      clientEventBus,
+      socketOptions: socketOptions,
+      socketTimeout: null,
+    );
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
-    final rxmessage =
-        await authManager.reauthenticate(message, waitTimeInSeconds: 2);
+    final rxmessage = await authManager.reauthenticate(
+      message,
+      waitTimeInSeconds: 2,
+    );
     expect(rxmessage.timeout, isTrue);
     expect(rxmessage.authenticationMethod, isNull);
   }, timeout: Timeout.factor(0.1));
 
   test('Reauthenticate - Timeout With Message', () async {
     final clientEventBus = events.EventBus();
-    final testCHS = TestConnectionHandlerSend(clientEventBus,
-        socketOptions: socketOptions, socketTimeout: null);
+    final testCHS = TestConnectionHandlerSend(
+      clientEventBus,
+      socketOptions: socketOptions,
+      socketTimeout: null,
+    );
     final authManager = MqttAuthenticationManager();
     authManager.connectionHandler = testCHS;
     final message = MqttAuthenticateMessage()
@@ -62,9 +73,13 @@ void main() {
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
     Timer(
-        Duration(seconds: 1), () => authManager.handleAuthentication(message));
-    final rxmessage =
-        await authManager.reauthenticate(message, waitTimeInSeconds: 2);
+      Duration(seconds: 1),
+      () => authManager.handleAuthentication(message),
+    );
+    final rxmessage = await authManager.reauthenticate(
+      message,
+      waitTimeInSeconds: 2,
+    );
     authManager.handleAuthentication(message);
     expect(rxmessage.timeout, isFalse);
     expect(rxmessage.authenticationMethod, 'Auth method');

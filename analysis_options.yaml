@@ -12,3 +12,18 @@ analyzer:
 linter:
   rules:
 
+dart_code_metrics:
+  exclude:
+    metrics:
+      - test/**
+      - example/**
+    rules:
+      - test/**
+      - example/**
+  extends:
+    - package:dart_code_metrics_presets/dart_all.yaml
+  rules:
+    - avoid-dynamic : false
+    - avoid-non-null-assertion : false
+    - newline-before-return : false
+    - avoid-late-keyword : false

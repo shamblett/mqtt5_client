@@ -12,9 +12,6 @@ typedef MessageCallbackFunction = bool Function(MqttMessage message);
 
 /// The connection handler interface class
 abstract class MqttIConnectionHandler {
-  /// The connection status
-  MqttConnectionStatus get connectionStatus;
-
   /// Successful connection callback
   ConnectCallback? onConnected;
 
@@ -45,13 +42,16 @@ abstract class MqttIConnectionHandler {
   /// Callback function to handle bad certificate. if true, ignore the error.
   bool Function(dynamic certificate)? onBadCertificate;
 
-  /// Runs the disconnection process to stop communicating
-  /// with a message broker.
-  MqttConnectionState disconnect([MqttDisconnectMessage disconnectMessage]);
-
   /// Indicates if the connect message has an authentication method
   /// i.e. authentication has been requested.
   bool? authenticationRequested;
+
+  /// The connection status
+  MqttConnectionStatus get connectionStatus;
+
+  /// Runs the disconnection process to stop communicating
+  /// with a message broker.
+  MqttConnectionState disconnect([MqttDisconnectMessage disconnectMessage]);
 
   /// Closes a connection.
   void close();
@@ -61,13 +61,18 @@ abstract class MqttIConnectionHandler {
   /// The port to connect to
   /// The connect message to use to initiate the connection
   Future<MqttConnectionStatus> connect(
-      String server, int port, MqttConnectMessage message);
+    String server,
+    int port,
+    MqttConnectMessage message,
+  );
 
   /// Register the specified callback to receive messages of a specific type.
   /// The type of message that the callback should be sent
   /// The callback function that will accept the message type
   void registerForMessage(
-      MqttMessageType msgType, MessageCallbackFunction msgProcessorCallback);
+    MqttMessageType msgType,
+    MessageCallbackFunction msgProcessorCallback,
+  );
 
   ///  Sends a message to a message broker.
   void sendMessage(MqttMessage message);

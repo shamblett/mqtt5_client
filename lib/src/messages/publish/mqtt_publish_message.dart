@@ -14,6 +14,14 @@ part of '../../../mqtt5_client.dart';
 /// specifically [MqttPublishVariableHeader] and [MqttPublishPayload].
 
 class MqttPublishMessage extends MqttMessage {
+  /// Gets or sets the payload of the Mqtt Message.
+  late MqttPublishPayload payload;
+
+  MqttPublishVariableHeader? _variableHeader;
+
+  /// The variable header contents. Contains extended metadata about the message.
+  MqttPublishVariableHeader? get variableHeader => _variableHeader;
+
   /// Initializes a new instance of the MqttPublishMessage class.
   MqttPublishMessage() {
     header = MqttHeader().asType(MqttMessageType.publish);
@@ -23,27 +31,26 @@ class MqttPublishMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttPublishMessage class.
   MqttPublishMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
     readFrom(messageStream);
   }
-
-  MqttPublishVariableHeader? _variableHeader;
-
-  /// The variable header contents. Contains extended metadata about the message.
-  MqttPublishVariableHeader? get variableHeader => _variableHeader;
-
-  /// Gets or sets the payload of the Mqtt Message.
-  late MqttPublishPayload payload;
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
     super.readFrom(messageStream);
-    _variableHeader =
-        MqttPublishVariableHeader.fromByteBuffer(header, messageStream);
+    _variableHeader = MqttPublishVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
     payload = MqttPublishPayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+      header,
+      variableHeader,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

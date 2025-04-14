@@ -9,14 +9,6 @@ part of '../mqtt5_client.dart';
 
 /// Message identifier handling
 class MqttMessageIdentifierDispenser {
-  /// Factory constructor
-  factory MqttMessageIdentifierDispenser() => _singleton;
-
-  MqttMessageIdentifierDispenser._internal();
-
-  static final MqttMessageIdentifierDispenser _singleton =
-      MqttMessageIdentifierDispenser._internal();
-
   /// Maximum message identifier
   static const int maxMessageIdentifier = 32768;
 
@@ -25,6 +17,9 @@ class MqttMessageIdentifierDispenser {
 
   /// Minimum message identifier
   static const int startMessageIdentifier = 1;
+
+  static final MqttMessageIdentifierDispenser _singleton =
+      MqttMessageIdentifierDispenser._internal();
 
   /// Message identifier, zero is forbidden
   int _mid = initialValue;
@@ -40,6 +35,11 @@ class MqttMessageIdentifierDispenser {
     }
     return mid;
   }
+
+  /// Factory constructor
+  factory MqttMessageIdentifierDispenser() => _singleton;
+
+  MqttMessageIdentifierDispenser._internal();
 
   /// Resets the mid
   void reset() {

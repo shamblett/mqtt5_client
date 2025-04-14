@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -9,9 +11,6 @@ part of '../../../mqtt5_client.dart';
 
 /// UTF8 String property
 class MqttUtf8StringProperty implements MqttIProperty {
-  /// Construction
-  MqttUtf8StringProperty([this.identifier]);
-
   /// Identifier
   @override
   MqttPropertyIdentifier? identifier = MqttPropertyIdentifier.notSet;
@@ -21,6 +20,9 @@ class MqttUtf8StringProperty implements MqttIProperty {
   String? value;
 
   final _enc = MqttUtf8Encoding();
+
+  /// Construction
+  MqttUtf8StringProperty([this.identifier]);
 
   /// Serialize to a byte buffer stream
   @override

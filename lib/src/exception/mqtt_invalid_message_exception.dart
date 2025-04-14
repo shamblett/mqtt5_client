@@ -9,12 +9,12 @@ part of '../../mqtt5_client.dart';
 
 /// Exception thrown when processing a message that is invalid in some way.
 class MqttInvalidMessageException implements Exception {
+  late String _message;
+
   /// Construct
   MqttInvalidMessageException(String text) {
     _message = 'mqtt-client::InvalidMessageException: $text';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;
@@ -22,12 +22,12 @@ class MqttInvalidMessageException implements Exception {
 
 /// Exception thrown when processing a message that is not completely received
 class MqttIncompleteMessageException implements Exception {
+  late String _message;
+
   /// Construct
   MqttIncompleteMessageException(String text) {
     _message = 'mqtt-client::IncompleteMessageException: $text';
   }
-
-  late String _message;
 
   @override
   String toString() => _message;

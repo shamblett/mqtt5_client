@@ -7,22 +7,6 @@
 
 part of '../../mqtt5_client.dart';
 
-/// Enumeration that indicates the origin of a client disconnection
-enum MqttDisconnectionOrigin {
-  /// Unsolicited, i.e. not requested by the client or the broker.
-  /// for example a broker/network failure.
-  unsolicited,
-
-  /// Solicited, i.e. requested by the client.
-  solicited,
-
-  /// Broker solicited, i.e. requested by the broker sending a disconnect message.
-  brokerSolicited,
-
-  /// None set
-  none
-}
-
 /// Enumeration that indicates various client connection states
 enum MqttConnectionState {
   /// The MQTT Connection is in the process of disconnecting from the broker.
@@ -39,5 +23,21 @@ enum MqttConnectionState {
 
   /// The MQTT Connection is faulted and no longer communicating
   /// with the broker.
-  faulted
+  faulted,
+}
+
+/// Enumeration that indicates the origin of a client disconnection
+enum MqttDisconnectionOrigin {
+  /// Unsolicited, i.e. not requested by the client or the broker.
+  /// for example a broker/network failure.
+  unsolicited,
+
+  /// Solicited, i.e. requested by the client.
+  solicited,
+
+  /// Broker solicited, i.e. requested by the broker sending a disconnect message.
+  brokerSolicited,
+
+  /// None set
+  none,
 }

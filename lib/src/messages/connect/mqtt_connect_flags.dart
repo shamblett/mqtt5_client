@@ -1,3 +1,5 @@
+// ignore_for_file: binary-expression-operand-order, no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -9,15 +11,6 @@ part of '../../../mqtt5_client.dart';
 
 /// Represents the connect flags part of the MQTT Variable Header
 class MqttConnectFlags {
-  /// Initializes a new instance of the MqttConnectFlags class.
-  MqttConnectFlags();
-
-  /// Initializes a new instance of the MqttConnectFlags class configured
-  /// as per the supplied stream.
-  MqttConnectFlags.fromByteBuffer(MqttByteBuffer connectFlagsStream) {
-    readFrom(connectFlagsStream);
-  }
-
   /// Clean start.
   ///
   /// This bit specifies whether the connection starts a new Session or
@@ -60,6 +53,15 @@ class MqttConnectFlags {
   /// If the User Name Flag is true, a User Name MUST be present in the payload.
   bool usernameFlag = false;
 
+  /// Initializes a new instance of the MqttConnectFlags class.
+  MqttConnectFlags();
+
+  /// Initializes a new instance of the MqttConnectFlags class configured
+  /// as per the supplied stream.
+  MqttConnectFlags.fromByteBuffer(MqttByteBuffer connectFlagsStream) {
+    readFrom(connectFlagsStream);
+  }
+
   /// Return the connect flag value
   int connectFlagByte() =>
       0 | // Reserved, must be 0
@@ -92,7 +94,8 @@ class MqttConnectFlags {
 
   /// Returns a String that represents the current connect flag settings
   @override
-  String toString() => 'CleanStart=$cleanStart, '
+  String toString() =>
+      'CleanStart=$cleanStart, '
       'WillFlag=$willFlag, WillQos=${willQos.toString().split('.')[1]}, WillRetain=$willRetain, '
       'PasswordFlag=$passwordFlag, UserNameFlag=$usernameFlag';
 }

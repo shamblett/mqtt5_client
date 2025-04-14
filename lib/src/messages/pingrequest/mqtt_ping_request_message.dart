@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -40,7 +42,8 @@ class MqttPingRequestMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer stream) {
     throw UnimplementedError(
-        'MqttPingRequestMessage::readFrom - not implemented, message is send only');
+      'MqttPingRequestMessage::readFrom - not implemented, message is send only',
+    );
   }
 
   @override

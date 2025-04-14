@@ -9,18 +9,19 @@ part of '../../../mqtt5_browser_client.dart';
 
 /// The MQTT browser connection base class
 abstract class MqttBrowserConnection extends MqttConnectionBase {
+  /// The socket that maintains the connection to the MQTT broker.
+  /// Get and set methods preserve type information.
+  WebSocket get wsClient => (client as WebSocket);
+
   /// Default constructor
   MqttBrowserConnection(super.clientEventBus);
 
   /// Initializes a new instance of the MqttBrowserConnection class.
   MqttBrowserConnection.fromConnect(server, port, clientEventBus)
-      : super(clientEventBus) {
+    : super(clientEventBus) {
     connect(server, port);
   }
 
-  /// The socket that maintains the connection to the MQTT broker.
-  /// Get and set methods preserve type information.
-  WebSocket get wsClient => (client as WebSocket);
   set(WebSocket ws) => client = ws;
 
   /// Connect, must be overridden in connection classes
@@ -37,24 +38,14 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     return completer.future;
   }
 
-  /// Create the listening stream subscription and subscribe the callbacks
-  void _startListening() {
-    MqttLogger.log('MqttBrowserConnection::_startListening');
-    try {
-      onListen();
-    } on Exception catch (e) {
-      MqttLogger.log(
-          'MqttBrowserConnection::_startListening - exception raised $e');
-    }
-  }
-
   /// Implement stream subscription
   List<StreamSubscription> onListen();
 
   /// OnData listener callback
   void onData(dynamic byteData) {
     MqttLogger.log(
-        'MqttBrowserConnection::_onData - Message Received Started <<< ');
+      'MqttBrowserConnection::_onData - Message Received Started <<< ',
+    );
 
     // Normally the byteData is a ByteBuffer,
     // but for SKWasm / WASM, the byteData is a JSArrayBuffer,
@@ -72,9 +63,10 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     }
 
     MqttLogger.log(
-        'MqttBrowserConnection::_ondata - adding incoming data, data length is ${data.length}, '
-        'message stream length is ${messageStream.length}, '
-        'message stream position is ${messageStream.position}');
+      'MqttBrowserConnection::_ondata - adding incoming data, data length is ${data.length}, '
+      'message stream length is ${messageStream.length}, '
+      'message stream position is ${messageStream.position}',
+    );
     messageStream.addAll(data);
 
     while (messageStream.isMessageAvailable()) {
@@ -88,8 +80,9 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
         }
       } on Exception {
         MqttLogger.log(
-            'MqttBrowserConnection::_ondata - message is not yet valid, '
-            'waiting for more data ...');
+          'MqttBrowserConnection::_ondata - message is not yet valid, '
+          'waiting for more data ...',
+        );
         messageIsValid = false;
       }
       if (!messageIsValid) {
@@ -98,7 +91,9 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
       }
       if (messageIsValid) {
         MqttLogger.log(
-            'MqttBrowserConnection::_onData - MESSAGE RECEIVED -> ', msg);
+          'MqttBrowserConnection::_onData - MESSAGE RECEIVED -> ',
+          msg,
+        );
         // If we have received a valid message we must shrink the stream
         messageStream.shrink();
         if (clientEventBus != null) {
@@ -109,19 +104,23 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
               clientEventBus!.fire(MqttMessageAvailable(msg));
             }
             MqttLogger.log(
-                'MqttBrowserConnection::_onData - message available event fired');
+              'MqttBrowserConnection::_onData - message available event fired',
+            );
           } else {
             MqttLogger.log(
-                'MqttBrowserConnection::_onData - message not processed, event bus is closed');
+              'MqttBrowserConnection::_onData - message not processed, event bus is closed',
+            );
           }
         } else {
           MqttLogger.log(
-              'MqttBrowserConnection::_onData - message not processed, event bus is null');
+            'MqttBrowserConnection::_onData - message not processed, event bus is null',
+          );
         }
       }
     }
     MqttLogger.log(
-        'MqttBrowserConnection::_onData - Message Received Ended <<< ');
+      'MqttBrowserConnection::_onData - Message Received Ended <<< ',
+    );
   }
 
   /// Sends the message in the stream to the broker.
@@ -132,18 +131,31 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     wsClient.send(bData.jsify()!);
   }
 
-  void _disconnect() {
-    wsClient.close();
-  }
-
   /// OnDone listener callback
   @override
   void onDone() {
     _disconnect();
     if (onDisconnected != null) {
       MqttLogger.log(
-          'MqttBrowserConnection::_onDone - calling disconnected callback');
+        'MqttBrowserConnection::_onDone - calling disconnected callback',
+      );
       onDisconnected!();
+    }
+  }
+
+  void _disconnect() {
+    wsClient.close();
+  }
+
+  // Create the listening stream subscription and subscribe the callbacks
+  void _startListening() {
+    MqttLogger.log('MqttBrowserConnection::_startListening');
+    try {
+      onListen();
+    } on Exception catch (e) {
+      MqttLogger.log(
+        'MqttBrowserConnection::_startListening - exception raised $e',
+      );
     }
   }
 }

@@ -9,6 +9,24 @@ part of '../../../mqtt5_client.dart';
 
 /// A publish acknowledge messageis the response to a publish message with QoS 1.
 class MqttPublishAckMessage extends MqttMessage {
+  MqttPublishAckVariableHeader? _variableHeader;
+
+  /// Gets the variable header contents. Contains extended
+  /// metadata about the message.
+  MqttPublishAckVariableHeader? get variableHeader => _variableHeader;
+
+  /// The message identifier
+  int get messageIdentifier => variableHeader!.messageIdentifier;
+
+  /// Publish reason code
+  MqttPublishReasonCode? get reasonCode => variableHeader!.reasonCode;
+
+  /// Reason String.
+  String? get reasonString => variableHeader!.reasonString;
+
+  /// User Property.
+  List<MqttUserProperty> get userProperty => variableHeader!.userProperty;
+
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage() {
     header = MqttHeader().asType(MqttMessageType.publishAck);
@@ -17,18 +35,16 @@ class MqttPublishAckMessage extends MqttMessage {
 
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
     this.header = header;
-    _variableHeader =
-        MqttPublishAckVariableHeader.fromByteBuffer(header, messageStream);
+    _variableHeader = MqttPublishAckVariableHeader.fromByteBuffer(
+      header,
+      messageStream,
+    );
     messageStream.shrink();
   }
-
-  MqttPublishAckVariableHeader? _variableHeader;
-
-  /// Gets the variable header contents. Contains extended
-  /// metadata about the message.
-  MqttPublishAckVariableHeader? get variableHeader => _variableHeader;
 
   /// Writes the message to the supplied stream.
   @override
@@ -48,18 +64,6 @@ class MqttPublishAckMessage extends MqttMessage {
     variableHeader!.reasonCode = reason;
     return this;
   }
-
-  /// The message identifier
-  int get messageIdentifier => variableHeader!.messageIdentifier;
-
-  /// Publish reason code
-  MqttPublishReasonCode? get reasonCode => variableHeader!.reasonCode;
-
-  /// Reason String.
-  String? get reasonString => variableHeader!.reasonString;
-
-  /// User Property.
-  List<MqttUserProperty> get userProperty => variableHeader!.userProperty;
 
   @override
   String toString() {

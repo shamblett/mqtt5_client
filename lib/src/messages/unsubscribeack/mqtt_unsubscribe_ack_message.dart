@@ -10,26 +10,14 @@ part of '../../../mqtt5_client.dart';
 /// The unsubscribe acknowledgement message is sent by the broker to the client to confirm receipt
 /// of an unsubscribe message.
 class MqttUnsubscribeAckMessage extends MqttMessage {
-  /// Initializes a new instance of the MqttUnsubscribeAckMessage class.
-  MqttUnsubscribeAckMessage() {
-    header = MqttHeader().asType(MqttMessageType.unsubscribeAck);
-    _variableHeader = MqttUnsubscribeAckVariableHeader();
-  }
+  MqttUnsubscribeAckVariableHeader? _variableHeader;
 
-  /// Initializes a new instance of the MqttUnsubscribeAckMessage class.
-  MqttUnsubscribeAckMessage.fromByteBuffer(
-      MqttHeader header, MqttByteBuffer messageStream) {
-    this.header = header;
-    readFrom(messageStream);
-    messageStream.shrink();
-  }
+  MqttUnsubscribeAckPayload? _payload;
 
   /// Variable Header
-  MqttUnsubscribeAckVariableHeader? _variableHeader;
   MqttUnsubscribeAckVariableHeader? get variableHeader => _variableHeader;
 
   /// Payload
-  MqttUnsubscribeAckPayload? _payload;
   MqttUnsubscribeAckPayload? get payload => _payload;
 
   /// The message identifier
@@ -44,21 +32,42 @@ class MqttUnsubscribeAckMessage extends MqttMessage {
   /// User Property.
   List<MqttUserProperty> get userProperty => _variableHeader!.userProperty;
 
+  /// Initializes a new instance of the MqttUnsubscribeAckMessage class.
+  MqttUnsubscribeAckMessage() {
+    header = MqttHeader().asType(MqttMessageType.unsubscribeAck);
+    _variableHeader = MqttUnsubscribeAckVariableHeader();
+  }
+
+  /// Initializes a new instance of the MqttUnsubscribeAckMessage class.
+  MqttUnsubscribeAckMessage.fromByteBuffer(
+    MqttHeader header,
+    MqttByteBuffer messageStream,
+  ) {
+    this.header = header;
+    readFrom(messageStream);
+    messageStream.shrink();
+  }
+
   /// Writes the message to the supplied stream.
   /// Not implemented, message is receive only.
   @override
   void writeTo(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttUnsubscribeAckMessage::writeTo - not implemented, message is receive only');
+      'MqttUnsubscribeAckMessage::writeTo - not implemented, message is receive only',
+    );
   }
 
   /// Reads a message from the supplied stream.
   @override
   void readFrom(MqttByteBuffer messageStream) {
-    _variableHeader =
-        MqttUnsubscribeAckVariableHeader.fromByteBuffer(messageStream);
+    _variableHeader = MqttUnsubscribeAckVariableHeader.fromByteBuffer(
+      messageStream,
+    );
     _payload = MqttUnsubscribeAckPayload.fromByteBuffer(
-        header, variableHeader, messageStream);
+      header,
+      variableHeader,
+      messageStream,
+    );
     messageStream.shrink();
   }
 

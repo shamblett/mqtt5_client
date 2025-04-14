@@ -16,6 +16,8 @@ part of '../../../mqtt5_client.dart';
 
 /// Utilities class
 class MqttReasonCodeUtilities {
+  static const errorCode = 0x80;
+
   /// Is the reason code an error. True if an error code or is not set.
-  static bool isError(int code) => code >= 0x80;
+  static bool isError(int code) => code >= errorCode;
 }

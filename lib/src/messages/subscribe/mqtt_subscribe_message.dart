@@ -15,6 +15,27 @@ part of '../../../mqtt5_client.dart';
 /// The subscribe message also specifies (for each subscription) the maximum QoS with
 /// which the broker can send application messages to the client.
 class MqttSubscribeMessage extends MqttMessage {
+  MqttSubscribeVariableHeader? _variableHeader;
+
+  MqttSubscribePayload? _payload;
+
+  /// Gets the variable header contents.
+  MqttSubscribeVariableHeader? get variableHeader => _variableHeader;
+
+  /// Gets the payload contents.
+  MqttSubscribePayload? get payload => _payload;
+
+  /// Is valid, if not valid the subscription message cannot be sent to
+  /// the broker. At least one topic must be present in the payload and the
+  /// message identifier must be set.
+  @override
+  bool get isValid =>
+      _payload!.isValid && _variableHeader!.messageIdentifier != 0;
+
+  /// Set the message identifier
+  set messageIdentifier(int identifier) =>
+      _variableHeader!.messageIdentifier = identifier;
+
   /// Initializes a new instance of the MqttSubscribeMessage class.
   MqttSubscribeMessage() {
     header = MqttHeader().asType(MqttMessageType.subscribe);
@@ -24,16 +45,6 @@ class MqttSubscribeMessage extends MqttMessage {
     _payload = MqttSubscribePayload();
   }
 
-  MqttSubscribeVariableHeader? _variableHeader;
-
-  /// Gets the variable header contents.
-  MqttSubscribeVariableHeader? get variableHeader => _variableHeader;
-
-  MqttSubscribePayload? _payload;
-
-  /// Gets the payload contents.
-  MqttSubscribePayload? get payload => _payload;
-
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
@@ -41,8 +52,9 @@ class MqttSubscribeMessage extends MqttMessage {
       return;
     }
     header!.writeTo(
-        variableHeader!.getWriteLength() + payload!.getWriteLength(),
-        messageStream);
+      variableHeader!.getWriteLength() + payload!.getWriteLength(),
+      messageStream,
+    );
     variableHeader!.writeTo(messageStream);
     payload!.writeTo(messageStream);
   }
@@ -52,15 +64,9 @@ class MqttSubscribeMessage extends MqttMessage {
   @override
   void readFrom(MqttByteBuffer messageStream) {
     throw UnimplementedError(
-        'MqttSubscribeMessage::readFrom - not implemented, message is send only');
+      'MqttSubscribeMessage::readFrom - not implemented, message is send only',
+    );
   }
-
-  /// Is valid, if not valid the subscription message cannot be sent to
-  /// the broker. At least one topic must be present in the payload and the
-  /// message identifier must be set.
-  @override
-  bool get isValid =>
-      _payload!.isValid && _variableHeader!.messageIdentifier != 0;
 
   /// Write length
   int getWriteLength() {
@@ -91,7 +97,9 @@ class MqttSubscribeMessage extends MqttMessage {
 
   /// Adds a new subscription with the specified subscription option[MqttSubscriptionOption].
   MqttSubscribeMessage toTopicWithOption(
-      String? topic, MqttSubscriptionOption option) {
+    String? topic,
+    MqttSubscriptionOption option,
+  ) {
     final subTopic = MqttSubscriptionTopic(topic);
     _payload!.addSubscription(subTopic, option);
     return this;
@@ -105,7 +113,8 @@ class MqttSubscribeMessage extends MqttMessage {
 
   /// Adds a new subscription with the specified subscription list
   MqttSubscribeMessage toSubscriptionList(
-      List<MqttSubscription> subscriptions) {
+    List<MqttSubscription> subscriptions,
+  ) {
     for (final subscription in subscriptions) {
       _payload!.addSubscription(subscription.topic, subscription.option);
     }
@@ -129,10 +138,6 @@ class MqttSubscribeMessage extends MqttMessage {
     _variableHeader!.userProperty = properties;
     return this;
   }
-
-  /// Set the message identifier
-  set messageIdentifier(int identifier) =>
-      _variableHeader!.messageIdentifier = identifier;
 
   /// Sets the duplicate flag for the message to indicate its a
   /// duplicate of a previous message type

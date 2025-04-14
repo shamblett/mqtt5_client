@@ -9,17 +9,6 @@ part of '../mqtt5_client.dart';
 
 /// Provides the base implementation of an MQTT topic.
 abstract class MqttTopic {
-  /// Creates a new instance of a rawTopic from a rawTopic string.
-  /// rawTopic - The topic to represent.
-  /// validations - The validations to run on the rawTopic.
-  MqttTopic(this.rawTopic, List<dynamic> validations) {
-    topicFragments = rawTopic!.split(topicSeparator[0]);
-    // run all validations
-    for (final dynamic validation in validations) {
-      validation(this);
-    }
-  }
-
   /// Separator
   static const String topicSeparator = '/';
 
@@ -41,33 +30,47 @@ abstract class MqttTopic {
   /// Topic fragments
   late List<String> topicFragments;
 
-  /// Validates that the topic does not exceed the maximum length.
-  /// topicInstance - The instance to check.
-  static void validateMaxLength(MqttTopic topicInstance) {
-    if (topicInstance.rawTopic!.length > maxTopicLength) {
-      throw Exception('mqtt_client::Topic: The length of the supplied rawTopic '
-          '(${topicInstance.rawTopic!.length}) is longer than the '
-          'maximum allowable ($maxTopicLength)');
-    }
-  }
-
   /// Returns true if there are any wildcards in the specified
   /// rawTopic, otherwise false.
   bool get hasWildcards =>
       rawTopic!.contains(multiWildcard) || rawTopic!.contains(wildcard);
+
+  /// Serves as a hash function for a topics.
+  @override
+  int get hashCode => rawTopic.hashCode;
+
+  /// Creates a new instance of a rawTopic from a rawTopic string.
+  /// rawTopic - The topic to represent.
+  /// validations - The validations to run on the rawTopic.
+  MqttTopic(this.rawTopic, List<dynamic> validations) {
+    topicFragments = rawTopic!.split(topicSeparator[0]);
+    // run all validations
+    for (final dynamic validation in validations) {
+      validation(this);
+    }
+  }
+
+  /// Validates that the topic does not exceed the maximum length.
+  /// topicInstance - The instance to check.
+  static void validateMaxLength(MqttTopic topicInstance) {
+    if (topicInstance.rawTopic!.length > maxTopicLength) {
+      throw Exception(
+        'mqtt_client::Topic: The length of the supplied rawTopic '
+        '(${topicInstance.rawTopic!.length}) is longer than the '
+        'maximum allowable ($maxTopicLength)',
+      );
+    }
+  }
 
   /// Validates that the topic does not fall below the minimum length.
   /// topicInstance - The instance to check.
   static void validateMinLength(MqttTopic topicInstance) {
     if (topicInstance.rawTopic!.isEmpty) {
       throw Exception(
-          'mqtt_client::Topic: rawTopic must contain at least one character');
+        'mqtt_client::Topic: rawTopic must contain at least one character',
+      );
     }
   }
-
-  /// Serves as a hash function for a topics.
-  @override
-  int get hashCode => rawTopic.hashCode;
 
   /// Checks if one topic equals another topic exactly.
   @override

@@ -33,8 +33,9 @@ class MockBroker {
 
   FutureOr<dynamic> start() {
     final completer = Completer<dynamic>();
-    ServerSocket.bind('localhost', brokerPort, shared: true)
-        .then((dynamic server) {
+    ServerSocket.bind('localhost', brokerPort, shared: true).then((
+      dynamic server,
+    ) {
       listener = server;
       listener.listen(_connectAccept);
       print('MockBroker::we are bound');
@@ -122,7 +123,8 @@ class MockBrokerWs {
     final completer = Completer<void>();
     HttpServer.bind(InternetAddress.loopbackIPv4, port).then((dynamic server) {
       print(
-          'Mockbroker WS server is running on http://${server.address.address}:$port/');
+        'Mockbroker WS server is running on http://${server.address.address}:$port/',
+      );
       server.listen((HttpRequest request) {
         if (request.uri.path == '/ws') {
           WebSocketTransformer.upgrade(request).then((WebSocket websocket) {
@@ -172,10 +174,12 @@ class MockBrokerSecure {
     final context = SecurityContext();
     final currDir = path.current + path.separator;
     context.useCertificateChain(
-        currDir + path.join('test', 'pem', '$pemName.cert'));
+      currDir + path.join('test', 'pem', '$pemName.cert'),
+    );
     context.usePrivateKey(currDir + path.join('test', 'pem', '$pemName.key'));
-    SecureServerSocket.bind('localhost', brokerPort, context)
-        .then((SecureServerSocket server) {
+    SecureServerSocket.bind('localhost', brokerPort, context).then((
+      SecureServerSocket server,
+    ) {
       listener = server;
       listener!.listen(_connectAccept);
       print('MockBrokerSecure::we are bound');

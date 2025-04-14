@@ -19,18 +19,25 @@ part of '../../mqtt5_client.dart';
 /// Consequently, the maximum size of a UTF-8 encoded string is 65,535 bytes.
 ///
 class MqttUtf8Encoding {
+  static const byteLength = 8;
+  static const byteMask = 0xFF;
+  static const cc1 = 0x001f;
+  static const cc2 = 0x007f;
+  static const cc3 = 0x009f;
+
   /// Encodes all the characters in the specified string
   /// into a sequence of bytes.
   typed.Uint8Buffer toUtf8(String s) {
     _validateString(s);
     final stringConverted = utf8.encoder.convert(s);
-    if (stringConverted.length > 65535) {
+    if (stringConverted.length > MqttConstants.maxUTF8StringLength) {
       throw Exception(
-          'MqttUtf8Encoding::toUtf8 -  UTF8 string length is invalid, length is ${stringConverted.length}');
+        'MqttUtf8Encoding::toUtf8 -  UTF8 string length is invalid, length is ${stringConverted.length}',
+      );
     }
     final stringBytes = typed.Uint8Buffer();
-    stringBytes.add(stringConverted.length >> 8);
-    stringBytes.add(stringConverted.length & 0xFF);
+    stringBytes.add(stringConverted.length >> byteLength);
+    stringBytes.add(stringConverted.length & byteMask);
     stringBytes.addAll(stringConverted);
     return stringBytes;
   }
@@ -38,7 +45,10 @@ class MqttUtf8Encoding {
   /// Decodes the bytes in the specified MQTT UTF8 encoded byte array into a string.
   String fromUtf8(typed.Uint8Buffer bytes) {
     var len = length(bytes);
-    var utf8Bytes = bytes.toList().getRange(2, 2 + len);
+    var utf8Bytes = bytes.toList().getRange(
+      MqttConstants.minUTF8StringLength,
+      MqttConstants.minUTF8StringLength + len,
+    );
     var decoded = utf8.decoder.convert(utf8Bytes.toList());
     _validateString(decoded);
     return decoded;
@@ -46,11 +56,12 @@ class MqttUtf8Encoding {
 
   ///  Gets the length of a UTF8 encoded string from the length bytes
   int length(typed.Uint8Buffer bytes) {
-    if (bytes.length < 2) {
+    if (bytes.length < MqttConstants.minUTF8StringLength) {
       throw Exception(
-          'MqttUtf8Encoding:: Length byte array must comprise 2 bytes');
+        'MqttUtf8Encoding:: Length byte array must comprise 2 bytes',
+      );
     }
-    return (bytes[0] << 8) + bytes[1];
+    return (bytes.first << byteLength) + bytes[1];
   }
 
   /// Gets the total length of a UTF8 encoded string including the length bytes
@@ -78,9 +89,11 @@ class MqttUtf8Encoding {
   ///         U+007F..U+009F control characters
   void _validateString(String s) {
     if (s.runes.any(
-        (e) => (e >= 0x0000 && e <= 0x001f) || (e >= 0x007f && e <= 0x009f))) {
+      (e) => (e >= 0x0000 && e <= cc1) || (e >= cc2 && e <= cc3),
+    )) {
       throw Exception(
-          'MqttUtf8Encoding:: UTF8 string is invalid, contains control characters');
+        'MqttUtf8Encoding:: UTF8 string is invalid, contains control characters',
+      );
     }
   }
 }

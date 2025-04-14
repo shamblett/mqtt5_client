@@ -22,12 +22,8 @@ part of '../../../mqtt5_client.dart';
 /// In particular if using a will message refer to the [MqttWillProperties] class for details
 /// of the options in this area.
 class MqttConnectMessage extends MqttMessage {
-  /// Initializes a new instance of the MqttConnectMessage class.
-  MqttConnectMessage() {
-    header = MqttHeader().asType(MqttMessageType.connect);
-    _variableHeader = MqttConnectVariableHeader();
-    payload = MqttConnectPayload(_variableHeader);
-  }
+  /// The payload of the message.
+  late MqttConnectPayload payload;
 
   MqttConnectVariableHeader? _variableHeader;
 
@@ -35,8 +31,16 @@ class MqttConnectMessage extends MqttMessage {
   /// Contains extended metadata about the message.
   MqttConnectVariableHeader? get variableHeader => _variableHeader;
 
-  /// The payload of the message.
-  late MqttConnectPayload payload;
+  /// Indicates if an authentication method is set
+  bool get authenticationRequested =>
+      variableHeader!.authenticationMethod.isNotEmpty;
+
+  /// Initializes a new instance of the MqttConnectMessage class.
+  MqttConnectMessage() {
+    header = MqttHeader().asType(MqttMessageType.connect);
+    _variableHeader = MqttConnectVariableHeader();
+    payload = MqttConnectPayload(_variableHeader);
+  }
 
   /// Sets the clean start flag to clear any persistent session for the client.
   /// Mutually exclusive with [startSession]the last method applied to the message will take
@@ -52,12 +56,13 @@ class MqttConnectMessage extends MqttMessage {
   /// If 0 is passed the maximum value is used.
   /// Mutually exclusive with [startClean], the last method applied to the message will take
   /// effect.
-  MqttConnectMessage startSession(
-      {int sessionExpiryInterval =
-          MqttConnectVariableHeader.sessionDoesNotExpire}) {
-    final interval = sessionExpiryInterval == 0
-        ? MqttConnectVariableHeader.sessionDoesNotExpire
-        : sessionExpiryInterval;
+  MqttConnectMessage startSession({
+    int sessionExpiryInterval = MqttConnectVariableHeader.sessionDoesNotExpire,
+  }) {
+    final interval =
+        sessionExpiryInterval == 0
+            ? MqttConnectVariableHeader.sessionDoesNotExpire
+            : sessionExpiryInterval;
     _variableHeader!.sessionExpiryInterval = interval;
     _variableHeader!.connectFlags.cleanStart = false;
     return this;
@@ -203,10 +208,6 @@ class MqttConnectMessage extends MqttMessage {
     return this;
   }
 
-  /// Indicates if an authentication method is set
-  bool get authenticationRequested =>
-      variableHeader!.authenticationMethod.isNotEmpty;
-
   /// Sets the authentication details
   MqttConnectMessage authenticateAs(String? username, String? password) {
     if (username != null) {
@@ -224,8 +225,9 @@ class MqttConnectMessage extends MqttMessage {
   @override
   void writeTo(MqttByteBuffer messageStream) {
     header!.writeTo(
-        _variableHeader!.getWriteLength() + payload.getWriteLength(),
-        messageStream);
+      _variableHeader!.getWriteLength() + payload.getWriteLength(),
+      messageStream,
+    );
     _variableHeader!.writeTo(messageStream);
     payload.writeTo(messageStream);
   }

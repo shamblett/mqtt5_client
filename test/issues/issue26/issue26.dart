@@ -4,7 +4,11 @@ import 'package:test/test.dart';
 
 Future<int> main() async {
   resubscribeAfterUnsubscribe(
-      String brokerUrl, int port, bool useWs, int delay) async {
+    String brokerUrl,
+    int port,
+    bool useWs,
+    int delay,
+  ) async {
     final client = MqttServerClient(brokerUrl, "");
     client.useWebSocket = useWs;
     client.port = port;
@@ -25,8 +29,8 @@ Future<int> main() async {
     await MqttUtilities.asyncSleep(delay);
 
     var subStatus =
-        // ignore: invalid_use_of_protected_member
-        client.subscriptionsManager!.getSubscriptionTopicStatus(topic);
+    // ignore: invalid_use_of_protected_member
+    client.subscriptionsManager!.getSubscriptionTopicStatus(topic);
     print(subStatus);
 
     expect(subStatus, MqttSubscriptionStatus.doesNotExist);
@@ -37,17 +41,23 @@ Future<int> main() async {
   //test("[broker.emqx.io] websocket unsubscribe", () => resubscribeAfterUnsubscribe("ws://broker.emqx.io/mqtt", 8083, true, 0));
 
   test(
-      "[broker.emqx.io] websocket unsubscribe after a delay",
-      () => resubscribeAfterUnsubscribe(
-          "ws://broker.emqx.io/mqtt", 8083, true, 5));
+    "[broker.emqx.io] websocket unsubscribe after a delay",
+    () =>
+        resubscribeAfterUnsubscribe("ws://broker.emqx.io/mqtt", 8083, true, 5),
+  );
 
   //test("[broker.hivemq.com] websocket unsubscribe right after its published", () =>
   //  resubscribeAfterUnsubscribe("ws://broker.hivemq.com/mqtt", 8000, true, 0));
 
   test(
-      "[broker.hivemq.com] websocket unsubscribe after a delay",
-      () => resubscribeAfterUnsubscribe(
-          "ws://broker.hivemq.com/mqtt", 8000, true, 5));
+    "[broker.hivemq.com] websocket unsubscribe after a delay",
+    () => resubscribeAfterUnsubscribe(
+      "ws://broker.hivemq.com/mqtt",
+      8000,
+      true,
+      5,
+    ),
+  );
 
   return 0;
 }

@@ -9,9 +9,6 @@ part of '../../../mqtt5_client.dart';
 
 /// Byte property
 class MqttByteProperty implements MqttIProperty {
-  /// Construction
-  MqttByteProperty([this.identifier]);
-
   /// Read/Write length
   static const length = 2;
 
@@ -22,6 +19,9 @@ class MqttByteProperty implements MqttIProperty {
   /// Value
   @override
   int value = 0;
+
+  /// Construction
+  MqttByteProperty([this.identifier]);
 
   /// Serialize to a byte buffer stream
   @override

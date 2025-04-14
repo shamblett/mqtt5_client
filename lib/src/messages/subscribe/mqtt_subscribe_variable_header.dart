@@ -10,14 +10,15 @@ part of '../../../mqtt5_client.dart';
 /// The variable Header of the subscribe message contains the following fields in the order:
 /// Packet(message) identifier, and properties.
 class MqttSubscribeVariableHeader implements MqttIVariableHeader {
-  /// Initializes a new instance of the MqttSubscribeVariableHeader class.
-  MqttSubscribeVariableHeader();
-
   /// The message identifier
   int messageIdentifier = 0;
 
   // Properties
   final _propertySet = MqttPropertyContainer();
+
+  int _subscriptionIdentifier = 0;
+
+  final _userProperty = <MqttUserProperty>[];
 
   /// The length of the variable header as received
   /// which in this message is always 0;
@@ -29,27 +30,15 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
   ///
   /// The identifier of the subscription.
   /// The subscription identifier can have the value of 1 to 268,435,455.
-  int _subscriptionIdentifier = 0;
   int get subscriptionIdentifier => _subscriptionIdentifier;
-  set subscriptionIdentifier(identifier) {
-    if (identifier < 1 || identifier > 268435455) {
-      throw ArgumentError(
-          'MqttSubscribeVariableHeader::subscriptionIdentifier identifier is invalid');
-    }
-    final property = MqttVariableByteIntegerProperty(
-        MqttPropertyIdentifier.subscriptionIdentifier);
-    property.value = identifier;
-    _propertySet.add(property);
-    _subscriptionIdentifier = identifier;
-  }
 
   /// User property
   ///
   /// The User Property is allowed to appear multiple times to represent
   /// multiple name, value pairs. The same name is allowed to appear
   /// more than once.
-  final _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
+
   set userProperty(List<MqttUserProperty>? properties) {
     if (properties != null) {
       for (var userProperty in properties) {
@@ -59,21 +48,30 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
     }
   }
 
+  set subscriptionIdentifier(identifier) {
+    if (identifier < 1 || identifier > MqttConstants.maxMessageSize) {
+      throw ArgumentError(
+        'MqttSubscribeVariableHeader::subscriptionIdentifier identifier is invalid',
+      );
+    }
+    final property = MqttVariableByteIntegerProperty(
+      MqttPropertyIdentifier.subscriptionIdentifier,
+    );
+    property.value = identifier;
+    _propertySet.add(property);
+    _subscriptionIdentifier = identifier;
+  }
+
+  /// Initializes a new instance of the MqttSubscribeVariableHeader class.
+  MqttSubscribeVariableHeader();
+
   /// Creates a variable header from the specified header stream.
   /// Not implemented, the subscribe message is send only.
   @override
   void readFrom(MqttByteBuffer variableHeaderStream) {
     throw UnimplementedError(
-        'MqttSubscribeVariableHeader::readFrom - not implemented, message is send only');
-  }
-
-  // Serialize the header
-  typed.Uint8Buffer? _serialize() {
-    final buffer = typed.Uint8Buffer();
-    final stream = MqttByteBuffer(buffer);
-    writeMessageIdentifier(stream);
-    _propertySet.writeTo(stream);
-    return stream.buffer;
+      'MqttSubscribeVariableHeader::readFrom - not implemented, message is send only',
+    );
   }
 
   /// Write the message identifier.
@@ -98,5 +96,14 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
     sb.writeln('Subscription identifier = $subscriptionIdentifier');
     sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
+  }
+
+  // Serialize the header
+  typed.Uint8Buffer? _serialize() {
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    writeMessageIdentifier(stream);
+    _propertySet.writeTo(stream);
+    return stream.buffer;
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -14,9 +16,6 @@ part of '../../../mqtt5_client.dart';
 /// followed by the next most Significant Byte (MSB), followed by Least Significant
 /// Byte (LSB).
 class MqttFourByteIntegerProperty implements MqttIProperty {
-  /// Construction
-  MqttFourByteIntegerProperty([this.identifier]);
-
   /// Read/Write length
   static const length = 5;
 
@@ -27,6 +26,9 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
   /// Value
   @override
   int? value = 0;
+
+  /// Construction
+  MqttFourByteIntegerProperty([this.identifier]);
 
   /// Serialize to a byte buffer stream
   @override
@@ -43,7 +45,7 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
     var buffer = stream.read(length - 1);
-    value = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
+    value = buffer.first << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
   }
 
   /// Gets the length of the write data when WriteTo will be called.

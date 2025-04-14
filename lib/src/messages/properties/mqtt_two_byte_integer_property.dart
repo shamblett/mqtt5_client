@@ -12,11 +12,10 @@ part of '../../../mqtt5_client.dart';
 /// 16-bit word is presented on the network as Most Significant Byte (MSB),
 /// followed by Least Significant Byte (LSB).
 class MqttTwoByteIntegerProperty implements MqttIProperty {
-  /// Construction
-  MqttTwoByteIntegerProperty([this.identifier]);
-
   /// Read/Write length
   static const length = 3;
+  static const byteLength = 8;
+  static const byteMask = 0xFF;
 
   /// Identifier
   @override
@@ -26,12 +25,15 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
   @override
   int? value = 0;
 
+  /// Construction
+  MqttTwoByteIntegerProperty([this.identifier]);
+
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
     stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
-    stream.writeByte((value! >> 8) & 0xff);
-    stream.writeByte(value! & 0xff);
+    stream.writeByte((value! >> byteLength) & byteMask);
+    stream.writeByte(value! & byteMask);
   }
 
   /// Deserialize from a byte buffer stream
@@ -39,7 +41,7 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
   void readFrom(MqttByteBuffer stream) {
     identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
     var buffer = stream.read(length - 1);
-    value = buffer[0] << 8 | buffer[1];
+    value = buffer.first << byteLength | buffer[1];
   }
 
   /// Gets the length of the write data when WriteTo will be called.

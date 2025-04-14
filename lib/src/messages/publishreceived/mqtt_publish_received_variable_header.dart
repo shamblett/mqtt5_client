@@ -1,3 +1,5 @@
+// ignore_for_file: no-magic-number
+
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -12,19 +14,6 @@ part of '../../../mqtt5_client.dart';
 /// publish reason code and the properties.
 ///
 class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
-  /// Initializes a new instance of the MqttPublishReceivedVariableHeader class.
-  MqttPublishReceivedVariableHeader(this._header);
-
-  /// Initializes a new instance of the class from a byte buffer.
-  MqttPublishReceivedVariableHeader.fromByteBuffer(
-      this._header, MqttByteBuffer headerStream) {
-    readFrom(headerStream);
-  }
-
-  // The message header
-  final dynamic _header;
-  MqttHeader? get header => _header;
-
   /// The message identifier
   int messageIdentifier = 0;
 
@@ -36,6 +25,14 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
 
   int _length = 0;
 
+  String? _reasonString;
+
+  List<MqttUserProperty> _userProperty = <MqttUserProperty>[];
+
+  // The message header
+  final dynamic _header;
+  MqttHeader? get header => _header;
+
   /// The length of the variable header as received.
   /// To get the write length us [getWriteLength]
   @override
@@ -44,15 +41,7 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   /// Reason String.
   ///
   /// The Reason String is a human readable string designed for diagnostics only.
-  String? _reasonString;
   String? get reasonString => _reasonString;
-  set reasonString(String? reason) {
-    final property =
-        MqttUtf8StringProperty(MqttPropertyIdentifier.reasonString);
-    property.value = reason;
-    _propertySet.add(property);
-    _reasonString = reason;
-  }
 
   /// User Property.
   ///
@@ -60,8 +49,8 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
   /// diagnostic information.
   /// The User Property is allowed to appear multiple times to represent multiple name, value pairs.
   /// The same name is allowed to appear more than once.
-  List<MqttUserProperty> _userProperty = <MqttUserProperty>[];
   List<MqttUserProperty> get userProperty => _userProperty;
+
   set userProperty(List<MqttUserProperty> properties) {
     for (var property in properties) {
       _propertySet.add(property);
@@ -69,27 +58,24 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
     }
   }
 
-  // Process the properties read from the byte stream
-  void _processProperties() {
-    if (!_propertySet.propertiesAreValid()) {
-      throw FormatException(
-          'MqttPublishReceivedVariableHeader::_processProperties, message properties received are invalid');
-    }
-    final properties = _propertySet.toList();
-    for (final property in properties) {
-      switch (property.identifier) {
-        case MqttPropertyIdentifier.reasonString:
-          _reasonString = property.value;
-          break;
-        default:
-          if (property.identifier != MqttPropertyIdentifier.userProperty) {
-            MqttLogger.log(
-                'MqttPublishReceivedVariableHeader::_processProperties, unexpected property type'
-                'received, identifier is ${property.identifier}, ignoring');
-          }
-      }
-      _userProperty = _propertySet.userProperties;
-    }
+  set reasonString(String? reason) {
+    final property = MqttUtf8StringProperty(
+      MqttPropertyIdentifier.reasonString,
+    );
+    property.value = reason;
+    _propertySet.add(property);
+    _reasonString = reason;
+  }
+
+  /// Initializes a new instance of the MqttPublishReceivedVariableHeader class.
+  MqttPublishReceivedVariableHeader(this._header);
+
+  /// Initializes a new instance of the class from a byte buffer.
+  MqttPublishReceivedVariableHeader.fromByteBuffer(
+    this._header,
+    MqttByteBuffer headerStream,
+  ) {
+    readFrom(headerStream);
   }
 
   /// Creates a variable header from the specified header stream.
@@ -105,22 +91,6 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
       variableHeaderStream.shrink();
       _length += _propertySet.getWriteLength();
     }
-  }
-
-  // Serialize the header
-  typed.Uint8Buffer? _serialize() {
-    final buffer = typed.Uint8Buffer();
-    final stream = MqttByteBuffer(buffer);
-    writeMessageIdentifier(stream);
-    // If there are no properties and the reason code is success
-    // we can end here.
-    if (reasonCode == MqttPublishReasonCode.success && _propertySet.isEmpty) {
-    } else {
-      writeReasonCode(stream);
-      _propertySet.writeTo(stream);
-    }
-
-    return stream.buffer;
   }
 
   /// Writes a variable header to the supplied message stream.
@@ -166,5 +136,46 @@ class MqttPublishReceivedVariableHeader implements MqttIVariableHeader {
     sb.writeln('Reason Code = ${mqttPublishReasonCode.asString(reasonCode)}');
     sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
+  }
+
+  // Process the properties read from the byte stream
+  void _processProperties() {
+    if (!_propertySet.propertiesAreValid()) {
+      throw FormatException(
+        'MqttPublishReceivedVariableHeader::_processProperties, message properties received are invalid',
+      );
+    }
+    final properties = _propertySet.toList();
+    for (final property in properties) {
+      switch (property.identifier) {
+        case MqttPropertyIdentifier.reasonString:
+          _reasonString = property.value;
+          break;
+        default:
+          if (property.identifier != MqttPropertyIdentifier.userProperty) {
+            MqttLogger.log(
+              'MqttPublishReceivedVariableHeader::_processProperties, unexpected property type'
+              'received, identifier is ${property.identifier}, ignoring',
+            );
+          }
+      }
+      _userProperty = _propertySet.userProperties;
+    }
+  }
+
+  // Serialize the header
+  typed.Uint8Buffer? _serialize() {
+    final buffer = typed.Uint8Buffer();
+    final stream = MqttByteBuffer(buffer);
+    writeMessageIdentifier(stream);
+    // If there are no properties and the reason code is success
+    // we can end here.
+    if (!(reasonCode == MqttPublishReasonCode.success &&
+        _propertySet.isEmpty)) {
+      writeReasonCode(stream);
+      _propertySet.writeTo(stream);
+    }
+
+    return stream.buffer;
   }
 }

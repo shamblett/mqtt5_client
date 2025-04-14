@@ -24,9 +24,10 @@ Future<int> main() async {
   client.keepAlivePeriod = 20;
   client.onDisconnected = onDisconnected;
   client.onSubscribed = onSubscribed;
-  final connMess = MqttConnectMessage()
-      .withClientIdentifier('MQTT5DartClient')
-      .startClean(); // Non persistent session for testing
+  final connMess =
+      MqttConnectMessage()
+          .withClientIdentifier('MQTT5DartClient')
+          .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 
@@ -42,7 +43,8 @@ Future<int> main() async {
     print('EXAMPLE::Mosquitto client connected');
   } else {
     print(
-        'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, state is ${client.connectionStatus!.state}');
+      'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, state is ${client.connectionStatus!.state}',
+    );
     client.disconnect();
     exit(-1);
   }
@@ -61,7 +63,8 @@ Future<int> main() async {
     final MqttPublishMessage recMess = c[0].payload;
     final pt = MqttUtilities.bytesToStringAsString(recMess.payload.message!);
     print(
-        'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+      'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->',
+    );
     print('');
   });
 
@@ -71,15 +74,18 @@ Future<int> main() async {
   // ignore: avoid_types_on_closure_parameters
   client.published!.listen((MqttPublishMessage message) {
     print(
-        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+      'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}',
+    );
     if (message.variableHeader!.topicName == topic3) {
       print(
-          'EXAMPLE::Published notification:: Non subscribed topic publication received');
+        'EXAMPLE::Published notification:: Non subscribed topic publication received',
+      );
     }
   });
 
   print(
-      'EXAMPLE:: Sleeping to allow the subscription acknowledges to be received....');
+    'EXAMPLE:: Sleeping to allow the subscription acknowledges to be received....',
+  );
   await MqttUtilities.asyncSleep(10);
 
   final builder1 = MqttPayloadBuilder();

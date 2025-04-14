@@ -30,13 +30,10 @@ void main() {
         disconnect = true;
       }
 
-      clientEventBus
-          .on<DisconnectOnNoPingResponse>()
-          .listen(disconnectOnNoPingResponse);
-      final ch = MockCH(
-        clientEventBus,
-        maxConnectionAttempts: 3,
+      clientEventBus.on<DisconnectOnNoPingResponse>().listen(
+        disconnectOnNoPingResponse,
       );
+      final ch = MockCH(clientEventBus, maxConnectionAttempts: 3);
       ch.connectionStatus.state = MqttConnectionState.connected;
       final ka = MqttConnectionKeepAlive(ch, clientEventBus, 2, 2);
       expect(ka.pingTimer?.isActive, isTrue);
@@ -58,13 +55,10 @@ void main() {
         disconnect = true;
       }
 
-      clientEventBus
-          .on<DisconnectOnNoPingResponse>()
-          .listen(disconnectOnNoPingResponse);
-      final ch = MockCH(
-        clientEventBus,
-        maxConnectionAttempts: 3,
+      clientEventBus.on<DisconnectOnNoPingResponse>().listen(
+        disconnectOnNoPingResponse,
       );
+      final ch = MockCH(clientEventBus, maxConnectionAttempts: 3);
       ch.connectionStatus.state = MqttConnectionState.connected;
       final ka = MqttConnectionKeepAlive(ch, clientEventBus, 2, 2);
       expect(ka.pingTimer?.isActive, isTrue);
@@ -86,13 +80,10 @@ void main() {
         disconnect = true;
       }
 
-      clientEventBus
-          .on<DisconnectOnNoPingResponse>()
-          .listen(disconnectOnNoPingResponse);
-      final ch = MockCH(
-        clientEventBus,
-        maxConnectionAttempts: 3,
+      clientEventBus.on<DisconnectOnNoPingResponse>().listen(
+        disconnectOnNoPingResponse,
       );
+      final ch = MockCH(clientEventBus, maxConnectionAttempts: 3);
       ch.connectionStatus.state = MqttConnectionState.disconnected;
       final ka = MqttConnectionKeepAlive(ch, clientEventBus, 2);
       expect(ka.pingTimer?.isActive, isTrue);

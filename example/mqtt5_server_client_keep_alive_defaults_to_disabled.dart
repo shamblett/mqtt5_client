@@ -105,19 +105,23 @@ Future<int> main() async {
   /// Check we are connected. connectionStatus always gives us this and other information.
   if (client.connectionStatus!.state == MqttConnectionState.connected) {
     print(
-        'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}');
+      'EXAMPLE::Mqtt5 server client connected, return code is ${client.connectionStatus!.reasonCode.toString().split('.')[1]}',
+    );
 
     /// All returned properties in the connect acknowledge message are available.
     /// Get our user properties from the connect acknowledge message.
     if (client.connectionStatus!.connectAckMessage.userProperty!.isNotEmpty) {
       print(
-          'EXAMPLE::Connected - user property name - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairName}');
+        'EXAMPLE::Connected - user property name - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairName}',
+      );
       print(
-          'EXAMPLE::Connected - user property value - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairValue}');
+        'EXAMPLE::Connected - user property value - ${client.connectionStatus!.connectAckMessage.userProperty![0].pairValue}',
+      );
     }
   } else {
     print(
-        'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}');
+      'EXAMPLE::ERROR Mqtt5 client connection failed - status is ${client.connectionStatus}',
+    );
     client.disconnect();
     exit(-1);
   }
@@ -139,7 +143,8 @@ Future<int> main() async {
     /// for a while.
     /// The payload is a byte buffer, this will be specific to the topic
     print(
-        'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+      'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->',
+    );
 
     /// Indicate the notification is correct
     if (c[0].topic == pubTopic) {
@@ -152,7 +157,8 @@ Future<int> main() async {
   /// publishing handshake with the broker.
   client.published!.listen((MqttPublishMessage message) {
     print(
-        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+      'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}',
+    );
   });
 
   /// Subscribe to our topic, we will publish to it in the onSubscribed callback.
@@ -188,7 +194,8 @@ Future<int> main() async {
 /// The subscribed callback
 void onSubscribed(MqttSubscription subscription) {
   print(
-      'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
+    'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}',
+  );
 
   /// Publish to our topic if it has been subscribed
   if (subscription.topic.rawTopic == pubTopic) {
@@ -206,10 +213,12 @@ void onDisconnected() {
       MqttDisconnectionOrigin.solicited) {
     if (topicNotified) {
       print(
-          'EXAMPLE::OnDisconnected callback is solicited, topic has been notified - this is correct');
+        'EXAMPLE::OnDisconnected callback is solicited, topic has been notified - this is correct',
+      );
     } else {
       print(
-          'EXAMPLE::OnDisconnected callback is solicited, topic has NOT been notified - this is an ERROR');
+        'EXAMPLE::OnDisconnected callback is solicited, topic has NOT been notified - this is an ERROR',
+      );
     }
   }
   exit(0);
@@ -218,7 +227,8 @@ void onDisconnected() {
 /// The successful connect callback
 void onConnected() {
   print(
-      'EXAMPLE::OnConnected client callback - Client connection was successful');
+    'EXAMPLE::OnConnected client callback - Client connection was successful',
+  );
 }
 
 /// Pong callback
