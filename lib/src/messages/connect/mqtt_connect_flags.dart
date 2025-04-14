@@ -11,7 +11,6 @@ part of '../../../mqtt5_client.dart';
 
 /// Represents the connect flags part of the MQTT Variable Header
 class MqttConnectFlags {
-
   /// Clean start.
   ///
   /// This bit specifies whether the connection starts a new Session or
@@ -53,7 +52,6 @@ class MqttConnectFlags {
   /// If the User Name Flag false, a User Name MUST NOT be present in the payload.
   /// If the User Name Flag is true, a User Name MUST be present in the payload.
   bool usernameFlag = false;
-
 
   /// Initializes a new instance of the MqttConnectFlags class.
   MqttConnectFlags();

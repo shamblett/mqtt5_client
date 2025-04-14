@@ -22,7 +22,6 @@ part of '../../../mqtt5_client.dart';
 /// In particular if using a will message refer to the [MqttWillProperties] class for details
 /// of the options in this area.
 class MqttConnectMessage extends MqttMessage {
-
   /// The payload of the message.
   late MqttConnectPayload payload;
 

@@ -11,7 +11,6 @@ part of '../../mqtt5_client.dart';
 
 /// Subscription option for a subscribe message topic
 class MqttSubscriptionOption {
-
   /// Maximum QoS.
   ///
   /// Gives the maximum QoS level at which the broker can send
@@ -38,10 +37,10 @@ class MqttSubscriptionOption {
   /// established. This does not affect the sending of retained messages at any
   /// point after the subscribe.
   MqttRetainHandling retainHandling = MqttRetainHandling.sendRetained;
-  
+
   /// Construction
   MqttSubscriptionOption();
-  
+
   /// Serialize
   int serialize() {
     final maximumQos = this.maximumQos!.index;

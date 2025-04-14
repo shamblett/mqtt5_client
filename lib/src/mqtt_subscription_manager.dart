@@ -14,7 +14,6 @@ typedef UnsubscribeCallback = void Function(MqttSubscription subscription);
 
 /// A class that manages the topic subscription process.
 class MqttSubscriptionManager {
-
   /// Subscribe and Unsubscribe callbacks
   SubscribeCallback? onSubscribed;
 
@@ -44,7 +43,7 @@ class MqttSubscriptionManager {
   // Observable change notifier for all subscribed topics
   final StreamController<List<MqttReceivedMessage<MqttMessage>>>
   _subscriptionNotifier =
-  StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
+      StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
 
   /// A list of subscriptions that are pending acknowledgement, keyed
   /// on the message identifier.
@@ -63,6 +62,7 @@ class MqttSubscriptionManager {
   /// Index is the message identifier of the unsubscribe message.
   Map<int, List<MqttSubscription>> get pendingUnsubscriptions =>
       _pendingUnsubscriptions;
+
   /// Subscription notifier
   Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
       _subscriptionNotifier.stream;
@@ -386,11 +386,11 @@ class MqttSubscriptionManager {
   // Creates a new subscription for the specified topic and Qos.
   // If the subscription cannot be created null is returned.
   MqttSubscription? _createNewSubscription(
-      String? topic,
-      MqttQos? qos, {
-        List<MqttUserProperty>? userProperties,
-        MqttSubscriptionOption? option,
-      }) {
+    String? topic,
+    MqttQos? qos, {
+    List<MqttUserProperty>? userProperties,
+    MqttSubscriptionOption? option,
+  }) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
       final sub = MqttSubscription.withMaximumQos(subscriptionTopic, qos);
@@ -403,18 +403,21 @@ class MqttSubscriptionManager {
       final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = <MqttSubscription>[sub];
       dynamic msg;
-      msg = option == null ? MqttSubscribeMessage()
-          .toTopicWithQos(sub.topic.rawTopic, qos)
-          .withUserProperties(userProperties) : MqttSubscribeMessage()
-          .toTopicWithOption(sub.topic.rawTopic, option)
-          .withUserProperties(userProperties);
+      msg =
+          option == null
+              ? MqttSubscribeMessage()
+                  .toTopicWithQos(sub.topic.rawTopic, qos)
+                  .withUserProperties(userProperties)
+              : MqttSubscribeMessage()
+                  .toTopicWithOption(sub.topic.rawTopic, option)
+                  .withUserProperties(userProperties);
       msg.messageIdentifier = msgId;
       _connectionHandler.sendMessage(msg);
       return sub;
     } on Exception catch (e) {
       MqttLogger.log(
         'MqttSubscriptionManager::_createNewSubscription '
-            'exception raised, text is $e',
+        'exception raised, text is $e',
       );
       return null;
     }

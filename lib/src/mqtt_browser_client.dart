@@ -8,7 +8,6 @@
 part of '../mqtt5_browser_client.dart';
 
 class MqttBrowserClient extends MqttClient {
-
   /// Max connection attempts
   final int maxConnectionAttempts;
 

@@ -11,7 +11,6 @@ part of '../../mqtt5_client.dart';
 
 /// Utility class to assist with the build in of message topic payloads.
 class MqttPayloadBuilder {
-
   typed.Uint8Buffer? _payload;
 
   /// Payload
@@ -24,7 +23,7 @@ class MqttPayloadBuilder {
   MqttPayloadBuilder() {
     _payload = typed.Uint8Buffer();
   }
-  
+
   /// Add a buffer
   void addBuffer(typed.Uint8Buffer buffer) {
     _payload!.addAll(buffer);

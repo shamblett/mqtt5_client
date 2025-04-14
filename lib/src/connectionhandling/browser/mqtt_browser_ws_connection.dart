@@ -9,7 +9,6 @@ part of '../../../mqtt5_browser_client.dart';
 
 /// The MQTT connection class for the browser websocket interface
 class MqttBrowserWsConnection extends MqttBrowserConnection {
-
   /// The websocket subprotocol list
   List<String> protocols = MqttConstants.protocolsSingleDefault;
 
@@ -33,7 +32,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     Uri uri;
     try {
       uri = Uri.parse(server);
-    } on Exception catch(_, stack){
+    } on Exception catch (_, stack) {
       final message =
           'MqttBrowserWsConnection::connect - The URI supplied for the WS '
           'connection is not valid - $server';
@@ -83,7 +82,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
         errorEvents?.cancel();
         return completer.complete(MqttConnectionStatus());
       });
-    } on Exception catch (_, stack){
+    } on Exception catch (_, stack) {
       final message =
           'MqttBrowserWsConnection::connect - The connection to the message broker '
           '{$uriString} could not be made.';
@@ -101,7 +100,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     Uri uri;
     try {
       uri = Uri.parse(server);
-    } on Exception catch(_, stack){
+    } on Exception catch (_, stack) {
       final message =
           'MqttBrowserWsConnection::connectAuto - The URI supplied for the WS '
           'connection is not valid - $server';
@@ -155,7 +154,7 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
         errorEvents?.cancel();
         return completer.complete(MqttConnectionStatus());
       });
-    } on Exception catch(_, stack) {
+    } on Exception catch (_, stack) {
       final message =
           'MqttBrowserWsConnection::connectAuto - The connection to the message broker '
           '{$uriString} could not be made.';
