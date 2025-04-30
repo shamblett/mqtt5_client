@@ -127,6 +127,15 @@ class MqttClient {
   Stream<MqttPublishMessage>? get published =>
       publishingManager?.published.stream;
 
+  /// Publish fail message stream. A publish acknowledgement message is added to this
+  /// stream if the message indicates a failure to publish the message.
+  /// Note that the message identifier will be the same as the one in the failed publish
+  /// message.
+  ///
+  /// Attach listeners only after connect has been called.
+  Stream<MqttPublishAckMessage>? get publishFail =>
+      publishingManager?.publishFail.stream;
+
   /// Handles everything to do with authentication messages.
   @protected
   MqttAuthenticationManager? authenticationManager =

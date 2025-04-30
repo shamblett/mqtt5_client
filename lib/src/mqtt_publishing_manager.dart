@@ -53,6 +53,9 @@ class MqttPublishingManager {
   final StreamController<MqttPublishMessage> _published =
       StreamController<MqttPublishMessage>.broadcast();
 
+  final StreamController<MqttPublishAckMessage> _publishFail =
+      StreamController<MqttPublishAckMessage>.broadcast();
+
   // The event bus
   final dynamic _clientEventBus;
 
@@ -63,7 +66,7 @@ class MqttPublishingManager {
   MqttMessageIdentifierDispenser get messageIdentifierDispenser =>
       _messageIdentifierDispenser;
 
-  /// Stores messages that have been pubished but not yet acknowledged.
+  /// Stores messages that have been published but not yet acknowledged.
   /// Key is the message identifier.
   Map<int, MqttPublishMessage> get publishedMessages => _publishedMessages;
 
@@ -76,6 +79,10 @@ class MqttPublishingManager {
 
   /// The stream on which all confirmed published messages are added to
   StreamController<MqttPublishMessage> get published => _published;
+
+  /// The stream on which all published acknowledgement messages are added to if a received
+  /// message indicates a failure to publish.
+  StreamController<MqttPublishAckMessage> get publishFail => _publishFail;
 
   /// Initializes a new instance of the PublishingManager class.
   MqttPublishingManager(this._connectionHandler, this._clientEventBus) {
@@ -157,7 +164,12 @@ class MqttPublishingManager {
     // If we're expecting an ack for the message, remove it from the list of pubs awaiting ack.
     final messageIdentifier = ackMsg.variableHeader!.messageIdentifier;
     if (publishedMessages.keys.contains(messageIdentifier)) {
-      _notifyPublish(publishedMessages[messageIdentifier]!);
+      // Notify if the publish has failed or not.
+      if (ackMsg.publishSuccess) {
+        _notifyPublish(publishedMessages[messageIdentifier]!);
+      } else {
+        _notifyPublishFail(ackMsg);
+      }
       publishedMessages.remove(ackMsg.variableHeader!.messageIdentifier);
     }
     return true;
@@ -270,10 +282,20 @@ class MqttPublishingManager {
   /// On publish complete add the message to the published stream if needed
   void _notifyPublish(MqttPublishMessage message) {
     MqttLogger.log(
-      'MqttPublishingManager::_notifyPublish - entered message ${message.header!.qos.toString()}',
+      'MqttPublishingManager::_notifyPublish - entered QoS ${message.header!.qos.toString()}',
     );
     if (_published.hasListener) {
       _published.add(message);
+    }
+  }
+
+  /// On publish fail add the message to the publish fail stream if needed
+  void _notifyPublishFail(MqttPublishAckMessage message) {
+    MqttLogger.log(
+      'MqttPublishingManager::_notifyPublishFail - entered reason ${mqttPublishReasonCode.asString(message.reasonCode)}',
+    );
+    if (_publishFail.hasListener) {
+      _publishFail.add(message);
     }
   }
 }

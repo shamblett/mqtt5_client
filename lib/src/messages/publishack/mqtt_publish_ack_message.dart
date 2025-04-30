@@ -7,7 +7,7 @@
 
 part of '../../../mqtt5_client.dart';
 
-/// A publish acknowledge messageis the response to a publish message with QoS 1.
+/// A publish acknowledge message is the response to a publish message with QoS 1.
 class MqttPublishAckMessage extends MqttMessage {
   MqttPublishAckVariableHeader? _variableHeader;
 
@@ -26,6 +26,11 @@ class MqttPublishAckMessage extends MqttMessage {
 
   /// User Property.
   List<MqttUserProperty> get userProperty => variableHeader!.userProperty;
+
+  /// If true indicates if the publish was successful
+  bool get publishSuccess =>
+      reasonCode == MqttPublishReasonCode.success ||
+      reasonCode == MqttPublishReasonCode.noMatchingSubscribers;
 
   /// Initializes a new instance of the MqttPublishAckMessage class.
   MqttPublishAckMessage() {
