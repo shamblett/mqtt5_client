@@ -22,7 +22,7 @@ enum MqttPublishReasonCode {
 
   /// The message is accepted but there are no subscribers.
   /// This is sent only by the broker If the broker knows that
-  /// there are no matching subscribers, it MAY use this reason dode instead
+  /// there are no matching subscribers, it MAY use this reason code instead
   /// of success.
   noMatchingSubscribers,
 

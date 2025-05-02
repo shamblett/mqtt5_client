@@ -209,8 +209,9 @@ void main() {
       );
       expect(msgId2, msgId1 + 1);
     });
-    test('Publish at least once and ack', () async {
+    test('Publish at least once and ack - success', () async {
       var onPublished = false;
+      var onPublishFail = false;
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(
         clientEventBus,
@@ -227,6 +228,9 @@ void main() {
       pm.published.stream.listen((message) {
         onPublished = true;
       });
+      pm.publishFail.stream.listen((message) {
+        onPublishFail = true;
+      });
       final msgId = pm.publish(
         MqttPublicationTopic('A/rawTopic'),
         MqttQos.atLeastOnce,
@@ -234,11 +238,50 @@ void main() {
       );
       expect(msgId, 1);
       pm.handlePublishAcknowledgement(
-        MqttPublishAckMessage().withMessageIdentifier(msgId),
+        MqttPublishAckMessage().withMessageIdentifier(msgId)
+          ..withReasonCode(MqttPublishReasonCode.success),
       );
       expect(pm.publishedMessages.containsKey(1), isFalse);
       await Future.delayed(Duration(seconds: 1));
       expect(onPublished, isTrue);
+      expect(onPublishFail, isFalse);
+    });
+    test('Publish at least once and ack - fail', () async {
+      var onPublished = false;
+      var onPublishFail = false;
+      final clientEventBus = events.EventBus();
+      final testCHS = TestConnectionHandlerSend(
+        clientEventBus,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
+      final pm = MqttPublishingManager(testCHS, clientEventBus);
+      pm.messageIdentifierDispenser.reset();
+      final buff = typed.Uint8Buffer(4);
+      buff[0] = 't'.codeUnitAt(0);
+      buff[1] = 'e'.codeUnitAt(0);
+      buff[2] = 's'.codeUnitAt(0);
+      buff[3] = 't'.codeUnitAt(0);
+      pm.published.stream.listen((message) {
+        onPublished = true;
+      });
+      pm.publishFail.stream.listen((message) {
+        onPublishFail = true;
+      });
+      final msgId = pm.publish(
+        MqttPublicationTopic('A/rawTopic'),
+        MqttQos.atLeastOnce,
+        buff,
+      );
+      expect(msgId, 1);
+      pm.handlePublishAcknowledgement(
+        MqttPublishAckMessage().withMessageIdentifier(msgId)
+          ..withReasonCode(MqttPublishReasonCode.implementationSpecificError),
+      );
+      expect(pm.publishedMessages.containsKey(1), isFalse);
+      await Future.delayed(Duration(seconds: 1));
+      expect(onPublished, isFalse);
+      expect(onPublishFail, isTrue);
     });
     test('Publish exactly once, release and complete', () async {
       var onPublished = false;
