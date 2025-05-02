@@ -1,3 +1,8 @@
+# 4.12.0
+Issues 156 and 152
+- [Issue 152](https://github.com/shamblett/mqtt5_client/issues/152)
+- [Issue 156](https://github.com/shamblett/mqtt5_client/issues/156)
+
 # 4.11.0
 - [Issue 139](https://github.com/shamblett/mqtt5_client/issues/139)
 
