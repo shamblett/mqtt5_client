@@ -3880,6 +3880,48 @@ void main() {
     });
 
     group('Publish Ack', () {
+      test('Deserialisation - Valid - publish error', () {
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x40);
+        buffer.add(0x18);
+        buffer.add(0); // Message Identifier
+        buffer.add(1);
+        buffer.add(0x80); // Reason code
+        buffer.add(0x14); // Properties
+        buffer.add(0x1f);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add(0x26);
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('m'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x04);
+        buffer.add('v'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('l'.codeUnitAt(0));
+        buffer.add('1'.codeUnitAt(0));
+        final byteBuffer = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(byteBuffer)!;
+        expect(baseMessage, const TypeMatcher<MqttPublishAckMessage>());
+        expect(baseMessage.header!.messageType, MqttMessageType.publishAck);
+        expect(baseMessage.header!.messageSize, 24);
+        final bm = baseMessage as MqttPublishAckMessage;
+        expect(bm.messageIdentifier, 1);
+        expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(bm.publishSuccess, isFalse);
+        expect(bm.reasonString, 'abcd');
+        expect(bm.userProperty[0].pairName, 'name');
+        expect(bm.userProperty[0].pairValue, 'val1');
+        expect(bm.variableHeader!.length, 24);
+      });
       test('Deserialisation - Valid', () {
         final buffer = typed.Uint8Buffer();
         buffer.add(0x40);
@@ -3916,6 +3958,7 @@ void main() {
         final bm = baseMessage as MqttPublishAckMessage;
         expect(bm.messageIdentifier, 1);
         expect(bm.reasonCode, MqttPublishReasonCode.unspecifiedError);
+        expect(bm.publishSuccess, isFalse);
         expect(bm.reasonString, 'abcd');
         expect(bm.userProperty[0].pairName, 'name');
         expect(bm.userProperty[0].pairValue, 'val1');
@@ -3929,6 +3972,26 @@ void main() {
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
         expect(stream.buffer, [0x40, 0x2, 0x00, 0x2]);
+      });
+      test('Publish Success - Success', () {
+        final message = MqttPublishAckMessage()
+            .withMessageIdentifier(2)
+            .withReasonCode(MqttPublishReasonCode.success);
+        expect(message.publishSuccess, isTrue);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer, [0x40, 0x2, 0x00, 0x2]);
+      });
+      test('Publish Success - No subscribers', () {
+        final message = MqttPublishAckMessage()
+            .withMessageIdentifier(2)
+            .withReasonCode(MqttPublishReasonCode.noMatchingSubscribers);
+        expect(message.publishSuccess, isTrue);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer, [0x40, 0x4, 0x00, 0x2, 0x10, 0x00]);
       });
     });
 
