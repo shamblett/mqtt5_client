@@ -60,9 +60,19 @@ class MqttClient {
 
   /// Auto reconnect, the client will auto reconnect if set true.
   ///
+  /// This mechanism is intended to attempt to recover from sudden
+  /// disconnection from the broker, i.e. broker/network failure and so
+  /// will not trigger in all cases where the client disconnects.
+  ///
   /// The auto reconnect mechanism will not be invoked either for a client
   /// that has not been connected, i.e. you must have established an initial
   /// connection to the broker or for a solicited disconnect request.
+  ///
+  /// Note that a solicited request is one the user has initiated, i.e. called
+  /// [disconnect] or the broker has initiated by reception of a disconnect message.
+  /// This means that exceptions such as invalid message will not trigger the auto
+  /// reconnect sequence [onDisconnected] will be called as normal. It is up to the user
+  /// to monitor for this and take appropriate action.
   ///
   /// Once invoked the mechanism will try forever to reconnect to the broker with its
   /// original connection parameters. This can be stopped only by calling
