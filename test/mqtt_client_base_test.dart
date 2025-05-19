@@ -423,13 +423,18 @@ void main() {
         expect(subTopic.matches(MqttPublicationTopic('finance')), isFalse);
       },
     );
-    test('Multi level non equal topics do not match', () {
+    test('Multi level non equal topics do not match - same lengths', () {
       const topic = 'finance/ibm/closingprice';
       final subTopic = MqttSubscriptionTopic(topic);
       expect(
         subTopic.matches(MqttPublicationTopic('some/random/topic')),
         isFalse,
       );
+    });
+    test('Multi level non equal topics do not match - different lengths', () {
+      const topic = 'test/test1/a/b';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(subTopic.matches(MqttPublicationTopic('test')), isFalse);
     });
     test(
       'different length topics do not match and do not throw range error',

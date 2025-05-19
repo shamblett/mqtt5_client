@@ -37,13 +37,18 @@ class MqttSubscriptionTopic extends MqttTopic {
     // no match yet so we need to check each fragment
     for (var i = 0; i < topicFragments.length; i++) {
       final lhsFragment = topicFragments[i];
+      final isLhsWildcard = lhsFragment == MqttTopic.wildcard;
+      final isLhsMultiWildcard = lhsFragment == MqttTopic.multiWildcard;
+      // The matchee topic must have at least a length of i + 1 if the lhs is not a wildcard.
+      if (!isLhsMultiWildcard && matcheeTopic.topicFragments.length < i + 1) {
+        return false;
+      }
       // If we've reached a multi wildcard in the lhs rawTopic,
       // we have a match.
       // (this is the mqtt spec rule finance matches finance or finance/#)
       if (lhsFragment == MqttTopic.multiWildcard) {
         return true;
       }
-      final isLhsWildcard = lhsFragment == MqttTopic.wildcard;
       // If we've reached a wildcard match but the matchee does
       // not have anything at this fragment level then it's not a match.
       // (this is the MQTT spec rule 'finance does not match finance/+'
@@ -74,7 +79,6 @@ class MqttSubscriptionTopic extends MqttTopic {
           matcheeTopic.topicFragments.length > topicFragments.length) {
         return false;
       }
-      // If we're here the current fragment matches so check the next
     }
     // If we exit out of the loop without a return then we have a full match rawTopic/rawTopic which would
     // have been caught by the original exact match check at the top anyway.
