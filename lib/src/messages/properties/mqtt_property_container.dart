@@ -44,10 +44,9 @@ class MqttPropertyContainer {
   /// already exist
   bool delete(MqttIProperty property) {
     var ok = false;
-    ok =
-        property.identifier != MqttPropertyIdentifier.userProperty
-            ? _container.remove(property.identifier) != null
-            : _userProperties.remove(property);
+    ok = property.identifier != MqttPropertyIdentifier.userProperty
+        ? _container.remove(property.identifier) != null
+        : _userProperties.remove(property);
     return ok;
   }
 
@@ -60,10 +59,9 @@ class MqttPropertyContainer {
   /// Contains
   bool contains(MqttIProperty property) {
     var ok = false;
-    ok =
-        property.identifier != MqttPropertyIdentifier.userProperty
-            ? _container.containsKey(property.identifier)
-            : _userProperties.contains(property);
+    ok = property.identifier != MqttPropertyIdentifier.userProperty
+        ? _container.containsKey(property.identifier)
+        : _userProperties.contains(property);
     return ok;
   }
 

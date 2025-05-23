@@ -1019,20 +1019,20 @@ void main() {
       });
       test('Read From', () {
         final container = MqttPropertyContainer();
-        final buffer =
-            typed.Uint8Buffer()..addAll([
-              0x0a,
-              0x3,
-              0x00,
-              0x05,
-              0x48,
-              0x65,
-              0x6c,
-              0x6c,
-              0x6f,
-              0x01,
-              0x44,
-            ]);
+        final buffer = typed.Uint8Buffer()
+          ..addAll([
+            0x0a,
+            0x3,
+            0x00,
+            0x05,
+            0x48,
+            0x65,
+            0x6c,
+            0x6c,
+            0x6f,
+            0x01,
+            0x44,
+          ]);
         final stream = MqttByteBuffer(buffer);
         container.readFrom(stream);
         expect(container.count, 2);
@@ -1050,34 +1050,34 @@ void main() {
       });
       test('Read From - User Properties', () {
         final container = MqttPropertyContainer();
-        final buffer =
-            typed.Uint8Buffer()..addAll([
-              0x18,
-              0x3,
-              0x00,
-              0x05,
-              0x48,
-              0x65,
-              0x6c,
-              0x6c,
-              0x6f,
-              0x01,
-              0x44,
-              0x26,
-              0x00,
-              0x01,
-              0x61,
-              0x00,
-              0x01,
-              0x62,
-              0x26,
-              0x00,
-              0x01,
-              0x63,
-              0x00,
-              0x01,
-              0x64,
-            ]);
+        final buffer = typed.Uint8Buffer()
+          ..addAll([
+            0x18,
+            0x3,
+            0x00,
+            0x05,
+            0x48,
+            0x65,
+            0x6c,
+            0x6c,
+            0x6f,
+            0x01,
+            0x44,
+            0x26,
+            0x00,
+            0x01,
+            0x61,
+            0x00,
+            0x01,
+            0x62,
+            0x26,
+            0x00,
+            0x01,
+            0x63,
+            0x00,
+            0x01,
+            0x64,
+          ]);
         final stream = MqttByteBuffer(buffer);
         container.readFrom(stream);
         expect(container.count, 4);
@@ -2901,10 +2901,9 @@ void main() {
         final correlationdata = typed.Uint8Buffer()..addAll([1, 2, 3, 4]);
         willProperties.correlationData = correlationdata;
         expect(willProperties.correlationData!.toList(), [1, 2, 3, 4]);
-        final user1 =
-            MqttUserProperty()
-              ..pairName = 'name'
-              ..pairValue = 'value';
+        final user1 = MqttUserProperty()
+          ..pairName = 'name'
+          ..pairValue = 'value';
         willProperties.userProperties = <MqttUserProperty>[user1];
         expect(willProperties.userProperties, isNotEmpty);
         expect(willProperties.userProperties[0], user1);
@@ -3178,11 +3177,10 @@ void main() {
   group('Messages', () {
     group('Connect', () {
       test('Basic serialization', () {
-        final msg =
-            MqttConnectMessage()
-                .withClientIdentifier('mark')
-                .keepAliveFor(40)
-                .startClean();
+        final msg = MqttConnectMessage()
+            .withClientIdentifier('mark')
+            .keepAliveFor(40)
+            .startClean();
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
         expect(mb[1], 0x11);
@@ -3224,11 +3222,10 @@ void main() {
         expect(mb[1], 0x25);
       });
       test('Persistent session', () {
-        final msg =
-            MqttConnectMessage()
-                .withClientIdentifier('mark')
-                .keepAliveFor(30)
-                .startSession();
+        final msg = MqttConnectMessage()
+            .withClientIdentifier('mark')
+            .keepAliveFor(30)
+            .startSession();
         final mb = MessageSerializationHelper.getMessageBytes(msg);
         expect(mb[0], 0x10);
         expect(mb[1], 0x16);
@@ -3771,45 +3768,45 @@ void main() {
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);
-        final serializeTestBuffer =
-            typed.Uint8Buffer()..addAll([
-              52,
-              34,
-              0,
-              4,
-              102,
-              114,
-              101,
-              100,
-              0,
-              1,
-              19,
-              1,
-              1,
-              35,
-              0,
-              5,
-              38,
-              0,
-              4,
-              110,
-              97,
-              109,
-              101,
-              0,
-              5,
-              118,
-              97,
-              108,
-              117,
-              101,
-              104,
-              101,
-              108,
-              108,
-              111,
-              33,
-            ]);
+        final serializeTestBuffer = typed.Uint8Buffer()
+          ..addAll([
+            52,
+            34,
+            0,
+            4,
+            102,
+            114,
+            101,
+            100,
+            0,
+            1,
+            19,
+            1,
+            1,
+            35,
+            0,
+            5,
+            38,
+            0,
+            4,
+            110,
+            97,
+            109,
+            101,
+            0,
+            5,
+            118,
+            97,
+            108,
+            117,
+            101,
+            104,
+            101,
+            108,
+            108,
+            111,
+            33,
+          ]);
         expect(stream.buffer, serializeTestBuffer);
       });
       test('Chinese topic', () {

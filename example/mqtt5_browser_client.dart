@@ -57,10 +57,9 @@ Future<int> main() async {
   /// Create a connection message to use or use the default one. The default one sets the
   /// client identifier, any supplied username/password, the default keepalive interval(60s)
   /// and clean session, an example of a specific one below.
-  final connMess =
-      MqttConnectMessage()
-          .withClientIdentifier('Mqtt_MyClientUniqueId')
-          .startClean(); // Non persistent session for testing
+  final connMess = MqttConnectMessage()
+      .withClientIdentifier('Mqtt_MyClientUniqueId')
+      .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 

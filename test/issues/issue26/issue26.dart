@@ -29,8 +29,8 @@ Future<int> main() async {
     await MqttUtilities.asyncSleep(delay);
 
     var subStatus =
-    // ignore: invalid_use_of_protected_member
-    client.subscriptionsManager!.getSubscriptionTopicStatus(topic);
+        // ignore: invalid_use_of_protected_member
+        client.subscriptionsManager!.getSubscriptionTopicStatus(topic);
     print(subStatus);
 
     expect(subStatus, MqttSubscriptionStatus.doesNotExist);

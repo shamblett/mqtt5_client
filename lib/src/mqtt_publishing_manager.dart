@@ -252,8 +252,9 @@ class MqttPublishingManager {
   bool handlePublishComplete(MqttMessage msg) {
     MqttLogger.log('MqttPublishingManager::handlePublishComplete - entered');
     final compMsg = msg as MqttPublishCompleteMessage;
-    final publishMessage =
-        publishedMessages.remove(compMsg.variableHeader.messageIdentifier)!;
+    final publishMessage = publishedMessages.remove(
+      compMsg.variableHeader.messageIdentifier,
+    )!;
     _notifyPublish(publishMessage);
     return true;
   }
@@ -267,14 +268,14 @@ class MqttPublishingManager {
     dynamic relMsg;
     relMsg =
         publishedMessages.containsKey(recvMsg.variableHeader.messageIdentifier)
-            ? MqttPublishReleaseMessage()
-                .withMessageIdentifier(recvMsg.variableHeader.messageIdentifier)
-                .withReasonCode(MqttPublishReasonCode.success)
-            : MqttPublishReleaseMessage()
-                .withMessageIdentifier(
-                  messageIdentifierDispenser.nextMessageIdentifier,
-                )
-                .withReasonCode(MqttPublishReasonCode.packetIdentifierNotFound);
+        ? MqttPublishReleaseMessage()
+              .withMessageIdentifier(recvMsg.variableHeader.messageIdentifier)
+              .withReasonCode(MqttPublishReasonCode.success)
+        : MqttPublishReleaseMessage()
+              .withMessageIdentifier(
+                messageIdentifierDispenser.nextMessageIdentifier,
+              )
+              .withReasonCode(MqttPublishReasonCode.packetIdentifierNotFound);
     _connectionHandler.sendMessage(relMsg);
     return true;
   }

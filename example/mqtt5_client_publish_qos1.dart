@@ -24,10 +24,9 @@ Future<int> main() async {
   client.keepAlivePeriod = 20;
   client.onDisconnected = onDisconnected;
   client.onSubscribed = onSubscribed;
-  final connMess =
-      MqttConnectMessage()
-          .withClientIdentifier('MQTT5DartClient')
-          .startClean(); // Non persistent session for testing
+  final connMess = MqttConnectMessage()
+      .withClientIdentifier('MQTT5DartClient')
+      .startClean(); // Non persistent session for testing
   print('EXAMPLE::Mosquitto client connecting....');
   client.connectionMessage = connMess;
 
