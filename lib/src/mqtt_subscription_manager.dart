@@ -187,9 +187,8 @@ class MqttSubscriptionManager {
         .withMessageIdentifier(msgId)
         .fromStringTopic(topic);
     _connectionHandler.sendMessage(unsubscribeMsg);
-    pendingUnsubscriptions[unsubscribeMsg
-        .variableHeader
-        .messageIdentifier] = <MqttSubscription>[sub];
+    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
+        <MqttSubscription>[sub];
   }
 
   /// Unsubscribe from a subscription.
@@ -204,9 +203,8 @@ class MqttSubscriptionManager {
         .fromTopic(subscription.topic)
         .withUserProperties(subscription.userProperties);
     _connectionHandler.sendMessage(unsubscribeMsg);
-    pendingUnsubscriptions[unsubscribeMsg
-        .variableHeader
-        .messageIdentifier] = <MqttSubscription>[subscription];
+    pendingUnsubscriptions[unsubscribeMsg.variableHeader.messageIdentifier] =
+        <MqttSubscription>[subscription];
   }
 
   /// Unsubscribe from a subscription list.
@@ -403,14 +401,13 @@ class MqttSubscriptionManager {
       final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = <MqttSubscription>[sub];
       dynamic msg;
-      msg =
-          option == null
-              ? MqttSubscribeMessage()
-                  .toTopicWithQos(sub.topic.rawTopic, qos)
-                  .withUserProperties(userProperties)
-              : MqttSubscribeMessage()
-                  .toTopicWithOption(sub.topic.rawTopic, option)
-                  .withUserProperties(userProperties);
+      msg = option == null
+          ? MqttSubscribeMessage()
+                .toTopicWithQos(sub.topic.rawTopic, qos)
+                .withUserProperties(userProperties)
+          : MqttSubscribeMessage()
+                .toTopicWithOption(sub.topic.rawTopic, option)
+                .withUserProperties(userProperties);
       msg.messageIdentifier = msgId;
       _connectionHandler.sendMessage(msg);
       return sub;

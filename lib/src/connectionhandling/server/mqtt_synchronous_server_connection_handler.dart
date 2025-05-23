@@ -24,14 +24,13 @@ class MqttSynchronousServerConnectionHandler
          socketTimeout: socketTimeout,
        ) {
     this.clientEventBus = clientEventBus;
-    connectTimer =
-        socketTimeout == null
-            ? MqttCancellableAsyncSleep(
-              MqttConstants.defaultConnectionAttemptTimeoutPeriod,
-            )
-            : MqttCancellableAsyncSleep(
-              MqttConstants.disabledConnectionAttemptTimeoutPeriod,
-            );
+    connectTimer = socketTimeout == null
+        ? MqttCancellableAsyncSleep(
+            MqttConstants.defaultConnectionAttemptTimeoutPeriod,
+          )
+        : MqttCancellableAsyncSleep(
+            MqttConstants.disabledConnectionAttemptTimeoutPeriod,
+          );
     initialiseListeners();
   }
 

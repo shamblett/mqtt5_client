@@ -59,10 +59,9 @@ class MqttConnectMessage extends MqttMessage {
   MqttConnectMessage startSession({
     int sessionExpiryInterval = MqttConnectVariableHeader.sessionDoesNotExpire,
   }) {
-    final interval =
-        sessionExpiryInterval == 0
-            ? MqttConnectVariableHeader.sessionDoesNotExpire
-            : sessionExpiryInterval;
+    final interval = sessionExpiryInterval == 0
+        ? MqttConnectVariableHeader.sessionDoesNotExpire
+        : sessionExpiryInterval;
     _variableHeader!.sessionExpiryInterval = interval;
     _variableHeader!.connectFlags.cleanStart = false;
     return this;

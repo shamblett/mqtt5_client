@@ -37,10 +37,9 @@ void main() {
       client.pongCallback = pongCallback;
       client.keepAlivePeriod = 10;
       client.websocketProtocols = MqttConstants.protocolsSingleDefault;
-      final connMess =
-          MqttConnectMessage()
-              .withClientIdentifier(testClientId)
-              .startClean(); // Non persistent session for testing
+      final connMess = MqttConnectMessage()
+          .withClientIdentifier(testClientId)
+          .startClean(); // Non persistent session for testing
       client.connectionMessage = connMess;
       var ok = true;
       try {

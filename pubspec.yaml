@@ -5,7 +5,7 @@ repository: https://github.com/shamblett/mqtt5_client
 homepage: https://github.com/shamblett/mqtt5_client
 
 environment:
- sdk: '>=3.7.0 <4.0.0'
+ sdk: '>=3.8.0 <4.0.0'
 
 funding:
  - https://www.darticulate.com/#funding

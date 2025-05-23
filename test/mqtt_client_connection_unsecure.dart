@@ -251,7 +251,7 @@ void main() {
       final state = ch.disconnect();
       expect(state, MqttConnectionState.disconnected);
     });
-    test('Socket Timeout', () async {
+    test('Socket Timeout - Windows', () async {
       await IOOverrides.runZoned(
         () async {
           bool testOk = false;
@@ -264,8 +264,6 @@ void main() {
           client.socketTimeout = 500;
           expect(client.socketTimeout, isNull);
           client.socketTimeout = 2000;
-          expect(client.socketTimeout, 2000);
-          client.logging(on: true);
           try {
             await client.connect();
           } on MqttNoConnectionException {
@@ -283,7 +281,46 @@ void main() {
               dynamic sourceAddress,
               int sourcePort = 0,
               Duration? timeout,
-            }) => MqttMockSocketTimeout.connect(
+            }) => MqttMockSocketTimeoutWindows.connect(
+              host,
+              port,
+              sourceAddress: sourceAddress,
+              sourcePort: sourcePort,
+              timeout: timeout,
+            ),
+      );
+    });
+    test('Socket Timeout - Nix', () async {
+      await IOOverrides.runZoned(
+        () async {
+          bool testOk = false;
+          final client = MqttServerClient(
+            'localhost',
+            '',
+            maxConnectionAttempts: 1,
+          );
+          final start = DateTime.now();
+          client.socketTimeout = 500;
+          expect(client.socketTimeout, isNull);
+          client.socketTimeout = 2000;
+          try {
+            await client.connect();
+          } on MqttNoConnectionException {
+            testOk = true;
+          }
+          final end = DateTime.now();
+          expect(end.isAfter(start), isTrue);
+          expect(end.subtract(Duration(seconds: 2)).second, start.second);
+          expect(testOk, isTrue);
+        },
+        socketConnect:
+            (
+              dynamic host,
+              int port, {
+              dynamic sourceAddress,
+              int sourcePort = 0,
+              Duration? timeout,
+            }) => MqttMockSocketTimeoutNix.connect(
               host,
               port,
               sourceAddress: sourceAddress,

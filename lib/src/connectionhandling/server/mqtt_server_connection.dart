@@ -9,6 +9,10 @@ part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT client server connection base class
 class MqttServerConnection extends MqttConnectionBase {
+  /// Socket timeout OS error codes.
+  static const wsaETimedOut = 10060;
+  static const eTimedOut = 110;
+
   /// Socket options, applicable only to TCP sockets
   List<RawSocketOption> socketOptions = <RawSocketOption>[];
 
@@ -146,9 +150,8 @@ class MqttServerConnection extends MqttConnectionBase {
         'MqttServerConnection::_ondata - irrecoverable exception raised - sending disconnect $e',
       );
       // Send disconnect
-      final disconnect =
-          MqttDisconnectMessage()
-            ..withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
+      final disconnect = MqttDisconnectMessage()
+        ..withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
       messageStream.reset();
       disconnect.writeTo(messageStream);
       messageStream.seek(0);
@@ -175,7 +178,9 @@ class MqttServerConnection extends MqttConnectionBase {
   // Check for a timeout exception
   bool _isSocketTimeout(Exception e) {
     if (e is SocketException) {
-      if (e.message.contains('Connection timed out')) {
+      // There are different timeout codes for Linux and Windows so check for both
+      if (e.osError?.errorCode == wsaETimedOut ||
+          e.osError?.errorCode == eTimedOut) {
         return true;
       }
     }

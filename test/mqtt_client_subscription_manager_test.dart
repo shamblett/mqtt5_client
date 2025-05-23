@@ -290,12 +290,11 @@ void main() {
         );
         final subs = MqttSubscriptionManager(testCHS, clientEventBus);
         subs.messageIdentifierDispenser.reset();
-        final subscriptions =
-            subs.subscribeSubscriptionList([
-              subscription1,
-              subscription2,
-              subscription3,
-            ])!;
+        final subscriptions = subs.subscribeSubscriptionList([
+          subscription1,
+          subscription2,
+          subscription3,
+        ])!;
         expect(subscriptions.length, 3);
         expect(subscriptions, [subscription1, subscription2, subscription3]);
         expect(subs.subscriptions.length, 0);
