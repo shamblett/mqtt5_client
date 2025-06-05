@@ -5,18 +5,18 @@ DocumentName: mqtt5_client
 DocumentNamespace: https://pub.dev/packages/mqtt5_client
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-05-23T09:34:06Z
+Created: 2025-06-05T11:49:06Z
 
 
 PackageName: mqtt5-client
 SPDXID: SPDXRef-Package-mqtt5-client
-PackageVersion: 4.12.2
+PackageVersion: 4.13.0
 PackageFileName: mqtt5_client
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/mqtt5_client
 FilesAnalyzed: true
-PackageVerificationCode: f3a0ca9a1a1d52b74d77dee3751ee269f8f84281
+PackageVerificationCode: dad3b5870c23d0a8c472fd0d6477bf99511617a6
 PackageHomePage: https://pub.dev/packages/mqtt5_client
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -532,7 +532,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/messages/properties/mqtt_four_byte_integer_property.dart
 SPDXID: SPDXRef-mqtt-four-byte-integer-property-56
 FileType: SOURCE
-FileChecksum: SHA1: 6a1f506238943fe2cf31c8d1b7ad25c8cf043b72
+FileChecksum: SHA1: 17e13b51306cb1cf60a7ef121887a8bd00a752c0
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -541,7 +541,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/messages/properties/mqtt_iproperty.dart
 SPDXID: SPDXRef-mqtt-iproperty-57
 FileType: SOURCE
-FileChecksum: SHA1: 17e13b51306cb1cf60a7ef121887a8bd00a752c0
+FileChecksum: SHA1: c6c33107ea96945a2f7ff4118f9f6f5d3ac27741
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -550,7 +550,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/messages/properties/mqtt_property_container.dart
 SPDXID: SPDXRef-mqtt-property-container-58
 FileType: SOURCE
-FileChecksum: SHA1: c6c33107ea96945a2f7ff4118f9f6f5d3ac27741
+FileChecksum: SHA1: 170f6dc2e43fd43c6c5150e76628f7c388ebcfc6
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -856,7 +856,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/messages/unsubscribeack/mqtt_unsubscribe_ack_message.dart
 SPDXID: SPDXRef-mqtt-unsubscribe-ack-message-92
 FileType: SOURCE
-FileChecksum: SHA1: b99efa6d848f95b15735c4f06173a31ce0d40370
+FileChecksum: SHA1: 84c1aac763856b6dd65d51a7cdb3616ab5650aca
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -865,7 +865,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/messages/unsubscribeack/mqtt_unsubscribe_ack_payload.dart
 SPDXID: SPDXRef-mqtt-unsubscribe-ack-payload-93
 FileType: SOURCE
-FileChecksum: SHA1: 84c1aac763856b6dd65d51a7cdb3616ab5650aca
+FileChecksum: SHA1: 0a33b218c9c2cffc011b3bd4a4ab2876cad3c48a
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -874,7 +874,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/messages/unsubscribeack/mqtt_unsubscribe_ack_variable_header.dart
 SPDXID: SPDXRef-mqtt-unsubscribe-ack-variable-header-94
 FileType: SOURCE
-FileChecksum: SHA1: 2fa77451886b10bba75dcc70474f34b125b86d15
+FileChecksum: SHA1: 3fe993eaf97b87c46156584de9d4ca3b9c627b90
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -883,7 +883,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/mqtt_authentication_manager.dart
 SPDXID: SPDXRef-mqtt-authentication-manager-95
 FileType: SOURCE
-FileChecksum: SHA1: 0a33b218c9c2cffc011b3bd4a4ab2876cad3c48a
+FileChecksum: SHA1: 223f5a687cf830f78f5236c471806206f68c752b
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -892,7 +892,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/mqtt_browser_client.dart
 SPDXID: SPDXRef-mqtt-browser-client-96
 FileType: SOURCE
-FileChecksum: SHA1: 3fe993eaf97b87c46156584de9d4ca3b9c627b90
+FileChecksum: SHA1: 72d4bf73191732ccaa6a99d3b121f3420fd14ba0
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1036,7 +1036,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/mqtt_subscription_topic.dart
 SPDXID: SPDXRef-mqtt-subscription-topic-112
 FileType: SOURCE
-FileChecksum: SHA1: b28aeee97003b9ac0cf99b8c0f821fffe13b7ef7
+FileChecksum: SHA1: 4eef0649e905851d7339dd0e0cab69c1b80e22f5
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1045,7 +1045,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/mqtt_topic.dart
 SPDXID: SPDXRef-mqtt-topic-113
 FileType: SOURCE
-FileChecksum: SHA1: 4eef0649e905851d7339dd0e0cab69c1b80e22f5
+FileChecksum: SHA1: 648e36e1aa7232faf82d81f74554cf98fb40bb48
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1054,7 +1054,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/utility/mqtt_byte_buffer.dart
 SPDXID: SPDXRef-mqtt-byte-buffer-114
 FileType: SOURCE
-FileChecksum: SHA1: 648e36e1aa7232faf82d81f74554cf98fb40bb48
+FileChecksum: SHA1: e375cc736c72e10e2212bba24352df109dc046b4
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1063,7 +1063,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/utility/mqtt_enum_helper.dart
 SPDXID: SPDXRef-mqtt-enum-helper-115
 FileType: SOURCE
-FileChecksum: SHA1: e375cc736c72e10e2212bba24352df109dc046b4
+FileChecksum: SHA1: 1934c765d3169e279d78d6dd80a0133be1bc6995
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1099,7 +1099,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-119
 FileType: TEXT
-FileChecksum: SHA1: 17f98c4016dfcfebcfa10211fbd4450d62e2b3c1
+FileChecksum: SHA1: 91aaff09a9c06a4e01a0af8f09040f2b536469ac
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION

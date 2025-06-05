@@ -1,3 +1,8 @@
+# 4.13.0
+Issues 164 and 165
+- [Issue 164](https://github.com/shamblett/mqtt5_client/issues/164)
+- [Issue 165](https://github.com/shamblett/mqtt5_client/issues/165)
+
 # 4.12.2
 - [Issue 160](https://github.com/shamblett/mqtt5_client/issues/160)
 
