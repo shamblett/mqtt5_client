@@ -628,12 +628,15 @@ class MqttClient {
     }
   }
 
-  /// Turn on logging, true to start, false to stop
-  void logging({required bool on}) {
+  /// Turn on logging, true to start, false to stop.
+  /// Optionally disable publish message payload logging, defaults
+  /// to log payloads, false disables this.
+  void logging({required bool on, bool logPayloads = true}) {
     MqttLogger.loggingOn = false;
     if (on) {
       MqttLogger.loggingOn = true;
     }
+    MqttLogger.logPayloads = logPayloads;
   }
 
   // Process a disconnect message received from the broker.
