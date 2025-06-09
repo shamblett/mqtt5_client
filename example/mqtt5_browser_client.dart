@@ -28,11 +28,11 @@ final client = MqttBrowserClient('ws://test.mosquitto.org', '');
 
 Future<int> main() async {
   /// Set logging on if needed, defaults to off
-  client.logging(on: false);
+  client.logging(on: true);
 
   /// The client keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
   /// a positive value other than 0.
-  client.keepAlivePeriod = 20;
+  client.keepAlivePeriod = 0;
 
   /// The ws port for Mosquitto is 8080, for wss it is 8081
   client.port = 8080;
@@ -141,7 +141,7 @@ Future<int> main() async {
   client.unsubscribeStringTopic(topic);
 
   /// Wait for the unsubscribe message from the broker if you wish.
-  await MqttUtilities.asyncSleep(2);
+  await MqttUtilities.asyncSleep(20);
   print('EXAMPLE::Disconnecting');
   client.disconnect();
   return 0;

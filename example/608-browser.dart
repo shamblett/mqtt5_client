@@ -21,7 +21,7 @@ class MqttWebInitializer {
   }) {
     _client = MqttBrowserClient(params.url, '');
     final clientId = 'Geppo-Web}';
-    _client.logging(on: false);
+    _client.logging(on: true);
     _client.port = params.port;
     // Keep alive period (in secondi) a 0 = disabilitato
     if (params.keepAlivePeriod > 0) {
@@ -38,8 +38,6 @@ class MqttWebInitializer {
     }
     connectMessage
         .withClientIdentifier(clientId)
-        .withWillTopic(willTopic)
-        .withWillQos(MqttQos.atLeastOnce)
         .startClean();
 
     connectMessage.withWillQos(MqttQos.exactlyOnce);
