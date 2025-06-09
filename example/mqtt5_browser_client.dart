@@ -28,7 +28,7 @@ final client = MqttBrowserClient('ws://test.mosquitto.org', '');
 
 Future<int> main() async {
   /// Set logging on if needed, defaults to off
-  client.logging(on: true);
+  client.logging(on: false);
 
   /// The client keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
   /// a positive value other than 0.
@@ -134,14 +134,14 @@ Future<int> main() async {
   /// Ok, we will now sleep a while, in this gap you will see ping request/response
   /// messages being exchanged by the keep alive mechanism.
   print('EXAMPLE::Sleeping....');
-  await MqttUtilities.asyncSleep(120);
+  await MqttUtilities.asyncSleep(20);
 
   /// Finally, unsubscribe and exit gracefully
   print('EXAMPLE::Unsubscribing');
   client.unsubscribeStringTopic(topic);
 
   /// Wait for the unsubscribe message from the broker if you wish.
-  await MqttUtilities.asyncSleep(20);
+  await MqttUtilities.asyncSleep(2);
   print('EXAMPLE::Disconnecting');
   client.disconnect();
   return 0;
