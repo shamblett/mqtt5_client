@@ -39,7 +39,7 @@ class MqttPublishPayload implements MqttIPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     final messageBytes = header!.messageSize - variableHeader!.length;
-    message = payloadStream.read(messageBytes);
+    message = payloadStream.readPayload(messageBytes);
     length += messageBytes;
   }
 
