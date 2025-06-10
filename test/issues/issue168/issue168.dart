@@ -39,7 +39,6 @@ class MqttWebInitializer {
     }
     connectMessage.withClientIdentifier(clientId).startClean();
 
-    connectMessage.withWillQos(MqttQos.exactlyOnce);
     print('EXECUTING - MQTT CONNECT...');
     _client.connectionMessage = connectMessage;
   }
