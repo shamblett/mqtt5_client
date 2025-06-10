@@ -56,4 +56,23 @@ class MqttPublishPayload implements MqttIPayload {
   @override
   String toString() =>
       'Payload: {${message!.length} bytes={${MqttUtilities.bytesToString(message!)}';
+
+  /// Converts an array of bytes to a byte string.
+  static String bytesToString(typed.Uint8Buffer? message) {
+    if (message == null) {
+      return '';
+    }
+    final sb = StringBuffer();
+    for (final b in message) {
+      sb.write('<');
+      sb.write(b);
+      sb.write('>');
+    }
+    return sb.toString();
+  }
+
+  /// Converts an array of bytes to a character string.
+  static String bytesToStringAsString(typed.Uint8Buffer message) {
+    return utf8.decode(message.toList());
+  }
 }
