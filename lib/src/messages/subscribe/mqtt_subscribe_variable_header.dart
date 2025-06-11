@@ -44,7 +44,7 @@ class MqttSubscribeVariableHeader implements MqttIVariableHeader {
       for (var userProperty in properties) {
         _propertySet.add(userProperty);
       }
-      _userProperty.addAll(properties);
+      _userProperty.addAll(properties.toList());
     }
   }
 
