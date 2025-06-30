@@ -16,13 +16,9 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install webp
 
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: '3.8'
-
       - uses: actions/checkout@v2
 
-      - uses: axel-op/dart-package-analyzer@v3
+      - uses: shamblett/dart-package-analyzer@v3
         id: analysis # set an id for the current step
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
