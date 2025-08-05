@@ -185,11 +185,11 @@ class MqttPublishingManager {
       if (pubMsg.header!.qos == MqttQos.atMostOnce) {
         // QOS AtMostOnce 0 require no response.
         // Send the message for processing to whoever is waiting.
-        _clientEventBus.fire(MqttMessageReceived(topic, msg));
+        _fireMessageReceived(topic, msg);
       } else if (pubMsg.header!.qos == MqttQos.atLeastOnce) {
         // QOS AtLeastOnce 1 requires an acknowledgement
         // Send the message for processing to whoever is waiting.
-        _clientEventBus.fire(MqttMessageReceived(topic, msg));
+        _fireMessageReceived(topic, msg);
         final ackMsg = MqttPublishAckMessage()
             .withMessageIdentifier(pubMsg.variableHeader!.messageIdentifier)
             .withReasonCode(MqttPublishReasonCode.success);
@@ -226,9 +226,8 @@ class MqttPublishingManager {
       );
       dynamic compMsg;
       if (pubMsg != null) {
-        // Send the message for processing to whoever is waiting.
         final topic = MqttPublicationTopic(pubMsg.variableHeader!.topicName);
-        _clientEventBus.fire(MqttMessageReceived(topic, pubMsg));
+        _fireMessageReceived(topic, pubMsg);
         compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader!.messageIdentifier)
             .withReasonCode(MqttPublishReasonCode.success);
@@ -297,6 +296,18 @@ class MqttPublishingManager {
     );
     if (_publishFail.hasListener) {
       _publishFail.add(message);
+    }
+  }
+
+  // Guarded event bus fire for the received message.
+  void _fireMessageReceived(MqttPublicationTopic topic, MqttMessage msg) {
+    if (_clientEventBus != null &&
+        !_clientEventBus!.streamController.isClosed) {
+      _clientEventBus?.fire(MqttMessageReceived(topic, msg));
+    } else {
+      MqttLogger.log(
+        'PublishingManager::_fireMessageReceived - event not fired, event bus closed',
+      );
     }
   }
 }
