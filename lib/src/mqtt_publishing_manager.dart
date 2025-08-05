@@ -227,6 +227,7 @@ class MqttPublishingManager {
       dynamic compMsg;
       if (pubMsg != null) {
         final topic = MqttPublicationTopic(pubMsg.variableHeader!.topicName);
+        _fireMessageReceived(topic, pubMsg);
         compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader!.messageIdentifier)
             .withReasonCode(MqttPublishReasonCode.success);
