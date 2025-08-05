@@ -47,7 +47,7 @@ Future<int> main() async {
   /// list so in most cases you can ignore this.
 
   /// Set logging on if needed, defaults to off
-  client.logging(on: true);
+  client.logging(on: false);
 
   /// The client keep alive mechanism is defaulted to off, to enable it set [keepAlivePeriod] below to
   /// a positive value other than 0.
@@ -56,7 +56,7 @@ Future<int> main() async {
   /// The socket timeout period can be set, the minimum value is 1000ms.
   /// This mitigates connection delays at the network level holding up connection attempts unduly.
   /// If this is not set then the default inter connection attempt delay of 5 seconds is used.
-  //client.socketTimeout = 2000; // milliseconds
+  client.socketTimeout = 2000; // milliseconds
 
   /// Add the unsolicited disconnection callback
   client.onDisconnected = onDisconnected;

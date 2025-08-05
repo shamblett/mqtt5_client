@@ -226,9 +226,7 @@ class MqttPublishingManager {
       );
       dynamic compMsg;
       if (pubMsg != null) {
-        // Send the message for processing to whoever is waiting.
         final topic = MqttPublicationTopic(pubMsg.variableHeader!.topicName);
-        _fireMessageReceived(topic, msg);
         compMsg = MqttPublishCompleteMessage()
             .withMessageIdentifier(pubMsg.variableHeader!.messageIdentifier)
             .withReasonCode(MqttPublishReasonCode.success);

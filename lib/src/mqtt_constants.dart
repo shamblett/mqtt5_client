@@ -54,7 +54,8 @@ class MqttConstants {
 
   /// Disabled connection attempt timeout period, milliseconds.
   /// Used when a socket timeout period has been set.
-  static const int disabledConnectionAttemptTimeoutPeriod = 10;
+  /// Minimum value is 1 second to allow the connect ack message to be received.
+  static const int disabledConnectionAttemptTimeoutPeriod = 1000;
 
   static const defaultReauthenticateTimeout = 30; // seconds
 
