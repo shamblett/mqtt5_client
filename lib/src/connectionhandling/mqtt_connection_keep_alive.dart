@@ -105,7 +105,8 @@ class MqttConnectionKeepAlive {
       }
     } else {
       MqttLogger.log(
-        'MqttConnectionKeepAlive::pingRequired - NOT sending ping - not connected',
+        'MqttConnectionKeepAlive::pingRequired - NOT sending ping - '
+        'state is not connected (${_connectionHandler.connectionStatus.state})',
       );
     }
     MqttLogger.log(

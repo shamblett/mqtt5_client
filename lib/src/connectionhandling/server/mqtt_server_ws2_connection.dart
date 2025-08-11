@@ -234,9 +234,12 @@ class MqttServerWs2Connection extends MqttServerConnection {
     );
 
     try {
-      SecureSocket.connect(uri.host, uri.port, context: context).then((
-        Socket socket,
-      ) {
+      SecureSocket.connect(
+        uri.host,
+        uri.port,
+        context: context,
+        onBadCertificate: onBadCertificate,
+      ).then((Socket socket) {
         MqttLogger.log(
           'MqttServerWs2Connection::connectAuto - securing socket',
         );
