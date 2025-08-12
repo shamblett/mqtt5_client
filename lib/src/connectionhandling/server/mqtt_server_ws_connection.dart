@@ -46,6 +46,28 @@ class MqttServerWsConnection extends MqttServerConnection {
     return _connect(server: server, port: port, auto: true);
   }
 
+  /// User requested or auto disconnect disconnection
+  @override
+  void disconnect({bool auto = false}) {
+    if (auto) {
+      _disconnect();
+    } else {
+      onDone();
+    }
+  }
+
+  /// OnDone listener callback
+  @override
+  void onDone() {
+    _disconnect();
+    if (onDisconnected != null) {
+      MqttLogger.log(
+        'MqttWsConnection::_onDone - calling disconnected callback',
+      );
+      onDisconnected!();
+    }
+  }
+
   Future<MqttConnectionStatus?> _connect({
     required String server,
     required int port,
@@ -108,28 +130,6 @@ class MqttServerWsConnection extends MqttServerConnection {
       Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
     }
     return completer.future;
-  }
-
-  /// User requested or auto disconnect disconnection
-  @override
-  void disconnect({bool auto = false}) {
-    if (auto) {
-      _disconnect();
-    } else {
-      onDone();
-    }
-  }
-
-  /// OnDone listener callback
-  @override
-  void onDone() {
-    _disconnect();
-    if (onDisconnected != null) {
-      MqttLogger.log(
-        'MqttWsConnection::_onDone - calling disconnected callback',
-      );
-      onDisconnected!();
-    }
   }
 
   void _disconnect() {
