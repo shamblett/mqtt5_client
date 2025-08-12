@@ -37,111 +37,13 @@ class MqttServerWsConnection extends MqttServerConnection {
   /// Connect
   @override
   Future<MqttConnectionStatus?> connect(String server, int port) {
-    final completer = Completer<MqttConnectionStatus?>();
-    MqttLogger.log('MqttWsConnection::connectAuto - entered');
-    // Add the port if present
-    Uri uri;
-    try {
-      uri = Uri.parse(server);
-    } on Exception catch (_, stack) {
-      final message =
-          'MqttWsConnection::The URI supplied for the WS '
-          'connection is not valid - $server';
-      Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
-    }
-    if (uri.scheme != 'ws' && uri.scheme != 'wss') {
-      final message =
-          'MqttWsConnection::The URI supplied for the WS has '
-          'an incorrect scheme - $server';
-      throw MqttNoConnectionException(message);
-    }
-    uri = uri.replace(port: port);
-
-    final uriString = uri.toString();
-    MqttLogger.log(
-      'MqttWsConnection:: WS URL is $uriString, protocols are $protocols',
-    );
-    HttpClient? httpClient;
-    if (onBadCertificate != null) {
-      httpClient = HttpClient()
-        ..badCertificateCallback = (cert, host, port) {
-          return onBadCertificate!(cert);
-        };
-    }
-    try {
-      // Connect and save the socket.
-      WebSocket.connect(
-            uriString,
-            protocols: protocols.isNotEmpty ? protocols : null,
-            customClient: httpClient,
-          )
-          .then((dynamic socket) {
-            client = socket;
-            _startListening();
-            completer.complete();
-          })
-          .catchError((dynamic e) {
-            onError(e);
-            completer.completeError(e);
-          });
-    } on Exception catch (_, stack) {
-      final message =
-          'MqttWsConnection::The connection to the message broker '
-          '{$uriString} could not be made.';
-      Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
-    }
-    return completer.future;
+    return _connect(server: server, port: port, auto: false);
   }
 
   /// Connect Auto
   @override
   Future<MqttConnectionStatus?> connectAuto(String server, int port) {
-    final completer = Completer<MqttConnectionStatus?>();
-    MqttLogger.log('MqttWsConnection::connectAuto - entered');
-    // Add the port if present
-    Uri uri;
-    try {
-      uri = Uri.parse(server);
-    } on Exception catch (_, stack) {
-      final message =
-          'MqttWsConnection::connectAuto - The URI supplied for the WS '
-          'connection is not valid - $server';
-      Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
-    }
-    if (uri.scheme != 'ws' && uri.scheme != 'wss') {
-      final message =
-          'MqttWsConnection::connectAuto - The URI supplied for the WS has '
-          'an incorrect scheme - $server';
-      throw MqttNoConnectionException(message);
-    }
-    uri = uri.replace(port: port);
-
-    final uriString = uri.toString();
-    MqttLogger.log(
-      'MqttWsConnection::connectAuto - WS URL is $uriString, protocols are $protocols',
-    );
-    try {
-      // Connect and save the socket.
-      WebSocket.connect(
-            uriString,
-            protocols: protocols.isNotEmpty ? protocols : null,
-          )
-          .then((dynamic socket) {
-            client = socket;
-            _startListening();
-            completer.complete();
-          })
-          .catchError((dynamic e) {
-            onError(e);
-            completer.completeError(e);
-          });
-    } on Exception catch (_, stack) {
-      final message =
-          'MqttWsConnection::connectAuto - The connection to the message broker '
-          '{$uriString} could not be made.';
-      Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
-    }
-    return completer.future;
+    return _connect(server: server, port: port, auto: true);
   }
 
   /// User requested or auto disconnect disconnection
@@ -164,6 +66,70 @@ class MqttServerWsConnection extends MqttServerConnection {
       );
       onDisconnected!();
     }
+  }
+
+  Future<MqttConnectionStatus?> _connect({
+    required String server,
+    required int port,
+    required bool auto,
+  }) {
+    final completer = Completer<MqttConnectionStatus?>();
+    final ctx = auto ? 'connectAuto' : 'connect';
+    MqttLogger.log('MqttWsConnection::$ctx - entered');
+    // Add the port if present
+    Uri uri;
+    try {
+      uri = Uri.parse(server);
+    } on Exception catch (_, stack) {
+      final message =
+          'MqttWsConnection::$ctx - The URI supplied for the WS '
+          'connection is not valid - $server';
+      Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
+    }
+    if (uri.scheme != 'ws' && uri.scheme != 'wss') {
+      final message =
+          'MqttWsConnection::$ctx - The URI supplied for the WS '
+          'has an incorrect scheme - $server';
+      throw MqttNoConnectionException(message);
+    }
+    uri = uri.replace(port: port);
+    final uriString = uri.toString();
+    MqttLogger.log(
+      'MqttWsConnection::$ctx - WS URL is $uriString, protocols are $protocols',
+    );
+    HttpClient? httpClient;
+    if (onBadCertificate != null) {
+      httpClient = HttpClient()
+        ..badCertificateCallback = (cert, host, port) {
+          return onBadCertificate!(cert);
+        };
+    }
+    try {
+      // Connect and save the socket.
+      WebSocket.connect(
+            uriString,
+            protocols: protocols.isNotEmpty ? protocols : null,
+            customClient: httpClient,
+          )
+          .then((dynamic socket) {
+            client = socket;
+            _startListening();
+            completer.complete();
+          })
+          .catchError((dynamic e) {
+            MqttLogger.log(
+              'MqttWsConnection::$ctx - WebSocket.connect error $e',
+            );
+            onError(e);
+            completer.completeError(e);
+          });
+    } on Exception catch (_, stack) {
+      final message =
+          'MqttWsConnection::$ctx - The connection to the message broker '
+          '{$uriString} could not be made.';
+      Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
+    }
+    return completer.future;
   }
 
   void _disconnect() {
