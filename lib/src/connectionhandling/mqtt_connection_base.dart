@@ -37,16 +37,22 @@ class MqttConnectionBase {
     connect(server, port);
   }
 
-  /// Connect for auto reconnect , must be overridden in connection classes
+  /// Connect for auto reconnect.
   @protected
+  @mustBeOverridden
   Future<void> connectAuto(String server, int port) {
+    MqttLogger.log(
+      'MqttConnectionBase::connectAuto - Server $server, port $port',
+    );
     final completer = Completer<void>();
     return completer.future;
   }
 
-  /// Connect, must be overridden in connection classes
+  /// Connect.
   @protected
+  @mustBeOverridden
   Future<void> connect(String server, int port) {
+    MqttLogger.log('MqttConnectionBase::connect - Server $server, port $port');
     final completer = Completer<void>();
     return completer.future;
   }
@@ -57,7 +63,7 @@ class MqttConnectionBase {
     _disconnect();
     if (onDisconnected != null) {
       MqttLogger.log(
-        'MqttConnectionBase::_onError - calling disconnected callback',
+        'MqttConnectionBase::_onError - calling disconnected callback, error is $error',
       );
       onDisconnected!();
     }

@@ -8,7 +8,7 @@
 
 part of '../../../mqtt5_server_client.dart';
 
-/// Detatched socket class for alternative websocket support
+/// Detached socket class for alternative websocket support
 class _DetachedSocket extends Stream<Uint8List> implements Socket {
   final StreamSubscription<Uint8List>? _subscription;
   final Socket _socket;
@@ -284,8 +284,8 @@ class MqttServerWs2Connection extends MqttServerConnection {
     return completer.future;
   }
 
-  Future<bool> _performWSHandshake(Socket socket, Uri uri) async {
-    _response = '';
+  Future<bool> _performWSHandshake(Socket socket, Uri uri) {
+    Ws2Support.response = '';
     final c = Completer<bool>();
     const endL = '\r\n';
     final path = '${uri.path}?${uri.query}';
@@ -307,7 +307,7 @@ class MqttServerWs2Connection extends MqttServerConnection {
       (Uint8List data) {
         var s = String.fromCharCodes(data);
         s = s.replaceAll('\r', '');
-        if (!_parseResponse(s, key64)) {
+        if (!Ws2Support.parseResponse(s, key64)) {
           c.complete(true);
         }
       },
@@ -322,94 +322,96 @@ class MqttServerWs2Connection extends MqttServerConnection {
   }
 }
 
-late String _response;
-bool _parseResponse(String resp, String key) {
-  _response += resp;
-  final bodyOffset = _response.indexOf('\n\n');
-  // if we don't have a double newline yet we need to go back for more.
-  if (bodyOffset < 0) {
-    return true;
-  }
-  final lines = '${_response.characters.getRange(0, bodyOffset)}'.split('\n');
-  if (lines.isEmpty) {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server returned invalid response',
-    );
-  }
-  // split apart the status line
-  final status = lines.first.split(' ');
-  if (status.length < MqttServerWs2Connection.statusLines) {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server returned malformed status line',
-    );
-  }
-  // make a map of the headers
-  final headers = <String, String>{};
-  lines.removeAt(0);
-  for (final l in lines) {
-    final space = l.indexOf(' ');
-    if (space < 0) {
-      throw MqttNoConnectionException(
-        'MqttServerWs2Connection::server returned malformed header line',
-      );
-    }
-    headers['${l.characters.getRange(0, space - 1)}'.toLowerCase()] =
-        '${l.characters.getRange(space + 1)}';
-  }
-  var body = '';
-  // if we have a Content-Length key we can't stop till we read the body.
-  if (headers.containsKey('content-length')) {
-    final bodyLength = int.parse(headers['content-length']!);
-    if (_response.length <
-        bodyOffset + bodyLength + MqttServerWs2Connection.bodyOffset) {
+class Ws2Support {
+  static late String response;
+  static bool parseResponse(String resp, String key) {
+    response += resp;
+    final bodyOffset = response.indexOf('\n\n');
+    // if we don't have a double newline yet we need to go back for more.
+    if (bodyOffset < 0) {
       return true;
     }
-    body =
-        '${_response.characters.getRange(bodyOffset, bodyOffset + bodyLength + MqttServerWs2Connection.bodyOffset)}';
-  }
-  // if we make it to here we have read all we are going to read.
-  // now lets see if we like what we found.
-  if (status[1] != '101') {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server refused to upgrade, response = '
-      '${status[1]} - ${status[2]} - $body',
-    );
-  }
+    final lines = '${response.characters.getRange(0, bodyOffset)}'.split('\n');
+    if (lines.isEmpty) {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server returned invalid response',
+      );
+    }
+    // split apart the status line
+    final status = lines.first.split(' ');
+    if (status.length < MqttServerWs2Connection.statusLines) {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server returned malformed status line',
+      );
+    }
+    // make a map of the headers
+    final headers = <String, String>{};
+    lines.removeAt(0);
+    for (final l in lines) {
+      final space = l.indexOf(' ');
+      if (space < 0) {
+        throw MqttNoConnectionException(
+          'MqttServerWs2Connection::server returned malformed header line',
+        );
+      }
+      headers['${l.characters.getRange(0, space - 1)}'.toLowerCase()] =
+          '${l.characters.getRange(space + 1)}';
+    }
+    var body = '';
+    // if we have a Content-Length key we can't stop till we read the body.
+    if (headers.containsKey('content-length')) {
+      final bodyLength = int.parse(headers['content-length']!);
+      if (response.length <
+          bodyOffset + bodyLength + MqttServerWs2Connection.bodyOffset) {
+        return true;
+      }
+      body =
+          '${response.characters.getRange(bodyOffset, bodyOffset + bodyLength + MqttServerWs2Connection.bodyOffset)}';
+    }
+    // if we make it to here we have read all we are going to read.
+    // now lets see if we like what we found.
+    if (status[1] != '101') {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server refused to upgrade, response = '
+        '${status[1]} - ${status[2]} - $body',
+      );
+    }
 
-  if (!headers.containsKey('connection') ||
-      headers['connection']!.toLowerCase() != 'upgrade') {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server returned improper connection header line',
-    );
-  }
-  if (!headers.containsKey('upgrade') ||
-      headers['upgrade']!.toLowerCase() != 'websocket') {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server returned improper upgrade header line',
-    );
-  }
-  if (!headers.containsKey('sec-websocket-protocol')) {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server failed to return protocol header',
-    );
-  }
-  if (!headers.containsKey('sec-websocket-accept')) {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::server failed to return accept header',
-    );
-  }
-  // We build up the accept in the same way the server should
-  // then we check that the response is the same.
+    if (!headers.containsKey('connection') ||
+        headers['connection']!.toLowerCase() != 'upgrade') {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server returned improper connection header line',
+      );
+    }
+    if (!headers.containsKey('upgrade') ||
+        headers['upgrade']!.toLowerCase() != 'websocket') {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server returned improper upgrade header line',
+      );
+    }
+    if (!headers.containsKey('sec-websocket-protocol')) {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server failed to return protocol header',
+      );
+    }
+    if (!headers.containsKey('sec-websocket-accept')) {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::server failed to return accept header',
+      );
+    }
+    // We build up the accept in the same way the server should
+    // then we check that the response is the same.
 
-  // Do not change: https://tools.ietf.org/html/rfc6455#section-1.3
-  const acceptSalt = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
+    // Do not change: https://tools.ietf.org/html/rfc6455#section-1.3
+    const acceptSalt = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
-  final sha1Bytes = sha1.convert(utf8.encode(key + acceptSalt));
-  final encodedSha1Bytes = base64.encode(sha1Bytes.bytes);
-  if (encodedSha1Bytes != headers['sec-websocket-accept']) {
-    throw MqttNoConnectionException(
-      'MqttServerWs2Connection::handshake mismatch',
-    );
+    final sha1Bytes = sha1.convert(utf8.encode(key + acceptSalt));
+    final encodedSha1Bytes = base64.encode(sha1Bytes.bytes);
+    if (encodedSha1Bytes != headers['sec-websocket-accept']) {
+      throw MqttNoConnectionException(
+        'MqttServerWs2Connection::handshake mismatch',
+      );
+    }
+    return false;
   }
-  return false;
 }

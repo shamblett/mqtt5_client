@@ -111,9 +111,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     MqttLogger.log(
       'MqttConnectionHandlerBase::connect - server $server, port $port',
     );
-    // ignore: unnecessary_this
-    // ignore: unnecessary_this
-    this.connectionMessage = message;
+
+    connectionMessage = message;
     try {
       await internalConnect(server, port, message);
       return connectionStatus;
@@ -320,7 +319,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     } on Exception {
       _performConnectionDisconnect();
     }
-    // Cancel the connect timer;
+
     MqttLogger.log('MqttConnectionHandlerBase:: cancelling connect timer');
     connectTimer.cancel();
     return true;
