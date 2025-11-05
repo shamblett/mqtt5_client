@@ -31,7 +31,9 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.writeByte((value! >> byteLength) & byteMask);
     stream.writeByte(value! & byteMask);
   }
@@ -39,7 +41,9 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     var buffer = stream.read(length - 1);
     value = buffer.first << byteLength | buffer[1];
   }
@@ -50,6 +54,6 @@ class MqttTwoByteIntegerProperty implements MqttIProperty {
 
   @override
   String toString() {
-    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+    return 'Identifier : ${MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asString(identifier)}, value : $value';
   }
 }

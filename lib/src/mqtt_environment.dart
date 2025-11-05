@@ -1,5 +1,3 @@
-// ignore_for_file: avoid-global-state
-
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>

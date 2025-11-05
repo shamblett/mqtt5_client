@@ -53,7 +53,9 @@ class MqttUnsubscribeAckPayload extends MqttIPayload {
     final payloadLength = header!.messageSize - variableHeader!.length;
     for (var i = 0; i < payloadLength; i++) {
       _reasonCodes.add(
-        mqttSubscribeReasonCode.fromInt(payloadStream.readByte()),
+        MqttSubscribeReasonCodeSupport.mqttSubscribeReasonCode.fromInt(
+          payloadStream.readByte(),
+        ),
       );
       _length += 1;
     }
@@ -71,7 +73,9 @@ class MqttUnsubscribeAckPayload extends MqttIPayload {
       sb.writeln('No reason codes received');
     }
     for (final value in _reasonCodes) {
-      sb.writeln(' Reason Code = ${mqttSubscribeReasonCode.asString(value)}');
+      sb.writeln(
+        ' Reason Code = ${MqttSubscribeReasonCodeSupport.mqttSubscribeReasonCode.asString(value)}',
+      );
     }
     return sb.toString();
   }

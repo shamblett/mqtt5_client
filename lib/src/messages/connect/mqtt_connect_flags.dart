@@ -1,4 +1,4 @@
-// ignore_for_file: binary-expression-operand-order, no-magic-number
+// ignore_for_file: binary-expression-operand-order
 
 /*
  * Package : mqtt5_client

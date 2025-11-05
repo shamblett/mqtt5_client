@@ -1,5 +1,3 @@
-// ignore_for_file: no-magic-number
-
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -202,7 +200,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sessionPresent
         ? variableHeaderStream.writeByte(1)
         : variableHeaderStream.writeByte(0);
-    variableHeaderStream.writeByte(mqttConnectReasonCode.asInt(reasonCode));
+    variableHeaderStream.writeByte(
+      MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(reasonCode),
+    );
     _propertySet.writeTo(variableHeaderStream);
   }
 
@@ -215,7 +215,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     length += 1;
     // Reason code
     var byte = variableHeaderStream.readByte();
-    reasonCode = mqttConnectReasonCode.fromInt(byte);
+    reasonCode = MqttConnectReasonCodeSupport.mqttConnectReasonCode.fromInt(
+      byte,
+    );
     length += 1;
     // Properties
     variableHeaderStream.shrink();
@@ -234,7 +236,7 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     final sb = StringBuffer();
     sb.writeln('Session Present = ${connectAckFlags.sessionPresent}');
     sb.writeln(
-      'Connect Reason Code = ${mqttConnectReasonCode.asString(reasonCode)}',
+      'Connect Reason Code = ${MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(reasonCode)}',
     );
     sb.writeln('Session Expiry Interval = $sessionExpiryInterval');
     sb.writeln('Receive Maximum = $receiveMaximum');

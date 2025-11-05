@@ -1,5 +1,3 @@
-// ignore_for_file: no-magic-number
-
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -27,14 +25,18 @@ class MqttUtf8StringProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.write(_enc.toUtf8(value!));
   }
 
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     final lenBuffer = stream.read(2);
     final length = _enc.length(lenBuffer);
     final buffer = stream.read(length);
@@ -50,6 +52,6 @@ class MqttUtf8StringProperty implements MqttIProperty {
 
   @override
   String toString() {
-    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+    return 'Identifier : ${MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asString(identifier)}, value : $value';
   }
 }

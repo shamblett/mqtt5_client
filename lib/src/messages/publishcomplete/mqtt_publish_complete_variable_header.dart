@@ -1,5 +1,3 @@
-// ignore_for_file: no-magic-number
-
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -106,7 +104,9 @@ class MqttPublishCompleteVariableHeader implements MqttIVariableHeader {
   /// Read the reason code.
   void readReasonCode(MqttByteBuffer stream) {
     if (header!.messageSize != 2) {
-      reasonCode = mqttPublishReasonCode.fromInt(stream.readByte());
+      reasonCode = MqttPublishReasonCodeSupport.mqttPublishReasonCode.fromInt(
+        stream.readByte(),
+      );
       _length += 1;
     } else {
       reasonCode = MqttPublishReasonCode.success;
@@ -120,7 +120,9 @@ class MqttPublishCompleteVariableHeader implements MqttIVariableHeader {
 
   /// Write the reason code
   void writeReasonCode(MqttByteBuffer stream) {
-    stream.writeByte(mqttPublishReasonCode.asInt(reasonCode));
+    stream.writeByte(
+      MqttPublishReasonCodeSupport.mqttPublishReasonCode.asInt(reasonCode),
+    );
   }
 
   /// Gets the length of the write data.
@@ -131,7 +133,9 @@ class MqttPublishCompleteVariableHeader implements MqttIVariableHeader {
   String toString() {
     final sb = StringBuffer();
     sb.writeln('Message Identifier = $messageIdentifier');
-    sb.writeln('Reason Code = ${mqttPublishReasonCode.asString(reasonCode)}');
+    sb.writeln(
+      'Reason Code = ${MqttPublishReasonCodeSupport.mqttPublishReasonCode.asString(reasonCode)}',
+    );
     sb.writeln('Properties = ${_propertySet.toString()}');
     return sb.toString();
   }

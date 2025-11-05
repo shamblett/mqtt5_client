@@ -94,33 +94,35 @@ enum MqttConnectReasonCode {
 }
 
 /// MQTT connect reason code support
-const Map<int, MqttConnectReasonCode> _mqttConnectReasonCodeValues =
-    <int, MqttConnectReasonCode>{
-      0x00: MqttConnectReasonCode.success,
-      0x80: MqttConnectReasonCode.unspecifiedError,
-      0x81: MqttConnectReasonCode.malformedPacket,
-      0x82: MqttConnectReasonCode.protocolError,
-      0x83: MqttConnectReasonCode.implementationSpecificError,
-      0x84: MqttConnectReasonCode.unsupportedProtocolVersion,
-      0x85: MqttConnectReasonCode.clientIdentifierNotValid,
-      0x86: MqttConnectReasonCode.badUsernameOrPassword,
-      0x87: MqttConnectReasonCode.notAuthorized,
-      0x88: MqttConnectReasonCode.serverUnavailable,
-      0x89: MqttConnectReasonCode.serverBusy,
-      0x8a: MqttConnectReasonCode.banned,
-      0x8c: MqttConnectReasonCode.badAuthenticationMethod,
-      0x90: MqttConnectReasonCode.topicNameInvalid,
-      0x95: MqttConnectReasonCode.packetTooLarge,
-      0x97: MqttConnectReasonCode.quotaExceeded,
-      0x99: MqttConnectReasonCode.payloadFormatInvalid,
-      0x9a: MqttConnectReasonCode.retainNotSupported,
-      0x9b: MqttConnectReasonCode.qosNotSupported,
-      0x9c: MqttConnectReasonCode.useAnotherServer,
-      0x9d: MqttConnectReasonCode.serverMoved,
-      0x9f: MqttConnectReasonCode.connectionRateExceeded,
-      0xff: MqttConnectReasonCode.notSet,
-    };
+class MqttConnectReasonCodeSupport {
+  static const Map<int, MqttConnectReasonCode> mqttConnectReasonCodeValues =
+      <int, MqttConnectReasonCode>{
+        0x00: MqttConnectReasonCode.success,
+        0x80: MqttConnectReasonCode.unspecifiedError,
+        0x81: MqttConnectReasonCode.malformedPacket,
+        0x82: MqttConnectReasonCode.protocolError,
+        0x83: MqttConnectReasonCode.implementationSpecificError,
+        0x84: MqttConnectReasonCode.unsupportedProtocolVersion,
+        0x85: MqttConnectReasonCode.clientIdentifierNotValid,
+        0x86: MqttConnectReasonCode.badUsernameOrPassword,
+        0x87: MqttConnectReasonCode.notAuthorized,
+        0x88: MqttConnectReasonCode.serverUnavailable,
+        0x89: MqttConnectReasonCode.serverBusy,
+        0x8a: MqttConnectReasonCode.banned,
+        0x8c: MqttConnectReasonCode.badAuthenticationMethod,
+        0x90: MqttConnectReasonCode.topicNameInvalid,
+        0x95: MqttConnectReasonCode.packetTooLarge,
+        0x97: MqttConnectReasonCode.quotaExceeded,
+        0x99: MqttConnectReasonCode.payloadFormatInvalid,
+        0x9a: MqttConnectReasonCode.retainNotSupported,
+        0x9b: MqttConnectReasonCode.qosNotSupported,
+        0x9c: MqttConnectReasonCode.useAnotherServer,
+        0x9d: MqttConnectReasonCode.serverMoved,
+        0x9f: MqttConnectReasonCode.connectionRateExceeded,
+        0xff: MqttConnectReasonCode.notSet,
+      };
 
-/// MQTT connect reason code helper
-final MqttEnumHelper<MqttConnectReasonCode?> mqttConnectReasonCode =
-    MqttEnumHelper<MqttConnectReasonCode?>(_mqttConnectReasonCodeValues);
+  /// MQTT connect reason code helper
+  static final MqttEnumHelper<MqttConnectReasonCode?> mqttConnectReasonCode =
+      MqttEnumHelper<MqttConnectReasonCode?>(mqttConnectReasonCodeValues);
+}

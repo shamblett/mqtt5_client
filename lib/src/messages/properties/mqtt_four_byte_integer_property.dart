@@ -1,5 +1,3 @@
-// ignore_for_file: no-magic-number
-
 /*
  * Package : mqtt5_client
  * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -33,7 +31,9 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.writeByte((value! >> 24) & 0xff);
     stream.writeByte((value! >> 16) & 0xff);
     stream.writeByte((value! >> 8) & 0xff);
@@ -43,7 +43,9 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     var buffer = stream.read(length - 1);
     value = buffer.first << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
   }
@@ -54,6 +56,6 @@ class MqttFourByteIntegerProperty implements MqttIProperty {
 
   @override
   String toString() {
-    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+    return 'Identifier : ${MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asString(identifier)}, value : $value';
   }
 }

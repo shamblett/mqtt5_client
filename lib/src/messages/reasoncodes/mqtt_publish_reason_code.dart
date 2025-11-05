@@ -62,21 +62,23 @@ enum MqttPublishReasonCode {
 }
 
 /// MQTT publish reason code support
-const Map<int, MqttPublishReasonCode> _mqttPublishReasonCodeValues =
-    <int, MqttPublishReasonCode>{
-      0x00: MqttPublishReasonCode.success,
-      0x10: MqttPublishReasonCode.noMatchingSubscribers,
-      0x80: MqttPublishReasonCode.unspecifiedError,
-      0x83: MqttPublishReasonCode.implementationSpecificError,
-      0x87: MqttPublishReasonCode.notAuthorized,
-      0x90: MqttPublishReasonCode.topicNameInvalid,
-      0x91: MqttPublishReasonCode.packetIdentifierInUse,
-      0x92: MqttPublishReasonCode.packetIdentifierNotFound,
-      0x97: MqttPublishReasonCode.quotaExceeded,
-      0x99: MqttPublishReasonCode.payloadFormatInvalid,
-      0xff: MqttPublishReasonCode.notSet,
-    };
+class MqttPublishReasonCodeSupport {
+  static const Map<int, MqttPublishReasonCode> mqttPublishReasonCodeValues =
+      <int, MqttPublishReasonCode>{
+        0x00: MqttPublishReasonCode.success,
+        0x10: MqttPublishReasonCode.noMatchingSubscribers,
+        0x80: MqttPublishReasonCode.unspecifiedError,
+        0x83: MqttPublishReasonCode.implementationSpecificError,
+        0x87: MqttPublishReasonCode.notAuthorized,
+        0x90: MqttPublishReasonCode.topicNameInvalid,
+        0x91: MqttPublishReasonCode.packetIdentifierInUse,
+        0x92: MqttPublishReasonCode.packetIdentifierNotFound,
+        0x97: MqttPublishReasonCode.quotaExceeded,
+        0x99: MqttPublishReasonCode.payloadFormatInvalid,
+        0xff: MqttPublishReasonCode.notSet,
+      };
 
-/// MQTT publish reason code helper
-final MqttEnumHelper<MqttPublishReasonCode?> mqttPublishReasonCode =
-    MqttEnumHelper<MqttPublishReasonCode?>(_mqttPublishReasonCodeValues);
+  /// MQTT publish reason code helper
+  static final MqttEnumHelper<MqttPublishReasonCode?> mqttPublishReasonCode =
+      MqttEnumHelper<MqttPublishReasonCode?>(mqttPublishReasonCodeValues);
+}

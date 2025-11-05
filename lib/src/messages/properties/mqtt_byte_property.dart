@@ -26,14 +26,18 @@ class MqttByteProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.writeByte(value);
   }
 
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     identifier ??= MqttPropertyIdentifier.notSet;
     value = stream.readByte();
   }
@@ -44,6 +48,6 @@ class MqttByteProperty implements MqttIProperty {
 
   @override
   String toString() {
-    return 'Identifier : ${mqttPropertyIdentifier.asString(identifier)}, value : $value';
+    return 'Identifier : ${MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asString(identifier)}, value : $value';
   }
 }

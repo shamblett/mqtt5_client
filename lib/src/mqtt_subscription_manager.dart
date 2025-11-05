@@ -258,7 +258,9 @@ class MqttSubscriptionManager {
         pendingTopic.userProperties = subAck.userProperty;
         // Check for a successful subscribe
         if (!MqttReasonCodeUtilities.isError(
-          mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!,
+          MqttSubscribeReasonCodeSupport.mqttSubscribeReasonCode.asInt(
+            reasonCodes[reasonCodeIndex],
+          )!,
         )) {
           subscriptions[topic] = pendingTopic;
           if (onSubscribed != null) {
@@ -301,7 +303,9 @@ class MqttSubscriptionManager {
         pendingTopic.userProperties = unSubAck.userProperty;
         // Check for a successful unsubscribe
         if (!MqttReasonCodeUtilities.isError(
-          mqttSubscribeReasonCode.asInt(reasonCodes[reasonCodeIndex])!,
+          MqttSubscribeReasonCodeSupport.mqttSubscribeReasonCode.asInt(
+            reasonCodes[reasonCodeIndex],
+          )!,
         )) {
           if (onUnsubscribed != null) {
             onUnsubscribed!(pendingTopic);

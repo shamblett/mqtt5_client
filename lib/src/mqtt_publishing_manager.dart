@@ -292,7 +292,7 @@ class MqttPublishingManager {
   /// On publish fail add the message to the publish fail stream if needed
   void _notifyPublishFail(MqttPublishAckMessage message) {
     MqttLogger.log(
-      'MqttPublishingManager::_notifyPublishFail - entered reason ${mqttPublishReasonCode.asString(message.reasonCode)}',
+      'MqttPublishingManager::_notifyPublishFail - entered reason ${MqttPublishReasonCodeSupport.mqttPublishReasonCode.asString(message.reasonCode)}',
     );
     if (_publishFail.hasListener) {
       _publishFail.add(message);

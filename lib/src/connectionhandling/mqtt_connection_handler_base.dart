@@ -111,9 +111,8 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     MqttLogger.log(
       'MqttConnectionHandlerBase::connect - server $server, port $port',
     );
-    // ignore: unnecessary_this
-    // ignore: unnecessary_this
-    this.connectionMessage = message;
+
+    connectionMessage = message;
     try {
       await internalConnect(server, port, message);
       return connectionStatus;
@@ -320,7 +319,7 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     } on Exception {
       _performConnectionDisconnect();
     }
-    // Cancel the connect timer;
+
     MqttLogger.log('MqttConnectionHandlerBase:: cancelling connect timer');
     connectTimer.cancel();
     return true;
@@ -345,20 +344,21 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     if (msg.variableHeader != null) {
       final reasonCode = msg.variableHeader?.reasonCode;
       if (reasonCode != null) {
-        final reasonCodeInt = mqttConnectReasonCode.asInt(reasonCode);
+        final reasonCodeInt = MqttConnectReasonCodeSupport.mqttConnectReasonCode
+            .asInt(reasonCode);
         if (reasonCodeInt != null) {
           connectionStatus.reasonCode = reasonCode;
           connectionStatus.reasonString = msg.variableHeader?.reasonString;
           if (MqttReasonCodeUtilities.isError(reasonCodeInt)) {
             MqttLogger.log(
               'MqttConnectionHandlerBase::_reasonCodeOk - reason code is an error '
-              '${mqttConnectReasonCode.asString(reasonCode)}',
+              '${MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(reasonCode)}',
             );
             return false;
           } else {
             MqttLogger.log(
               'MqttConnectionHandlerBase::_reasonCodeOk - reason code is ok '
-              '${mqttConnectReasonCode.asString(reasonCode)}',
+              '${MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(reasonCode)}',
             );
             return true;
           }

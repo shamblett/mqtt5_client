@@ -119,7 +119,13 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Writes the variable header to the supplied stream.
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    if (reasonCode != MqttDisconnectReasonCode.normalDisconnection) {
+    // If the reason code is normal disconnect and the message has no properties
+    // then these can both be omitted from the message. Otherwise a full
+    // disconnect variable message header is sent.
+    if (reasonCode == MqttDisconnectReasonCode.normalDisconnection &&
+        _propertySet.isEmpty) {
+      return;
+    } else {
       writeReasonCode(variableHeaderStream);
       _propertySet.writeTo(variableHeaderStream);
     }
@@ -137,19 +143,24 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
 
   /// Reason code.
   void readReasonCode(MqttByteBuffer stream) {
-    reasonCode = mqttDisconnectReasonCode.fromInt(stream.readByte());
+    reasonCode = MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode
+        .fromInt(stream.readByte());
   }
 
   /// Reason code.
   void writeReasonCode(MqttByteBuffer stream) {
-    stream.writeByte(mqttDisconnectReasonCode.asInt(reasonCode));
+    stream.writeByte(
+      MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asInt(
+        reasonCode,
+      ),
+    );
   }
 
   @override
   String toString() {
     final sb = StringBuffer();
     sb.writeln(
-      'Reason Code  = ${mqttDisconnectReasonCode.asString(reasonCode)}',
+      'Reason Code  = ${MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asString(reasonCode)}',
     );
     sb.write('Properties = ${_propertySet.toString()}');
     return sb.toString();

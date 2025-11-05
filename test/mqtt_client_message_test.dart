@@ -412,7 +412,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x60);
       final property1 = MqttByteProperty(MqttPropertyIdentifier.notSet);
@@ -433,7 +435,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0xde);
       expect(stream.readByte(), 0xad);
@@ -459,7 +463,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0xde);
       expect(stream.readByte(), 0xad);
@@ -484,7 +490,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0xff);
       expect(stream.readByte(), 0xff);
@@ -512,7 +520,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x05);
@@ -540,7 +550,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x05);
@@ -568,7 +580,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x06);
@@ -3256,7 +3270,9 @@ void main() {
         );
         expect(
           MqttReasonCodeUtilities.isError(
-            mqttConnectReasonCode.asInt(message.variableHeader!.reasonCode)!,
+            MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(
+              message.variableHeader!.reasonCode,
+            )!,
           ),
           isTrue,
         );
@@ -3287,12 +3303,16 @@ void main() {
           MqttConnectReasonCode.success,
         );
         expect(
-          mqttConnectReasonCode.asString(message.variableHeader!.reasonCode),
+          MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(
+            message.variableHeader!.reasonCode,
+          ),
           'success',
         );
         expect(
           MqttReasonCodeUtilities.isError(
-            mqttConnectReasonCode.asInt(message.variableHeader!.reasonCode)!,
+            MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(
+              message.variableHeader!.reasonCode,
+            )!,
           ),
           isFalse,
         );
@@ -3403,7 +3423,9 @@ void main() {
         expect(message.header!.messageSize, 70);
         expect(message.reasonCode, MqttDisconnectReasonCode.quotaExceeded);
         expect(
-          mqttDisconnectReasonCode.asString(message.reasonCode),
+          MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asString(
+            message.reasonCode,
+          ),
           'quotaExceeded',
         );
         expect(message.sessionExpiryInterval, 10);
@@ -3417,6 +3439,20 @@ void main() {
         final message = MqttDisconnectMessage().withReasonCode(
           MqttDisconnectReasonCode.normalDisconnection,
         );
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer![0], 0xe0);
+        expect(stream.buffer![1], 0);
+        expect(message.isValid, isTrue);
+      });
+      test('Disconnect Message - Serialisation - Normal with properties', () {
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        final message = MqttDisconnectMessage()
+            .withReasonCode(MqttDisconnectReasonCode.normalDisconnection)
+            .withUserProperties([user1]);
         final buffer = typed.Uint8Buffer();
         final stream = MqttByteBuffer(buffer);
         message.writeTo(stream);

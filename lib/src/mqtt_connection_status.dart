@@ -31,7 +31,9 @@ class MqttConnectionStatus {
   @override
   String toString() {
     final s = state.toString().split('.')[1];
-    final r = mqttConnectReasonCode.asString(reasonCode);
+    final r = MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(
+      reasonCode,
+    );
     final t = disconnectionOrigin.toString().split('.')[1];
     return 'Connection status is $s with return code of $r and a disconnection origin of $t';
   }

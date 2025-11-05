@@ -16,7 +16,8 @@ class MqttPropertyFactory {
     /// Get the identifier then the property value.
     /// If a valid property cannot be constructed a byte property with
     /// an identifier of not set is returned.
-    final identifier = mqttPropertyIdentifier.fromInt(stream.peekByte());
+    final identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier
+        .fromInt(stream.peekByte());
     switch (identifier) {
       case MqttPropertyIdentifier.payloadFormatIndicator:
       case MqttPropertyIdentifier.requestProblemInformation:
