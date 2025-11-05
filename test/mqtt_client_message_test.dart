@@ -3446,6 +3446,20 @@ void main() {
         expect(stream.buffer![1], 0);
         expect(message.isValid, isTrue);
       });
+      test('Disconnect Message - Serialisation - Normal with properties', () {
+        var user1 = MqttUserProperty();
+        user1.pairName = 'User 1 name';
+        user1.pairValue = 'User 1 value';
+        final message = MqttDisconnectMessage()
+            .withReasonCode(MqttDisconnectReasonCode.normalDisconnection)
+            .withUserProperties([user1]);
+        final buffer = typed.Uint8Buffer();
+        final stream = MqttByteBuffer(buffer);
+        message.writeTo(stream);
+        expect(stream.buffer![0], 0xe0);
+        expect(stream.buffer![1], 0);
+        expect(message.isValid, isTrue);
+      });
       test('Disconnect Message - Serialisation - Full', () {
         var user1 = MqttUserProperty();
         user1.pairName = 'User 1 name';

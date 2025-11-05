@@ -119,7 +119,13 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
   /// Writes the variable header to the supplied stream.
   @override
   void writeTo(MqttByteBuffer variableHeaderStream) {
-    if (reasonCode != MqttDisconnectReasonCode.normalDisconnection) {
+    // If the reason code is normal disconnect and the message has no properties
+    // then these can both be omitted from the message. Otherwise a full
+    // disconnect variable message header is sent.
+    if (reasonCode == MqttDisconnectReasonCode.normalDisconnection &&
+        _propertySet.isEmpty) {
+      return;
+    } else {
       writeReasonCode(variableHeaderStream);
       _propertySet.writeTo(variableHeaderStream);
     }
