@@ -200,7 +200,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     sessionPresent
         ? variableHeaderStream.writeByte(1)
         : variableHeaderStream.writeByte(0);
-    variableHeaderStream.writeByte(MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(reasonCode));
+    variableHeaderStream.writeByte(
+      MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(reasonCode),
+    );
     _propertySet.writeTo(variableHeaderStream);
   }
 
@@ -213,7 +215,9 @@ class MqttConnectAckVariableHeader implements MqttIVariableHeader {
     length += 1;
     // Reason code
     var byte = variableHeaderStream.readByte();
-    reasonCode = MqttConnectReasonCodeSupport.mqttConnectReasonCode.fromInt(byte);
+    reasonCode = MqttConnectReasonCodeSupport.mqttConnectReasonCode.fromInt(
+      byte,
+    );
     length += 1;
     // Properties
     variableHeaderStream.shrink();

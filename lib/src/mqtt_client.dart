@@ -642,7 +642,8 @@ class MqttClient {
   // Process a disconnect message received from the broker.
   bool _processReceivedDisconnectMessage(MqttMessage msg) {
     final disconnectMsg = msg as MqttDisconnectMessage;
-    final reason = MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asString(disconnectMsg.reasonCode);
+    final reason = MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode
+        .asString(disconnectMsg.reasonCode);
     MqttLogger.log(
       'MqttClient::_processReceivedDisconnectMessage - Disconnect Message received, reason is \'$reason\'  - disconnecting',
     );

@@ -137,12 +137,17 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
 
   /// Reason code.
   void readReasonCode(MqttByteBuffer stream) {
-    reasonCode = MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.fromInt(stream.readByte());
+    reasonCode = MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode
+        .fromInt(stream.readByte());
   }
 
   /// Reason code.
   void writeReasonCode(MqttByteBuffer stream) {
-    stream.writeByte(MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asInt(reasonCode));
+    stream.writeByte(
+      MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asInt(
+        reasonCode,
+      ),
+    );
   }
 
   @override

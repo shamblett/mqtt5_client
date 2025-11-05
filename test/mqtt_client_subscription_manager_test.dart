@@ -19,7 +19,17 @@ import 'support/mqtt_client_test_connection_handler.dart';
 // Mock classes
 class MockCH extends Mock implements MqttServerConnectionHandler {}
 
-class MockCON extends Mock implements MqttServerNormalConnection {}
+class MockCON extends Mock implements MqttServerNormalConnection {
+  @override
+  Future<MqttConnectionStatus> connect(String server, int port) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<MqttConnectionStatus> connectAuto(String server, int port) {
+    throw UnimplementedError();
+  }
+}
 
 void main() {
   List<RawSocketOption> socketOptions = <RawSocketOption>[];

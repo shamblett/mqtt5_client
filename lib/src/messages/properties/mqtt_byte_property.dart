@@ -26,14 +26,18 @@ class MqttByteProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.writeByte(value);
   }
 
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     identifier ??= MqttPropertyIdentifier.notSet;
     value = stream.readByte();
   }

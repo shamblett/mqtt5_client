@@ -25,14 +25,18 @@ class MqttBinaryDataProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.write(_enc.toBinaryData(value));
   }
 
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     final lenBuffer = stream.read(2);
     final length = _enc.length(lenBuffer);
     value.clear();

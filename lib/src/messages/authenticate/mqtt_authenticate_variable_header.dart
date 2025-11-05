@@ -146,12 +146,17 @@ class MqttAuthenticateVariableHeader implements MqttIVariableHeader {
 
   /// Reason code.
   void readReasonCode(MqttByteBuffer stream) {
-    reasonCode = MqttAuthenticateReasonCodeSupport.mqttAuthenticateReasonCode.fromInt(stream.readByte());
+    reasonCode = MqttAuthenticateReasonCodeSupport.mqttAuthenticateReasonCode
+        .fromInt(stream.readByte());
   }
 
   /// Reason code.
   void writeReasonCode(MqttByteBuffer stream) {
-    stream.writeByte(MqttAuthenticateReasonCodeSupport.mqttAuthenticateReasonCode.asInt(reasonCode));
+    stream.writeByte(
+      MqttAuthenticateReasonCodeSupport.mqttAuthenticateReasonCode.asInt(
+        reasonCode,
+      ),
+    );
   }
 
   @override

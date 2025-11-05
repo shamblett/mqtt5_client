@@ -27,14 +27,18 @@ class MqttVariableByteIntegerProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     stream.write(_enc.fromInt(value));
   }
 
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     final buffer = typed.Uint8Buffer();
     var end = false;
     while (!end) {

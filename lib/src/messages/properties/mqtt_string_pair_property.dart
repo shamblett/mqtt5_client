@@ -41,7 +41,9 @@ class MqttStringPairProperty implements MqttIProperty {
   /// Serialize to a byte buffer stream
   @override
   void writeTo(MqttByteBuffer stream) {
-    stream.writeByte(MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier));
+    stream.writeByte(
+      MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(identifier),
+    );
     final buff = value.nameAsUtf8;
     buff.addAll(value.valueAsUtf8);
     stream.write(buff);
@@ -50,7 +52,9 @@ class MqttStringPairProperty implements MqttIProperty {
   /// Deserialize from a byte buffer stream
   @override
   void readFrom(MqttByteBuffer stream) {
-    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(stream.readByte());
+    identifier = MqttPropertyIdentifierSupport.mqttPropertyIdentifier.fromInt(
+      stream.readByte(),
+    );
     value.name = stream.readMqttStringM();
     value.value = stream.readMqttStringM();
   }

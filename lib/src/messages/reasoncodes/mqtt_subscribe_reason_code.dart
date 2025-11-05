@@ -72,24 +72,26 @@ enum MqttSubscribeReasonCode {
 /// MQTT subscribe reason code support
 class MqttSubscribeReasonCodeSupport {
   static const Map<int, MqttSubscribeReasonCode> mqttSubscribeReasonCodeValues =
-  <int, MqttSubscribeReasonCode>{
-    0x00: MqttSubscribeReasonCode.grantedQos0,
-    0x01: MqttSubscribeReasonCode.grantedQos1,
-    0x02: MqttSubscribeReasonCode.grantedQos2,
-    0x11: MqttSubscribeReasonCode.noSubscriptionExisted,
-    0x80: MqttSubscribeReasonCode.unspecifiedError,
-    0x83: MqttSubscribeReasonCode.implementationSpecificError,
-    0x87: MqttSubscribeReasonCode.notAuthorized,
-    0x8f: MqttSubscribeReasonCode.topicFilterInvalid,
-    0x91: MqttSubscribeReasonCode.packetIdentifierInUse,
-    0x97: MqttSubscribeReasonCode.quotaExceeded,
-    0x9e: MqttSubscribeReasonCode.sharedSubscriptionsNotSupported,
-    0xa1: MqttSubscribeReasonCode.subscriptionIdentifiersNotSupported,
-    0xa2: MqttSubscribeReasonCode.wildcardSubscriptionsNotSupported,
-    0xff: MqttSubscribeReasonCode.notSet,
-  };
+      <int, MqttSubscribeReasonCode>{
+        0x00: MqttSubscribeReasonCode.grantedQos0,
+        0x01: MqttSubscribeReasonCode.grantedQos1,
+        0x02: MqttSubscribeReasonCode.grantedQos2,
+        0x11: MqttSubscribeReasonCode.noSubscriptionExisted,
+        0x80: MqttSubscribeReasonCode.unspecifiedError,
+        0x83: MqttSubscribeReasonCode.implementationSpecificError,
+        0x87: MqttSubscribeReasonCode.notAuthorized,
+        0x8f: MqttSubscribeReasonCode.topicFilterInvalid,
+        0x91: MqttSubscribeReasonCode.packetIdentifierInUse,
+        0x97: MqttSubscribeReasonCode.quotaExceeded,
+        0x9e: MqttSubscribeReasonCode.sharedSubscriptionsNotSupported,
+        0xa1: MqttSubscribeReasonCode.subscriptionIdentifiersNotSupported,
+        0xa2: MqttSubscribeReasonCode.wildcardSubscriptionsNotSupported,
+        0xff: MqttSubscribeReasonCode.notSet,
+      };
 
   /// MQTT subscribe reason code helper
-  static final MqttEnumHelper<MqttSubscribeReasonCode?> mqttSubscribeReasonCode =
-  MqttEnumHelper<MqttSubscribeReasonCode?>(mqttSubscribeReasonCodeValues);
+  static final MqttEnumHelper<MqttSubscribeReasonCode?>
+  mqttSubscribeReasonCode = MqttEnumHelper<MqttSubscribeReasonCode?>(
+    mqttSubscribeReasonCodeValues,
+  );
 }
