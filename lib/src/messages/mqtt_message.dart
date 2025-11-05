@@ -71,6 +71,7 @@ class MqttMessage {
   }
 
   /// Reads a message from the supplied stream.
+  // ignore: avoid-unused-parameters, unavoidable here
   void readFrom(MqttByteBuffer messageStream) {
     return;
   }

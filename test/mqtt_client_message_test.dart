@@ -412,7 +412,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0x60);
       final property1 = MqttByteProperty(MqttPropertyIdentifier.notSet);
@@ -433,7 +433,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0xde);
       expect(stream.readByte(), 0xad);
@@ -459,7 +459,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0xde);
       expect(stream.readByte(), 0xad);
@@ -484,7 +484,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0xff);
       expect(stream.readByte(), 0xff);
@@ -512,7 +512,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x05);
@@ -540,7 +540,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x05);
@@ -568,7 +568,7 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x06);
