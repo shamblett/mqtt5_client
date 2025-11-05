@@ -137,19 +137,19 @@ class MqttDisconnectVariableHeader implements MqttIVariableHeader {
 
   /// Reason code.
   void readReasonCode(MqttByteBuffer stream) {
-    reasonCode = mqttDisconnectReasonCode.fromInt(stream.readByte());
+    reasonCode = MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.fromInt(stream.readByte());
   }
 
   /// Reason code.
   void writeReasonCode(MqttByteBuffer stream) {
-    stream.writeByte(mqttDisconnectReasonCode.asInt(reasonCode));
+    stream.writeByte(MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asInt(reasonCode));
   }
 
   @override
   String toString() {
     final sb = StringBuffer();
     sb.writeln(
-      'Reason Code  = ${mqttDisconnectReasonCode.asString(reasonCode)}',
+      'Reason Code  = ${MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asString(reasonCode)}',
     );
     sb.write('Properties = ${_propertySet.toString()}');
     return sb.toString();

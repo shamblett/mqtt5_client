@@ -3423,7 +3423,9 @@ void main() {
         expect(message.header!.messageSize, 70);
         expect(message.reasonCode, MqttDisconnectReasonCode.quotaExceeded);
         expect(
-          mqttDisconnectReasonCode.asString(message.reasonCode),
+          MqttDisconnectReasonCodeSupport.mqttDisconnectReasonCode.asString(
+            message.reasonCode,
+          ),
           'quotaExceeded',
         );
         expect(message.sessionExpiryInterval, 10);
