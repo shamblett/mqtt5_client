@@ -344,20 +344,20 @@ abstract class MqttConnectionHandlerBase implements MqttIConnectionHandler {
     if (msg.variableHeader != null) {
       final reasonCode = msg.variableHeader?.reasonCode;
       if (reasonCode != null) {
-        final reasonCodeInt = mqttConnectReasonCode.asInt(reasonCode);
+        final reasonCodeInt = MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(reasonCode);
         if (reasonCodeInt != null) {
           connectionStatus.reasonCode = reasonCode;
           connectionStatus.reasonString = msg.variableHeader?.reasonString;
           if (MqttReasonCodeUtilities.isError(reasonCodeInt)) {
             MqttLogger.log(
               'MqttConnectionHandlerBase::_reasonCodeOk - reason code is an error '
-              '${mqttConnectReasonCode.asString(reasonCode)}',
+              '${MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(reasonCode)}',
             );
             return false;
           } else {
             MqttLogger.log(
               'MqttConnectionHandlerBase::_reasonCodeOk - reason code is ok '
-              '${mqttConnectReasonCode.asString(reasonCode)}',
+              '${MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(reasonCode)}',
             );
             return true;
           }

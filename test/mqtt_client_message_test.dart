@@ -412,7 +412,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x60);
       final property1 = MqttByteProperty(MqttPropertyIdentifier.notSet);
@@ -433,7 +435,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0xde);
       expect(stream.readByte(), 0xad);
@@ -459,7 +463,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0xde);
       expect(stream.readByte(), 0xad);
@@ -484,7 +490,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0xff);
       expect(stream.readByte(), 0xff);
@@ -512,7 +520,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x05);
@@ -540,7 +550,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x05);
@@ -568,7 +580,9 @@ void main() {
       stream.reset();
       expect(
         stream.readByte(),
-        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(MqttPropertyIdentifier.contentType),
+        MqttPropertyIdentifierSupport.mqttPropertyIdentifier.asInt(
+          MqttPropertyIdentifier.contentType,
+        ),
       );
       expect(stream.readByte(), 0x00);
       expect(stream.readByte(), 0x06);
@@ -3256,7 +3270,9 @@ void main() {
         );
         expect(
           MqttReasonCodeUtilities.isError(
-            mqttConnectReasonCode.asInt(message.variableHeader!.reasonCode)!,
+            MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(
+              message.variableHeader!.reasonCode,
+            )!,
           ),
           isTrue,
         );
@@ -3287,12 +3303,16 @@ void main() {
           MqttConnectReasonCode.success,
         );
         expect(
-          mqttConnectReasonCode.asString(message.variableHeader!.reasonCode),
+          MqttConnectReasonCodeSupport.mqttConnectReasonCode.asString(
+            message.variableHeader!.reasonCode,
+          ),
           'success',
         );
         expect(
           MqttReasonCodeUtilities.isError(
-            mqttConnectReasonCode.asInt(message.variableHeader!.reasonCode)!,
+            MqttConnectReasonCodeSupport.mqttConnectReasonCode.asInt(
+              message.variableHeader!.reasonCode,
+            )!,
           ),
           isFalse,
         );
