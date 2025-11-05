@@ -31,16 +31,18 @@ enum MqttAuthenticateReasonCode {
 }
 
 /// MQTT authenticate reason code support
-const Map<int, MqttAuthenticateReasonCode> _mqttAuthenticateReasonCodeValues =
-    <int, MqttAuthenticateReasonCode>{
-      0x00: MqttAuthenticateReasonCode.success,
-      0x18: MqttAuthenticateReasonCode.continueAuthentication,
-      0x19: MqttAuthenticateReasonCode.reAuthenticate,
-      0x0ff: MqttAuthenticateReasonCode.notSet,
-    };
+class MqttAuthenticateReasonCodeSupport {
+  static const Map<int, MqttAuthenticateReasonCode>
+  mqttAuthenticateReasonCodeValues = <int, MqttAuthenticateReasonCode>{
+    0x00: MqttAuthenticateReasonCode.success,
+    0x18: MqttAuthenticateReasonCode.continueAuthentication,
+    0x19: MqttAuthenticateReasonCode.reAuthenticate,
+    0x0ff: MqttAuthenticateReasonCode.notSet,
+  };
 
-// MQTT authenticate reason code helper
-final MqttEnumHelper<MqttAuthenticateReasonCode?> mqttAuthenticateReasonCode =
-    MqttEnumHelper<MqttAuthenticateReasonCode?>(
-      _mqttAuthenticateReasonCodeValues,
-    );
+  // MQTT authenticate reason code helper
+  static final MqttEnumHelper<MqttAuthenticateReasonCode?>
+  mqttAuthenticateReasonCode = MqttEnumHelper<MqttAuthenticateReasonCode?>(
+    mqttAuthenticateReasonCodeValues,
+  );
+}
