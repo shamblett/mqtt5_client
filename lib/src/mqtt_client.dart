@@ -506,7 +506,7 @@ class MqttClient {
   /// Called when the keep alive mechanism has determined that
   /// a ping response expected from the broker has not arrived in the
   /// time period specified by [disconnectOnNoResponsePeriod].
-  void disconnectOnNoPingResponse(DisconnectOnNoPingResponse event) {
+  void disconnectOnNoPingResponse(DisconnectOnNoPingResponse _) {
     MqttLogger.log(
       'Mqtt5Client::_disconnectOnNoPingResponse - disconnecting, no ping request response for $disconnectOnNoResponsePeriod seconds',
     );

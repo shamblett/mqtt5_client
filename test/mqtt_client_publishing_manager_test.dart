@@ -19,7 +19,9 @@ import 'support/mqtt_client_test_connection_handler.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 // Mock classes
-class MockCH extends Mock implements MqttServerConnectionHandler {}
+class MockCH extends Mock implements MqttServerConnectionHandler {
+
+}
 
 class MockCON extends Mock implements MqttServerNormalConnection {}
 
