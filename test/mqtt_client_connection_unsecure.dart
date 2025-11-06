@@ -53,7 +53,7 @@ void main() {
     // Group setup
     final ch = MockCH();
     //when(ch.secure).thenReturn(false);
-    final clientEventBus =  MqttEventBus.fromEventBus(events.EventBus());
+    final clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
     final ka = MockKA(ch, clientEventBus, 3);
     test('Message sent', () {
       final MqttMessage msg = MqttPingRequestMessage();
@@ -357,7 +357,7 @@ void main() {
         }
       }
 
-      final clientEventBus =  MqttEventBus.fromEventBus(events.EventBus());
+      final clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
       final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,

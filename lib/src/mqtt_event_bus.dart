@@ -13,7 +13,6 @@ part of '../mqtt5_client.dart';
 /// Event bus extension that provides a guarded fire method.
 ///
 extension type MqttEventBus._(events.EventBus eventbus) {
-
   MqttEventBus.fromEventBus(this.eventbus);
 
   void destroy() => eventbus.destroy();

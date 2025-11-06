@@ -172,7 +172,7 @@ void main() {
       }
 
       await broker.start();
-      final clientEventBus =  MqttEventBus.fromEventBus(events.EventBus());
+      final clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
       final ch = MqttSynchronousServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
