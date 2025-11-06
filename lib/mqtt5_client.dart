@@ -25,6 +25,8 @@ part 'src/mqtt_environment.dart';
 
 part 'src/mqtt_event.dart';
 
+part 'src/mqtt_event_bus.dart';
+
 part 'src/exception/mqtt_identifier_exception.dart';
 
 part 'src/exception/mqtt_connection_exception.dart';

@@ -41,12 +41,12 @@ class MqttConnectionKeepAlive {
   bool _shutdownPadlock = false;
 
   // The event bus
-  events.EventBus? _clientEventBus;
+  MqttEventBus? _clientEventBus;
 
   /// Initializes a new instance of the MqttConnectionKeepAlive class.
   MqttConnectionKeepAlive(
     MqttIConnectionHandler connectionHandler,
-    events.EventBus? eventBus,
+    MqttEventBus? eventBus,
     int keepAliveSeconds, [
     int disconnectOnNoResponsePeriod = 0,
   ]) {
