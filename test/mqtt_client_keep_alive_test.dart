@@ -24,7 +24,7 @@ class MockCH extends Mock implements MqttServerConnectionHandler {
 void main() {
   group('Disconnect on no response', () {
     test('Successful response', () async {
-      final clientEventBus = events.EventBus();
+      final clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
       var disconnect = false;
       void disconnectOnNoPingResponse(DisconnectOnNoPingResponse event) {
         disconnect = true;
@@ -49,7 +49,7 @@ void main() {
       expect(ka.disconnectTimer?.isActive, isFalse);
     });
     test('No response', () async {
-      final clientEventBus = events.EventBus();
+      final clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
       var disconnect = false;
       void disconnectOnNoPingResponse(DisconnectOnNoPingResponse event) {
         disconnect = true;
@@ -74,7 +74,7 @@ void main() {
   });
   group('Not connected', () {
     test('No ping sent', () async {
-      final clientEventBus = events.EventBus();
+      final clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
       var disconnect = false;
       void disconnectOnNoPingResponse(DisconnectOnNoPingResponse event) {
         disconnect = true;

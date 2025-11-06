@@ -9,6 +9,8 @@ library;
 
 import 'dart:async';
 
+import 'package:event_bus/event_bus.dart' as events;
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
 
@@ -147,6 +149,35 @@ void main() {
       clientUpdates.add(<MqttReceivedMessage<MqttMessage>>[message0]);
       expect(called1, 1);
       expect(called2, 0);
+    });
+  });
+  group('Event Bus', () {
+    test('Stream open', () async {
+      final eb = MqttEventBus.fromEventBus(events.EventBus());
+      bool fired = false;
+      void stringReceived(String event) {
+        expect(event, 'event');
+        fired = true;
+      }
+
+      eb.on<String>().listen(stringReceived);
+      eb.fire('event');
+      await Future.delayed(Duration(milliseconds: 2));
+      expect(fired, isTrue);
+    });
+    test('Stream closed', () async {
+      final eb = MqttEventBus.fromEventBus(events.EventBus());
+      bool fired = false;
+      void stringReceived(String event) {
+        expect(event, 'event');
+        fired = true;
+      }
+
+      eb.on<String>().listen(stringReceived);
+      eb.destroy();
+      eb.fire('event');
+      await Future.delayed(Duration(milliseconds: 2));
+      expect(fired, isFalse);
     });
   });
 }
