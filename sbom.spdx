@@ -5,18 +5,18 @@ DocumentName: mqtt5_client
 DocumentNamespace: https://pub.dev/packages/mqtt5_client
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-11-06T14:05:08Z
+Created: 2025-11-12T10:40:18Z
 
 
 PackageName: mqtt5-client
 SPDXID: SPDXRef-Package-mqtt5-client
-PackageVersion: 4.15.1
+PackageVersion: 4.15.2
 PackageFileName: mqtt5_client
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/mqtt5_client
 FilesAnalyzed: true
-PackageVerificationCode: 168e0bd8d73109ef184ff3fa05525958beade901
+PackageVerificationCode: bb9782ff14f4a5a70b5017e1f4b5d097bffff07e
 PackageHomePage: https://pub.dev/packages/mqtt5_client
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -55,7 +55,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/connectionhandling/browser/mqtt_browser_connection.dart
 SPDXID: SPDXRef-mqtt-browser-connection-3
 FileType: SOURCE
-FileChecksum: SHA1: d65155b2086b488cf6d967124849ac256940cab4
+FileChecksum: SHA1: 7eea3ba55affae22b75cb880e5d910cb476c90e7
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1117,7 +1117,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-121
 FileType: TEXT
-FileChecksum: SHA1: 5504032842e8accf4b83fb11e8caf131a9cbb8ff
+FileChecksum: SHA1: b7935a2637d8d9f845f50ed65eff157dd56663e6
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION

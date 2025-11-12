@@ -1,4 +1,7 @@
 # 4.15.1
+- [Issue 187](https://github.com/shamblett/mqtt5_client/issues/187)
+
+# 4.15.1
 - [Issue 179](https://github.com/shamblett/mqtt5_client/issues/179)
 
 # 4.15.0
