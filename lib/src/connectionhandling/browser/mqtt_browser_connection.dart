@@ -11,7 +11,8 @@ part of '../../../mqtt5_browser_client.dart';
 abstract class MqttBrowserConnection extends MqttConnectionBase {
   /// The socket that maintains the connection to the MQTT broker.
   /// Get and set methods preserve type information.
-  WebSocket get wsClient => WebSocket(client);
+  // ignore: avoid-casting-to-extension-type, casting fails at the JS layer
+  WebSocket get wsClient => (client as WebSocket);
 
   /// Default constructor
   MqttBrowserConnection(super.clientEventBus);
