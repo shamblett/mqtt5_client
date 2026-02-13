@@ -44,7 +44,6 @@ class MqttBrowserClient extends MqttClient {
     String? username,
     String? password,
   ]) async {
-    MqttEnvironment.isWebClient = true;
     instantiationCorrect = true;
     clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
     clientEventBus?.on<DisconnectOnNoPingResponse>().listen(

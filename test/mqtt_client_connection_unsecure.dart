@@ -216,13 +216,11 @@ void main() {
       );
       broker.setMessageHandler = messageHandler;
       ch.onConnected = connectCb;
-      expect(MqttEnvironment.isWebClient, isFalse);
       await ch.connect(
         mockBrokerAddress,
         mockBrokerPort,
         MqttConnectMessage().withClientIdentifier(testClientId),
       );
-      expect(MqttEnvironment.isWebClient, isFalse);
       expect(ch.connectionStatus.state, MqttConnectionState.connected);
       expect(ch.connectionStatus.reasonCode, MqttConnectReasonCode.success);
       expect(connectCbCalled, isTrue);

@@ -51,6 +51,7 @@ class MqttServerClient extends MqttClient {
   ///
   /// Minimum value is 1000ms.
   int? get socketTimeout => _socketTimeout;
+
   set socketTimeout(int? period) {
     if (period != null && period >= MqttConstants.minimumSocketTimeoutPeriod) {
       _socketTimeout = period;
@@ -90,7 +91,6 @@ class MqttServerClient extends MqttClient {
     String? username,
     String? password,
   ]) async {
-    MqttEnvironment.isWebClient = false;
     instantiationCorrect = true;
     clientEventBus = MqttEventBus.fromEventBus(events.EventBus());
     clientEventBus?.on<DisconnectOnNoPingResponse>().listen(

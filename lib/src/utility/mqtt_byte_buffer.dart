@@ -143,18 +143,9 @@ class MqttByteBuffer {
         'length $length, count $count, position $_position, buffer $buffer',
       );
     }
-    if (MqttEnvironment.isWebClient) {
-      final tmp = typed.Uint8Buffer();
-      tmp.addAll(buffer!.getRange(_position, _position + count));
-      _position += count;
-      final tmp2 = typed.Uint8Buffer();
-      tmp2.addAll(tmp);
-      return tmp2;
-    } else {
-      _position += count;
-      return typed.Uint8Buffer()
-        ..addAll(buffer!.getRange(_position - count, _position));
-    }
+    final start = _position;
+    _position += count;
+    return typed.Uint8Buffer()..addAll(buffer!.getRange(start, _position));
   }
 
   /// Reads a sequence of bytes from the current
