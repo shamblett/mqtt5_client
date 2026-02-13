@@ -21,8 +21,6 @@ part 'src/mqtt_constants.dart';
 
 part 'src/mqtt_protocol.dart';
 
-part 'src/mqtt_environment.dart';
-
 part 'src/mqtt_event.dart';
 
 part 'src/mqtt_event_bus.dart';

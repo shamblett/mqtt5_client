@@ -43,9 +43,7 @@ void main() {
       client.connectionMessage = connMess;
       var ok = true;
       try {
-        expect(MqttEnvironment.isWebClient, isFalse);
         await client.connect();
-        expect(MqttEnvironment.isWebClient, isTrue);
         var connectionOK = false;
         if (client.connectionStatus!.state == MqttConnectionState.connected) {
           print('Browser client connected locally');
