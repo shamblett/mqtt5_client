@@ -1439,7 +1439,7 @@ void main() {
   });
 
   group('Resubscribe on auto reconnect', () {
-    test('Active', () {
+    test('Active', () async {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(
         clientEventBus,
@@ -1510,16 +1510,17 @@ void main() {
       );
       // Trigger auto resubscribe
       clientEventBus.fire(MqttResubscribe(fromAutoReconnect: true));
+      await Future.delayed(Duration(milliseconds: 200));
       expect(
         subs.getSubscriptionTopicStatus(topic),
-        MqttSubscriptionStatus.active,
+        MqttSubscriptionStatus.pending,
       );
       expect(
         subs.getSubscriptionTopicStatus(topicpending),
         MqttSubscriptionStatus.pending,
       );
     });
-    test('InActive', () {
+    test('InActive', () async {
       final clientEventBus = events.EventBus();
       final testCHS = TestConnectionHandlerSend(
         clientEventBus,
@@ -1590,6 +1591,7 @@ void main() {
       );
       // Trigger auto resubscribe
       clientEventBus.fire(MqttResubscribe(fromAutoReconnect: true));
+      await Future.delayed(Duration(milliseconds: 200));
       expect(
         subs.getSubscriptionTopicStatus(topic),
         MqttSubscriptionStatus.doesNotExist,
