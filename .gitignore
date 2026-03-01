@@ -18,3 +18,4 @@ doc/api/
 .DS_Store
 .directory
 /test/issues/issue168/venv/
+/coverage/
