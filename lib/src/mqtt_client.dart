@@ -80,8 +80,8 @@ class MqttClient {
   bool autoReconnect = false;
 
   /// Re subscribe on auto reconnect.
-  /// Auto reconnect will perform automatic re subscription of existing confirmed subscriptions
-  /// unless this is set to false.
+  /// Auto reconnect will perform automatic re subscription of existing confirmed
+  /// and pending subscriptions unless this is set to false.
   /// In this case the caller must perform their own re subscriptions manually using [unsubscribe],
   /// [subscribe] and [resubscribe] as needed from the appropriate callbacks.
   bool resubscribeOnAutoReconnect = true;

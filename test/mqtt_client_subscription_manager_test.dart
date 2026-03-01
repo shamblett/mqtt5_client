@@ -1438,6 +1438,171 @@ void main() {
     });
   });
 
+  group('Resubscribe on auto reconnect', () {
+    test('Active', () async {
+      final clientEventBus = events.EventBus();
+      final testCHS = TestConnectionHandlerSend(
+        clientEventBus,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
+      // Active subscription
+      const topic = 'testtopic';
+      const qos = MqttQos.atLeastOnce;
+      final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+      subs.messageIdentifierDispenser.reset();
+      subs.resubscribeOnAutoReconnect = true;
+      final subscription = MqttSubscription(
+        MqttSubscriptionTopic(topic),
+        MqttSubscriptionOption()..maximumQos = qos,
+      );
+      subs.subscribeSubscription(subscription);
+      subs.subscribeSubscriptionTopic(topic, qos);
+      // Confirm the subscription
+      final buffer = typed.Uint8Buffer();
+      buffer.add(0x90);
+      buffer.add(0x18);
+      buffer.add(0x00); // Message identifier
+      buffer.add(0x01);
+      buffer.add(0x14); // Property length
+      buffer.add(0x1f); // Reason String
+      buffer.add(0x00);
+      buffer.add(0x06);
+      buffer.add('r'.codeUnitAt(0));
+      buffer.add('e'.codeUnitAt(0));
+      buffer.add('a'.codeUnitAt(0));
+      buffer.add('s'.codeUnitAt(0));
+      buffer.add('o'.codeUnitAt(0));
+      buffer.add('n'.codeUnitAt(0));
+      buffer.add(0x26); // User property
+      buffer.add(0x00);
+      buffer.add(0x03);
+      buffer.add('a'.codeUnitAt(0));
+      buffer.add('b'.codeUnitAt(0));
+      buffer.add('c'.codeUnitAt(0));
+      buffer.add(0x00);
+      buffer.add(0x03);
+      buffer.add('d'.codeUnitAt(0));
+      buffer.add('e'.codeUnitAt(0));
+      buffer.add('f'.codeUnitAt(0));
+      buffer.add(0x00); // Payload
+      final stream = MqttByteBuffer(buffer);
+      final baseMessage = MqttMessage.createFrom(stream)!;
+      final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+      final ret = subs.confirmSubscription(subAckMsg);
+      expect(ret, isTrue);
+      expect(subs.subscriptions.length, 1);
+      expect(
+        subs.getSubscriptionTopicStatus(topic),
+        MqttSubscriptionStatus.active,
+      );
+      expect(subs.pendingSubscriptions, isEmpty);
+      // Pending subscription
+      const topicpending = 'testtopicpending';
+      final subscriptionpending = MqttSubscription(
+        MqttSubscriptionTopic(topicpending),
+        MqttSubscriptionOption()..maximumQos = qos,
+      );
+      subs.subscribeSubscription(subscriptionpending);
+      expect(
+        subs.getSubscriptionTopicStatus(topicpending),
+        MqttSubscriptionStatus.pending,
+      );
+      // Trigger auto resubscribe
+      clientEventBus.fire(MqttResubscribe(fromAutoReconnect: true));
+      await Future.delayed(Duration(milliseconds: 200));
+      expect(
+        subs.getSubscriptionTopicStatus(topic),
+        MqttSubscriptionStatus.pending,
+      );
+      expect(
+        subs.getSubscriptionTopicStatus(topicpending),
+        MqttSubscriptionStatus.pending,
+      );
+    });
+    test('InActive', () async {
+      final clientEventBus = events.EventBus();
+      final testCHS = TestConnectionHandlerSend(
+        clientEventBus,
+        socketOptions: socketOptions,
+        socketTimeout: null,
+      );
+      // Active subscription
+      const topic = 'testtopic';
+      const qos = MqttQos.atLeastOnce;
+      final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+      subs.messageIdentifierDispenser.reset();
+      subs.resubscribeOnAutoReconnect = false;
+      final subscription = MqttSubscription(
+        MqttSubscriptionTopic(topic),
+        MqttSubscriptionOption()..maximumQos = qos,
+      );
+      subs.subscribeSubscription(subscription);
+      subs.subscribeSubscriptionTopic(topic, qos);
+      // Confirm the subscription
+      final buffer = typed.Uint8Buffer();
+      buffer.add(0x90);
+      buffer.add(0x18);
+      buffer.add(0x00); // Message identifier
+      buffer.add(0x01);
+      buffer.add(0x14); // Property length
+      buffer.add(0x1f); // Reason String
+      buffer.add(0x00);
+      buffer.add(0x06);
+      buffer.add('r'.codeUnitAt(0));
+      buffer.add('e'.codeUnitAt(0));
+      buffer.add('a'.codeUnitAt(0));
+      buffer.add('s'.codeUnitAt(0));
+      buffer.add('o'.codeUnitAt(0));
+      buffer.add('n'.codeUnitAt(0));
+      buffer.add(0x26); // User property
+      buffer.add(0x00);
+      buffer.add(0x03);
+      buffer.add('a'.codeUnitAt(0));
+      buffer.add('b'.codeUnitAt(0));
+      buffer.add('c'.codeUnitAt(0));
+      buffer.add(0x00);
+      buffer.add(0x03);
+      buffer.add('d'.codeUnitAt(0));
+      buffer.add('e'.codeUnitAt(0));
+      buffer.add('f'.codeUnitAt(0));
+      buffer.add(0x00); // Payload
+      final stream = MqttByteBuffer(buffer);
+      final baseMessage = MqttMessage.createFrom(stream)!;
+      final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+      final ret = subs.confirmSubscription(subAckMsg);
+      expect(ret, isTrue);
+      expect(subs.subscriptions.length, 1);
+      expect(
+        subs.getSubscriptionTopicStatus(topic),
+        MqttSubscriptionStatus.active,
+      );
+      expect(subs.pendingSubscriptions, isEmpty);
+      // Pending subscription
+      const topicpending = 'testtopicpending';
+      final subscriptionpending = MqttSubscription(
+        MqttSubscriptionTopic(topicpending),
+        MqttSubscriptionOption()..maximumQos = qos,
+      );
+      subs.subscribeSubscription(subscriptionpending);
+      expect(
+        subs.getSubscriptionTopicStatus(topicpending),
+        MqttSubscriptionStatus.pending,
+      );
+      // Trigger auto resubscribe
+      clientEventBus.fire(MqttResubscribe(fromAutoReconnect: true));
+      await Future.delayed(Duration(milliseconds: 200));
+      expect(
+        subs.getSubscriptionTopicStatus(topic),
+        MqttSubscriptionStatus.doesNotExist,
+      );
+      expect(
+        subs.getSubscriptionTopicStatus(topicpending),
+        MqttSubscriptionStatus.doesNotExist,
+      );
+    });
+  });
+
   group('Subscription Manager - Other', () {
     test('Change notification', () {
       const topic = 'testtopic';

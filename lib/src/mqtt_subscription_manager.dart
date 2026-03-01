@@ -360,7 +360,7 @@ class MqttSubscriptionManager {
   }
 
   // Re subscribe.
-  // Takes all active completed subscriptions and re subscribes them if
+  // Takes all active completed and pending subscriptions and re subscribes them if
   // [resubscribeOnAutoReconnect] is true.
   // Automatically fired after auto reconnect has completed.
   void _resubscribe(MqttResubscribe resubscribeEvent) {
@@ -368,18 +368,35 @@ class MqttSubscriptionManager {
       MqttLogger.log(
         'MttSubscriptionManager::_resubscribe - resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}',
       );
-      for (final subscription in subscriptions.values) {
+      final subscriptionList = subscriptions.values.toList();
+      final pendingSubscriptionList = pendingSubscriptions.values.toList();
+      subscriptions.clear();
+      pendingSubscriptions.clear();
+
+      for (final subscription in subscriptionList) {
         _createNewSubscription(
           subscription.topic.rawTopic,
           subscription.maximumQos,
           userProperties: subscription.userProperties,
           option: subscription.option,
         );
+
+        for (final subscriptions in pendingSubscriptionList) {
+          for (final subscription in subscriptions) {
+            _createNewSubscription(
+              subscription.topic.rawTopic,
+              subscription.maximumQos,
+              userProperties: subscription.userProperties,
+              option: subscription.option,
+            );
+          }
+        }
       }
-      subscriptions.clear();
     } else {
+      subscriptions.clear();
+      pendingSubscriptions.clear();
       MqttLogger.log(
-        'MttSubscriptionManager::_resubscribe - '
+        'SubscriptionManager::_resubscribe - '
         'NOT resubscribing from auto reconnect ${resubscribeEvent.fromAutoReconnect}, resubscribeOnAutoReconnect is false',
       );
     }
