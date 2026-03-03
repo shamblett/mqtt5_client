@@ -48,6 +48,7 @@ void main() {
       expect(subscription.reasonCode, MqttSubscribeReasonCode.notSet);
       subscription.maximumQos = MqttQos.exactlyOnce;
       expect(subscription.maximumQos, MqttQos.exactlyOnce);
+      expect(subscription.subscriptionIdentifier, 0);
     });
     test('Default Construction With Option', () {
       final option = MqttSubscriptionOption();
@@ -244,6 +245,7 @@ void main() {
         user1.pairName = 'User 1 Name';
         user1.pairValue = 'User 1 Value';
         subscription.userProperties = [user1];
+        subscription.subscriptionIdentifier = 10;
         final createdSubscription = subs.subscribeSubscription(subscription);
         expect(subs.subscriptions.length, 0);
         expect(subs.pendingSubscriptions.length, 1);
@@ -251,6 +253,7 @@ void main() {
         final subscriptions = subs.pendingSubscriptions[1]!;
         expect(subscriptions[0].topic.rawTopic, topic);
         expect(subscriptions[0].maximumQos, qos);
+        expect(subscriptions[0].subscriptionIdentifier, 10);
         expect(
           subs.getSubscriptionTopicStatus(topic),
           MqttSubscriptionStatus.pending,
@@ -266,6 +269,7 @@ void main() {
         expect(msg.variableHeader!.userProperty.length, 1);
         expect(msg.variableHeader!.userProperty[0].pairName, 'User 1 Name');
         expect(msg.variableHeader!.userProperty[0].pairValue, 'User 1 Value');
+        expect(msg.variableHeader!.subscriptionIdentifier, 10);
         expect(msg.payload!.subscriptions.length, 1);
         expect(msg.payload!.subscriptions[0].topic.rawTopic, topic);
         expect(msg.payload!.subscriptions[0].option.maximumQos, qos);

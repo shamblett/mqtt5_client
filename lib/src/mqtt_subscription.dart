@@ -33,6 +33,12 @@ class MqttSubscription {
   /// messages.
   List<MqttUserProperty> userProperties = [];
 
+  /// Subscription Identifier
+  ///
+  /// User supplied identifier of the subscription.
+  /// The subscription identifier can have the value of 1 to 268,435,455.
+  int subscriptionIdentifier = 0;
+
   /// The maximum QOS level of the topic for subscriptions.
   MqttQos? get maximumQos => option!.maximumQos;
 
