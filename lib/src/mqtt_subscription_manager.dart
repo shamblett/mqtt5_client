@@ -111,6 +111,7 @@ class MqttSubscriptionManager {
       subscription.maximumQos,
       userProperties: subscription.userProperties,
       option: subscription.option,
+      identifier: subscription.subscriptionIdentifier,
     );
   }
 
@@ -409,6 +410,7 @@ class MqttSubscriptionManager {
     MqttQos? qos, {
     List<MqttUserProperty>? userProperties,
     MqttSubscriptionOption? option,
+    int? identifier,
   }) {
     try {
       final subscriptionTopic = MqttSubscriptionTopic(topic);
@@ -418,6 +420,9 @@ class MqttSubscriptionManager {
       }
       if (option != null) {
         sub.option = option;
+      }
+      if (identifier != null) {
+        sub.subscriptionIdentifier = identifier;
       }
       final msgId = messageIdentifierDispenser.nextMessageIdentifier;
       pendingSubscriptions[msgId] = <MqttSubscription>[sub];
@@ -430,6 +435,9 @@ class MqttSubscriptionManager {
                 .toTopicWithOption(sub.topic.rawTopic, option)
                 .withUserProperties(userProperties);
       msg.messageIdentifier = msgId;
+      if (identifier != null && identifier != 0) {
+        msg.variableHeader.subscriptionIdentifier = identifier;
+      }
       _connectionHandler.sendMessage(msg);
       return sub;
     } on Exception catch (e) {
