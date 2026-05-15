@@ -882,6 +882,14 @@ void main() {
       buff1.seek(20);
       expect(buff1.position, 10);
     });
+    test(
+      'Byte Buffer message availability with a single zero byte remaining',
+      () {
+        final buff = MqttByteBuffer.fromList([0x10, 0x00]);
+        buff.seek(1);
+        expect(buff.isMessageAvailable(), isFalse);
+      },
+    );
     test('Sleep Async', () async {
       final start = DateTime.now();
       await MqttUtilities.asyncSleep(1);

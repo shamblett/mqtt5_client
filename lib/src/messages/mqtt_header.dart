@@ -112,7 +112,14 @@ class MqttHeader {
     // combination of message type, dup, qos and retain, and the
     // following bytes (up to 4 of them) are the size of the
     // payload + variable header.
-    final messageTypeLength = messageType!.index << 4;
+    final messageTypeIndex = messageType?.index;
+    if (messageTypeIndex == null ||
+        messageTypeIndex == MqttMessageType.reserved1.index) {
+      throw MqttInvalidHeaderException(
+        'Cannot build header bytes, message type is null or reserved1',
+      );
+    }
+    final messageTypeLength = messageTypeIndex << 4;
     final duplicateLength = (duplicate ? 1 : 0) << 3;
     final qosLength = qos.index << 1;
     final retainLength = retain ? 1 : 0;

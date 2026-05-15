@@ -153,7 +153,8 @@ class MqttServerConnection extends MqttConnectionBase {
       // Send disconnect
       final disconnect = MqttDisconnectMessage()
         ..withReasonCode(MqttDisconnectReasonCode.normalDisconnection);
-      messageStream.reset();
+      messageStream.seek(0);
+      messageStream.clear();
       disconnect.writeTo(messageStream);
       messageStream.seek(0);
       send(messageStream);
