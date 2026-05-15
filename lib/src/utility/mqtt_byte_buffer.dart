@@ -72,7 +72,7 @@ class MqttByteBuffer {
 
     // If we do not have 2 bytes we do not have a complete header, so no
     // message is available.
-    if (length < MqttConstants.minHeaderLength) {
+    if (availableBytes < MqttConstants.minHeaderLength) {
       return false;
     }
 
@@ -80,12 +80,16 @@ class MqttByteBuffer {
     // if the whole message is available.
 
     // If the first byte of the header is 0 then skip past it.
-    if (peekByte() == 0) {
+    if (peekByte() == 0 && availableBytes > 1) {
       MqttLogger.log(
         'MqttByteBuffer:isMessageAvailable - first header byte is zero, skipping',
       );
       _position++;
       shrink();
+    }
+
+    if (availableBytes < MqttConstants.minHeaderLength) {
+      return false;
     }
 
     // Assume we now have a valid header

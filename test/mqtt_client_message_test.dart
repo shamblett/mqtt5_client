@@ -162,6 +162,14 @@ void main() {
       final header = MqttHeader().asType(MqttMessageType.publishComplete);
       expect(header.messageType, MqttMessageType.publishComplete);
     });
+    test('Header bytes rejects unset message type', () {
+      final header = MqttHeader();
+      expect(header.headerBytes, throwsA(isA<MqttInvalidHeaderException>()));
+    });
+    test('Header bytes rejects reserved message type', () {
+      final header = MqttHeader().asType(MqttMessageType.reserved1);
+      expect(header.headerBytes, throwsA(isA<MqttInvalidHeaderException>()));
+    });
     test('Retain', () {
       final header = MqttHeader().shouldBeRetained();
       expect(header.retain, isTrue);
