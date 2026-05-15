@@ -1,3 +1,6 @@
+# 4.17.1
+- [PR 197](https://github.com/shamblett/mqtt5_client/pull/197)
+
 # 4.17.0
 - [Issue 195](https://github.com/shamblett/mqtt5_client/issues/195)
 
