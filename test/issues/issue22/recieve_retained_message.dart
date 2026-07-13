@@ -21,7 +21,7 @@ Future<int> main() async {
     await MqttUtilities.asyncSleep(0);
 
     client.subscribe(topic, MqttQos.exactlyOnce);
-    client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final data = (c[0].payload as MqttPublishMessage).payload.message!;
       print("Recieved Message: $data at ${c[0].topic}");
       if (c[0].topic == topic) {
@@ -58,7 +58,7 @@ Future<int> main() async {
     await MqttUtilities.asyncSleep(1);
 
     client.subscribe(topic, MqttQos.exactlyOnce);
-    client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final data = (c[0].payload as MqttPublishMessage).payload.message!;
       print("Recieved Message: $data at ${c[0].topic}");
       if (c[0].topic == topic) {
