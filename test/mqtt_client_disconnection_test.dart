@@ -149,4 +149,52 @@ void main() {
           ),
     );
   });
+
+  test('Updates and published are null after disconnect', () async {
+    await IOOverrides.runZoned(
+      () async {
+        final client = MqttServerClient(
+          'localhost',
+          '',
+          maxConnectionAttempts: 1,
+        );
+        client.connectionMessage = MqttConnectMessage().withClientIdentifier(
+          'MqttUpdatesNullAfterDisconnect',
+        );
+        await client.connect();
+        expect(client.connectionStatus?.state, MqttConnectionState.connected);
+        expect(client.updates, isNotNull);
+        expect(client.published, isNotNull);
+
+        client.disconnect();
+        expect(
+          client.connectionStatus?.state,
+          MqttConnectionState.disconnected,
+        );
+        // Must not throw Null check operator used on a null value.
+        expect(client.updates, isNull);
+        expect(client.published, isNull);
+      },
+      socketConnect:
+          (
+            dynamic host,
+            int port, {
+            dynamic sourceAddress,
+            int sourcePort = 0,
+            Duration? timeout,
+          }) => MqttMockSocketDisconnectNormal.connect(
+            host,
+            port,
+            sourceAddress: sourceAddress,
+            sourcePort: sourcePort,
+            timeout: timeout,
+          ),
+    );
+  });
+
+  test('Updates is null before connect', () {
+    final client = MqttServerClient('localhost', 'pre-connect');
+    expect(client.updates, isNull);
+    expect(client.published, isNull);
+  });
 }

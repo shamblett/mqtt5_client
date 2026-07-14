@@ -30,7 +30,7 @@ void main() async {
       print('Connected successfully');
 
       // Now it's safe to listen
-      client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+      client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
         i++;
         print(i);
 

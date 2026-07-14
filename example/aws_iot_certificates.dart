@@ -75,7 +75,7 @@ Future<int> main() async {
     // Subscribe to the same topic
     client.subscribe(topic, MqttQos.atLeastOnce);
     // Print incoming messages from another client on this topic
-    client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final recMess = c[0].payload as MqttPublishMessage;
       final pt = MqttPublishPayload.bytesToString(recMess.payload.message);
       print(

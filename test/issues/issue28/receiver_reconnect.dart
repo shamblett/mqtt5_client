@@ -27,7 +27,7 @@ Future<int> main() async {
 
   // Listen for the counter messages
   print('ISSUE::Listening......');
-  client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+  client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final recMess = c[0].payload as MqttPublishMessage;
     final payload = recMess.payload.message;
     if (payload != null) {
