@@ -1,4 +1,5 @@
 # 5.0.0
+- [PR 200](https://github.com/shamblett/mqtt5_client/pull/200)
 - [PR 199](https://github.com/shamblett/mqtt5_client/pull/199)
 *** Breaking API update to the client 'updates' stream. ***
 
