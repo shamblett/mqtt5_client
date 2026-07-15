@@ -266,9 +266,13 @@ class MqttClient {
   @protected
   MqttEventBus? clientEventBus;
 
-  /// The stream on which all subscribed topic updates are published to
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get updates =>
-      subscriptionsManager!.subscriptionNotifier;
+  /// The stream on which all subscribed topic updates are published to.
+  ///
+  /// Attach listeners only after connect has been called.
+  /// Returns null if the client is disconnected (subscriptions manager
+  /// has been cleared), matching [published].
+  Stream<List<MqttReceivedMessage<MqttMessage>>>? get updates =>
+      subscriptionsManager?.subscriptionNotifier;
 
   /// Common client connection method.
   Future<MqttConnectionStatus?> connect([

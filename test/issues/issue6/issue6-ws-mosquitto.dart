@@ -67,7 +67,7 @@ Future<int> main() async {
 
     // Listen for our responses.
     print('ISSUE: Listening >>>>');
-    final stream = client.updates
+    final stream = client.updates!
         .expand((event) sync* {
           for (var e in event) {
             MqttPublishMessage message = e.payload;
