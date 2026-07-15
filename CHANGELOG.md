@@ -1,7 +1,6 @@
-# 4.17.2
-- Fix `MqttClient.updates` null-check crash when `subscriptionsManager` is null
-  after disconnect / reconnect races. `updates` is now nullable and consistent
-  with `published` (`subscriptionsManager?.subscriptionNotifier`).
+# 5.0.0
+- [PR 199](https://github.com/shamblett/mqtt5_client/pull/199)
+*** Breaking API update to the client 'updates' stream. ***
 
 # 4.17.1
 - [PR 197](https://github.com/shamblett/mqtt5_client/pull/197)
