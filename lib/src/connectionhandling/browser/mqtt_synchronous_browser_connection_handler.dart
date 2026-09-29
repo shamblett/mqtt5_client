@@ -14,8 +14,8 @@ class MqttSynchronousBrowserConnectionHandler
   /// Initializes a new instance of the MqttConnectionHandler class.
   MqttSynchronousBrowserConnectionHandler(
     clientEventBus, {
-    required int maxConnectionAttempts,
-  }) : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts) {
+    required super.maxConnectionAttempts,
+  }) : super(clientEventBus) {
     this.clientEventBus = clientEventBus;
     connectTimer = MqttCancellableAsyncSleep(
       MqttConstants.defaultConnectionAttemptTimeoutPeriod,
