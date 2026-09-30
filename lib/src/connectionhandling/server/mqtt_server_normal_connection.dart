@@ -136,4 +136,18 @@ class MqttServerNormalConnection extends MqttServerConnection<Socket> {
       client = null;
     }
   }
+
+  @override
+  void _sendToClient(List<int> data) {
+    client?.add(data);
+  }
+
+  @override
+  void _listenToClient(
+    void Function(dynamic) onData,
+    void Function(dynamic) onError,
+    void Function() onDone,
+  ) {
+    client?.listen(onData, onError: onError, onDone: onDone);
+  }
 }

@@ -56,18 +56,28 @@ abstract class MqttServerConnection<T extends Object>
   void send(MqttByteBuffer message) {
     final length = message.length;
     final messageBytes = message.read(length);
-    (client as dynamic)?.add(messageBytes.toList());
+    _sendToClient(messageBytes.toList());
   }
+
+  /// Write data to the client. Must be implemented by subclasses.
+  void _sendToClient(List<int> data);
 
   // Create the listening stream subscription and subscribe the callbacks
   void _startListening() {
     MqttLogger.log('MqttServerConnection::_startListening');
     try {
-      (client as dynamic)?.listen(_onData, onError: onError, onDone: onDone);
+      _listenToClient(_onData, onError, onDone);
     } on Exception catch (e) {
       print('MqttServerConnection::_startListening - exception raised $e');
     }
   }
+
+  /// Subscribe to the client. Must be implemented by subclasses.
+  void _listenToClient(
+    void Function(dynamic) onData,
+    void Function(dynamic) onError,
+    void Function() onDone,
+  );
 
   // OnData listener callback
   void _onData(dynamic data) {
