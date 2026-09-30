@@ -219,6 +219,4 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     closeClient();
     client = null;
   }
-
-
 }

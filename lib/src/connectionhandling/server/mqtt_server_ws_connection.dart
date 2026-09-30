@@ -46,16 +46,6 @@ class MqttServerWsConnection extends MqttServerConnection<WebSocket> {
     return _connect(server: server, port: port, auto: true);
   }
 
-  /// User requested or auto disconnect disconnection
-  @override
-  void disconnect({bool auto = false}) {
-    if (auto) {
-      _disconnect();
-    } else {
-      onDone();
-    }
-  }
-
   /// Stops listening the socket immediately.
   @override
   void stopListening() {
@@ -69,7 +59,6 @@ class MqttServerWsConnection extends MqttServerConnection<WebSocket> {
   /// Closes the socket immediately.
   @override
   void closeClient() {
-    client?.destroy();
     client?.close();
   }
 
@@ -79,18 +68,6 @@ class MqttServerWsConnection extends MqttServerConnection<WebSocket> {
     closeClient();
     if (client != null) {
       client = null;
-    }
-  }
-
-  /// OnDone listener callback
-  @override
-  void onDone() {
-    _disconnect();
-    if (onDisconnected != null) {
-      MqttLogger.log(
-        'MqttWsConnection::_onDone - calling disconnected callback',
-      );
-      onDisconnected!();
     }
   }
 
@@ -157,5 +134,4 @@ class MqttServerWsConnection extends MqttServerConnection<WebSocket> {
     }
     return completer.future;
   }
-
 }

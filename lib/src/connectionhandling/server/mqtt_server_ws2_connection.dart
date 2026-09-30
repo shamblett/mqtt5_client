@@ -96,7 +96,7 @@ class _DetachedSocket extends Stream<Uint8List> implements Socket {
 }
 
 /// The MQTT server alternative websocket connection class
-class MqttServerWs2Connection extends MqttServerConnection {
+class MqttServerWs2Connection extends MqttServerConnection<WebSocket> {
   static const statusLines = 3;
   static const bodyOffset = 2;
 
@@ -437,5 +437,4 @@ class Ws2Support {
     }
     return false;
   }
-
 }

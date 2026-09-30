@@ -8,7 +8,7 @@
 part of '../../../mqtt5_browser_client.dart';
 
 /// The MQTT browser connection base class
-abstract class MqttBrowserConnection extends MqttConnectionBase {
+abstract class MqttBrowserConnection extends MqttConnectionBase<WebSocket> {
   /// The socket that maintains the connection to the MQTT broker.
   /// Get and set methods preserve type information.
   // ignore: avoid-casting-to-extension-type, casting fails at the JS layer

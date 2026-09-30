@@ -56,14 +56,14 @@ abstract class MqttServerConnection<T extends Object>
   void send(MqttByteBuffer message) {
     final length = message.length;
     final messageBytes = message.read(length);
-    client?.add(messageBytes.toList());
+    (client as dynamic)?.add(messageBytes.toList());
   }
 
   // Create the listening stream subscription and subscribe the callbacks
   void _startListening() {
     MqttLogger.log('MqttServerConnection::_startListening');
     try {
-      client.listen(_onData, onError: onError, onDone: onDone);
+      (client as dynamic)?.listen(_onData, onError: onError, onDone: onDone);
     } on Exception catch (e) {
       print('MqttServerConnection::_startListening - exception raised $e');
     }
