@@ -284,6 +284,29 @@ class MqttServerWs2Connection extends MqttServerConnection {
     return completer.future;
   }
 
+  /// Stops listening and closes the socket immediately.
+  @override
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
+    }
+
+    listeners.clear();
+  }
+
+  /// Closes the socket immediately.
+  @override
+  void closeClient() {
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    client = null;
+  }
+
   Future<bool> _performWSHandshake(Socket socket, Uri uri) {
     Ws2Support.response = '';
     final c = Completer<bool>();
@@ -414,4 +437,5 @@ class Ws2Support {
     }
     return false;
   }
+
 }

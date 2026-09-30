@@ -8,7 +8,7 @@
 part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT server connection class for the websocket interface
-class MqttServerWsConnection extends MqttServerConnection {
+class MqttServerWsConnection extends MqttServerConnection<WebSocket> {
   /// Callback function to handle bad certificate (self signed).
   /// if true, ignore the error.
   bool Function(X509Certificate certificate)? onBadCertificate;
@@ -53,6 +53,32 @@ class MqttServerWsConnection extends MqttServerConnection {
       _disconnect();
     } else {
       onDone();
+    }
+  }
+
+  /// Stops listening the socket immediately.
+  @override
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
+    }
+
+    listeners.clear();
+  }
+
+  /// Closes the socket immediately.
+  @override
+  void closeClient() {
+    client?.destroy();
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    if (client != null) {
+      client = null;
     }
   }
 
@@ -132,10 +158,4 @@ class MqttServerWsConnection extends MqttServerConnection {
     return completer.future;
   }
 
-  void _disconnect() {
-    if (client != null) {
-      client.close();
-      client = null;
-    }
-  }
 }

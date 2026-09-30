@@ -8,7 +8,7 @@
 part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT normal(insecure TCP) server connection class
-class MqttServerNormalConnection extends MqttServerConnection {
+class MqttServerNormalConnection extends MqttServerConnection<Socket> {
   /// Default constructor
   MqttServerNormalConnection(
     super.eventBus,
@@ -109,5 +109,31 @@ class MqttServerNormalConnection extends MqttServerConnection {
       Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
     }
     return completer.future;
+  }
+
+  /// Stops listening the socket immediately.
+  @override
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
+    }
+
+    listeners.clear();
+  }
+
+  /// Closes the socket immediately.
+  @override
+  void closeClient() {
+    client?.destroy();
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    if (client != null) {
+      client = null;
+    }
   }
 }

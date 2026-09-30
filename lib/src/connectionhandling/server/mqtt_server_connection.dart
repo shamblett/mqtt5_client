@@ -8,7 +8,8 @@
 part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT client server connection base class
-class MqttServerConnection extends MqttConnectionBase {
+abstract class MqttServerConnection<T extends Object>
+    extends MqttConnectionBase<T> {
   /// Socket timeout OS error codes.
   static const wsaETimedOut = 10060;
   static const eTimedOut = 110;
