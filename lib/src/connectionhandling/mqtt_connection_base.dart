@@ -8,10 +8,14 @@
 part of '../../mqtt5_client.dart';
 
 /// The MQTT client connection base class
-class MqttConnectionBase {
+abstract class MqttConnectionBase<T extends Object> {
   /// The socket that maintains the connection to the MQTT broker.
   @protected
-  dynamic client;
+  T? client;
+
+  /// The stream controller as returned when clients listen.
+  @protected
+  List<StreamSubscription> listeners = [];
 
   /// The read wrapper
   @protected
@@ -22,7 +26,7 @@ class MqttConnectionBase {
   MqttByteBuffer messageStream = MqttByteBuffer(typed.Uint8Buffer());
 
   /// Unsolicited disconnection callback
-  @protected
+  @internal
   DisconnectCallback? onDisconnected;
 
   /// The event bus
@@ -36,6 +40,16 @@ class MqttConnectionBase {
   MqttConnectionBase.fromConnect(String server, int port, this.clientEventBus) {
     connect(server, port);
   }
+
+  /// Stops listening on the socket immediately, must be overridden in connection classes
+  void stopListening();
+
+  /// Closes the socket immediately, must be overridden in connection classes
+  void closeClient();
+
+  /// Closes and dispose the socket immediately, must be overridden in connection classes
+  @mustCallSuper
+  void disposeClient();
 
   /// Connect for auto reconnect.
   @protected
@@ -91,17 +105,9 @@ class MqttConnectionBase {
     }
   }
 
+  /// Internal disconnect with stop listeners and dispose client
   void _disconnect() {
-    // On disconnect clean(discard) anything in the message stream
-    messageStream.clean();
-    if (client != null) {
-      // TODO needs a proper fix, see issue 111
-      try {
-        client.destroy();
-      } on NoSuchMethodError {
-        client.close();
-      }
-      client = null;
-    }
+    stopListening();
+    disposeClient();
   }
 }

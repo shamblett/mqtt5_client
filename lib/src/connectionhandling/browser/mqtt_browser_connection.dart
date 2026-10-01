@@ -8,7 +8,7 @@
 part of '../../../mqtt5_browser_client.dart';
 
 /// The MQTT browser connection base class
-abstract class MqttBrowserConnection extends MqttConnectionBase {
+abstract class MqttBrowserConnection extends MqttConnectionBase<WebSocket> {
   /// The socket that maintains the connection to the MQTT broker.
   /// Get and set methods preserve type information.
   // ignore: avoid-casting-to-extension-type, casting fails at the JS layer
@@ -22,8 +22,6 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     : super(clientEventBus) {
     connect(server, port);
   }
-
-  set(WebSocket ws) => client = ws;
 
   /// Connect, must be overridden in connection classes
   @override
@@ -124,29 +122,28 @@ abstract class MqttBrowserConnection extends MqttConnectionBase {
     );
   }
 
-  /// Sends the message in the stream to the broker.
-  void send(MqttByteBuffer message) {
-    final length = message.length;
-    final messageBytes = message.read(length);
-    var buffer = messageBytes.buffer;
-    var bData = ByteData.view(buffer, 0, length);
-    wsClient.send(bData.jsify()!);
-  }
-
-  /// OnDone listener callback
+  /// OnError listener callback
   @override
-  void onDone() {
-    _disconnect();
+  void onError(dynamic error) {
+    disconnect();
     if (onDisconnected != null) {
       MqttLogger.log(
-        'MqttBrowserConnection::_onDone - calling disconnected callback',
+        'MqttConnectionBase::_onError - calling disconnected callback',
       );
       onDisconnected!();
     }
   }
 
-  void _disconnect() {
-    wsClient.close();
+  /// OnDone listener callback
+  @override
+  void onDone() {
+    disconnect();
+    if (onDisconnected != null) {
+      MqttLogger.log(
+        'MqttConnectionBase::_onDone - calling disconnected callback',
+      );
+      onDisconnected!();
+    }
   }
 
   // Create the listening stream subscription and subscribe the callbacks

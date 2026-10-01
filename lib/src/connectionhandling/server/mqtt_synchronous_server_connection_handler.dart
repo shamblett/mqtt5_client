@@ -14,15 +14,10 @@ class MqttSynchronousServerConnectionHandler
   /// Initializes a new instance of the SynchronousMqttConnectionHandler class.
   MqttSynchronousServerConnectionHandler(
     clientEventBus, {
-    required int maxConnectionAttempts,
-    required socketOptions,
+    required int super.maxConnectionAttempts,
+    required super.socketOptions,
     required socketTimeout,
-  }) : super(
-         clientEventBus,
-         maxConnectionAttempts: maxConnectionAttempts,
-         socketOptions: socketOptions,
-         socketTimeout: socketTimeout,
-       ) {
+  }) : super(clientEventBus, socketTimeout: socketTimeout) {
     this.clientEventBus = clientEventBus;
     connectTimer = socketTimeout == null
         ? MqttCancellableAsyncSleep(

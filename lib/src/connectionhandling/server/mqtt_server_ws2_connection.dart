@@ -96,7 +96,7 @@ class _DetachedSocket extends Stream<Uint8List> implements Socket {
 }
 
 /// The MQTT server alternative websocket connection class
-class MqttServerWs2Connection extends MqttServerConnection {
+class MqttServerWs2Connection extends MqttServerConnection<WebSocket> {
   static const statusLines = 3;
   static const bodyOffset = 2;
 
@@ -282,6 +282,43 @@ class MqttServerWs2Connection extends MqttServerConnection {
       Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
     }
     return completer.future;
+  }
+
+  /// Stops listening and closes the socket immediately.
+  @override
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
+    }
+
+    listeners.clear();
+  }
+
+  /// Closes the socket immediately.
+  @override
+  void closeClient() {
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    client = null;
+  }
+
+  @override
+  void _sendToClient(List<int> data) {
+    client?.add(data);
+  }
+
+  @override
+  void _listenToClient(
+    void Function(dynamic) onData,
+    void Function(dynamic) onError,
+    void Function() onDone,
+  ) {
+    client?.listen(onData, onError: onError, onDone: onDone);
   }
 
   Future<bool> _performWSHandshake(Socket socket, Uri uri) {

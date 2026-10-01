@@ -8,7 +8,7 @@
 part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT server secure connection class
-class MqttServerSecureConnection extends MqttServerConnection {
+class MqttServerSecureConnection extends MqttServerConnection<SecureSocket> {
   /// The security context for secure usage
   SecurityContext? context;
 
@@ -160,5 +160,45 @@ class MqttServerSecureConnection extends MqttServerConnection {
       Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
     }
     return completer.future;
+  }
+
+  /// Stops listening the socket immediately.
+  @override
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
+    }
+
+    listeners.clear();
+  }
+
+  /// Closes the socket immediately.
+  @override
+  void closeClient() {
+    client?.destroy();
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    if (client != null) {
+      client = null;
+    }
+  }
+
+  @override
+  void _sendToClient(List<int> data) {
+    client?.add(data);
+  }
+
+  @override
+  void _listenToClient(
+    void Function(dynamic) onData,
+    void Function(dynamic) onError,
+    void Function() onDone,
+  ) {
+    client?.listen(onData, onError: onError, onDone: onDone);
   }
 }

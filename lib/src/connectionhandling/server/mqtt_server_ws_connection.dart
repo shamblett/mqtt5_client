@@ -8,7 +8,7 @@
 part of '../../../mqtt5_server_client.dart';
 
 /// The MQTT server connection class for the websocket interface
-class MqttServerWsConnection extends MqttServerConnection {
+class MqttServerWsConnection extends MqttServerConnection<WebSocket> {
   /// Callback function to handle bad certificate (self signed).
   /// if true, ignore the error.
   bool Function(X509Certificate certificate)? onBadCertificate;
@@ -46,26 +46,43 @@ class MqttServerWsConnection extends MqttServerConnection {
     return _connect(server: server, port: port, auto: true);
   }
 
-  /// User requested or auto disconnect disconnection
+  /// Stops listening the socket immediately.
   @override
-  void disconnect({bool auto = false}) {
-    if (auto) {
-      _disconnect();
-    } else {
-      onDone();
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
+    }
+
+    listeners.clear();
+  }
+
+  /// Closes the socket immediately.
+  @override
+  void closeClient() {
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    if (client != null) {
+      client = null;
     }
   }
 
-  /// OnDone listener callback
   @override
-  void onDone() {
-    _disconnect();
-    if (onDisconnected != null) {
-      MqttLogger.log(
-        'MqttWsConnection::_onDone - calling disconnected callback',
-      );
-      onDisconnected!();
-    }
+  void _sendToClient(List<int> data) {
+    client?.add(data);
+  }
+
+  @override
+  void _listenToClient(
+    void Function(dynamic) onData,
+    void Function(dynamic) onError,
+    void Function() onDone,
+  ) {
+    client?.listen(onData, onError: onError, onDone: onDone);
   }
 
   Future<MqttConnectionStatus?> _connect({
@@ -130,12 +147,5 @@ class MqttServerWsConnection extends MqttServerConnection {
       Error.throwWithStackTrace(MqttNoConnectionException(message), stack);
     }
     return completer.future;
-  }
-
-  void _disconnect() {
-    if (client != null) {
-      client.close();
-      client = null;
-    }
   }
 }

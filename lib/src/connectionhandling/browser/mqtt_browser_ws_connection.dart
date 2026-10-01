@@ -188,32 +188,35 @@ class MqttBrowserWsConnection extends MqttBrowserConnection {
     ];
   }
 
-  /// OnError listener callback
-  @override
-  void onError(dynamic error) {
-    _disconnect();
-    if (onDisconnected != null) {
-      MqttLogger.log(
-        'MqttConnectionBase::_onError - calling disconnected callback',
-      );
-      onDisconnected!();
-    }
+  /// Sends the message in the stream to the broker.
+  void send(MqttByteBuffer message) {
+    final length = message.length;
+    final messageBytes = message.read(length);
+    var buffer = messageBytes.buffer;
+    var bData = ByteData.view(buffer, 0, length);
+    wsClient.send(bData.jsify()!);
   }
 
-  /// OnDone listener callback
+  /// Stops listening and closes the socket immediately.
   @override
-  void onDone() {
-    _disconnect();
-    if (onDisconnected != null) {
-      MqttLogger.log(
-        'MqttConnectionBase::_onDone - calling disconnected callback',
-      );
-      onDisconnected!();
+  void stopListening() {
+    for (final listener in listeners) {
+      listener.cancel();
     }
+
+    listeners.clear();
   }
 
+  /// Closes the socket immediately.
   @override
-  void _disconnect() {
-    wsClient.close();
+  void closeClient() {
+    client?.close();
+  }
+
+  /// Closes and dispose the socket immediately.
+  @override
+  void disposeClient() {
+    closeClient();
+    client = null;
   }
 }
