@@ -34,7 +34,10 @@ class MqttServerNormalConnection extends MqttServerConnection<Socket> {
     MqttLogger.log('MqttNormalConnection::connect- entered');
     try {
       // Connect and save the socket.
-      Socket.connect(server, port, timeout: socketTimeout)
+      _connectToServer(
+            server,
+            (host) => Socket.connect(host, port, timeout: socketTimeout),
+          )
           .then((dynamic socket) {
             // Socket options
             final applied = _applySocketOptions(socket, socketOptions);
@@ -76,7 +79,7 @@ class MqttServerNormalConnection extends MqttServerConnection<Socket> {
     MqttLogger.log('MqttNormalConnection::connectAuto - entered');
     try {
       // Connect and save the socket.
-      Socket.connect(server, port)
+      _connectToServer(server, (host) => Socket.connect(host, port))
           .then((dynamic socket) {
             // Socket options
             final applied = _applySocketOptions(socket, socketOptions);

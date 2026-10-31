@@ -24,6 +24,16 @@ class MqttServerClient extends MqttClient {
   /// secure websockets(wss).
   bool secure = false;
 
+  /// If set, the server name is resolved and each of its addresses is tried
+  /// in random order, moving on to the next when the connection, or for a
+  /// secure connection the TLS handshake, fails. Use it when the name has
+  /// several addresses to spread clients across brokers: left to the
+  /// platform resolver every client tends to connect to the same address,
+  /// and a failed TLS handshake is not retried on another one.
+  ///
+  /// Applicable only to TCP connections, not websockets.
+  bool randomizeServerAddresses = false;
+
   /// Max connection attempts
   final int maxConnectionAttempts;
 
@@ -120,6 +130,7 @@ class MqttServerClient extends MqttClient {
       connectionHandler.securityContext = securityContext;
     }
     connectionHandler.onBadCertificate = onBadCertificate;
+    connectionHandler.randomizeServerAddresses = randomizeServerAddresses;
     return await super.connect(username, password);
   }
 }
