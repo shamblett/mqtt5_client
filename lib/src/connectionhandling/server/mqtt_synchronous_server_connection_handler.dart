@@ -106,6 +106,7 @@ class MqttSynchronousServerConnectionHandler
           );
         }
         connection.onDisconnected = onDisconnected;
+        connection.randomizeServerAddresses = randomizeServerAddresses;
       }
 
       // Connect

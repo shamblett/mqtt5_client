@@ -31,6 +31,9 @@ abstract class MqttServerConnectionHandler extends MqttConnectionHandlerBase {
   /// If set use a secure connection, note TCP only, not websocket.
   bool secure = false;
 
+  /// See [MqttServerConnection.randomizeServerAddresses].
+  bool randomizeServerAddresses = false;
+
   /// The security context for secure usage
   dynamic securityContext;
 
