@@ -20,6 +20,11 @@ abstract class MqttServerConnection<T extends Object>
   /// Socket timeout duration.
   Duration? socketTimeout;
 
+  /// If set, the server name is resolved and each of its addresses is tried
+  /// in random order, moving on to the next when the connection, or for a
+  /// secure connection the TLS handshake, fails. TCP connections only.
+  bool randomizeServerAddresses = false;
+
   /// Default constructor
   MqttServerConnection(
     super.clientEventBus,
@@ -57,6 +62,42 @@ abstract class MqttServerConnection<T extends Object>
     final length = message.length;
     final messageBytes = message.read(length);
     _sendToClient(messageBytes.toList());
+  }
+
+  /// Runs [attempt] against [server], or with [randomizeServerAddresses]
+  /// against each of its addresses in random order until one succeeds.
+  ///
+  /// A broker name with several addresses is usually there to spread clients
+  /// across brokers, but the platform resolver typically returns the same
+  /// order every time, and a TLS handshake failure is not retried on the
+  /// next address, so every client ends up on the first one, including when
+  /// it is the one that is failing. An address from a lookup keeps the name
+  /// it was looked up by, so a secure connection still verifies the
+  /// certificate against the server name.
+  Future<S> _connectToServer<S>(
+    String server,
+    Future<S> Function(Object host) attempt,
+  ) async {
+    if (!randomizeServerAddresses || InternetAddress.tryParse(server) != null) {
+      return attempt(server);
+    }
+    final addresses = await InternetAddress.lookup(server);
+    addresses.shuffle();
+    Object? lastError;
+    StackTrace? lastStack;
+    for (final address in addresses) {
+      try {
+        return await attempt(address);
+      } catch (e, stack) {
+        MqttLogger.log(
+          'MqttServerConnection::_connectToServer - ${address.address} '
+          'failed, $e',
+        );
+        lastError = e;
+        lastStack = stack;
+      }
+    }
+    Error.throwWithStackTrace(lastError!, lastStack!);
   }
 
   /// Write data to the client. Must be implemented by subclasses.

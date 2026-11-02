@@ -41,12 +41,15 @@ class MqttServerSecureConnection extends MqttServerConnection<SecureSocket> {
     final completer = Completer<MqttConnectionStatus?>();
     MqttLogger.log('MqttServerSecureConnection::connect - entered');
     try {
-      SecureSocket.connect(
+      _connectToServer(
             server,
-            port,
-            onBadCertificate: onBadCertificate,
-            context: context,
-            timeout: socketTimeout,
+            (host) => SecureSocket.connect(
+              host,
+              port,
+              onBadCertificate: onBadCertificate,
+              context: context,
+              timeout: socketTimeout,
+            ),
           )
           .then((SecureSocket socket) {
             MqttLogger.log(
@@ -105,11 +108,14 @@ class MqttServerSecureConnection extends MqttServerConnection<SecureSocket> {
     final completer = Completer<MqttConnectionStatus?>();
     MqttLogger.log('MqttServerSecureConnection::connectAuto - entered');
     try {
-      SecureSocket.connect(
+      _connectToServer(
             server,
-            port,
-            onBadCertificate: onBadCertificate,
-            context: context,
+            (host) => SecureSocket.connect(
+              host,
+              port,
+              onBadCertificate: onBadCertificate,
+              context: context,
+            ),
           )
           .then((SecureSocket socket) {
             MqttLogger.log(
