@@ -57,6 +57,13 @@ abstract class MqttServerConnection<T extends Object>
     return completer.future;
   }
 
+  /// Sends the message in the stream to the broker.
+  void send(MqttByteBuffer message) {
+    final length = message.length;
+    final messageBytes = message.read(length);
+    _sendToClient(messageBytes.toList());
+  }
+
   /// Runs [attempt] against [server], or with [randomizeServerAddresses]
   /// against each of its addresses in random order until one succeeds.
   ///
@@ -91,13 +98,6 @@ abstract class MqttServerConnection<T extends Object>
       }
     }
     Error.throwWithStackTrace(lastError!, lastStack!);
-  }
-
-  /// Sends the message in the stream to the broker.
-  void send(MqttByteBuffer message) {
-    final length = message.length;
-    final messageBytes = message.read(length);
-    _sendToClient(messageBytes.toList());
   }
 
   /// Write data to the client. Must be implemented by subclasses.

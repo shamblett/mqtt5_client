@@ -47,8 +47,9 @@ void main() {
         args,
         workingDirectory: certs.path,
       );
-      if (r.exitCode != 0)
+      if (r.exitCode != 0) {
         throw StateError('openssl ${args.first}: ${r.stderr}');
+      }
     }
 
     try {
@@ -116,6 +117,7 @@ void main() {
     } on Object {
       return null;
     }
+    // ignore: invalid_use_of_protected_member
     return conn.client;
   }
 
