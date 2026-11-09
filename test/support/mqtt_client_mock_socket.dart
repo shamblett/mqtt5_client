@@ -70,6 +70,11 @@ class MockSocket extends Mock implements Socket {
     final completer = Completer<Future>();
     return completer.future;
   }
+
+  // The connections listen to done, so the mock needs one: like close, it
+  // never completes.
+  @override
+  Future get done => Completer<Future>().future;
 }
 
 ///
