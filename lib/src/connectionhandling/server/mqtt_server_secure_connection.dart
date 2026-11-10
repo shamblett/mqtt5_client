@@ -63,6 +63,9 @@ class MqttServerSecureConnection extends MqttServerConnection<SecureSocket> {
               );
             }
             client = socket;
+            // A socket error also completes done with the same error. The
+            // stream listener already handles it, so mark done as handled.
+            client?.done.ignore();
             MqttLogger.log(
               'MqttServerSecureConnection::connect - start listening',
             );
@@ -129,6 +132,9 @@ class MqttServerSecureConnection extends MqttServerConnection<SecureSocket> {
               );
             }
             client = socket;
+            // A socket error also completes done with the same error. The
+            // stream listener already handles it, so mark done as handled.
+            client?.done.ignore();
             MqttLogger.log(
               'MqttServerSecureConnection::connectAuto - start listening',
             );
