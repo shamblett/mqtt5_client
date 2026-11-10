@@ -1,3 +1,6 @@
+# 5.3.0
+- [Issue 207](https://github.com/shamblett/mqtt5_client/issues/207)
+
 # 5.2.0
 - [PR 204](https://github.com/shamblett/mqtt5_client/pull/204)
 

@@ -5,18 +5,18 @@ DocumentName: mqtt5_client
 DocumentNamespace: https://pub.dev/packages/mqtt5_client
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2026-11-02T09:46:18Z
+Created: 2026-11-10T09:32:28Z
 
 
 PackageName: mqtt5-client
 SPDXID: SPDXRef-Package-mqtt5-client
-PackageVersion: 5.2.0
+PackageVersion: 5.3.0
 PackageFileName: mqtt5_client
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/mqtt5_client
 FilesAnalyzed: true
-PackageVerificationCode: 4241096516c3b8226877e0437fd9278ade6e354d
+PackageVerificationCode: eb25fa87a30f5288850d34328a9fcafa7d6de2a0
 PackageHomePage: https://pub.dev/packages/mqtt5_client
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -100,7 +100,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/connectionhandling/mqtt_connection_handler_base.dart
 SPDXID: SPDXRef-mqtt-connection-handler-base-8
 FileType: SOURCE
-FileChecksum: SHA1: 991bb491b7cc32a16c1a442b64b883c2f33404dd
+FileChecksum: SHA1: 7c0a03e9d6c15d2dad69507e0aada73b1bea3912
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -109,7 +109,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/connectionhandling/mqtt_connection_keep_alive.dart
 SPDXID: SPDXRef-mqtt-connection-keep-alive-9
 FileType: SOURCE
-FileChecksum: SHA1: b9db1e04271415f68a392bca43fe1d72c107439e
+FileChecksum: SHA1: 7573eaa3b68465a69b36c517f65e428c2bcdb2c2
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -118,7 +118,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/connectionhandling/mqtt_connection_state.dart
 SPDXID: SPDXRef-mqtt-connection-state-10
 FileType: SOURCE
-FileChecksum: SHA1: 7c0a03e9d6c15d2dad69507e0aada73b1bea3912
+FileChecksum: SHA1: 7a2775d44800a6fb6cf5685cc72e2e2390aa41ad
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -1108,7 +1108,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-120
 FileType: TEXT
-FileChecksum: SHA1: 9e78f8c0221eee2b32fd83517ca2ae262a4f4f7f
+FileChecksum: SHA1: fc8fa43803256e64b70f9d6065afa3c1b42a7317
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
