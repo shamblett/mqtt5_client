@@ -47,6 +47,9 @@ class MqttServerNormalConnection extends MqttServerConnection<Socket> {
               );
             }
             client = socket;
+            // A socket error also completes done with the same error. The
+            // stream listener already handles it, so mark done as handled.
+            client?.done.ignore();
             _startListening();
             completer.complete();
           })
@@ -89,6 +92,9 @@ class MqttServerNormalConnection extends MqttServerConnection<Socket> {
               );
             }
             client = socket;
+            // A socket error also completes done with the same error. The
+            // stream listener already handles it, so mark done as handled.
+            client?.done.ignore();
             _startListening();
             completer.complete();
           })
