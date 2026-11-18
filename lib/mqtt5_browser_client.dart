@@ -9,9 +9,13 @@ library;
 
 import 'dart:async';
 import 'dart:js_interop';
+
 import 'package:web/web.dart';
+
 import 'dart:typed_data';
+
 import 'package:event_bus/event_bus.dart' as events;
+
 import 'mqtt5_client.dart';
 
 part 'src/mqtt_browser_client.dart';

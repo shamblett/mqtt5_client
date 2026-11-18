@@ -9,12 +9,14 @@
 library;
 
 import 'dart:io';
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 import 'package:event_bus/event_bus.dart' as events;
+
 import 'support/mqtt_client_mockbroker.dart';
 import 'support/mqtt_client_mock_socket.dart';
 
@@ -63,17 +65,15 @@ void main() {
     });
     test('Ping response received', () {
       final MqttMessage msg = MqttPingResponseMessage();
-      when(
-        ka.pingResponseReceived(msg),
-      ).thenReturn(ka.ka.pingResponseReceived(msg));
+      when(ka.pingResponseReceived(msg))
+          .thenReturn(ka.ka.pingResponseReceived(msg));
       expect(ka.pingResponseReceived(msg), isTrue);
       verify(ka.pingResponseReceived(msg));
     });
     test('Ping request received', () {
       final MqttMessage msg = MqttPingRequestMessage();
-      when(
-        ka.pingRequestReceived(msg),
-      ).thenReturn(ka.ka.pingRequestReceived(msg));
+      when(ka.pingRequestReceived(msg))
+          .thenReturn(ka.ka.pingRequestReceived(msg));
       expect(ka.pingRequestReceived(msg), isTrue);
       verify(ka.pingRequestReceived(msg));
     });
