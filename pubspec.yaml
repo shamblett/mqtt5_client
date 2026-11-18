@@ -5,7 +5,7 @@ repository: https://github.com/shamblett/mqtt5_client
 homepage: https://github.com/shamblett/mqtt5_client
 
 environment:
- sdk: '>=3.8.0 <4.0.0'
+ sdk: '>=3.14.0 <4.0.0'
 
 funding:
  - https://www.darticulate.com/#funding
@@ -15,21 +15,21 @@ dependencies:
  event_bus: '^2.0.1'
  path: '^1.9.0'
  universal_html: '^2.2.4'
- crypto: '^3.0.6'
- meta: '^1.15.0'
+ crypto: '^3.0.8'
+ meta: '^1.19.0'
  web: '>=0.5.0 <2.0.0'
  characters: '^1.4.0'
  
 dev_dependencies:
- test: '^1.25.8'
- mockito: '^5.4.4'
- mocktail: '^1.0.4'
- build_runner: '^2.4.13'
- build_test: '^2.2.2'
- build_web_compilers: '^4.0.11'
- lints: '^5.0.0'
- aws_common: '^0.7.6'
- aws_signature_v4: '^0.6.5'
+ test: '^1.33.0'
+ mockito: '^5.8.1'
+ mocktail: '^1.0.5'
+ build_runner: '^2.16.2'
+ build_test: '^3.5.21'
+ build_web_compilers: '^4.8.12'
+ lints: '^6.1.0'
+ aws_common: '^0.7.16'
+ aws_signature_v4: '^0.6.13'
  http: '^1.4.0'
 
 topics:

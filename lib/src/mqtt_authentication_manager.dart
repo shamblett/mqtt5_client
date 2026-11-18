@@ -74,7 +74,7 @@ class MqttAuthenticationManager {
             completer.complete(timeoutMsg);
           },
         )
-        .listen((final rxMessage) {
+        .listen((rxMessage) {
           subscription.cancel();
           completer.complete(rxMessage);
         });

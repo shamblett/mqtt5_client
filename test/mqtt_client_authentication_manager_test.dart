@@ -14,6 +14,7 @@ import 'dart:io';
 import 'package:event_bus/event_bus.dart' as events;
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:test/test.dart';
+
 import 'support/mqtt_client_test_connection_handler.dart';
 
 void main() {
@@ -31,7 +32,7 @@ void main() {
         .withAuthenticationMethod('Auth method')
         .withReasonCode(MqttAuthenticateReasonCode.reAuthenticate);
     expect(message.isValid, isTrue);
-    authManager.authenticated.stream.listen((final rxMessage) {
+    authManager.authenticated.stream.listen((rxMessage) {
       expect(rxMessage.authenticationMethod, 'Auth method');
       expect(rxMessage.timeout, isFalse);
     });

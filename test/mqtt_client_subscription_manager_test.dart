@@ -8,12 +8,14 @@
 library;
 
 import 'dart:io';
+
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_server_client.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 import 'package:event_bus/event_bus.dart' as events;
+
 import 'support/mqtt_client_test_connection_handler.dart';
 
 // Mock classes
@@ -451,292 +453,283 @@ void main() {
         );
         expect(subs.pendingSubscriptions, isEmpty);
       });
-      test(
-        'Acknowledged subscription request for no pending subscription is ignored',
-        () {
-          var cbCalled = false;
-          void subCallback(MqttSubscription subscription) {
-            cbCalled = true;
-          }
+      test('Acknowledged subscription request for no pending subscription is ignored', () {
+        var cbCalled = false;
+        void subCallback(MqttSubscription subscription) {
+          cbCalled = true;
+        }
 
-          final clientEventBus = events.EventBus();
-          final testCHS = TestConnectionHandlerSend(
-            clientEventBus,
-            socketOptions: socketOptions,
-            socketTimeout: null,
-          );
-          const topic = 'testtopic';
-          const qos = MqttQos.atLeastOnce;
-          final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-          subs.onSubscribed = subCallback;
-          subs.messageIdentifierDispenser.reset();
-          final subscription = MqttSubscription(
-            MqttSubscriptionTopic(topic),
-            MqttSubscriptionOption()..maximumQos = qos,
-          );
-          subs.subscribeSubscription(subscription);
-          subs.subscribeSubscriptionTopic(topic, qos);
-          expect(
-            subs.getSubscriptionTopicStatus(topic),
-            MqttSubscriptionStatus.pending,
-          );
-          expect(
-            testCHS.sentMessages[0],
-            const TypeMatcher<MqttSubscribeMessage>(),
-          );
-          final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
-          expect(msg.variableHeader!.messageIdentifier, 1);
-          // Confirm the subscription
-          final buffer = typed.Uint8Buffer();
-          buffer.add(0x90);
-          buffer.add(0x18);
-          buffer.add(0x00); // Message identifier
-          buffer.add(0x02);
-          buffer.add(0x14); // Property length
-          buffer.add(0x1f); // Reason String
-          buffer.add(0x00);
-          buffer.add(0x06);
-          buffer.add('r'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('s'.codeUnitAt(0));
-          buffer.add('o'.codeUnitAt(0));
-          buffer.add('n'.codeUnitAt(0));
-          buffer.add(0x26); // User property
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('b'.codeUnitAt(0));
-          buffer.add('c'.codeUnitAt(0));
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('d'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('f'.codeUnitAt(0));
-          buffer.add(0x00); // Payload
-          final stream = MqttByteBuffer(buffer);
-          final baseMessage = MqttMessage.createFrom(stream)!;
-          final subAckMsg = baseMessage as MqttSubscribeAckMessage;
-          final ret = subs.confirmSubscription(subAckMsg);
-          expect(ret, isFalse);
-          expect(cbCalled, isFalse);
-          expect(subs.subscriptions.length, 0);
-          expect(
-            subs.getSubscriptionTopicStatus(topic),
-            MqttSubscriptionStatus.pending,
-          );
-          expect(subs.pendingSubscriptions.length, 1);
-        },
-      );
-      test(
-        'Acknowledged but failed subscription request removes pending subscription',
-        () {
-          var cbCalled = false;
-          var cbFailCalled = false;
-          void subCallback(MqttSubscription subscription) {
-            cbCalled = true;
-          }
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(
+          clientEventBus,
+          socketOptions: socketOptions,
+          socketTimeout: null,
+        );
+        const topic = 'testtopic';
+        const qos = MqttQos.atLeastOnce;
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.onSubscribed = subCallback;
+        subs.messageIdentifierDispenser.reset();
+        final subscription = MqttSubscription(
+          MqttSubscriptionTopic(topic),
+          MqttSubscriptionOption()..maximumQos = qos,
+        );
+        subs.subscribeSubscription(subscription);
+        subs.subscribeSubscriptionTopic(topic, qos);
+        expect(
+          subs.getSubscriptionTopicStatus(topic),
+          MqttSubscriptionStatus.pending,
+        );
+        expect(
+          testCHS.sentMessages[0],
+          const TypeMatcher<MqttSubscribeMessage>(),
+        );
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        expect(msg.variableHeader!.messageIdentifier, 1);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x18);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x02);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final ret = subs.confirmSubscription(subAckMsg);
+        expect(ret, isFalse);
+        expect(cbCalled, isFalse);
+        expect(subs.subscriptions.length, 0);
+        expect(
+          subs.getSubscriptionTopicStatus(topic),
+          MqttSubscriptionStatus.pending,
+        );
+        expect(subs.pendingSubscriptions.length, 1);
+      });
+      test('Acknowledged but failed subscription request removes pending subscription', () {
+        var cbCalled = false;
+        var cbFailCalled = false;
+        void subCallback(MqttSubscription subscription) {
+          cbCalled = true;
+        }
 
-          void subFailCallback(MqttSubscription subscription) {
-            expect(subscription.topic.rawTopic, 'testtopic');
-            expect(subscription.userProperties.length, 1);
-            expect(subscription.userProperties[0].pairName, 'abc');
-            expect(subscription.userProperties[0].pairValue, 'def');
-            expect(
-              subscription.reasonCode,
-              MqttSubscribeReasonCode.notAuthorized,
+        void subFailCallback(MqttSubscription subscription) {
+          expect(subscription.topic.rawTopic, 'testtopic');
+          expect(subscription.userProperties.length, 1);
+          expect(subscription.userProperties[0].pairName, 'abc');
+          expect(subscription.userProperties[0].pairValue, 'def');
+          expect(
+            subscription.reasonCode,
+            MqttSubscribeReasonCode.notAuthorized,
+          );
+          cbFailCalled = true;
+        }
+
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(
+          clientEventBus,
+          socketOptions: socketOptions,
+          socketTimeout: null,
+        );
+        const topic = 'testtopic';
+        const qos = MqttQos.atLeastOnce;
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.messageIdentifierDispenser.reset();
+        subs.onSubscribeFail = subFailCallback;
+        subs.onSubscribed = subCallback;
+        subs.subscribeSubscriptionTopic(topic, qos);
+        expect(
+          subs.getSubscriptionTopicStatus(topic),
+          MqttSubscriptionStatus.pending,
+        );
+        expect(
+          testCHS.sentMessages[0],
+          const TypeMatcher<MqttSubscribeMessage>(),
+        );
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        expect(msg.variableHeader!.messageIdentifier, 1);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x18);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x87); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final ret = subs.confirmSubscription(subAckMsg);
+        expect(ret, isFalse);
+        expect(cbCalled, isFalse);
+        expect(cbFailCalled, isTrue);
+        expect(subs.subscriptions.length, 0);
+        expect(
+          subs.getSubscriptionTopicStatus(topic),
+          MqttSubscriptionStatus.doesNotExist,
+        );
+        expect(subs.pendingSubscriptions.length, 0);
+      });
+      test('Acknowledged but one failed subscription in list request removes pending subscription', () {
+        var cbCalled = 0;
+        var cbFailCalled = false;
+        void subCallback(MqttSubscription subscription) {
+          if (subscription.topic.rawTopic == 'testtopic1') {
+            cbCalled++;
+          } else if (subscription.topic.rawTopic == 'testtopic3') {
+            cbCalled++;
+          } else {
+            fail(
+              'Acknowledged but one failed subscription in list request removes pending subscription - failed topic name received ${subscription.topic.rawTopic}',
             );
-            cbFailCalled = true;
           }
+        }
 
-          final clientEventBus = events.EventBus();
-          final testCHS = TestConnectionHandlerSend(
-            clientEventBus,
-            socketOptions: socketOptions,
-            socketTimeout: null,
-          );
-          const topic = 'testtopic';
-          const qos = MqttQos.atLeastOnce;
-          final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-          subs.messageIdentifierDispenser.reset();
-          subs.onSubscribeFail = subFailCallback;
-          subs.onSubscribed = subCallback;
-          subs.subscribeSubscriptionTopic(topic, qos);
+        void subFailCallback(MqttSubscription subscription) {
+          expect(subscription.topic.rawTopic, 'testtopic2');
           expect(
-            subs.getSubscriptionTopicStatus(topic),
-            MqttSubscriptionStatus.pending,
+            subscription.reasonCode,
+            MqttSubscribeReasonCode.notAuthorized,
           );
-          expect(
-            testCHS.sentMessages[0],
-            const TypeMatcher<MqttSubscribeMessage>(),
-          );
-          final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
-          expect(msg.variableHeader!.messageIdentifier, 1);
-          // Confirm the subscription
-          final buffer = typed.Uint8Buffer();
-          buffer.add(0x90);
-          buffer.add(0x18);
-          buffer.add(0x00); // Message identifier
-          buffer.add(0x01);
-          buffer.add(0x14); // Property length
-          buffer.add(0x1f); // Reason String
-          buffer.add(0x00);
-          buffer.add(0x06);
-          buffer.add('r'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('s'.codeUnitAt(0));
-          buffer.add('o'.codeUnitAt(0));
-          buffer.add('n'.codeUnitAt(0));
-          buffer.add(0x26); // User property
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('b'.codeUnitAt(0));
-          buffer.add('c'.codeUnitAt(0));
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('d'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('f'.codeUnitAt(0));
-          buffer.add(0x87); // Payload
-          final stream = MqttByteBuffer(buffer);
-          final baseMessage = MqttMessage.createFrom(stream)!;
-          final subAckMsg = baseMessage as MqttSubscribeAckMessage;
-          final ret = subs.confirmSubscription(subAckMsg);
-          expect(ret, isFalse);
-          expect(cbCalled, isFalse);
-          expect(cbFailCalled, isTrue);
-          expect(subs.subscriptions.length, 0);
-          expect(
-            subs.getSubscriptionTopicStatus(topic),
-            MqttSubscriptionStatus.doesNotExist,
-          );
-          expect(subs.pendingSubscriptions.length, 0);
-        },
-      );
-      test(
-        'Acknowledged but one failed subscription in list request removes pending subscription',
-        () {
-          var cbCalled = 0;
-          var cbFailCalled = false;
-          void subCallback(MqttSubscription subscription) {
-            if (subscription.topic.rawTopic == 'testtopic1') {
-              cbCalled++;
-            } else if (subscription.topic.rawTopic == 'testtopic3') {
-              cbCalled++;
-            } else {
-              fail(
-                'Acknowledged but one failed subscription in list request removes pending subscription - failed topic name received ${subscription.topic.rawTopic}',
-              );
-            }
-          }
+          cbFailCalled = true;
+        }
 
-          void subFailCallback(MqttSubscription subscription) {
-            expect(subscription.topic.rawTopic, 'testtopic2');
-            expect(
-              subscription.reasonCode,
-              MqttSubscribeReasonCode.notAuthorized,
-            );
-            cbFailCalled = true;
-          }
-
-          final clientEventBus = events.EventBus();
-          final testCHS = TestConnectionHandlerSend(
-            clientEventBus,
-            socketOptions: socketOptions,
-            socketTimeout: null,
-          );
-          const topic1 = 'testtopic1';
-          const qos1 = MqttQos.atLeastOnce;
-          const topic2 = 'testtopic2';
-          const qos2 = MqttQos.atMostOnce;
-          const topic3 = 'testtopic3';
-          const qos3 = MqttQos.atLeastOnce;
-          final subscription1 = MqttSubscription(
-            MqttSubscriptionTopic(topic1),
-            MqttSubscriptionOption()..maximumQos = qos1,
-          );
-          final subscription2 = MqttSubscription(
-            MqttSubscriptionTopic(topic2),
-            MqttSubscriptionOption()..maximumQos = qos2,
-          );
-          final subscription3 = MqttSubscription(
-            MqttSubscriptionTopic(topic3),
-            MqttSubscriptionOption()..maximumQos = qos3,
-          );
-          final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-          subs.messageIdentifierDispenser.reset();
-          subs.onSubscribeFail = subFailCallback;
-          subs.onSubscribed = subCallback;
-          subs.subscribeSubscriptionList([
-            subscription1,
-            subscription2,
-            subscription3,
-          ]);
-          expect(
-            subs.getSubscriptionTopicStatus(topic1),
-            MqttSubscriptionStatus.pending,
-          );
-          expect(
-            subs.getSubscriptionTopicStatus(topic2),
-            MqttSubscriptionStatus.pending,
-          );
-          expect(
-            subs.getSubscriptionTopicStatus(topic3),
-            MqttSubscriptionStatus.pending,
-          );
-          expect(
-            testCHS.sentMessages[0],
-            const TypeMatcher<MqttSubscribeMessage>(),
-          );
-          final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
-          expect(msg.variableHeader!.messageIdentifier, 1);
-          // Confirm the subscription
-          final buffer = typed.Uint8Buffer();
-          buffer.add(0x90);
-          buffer.add(0x1a);
-          buffer.add(0x00); // Message identifier
-          buffer.add(0x01);
-          buffer.add(0x14); // Property length
-          buffer.add(0x1f); // Reason String
-          buffer.add(0x00);
-          buffer.add(0x06);
-          buffer.add('r'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('s'.codeUnitAt(0));
-          buffer.add('o'.codeUnitAt(0));
-          buffer.add('n'.codeUnitAt(0));
-          buffer.add(0x26); // User property
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('b'.codeUnitAt(0));
-          buffer.add('c'.codeUnitAt(0));
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('d'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('f'.codeUnitAt(0));
-          buffer.add(0x00); // Payload
-          buffer.add(0x87); // Payload
-          buffer.add(0x00); // Payload
-          final stream = MqttByteBuffer(buffer);
-          final baseMessage = MqttMessage.createFrom(stream)!;
-          final subAckMsg = baseMessage as MqttSubscribeAckMessage;
-          final ret = subs.confirmSubscription(subAckMsg);
-          expect(ret, isFalse);
-          expect(cbCalled, 2);
-          expect(cbFailCalled, isTrue);
-          expect(subs.subscriptions.length, 2);
-          expect(
-            subs.getSubscriptionTopicStatus(topic2),
-            MqttSubscriptionStatus.doesNotExist,
-          );
-          expect(subs.pendingSubscriptions.length, 0);
-        },
-      );
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(
+          clientEventBus,
+          socketOptions: socketOptions,
+          socketTimeout: null,
+        );
+        const topic1 = 'testtopic1';
+        const qos1 = MqttQos.atLeastOnce;
+        const topic2 = 'testtopic2';
+        const qos2 = MqttQos.atMostOnce;
+        const topic3 = 'testtopic3';
+        const qos3 = MqttQos.atLeastOnce;
+        final subscription1 = MqttSubscription(
+          MqttSubscriptionTopic(topic1),
+          MqttSubscriptionOption()..maximumQos = qos1,
+        );
+        final subscription2 = MqttSubscription(
+          MqttSubscriptionTopic(topic2),
+          MqttSubscriptionOption()..maximumQos = qos2,
+        );
+        final subscription3 = MqttSubscription(
+          MqttSubscriptionTopic(topic3),
+          MqttSubscriptionOption()..maximumQos = qos3,
+        );
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.messageIdentifierDispenser.reset();
+        subs.onSubscribeFail = subFailCallback;
+        subs.onSubscribed = subCallback;
+        subs.subscribeSubscriptionList([
+          subscription1,
+          subscription2,
+          subscription3,
+        ]);
+        expect(
+          subs.getSubscriptionTopicStatus(topic1),
+          MqttSubscriptionStatus.pending,
+        );
+        expect(
+          subs.getSubscriptionTopicStatus(topic2),
+          MqttSubscriptionStatus.pending,
+        );
+        expect(
+          subs.getSubscriptionTopicStatus(topic3),
+          MqttSubscriptionStatus.pending,
+        );
+        expect(
+          testCHS.sentMessages[0],
+          const TypeMatcher<MqttSubscribeMessage>(),
+        );
+        final msg = testCHS.sentMessages[0] as MqttSubscribeMessage;
+        expect(msg.variableHeader!.messageIdentifier, 1);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x1a);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        buffer.add(0x87); // Payload
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        final ret = subs.confirmSubscription(subAckMsg);
+        expect(ret, isFalse);
+        expect(cbCalled, 2);
+        expect(cbFailCalled, isTrue);
+        expect(subs.subscriptions.length, 2);
+        expect(
+          subs.getSubscriptionTopicStatus(topic2),
+          MqttSubscriptionStatus.doesNotExist,
+        );
+        expect(subs.pendingSubscriptions.length, 0);
+      });
     });
   });
 
@@ -1117,328 +1110,319 @@ void main() {
           );
         },
       );
-      test(
-        'Acknowledged unsubscription request for no pending unsubscription is ignored',
-        () {
-          var cbCalled = false;
-          void unsubCallback(MqttSubscription subscription) {
-            cbCalled = true;
-          }
+      test('Acknowledged unsubscription request for no pending unsubscription is ignored', () {
+        var cbCalled = false;
+        void unsubCallback(MqttSubscription subscription) {
+          cbCalled = true;
+        }
 
-          final clientEventBus = events.EventBus();
-          final testCHS = TestConnectionHandlerSend(
-            clientEventBus,
-            socketOptions: socketOptions,
-            socketTimeout: null,
-          );
-          const topic = 'testtopic';
-          const qos = MqttQos.atLeastOnce;
-          final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-          subs.onUnsubscribed = unsubCallback;
-          subs.messageIdentifierDispenser.reset();
-          subs.subscribeSubscriptionTopic(topic, qos);
-          // Confirm the subscription
-          final buffer = typed.Uint8Buffer();
-          buffer.add(0x90);
-          buffer.add(0x18);
-          buffer.add(0x00); // Message identifier
-          buffer.add(0x01);
-          buffer.add(0x14); // Property length
-          buffer.add(0x1f); // Reason String
-          buffer.add(0x00);
-          buffer.add(0x06);
-          buffer.add('r'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('s'.codeUnitAt(0));
-          buffer.add('o'.codeUnitAt(0));
-          buffer.add('n'.codeUnitAt(0));
-          buffer.add(0x26); // User property
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('b'.codeUnitAt(0));
-          buffer.add('c'.codeUnitAt(0));
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('d'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('f'.codeUnitAt(0));
-          buffer.add(0x00); // Payload
-          final stream = MqttByteBuffer(buffer);
-          final baseMessage = MqttMessage.createFrom(stream)!;
-          final subAckMsg = baseMessage as MqttSubscribeAckMessage;
-          subs.confirmSubscription(subAckMsg);
-          // Unsubscribe
-          subs.unsubscribeTopic(topic);
-          // Confirm the unsubscribe
-          final ubuffer = typed.Uint8Buffer();
-          ubuffer.add(0xb0);
-          ubuffer.add(0x18);
-          ubuffer.add(0x00); // Message identifier
-          ubuffer.add(0x08);
-          ubuffer.add(0x14); // Property length
-          ubuffer.add(0x1f); // Reason String
-          ubuffer.add(0x00);
-          ubuffer.add(0x06);
-          ubuffer.add('r'.codeUnitAt(0));
-          ubuffer.add('e'.codeUnitAt(0));
-          ubuffer.add('a'.codeUnitAt(0));
-          ubuffer.add('s'.codeUnitAt(0));
-          ubuffer.add('o'.codeUnitAt(0));
-          ubuffer.add('n'.codeUnitAt(0));
-          ubuffer.add(0x26); // User property
-          ubuffer.add(0x00);
-          ubuffer.add(0x03);
-          ubuffer.add('a'.codeUnitAt(0));
-          ubuffer.add('b'.codeUnitAt(0));
-          ubuffer.add('c'.codeUnitAt(0));
-          ubuffer.add(0x00);
-          ubuffer.add(0x03);
-          ubuffer.add('d'.codeUnitAt(0));
-          ubuffer.add('e'.codeUnitAt(0));
-          ubuffer.add('f'.codeUnitAt(0));
-          ubuffer.add(0x00); // Payload
-          final ustream = MqttByteBuffer(ubuffer);
-          final ubaseMessage = MqttMessage.createFrom(ustream)!;
-          final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
-          final uret = subs.confirmUnsubscribe(ubm);
-          expect(uret, isFalse);
-          expect(cbCalled, isFalse);
-          expect(subs.pendingUnsubscriptions.length, 1);
-          expect(subs.subscriptions.length, 1);
-          expect(
-            subs.getSubscriptionTopicStatus(topic),
-            MqttSubscriptionStatus.active,
-          );
-        },
-      );
-      test(
-        'Acknowledged but failed unsubscription request removes pending unsubscription',
-        () {
-          var cbCalled = false;
-          void unsubCallback(MqttSubscription subscription) {
-            cbCalled = true;
-          }
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(
+          clientEventBus,
+          socketOptions: socketOptions,
+          socketTimeout: null,
+        );
+        const topic = 'testtopic';
+        const qos = MqttQos.atLeastOnce;
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.onUnsubscribed = unsubCallback;
+        subs.messageIdentifierDispenser.reset();
+        subs.subscribeSubscriptionTopic(topic, qos);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x18);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        subs.confirmSubscription(subAckMsg);
+        // Unsubscribe
+        subs.unsubscribeTopic(topic);
+        // Confirm the unsubscribe
+        final ubuffer = typed.Uint8Buffer();
+        ubuffer.add(0xb0);
+        ubuffer.add(0x18);
+        ubuffer.add(0x00); // Message identifier
+        ubuffer.add(0x08);
+        ubuffer.add(0x14); // Property length
+        ubuffer.add(0x1f); // Reason String
+        ubuffer.add(0x00);
+        ubuffer.add(0x06);
+        ubuffer.add('r'.codeUnitAt(0));
+        ubuffer.add('e'.codeUnitAt(0));
+        ubuffer.add('a'.codeUnitAt(0));
+        ubuffer.add('s'.codeUnitAt(0));
+        ubuffer.add('o'.codeUnitAt(0));
+        ubuffer.add('n'.codeUnitAt(0));
+        ubuffer.add(0x26); // User property
+        ubuffer.add(0x00);
+        ubuffer.add(0x03);
+        ubuffer.add('a'.codeUnitAt(0));
+        ubuffer.add('b'.codeUnitAt(0));
+        ubuffer.add('c'.codeUnitAt(0));
+        ubuffer.add(0x00);
+        ubuffer.add(0x03);
+        ubuffer.add('d'.codeUnitAt(0));
+        ubuffer.add('e'.codeUnitAt(0));
+        ubuffer.add('f'.codeUnitAt(0));
+        ubuffer.add(0x00); // Payload
+        final ustream = MqttByteBuffer(ubuffer);
+        final ubaseMessage = MqttMessage.createFrom(ustream)!;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final uret = subs.confirmUnsubscribe(ubm);
+        expect(uret, isFalse);
+        expect(cbCalled, isFalse);
+        expect(subs.pendingUnsubscriptions.length, 1);
+        expect(subs.subscriptions.length, 1);
+        expect(
+          subs.getSubscriptionTopicStatus(topic),
+          MqttSubscriptionStatus.active,
+        );
+      });
+      test('Acknowledged but failed unsubscription request removes pending unsubscription', () {
+        var cbCalled = false;
+        void unsubCallback(MqttSubscription subscription) {
+          cbCalled = true;
+        }
 
-          final clientEventBus = events.EventBus();
-          final testCHS = TestConnectionHandlerSend(
-            clientEventBus,
-            socketOptions: socketOptions,
-            socketTimeout: null,
-          );
-          const topic = 'testtopic';
-          const qos = MqttQos.atLeastOnce;
-          final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-          subs.onUnsubscribed = unsubCallback;
-          subs.messageIdentifierDispenser.reset();
-          subs.subscribeSubscriptionTopic(topic, qos);
-          // Confirm the subscription
-          final buffer = typed.Uint8Buffer();
-          buffer.add(0x90);
-          buffer.add(0x18);
-          buffer.add(0x00); // Message identifier
-          buffer.add(0x01);
-          buffer.add(0x14); // Property length
-          buffer.add(0x1f); // Reason String
-          buffer.add(0x00);
-          buffer.add(0x06);
-          buffer.add('r'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('s'.codeUnitAt(0));
-          buffer.add('o'.codeUnitAt(0));
-          buffer.add('n'.codeUnitAt(0));
-          buffer.add(0x26); // User property
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('b'.codeUnitAt(0));
-          buffer.add('c'.codeUnitAt(0));
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('d'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('f'.codeUnitAt(0));
-          buffer.add(0x00); // Payload
-          final stream = MqttByteBuffer(buffer);
-          final baseMessage = MqttMessage.createFrom(stream)!;
-          final subAckMsg = baseMessage as MqttSubscribeAckMessage;
-          subs.confirmSubscription(subAckMsg);
-          // Unsubscribe
-          subs.unsubscribeTopic(topic);
-          // Confirm the unsubscribe
-          final ubuffer = typed.Uint8Buffer();
-          ubuffer.add(0xb0);
-          ubuffer.add(0x18);
-          ubuffer.add(0x00); // Message identifier
-          ubuffer.add(0x02);
-          ubuffer.add(0x14); // Property length
-          ubuffer.add(0x1f); // Reason String
-          ubuffer.add(0x00);
-          ubuffer.add(0x06);
-          ubuffer.add('r'.codeUnitAt(0));
-          ubuffer.add('e'.codeUnitAt(0));
-          ubuffer.add('a'.codeUnitAt(0));
-          ubuffer.add('s'.codeUnitAt(0));
-          ubuffer.add('o'.codeUnitAt(0));
-          ubuffer.add('n'.codeUnitAt(0));
-          ubuffer.add(0x26); // User property
-          ubuffer.add(0x00);
-          ubuffer.add(0x03);
-          ubuffer.add('a'.codeUnitAt(0));
-          ubuffer.add('b'.codeUnitAt(0));
-          ubuffer.add('c'.codeUnitAt(0));
-          ubuffer.add(0x00);
-          ubuffer.add(0x03);
-          ubuffer.add('d'.codeUnitAt(0));
-          ubuffer.add('e'.codeUnitAt(0));
-          ubuffer.add('f'.codeUnitAt(0));
-          ubuffer.add(0x87); // Payload
-          final ustream = MqttByteBuffer(ubuffer);
-          final ubaseMessage = MqttMessage.createFrom(ustream)!;
-          final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
-          final uret = subs.confirmUnsubscribe(ubm);
-          expect(uret, isFalse);
-          expect(cbCalled, isFalse);
-          expect(subs.pendingUnsubscriptions.length, 0);
-          expect(subs.subscriptions.length, 1);
-          expect(
-            subs.getSubscriptionTopicStatus(topic),
-            MqttSubscriptionStatus.active,
-          );
-        },
-      );
-      test(
-        'Acknowledged but one failed subscription in list request removes pending subscription',
-        () {
-          var cbCalled = 0;
-          void unsubCallback(MqttSubscription subscription) {
-            cbCalled++;
-            if (subscription.topic.rawTopic == 'testtopic2') {
-              fail(
-                'Acknowledged but one failed subscription in list request removes pending subscription - subscruption topic ${subscription.topic.rawTopic} should not be removed.',
-              );
-            }
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(
+          clientEventBus,
+          socketOptions: socketOptions,
+          socketTimeout: null,
+        );
+        const topic = 'testtopic';
+        const qos = MqttQos.atLeastOnce;
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.onUnsubscribed = unsubCallback;
+        subs.messageIdentifierDispenser.reset();
+        subs.subscribeSubscriptionTopic(topic, qos);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x18);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        subs.confirmSubscription(subAckMsg);
+        // Unsubscribe
+        subs.unsubscribeTopic(topic);
+        // Confirm the unsubscribe
+        final ubuffer = typed.Uint8Buffer();
+        ubuffer.add(0xb0);
+        ubuffer.add(0x18);
+        ubuffer.add(0x00); // Message identifier
+        ubuffer.add(0x02);
+        ubuffer.add(0x14); // Property length
+        ubuffer.add(0x1f); // Reason String
+        ubuffer.add(0x00);
+        ubuffer.add(0x06);
+        ubuffer.add('r'.codeUnitAt(0));
+        ubuffer.add('e'.codeUnitAt(0));
+        ubuffer.add('a'.codeUnitAt(0));
+        ubuffer.add('s'.codeUnitAt(0));
+        ubuffer.add('o'.codeUnitAt(0));
+        ubuffer.add('n'.codeUnitAt(0));
+        ubuffer.add(0x26); // User property
+        ubuffer.add(0x00);
+        ubuffer.add(0x03);
+        ubuffer.add('a'.codeUnitAt(0));
+        ubuffer.add('b'.codeUnitAt(0));
+        ubuffer.add('c'.codeUnitAt(0));
+        ubuffer.add(0x00);
+        ubuffer.add(0x03);
+        ubuffer.add('d'.codeUnitAt(0));
+        ubuffer.add('e'.codeUnitAt(0));
+        ubuffer.add('f'.codeUnitAt(0));
+        ubuffer.add(0x87); // Payload
+        final ustream = MqttByteBuffer(ubuffer);
+        final ubaseMessage = MqttMessage.createFrom(ustream)!;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final uret = subs.confirmUnsubscribe(ubm);
+        expect(uret, isFalse);
+        expect(cbCalled, isFalse);
+        expect(subs.pendingUnsubscriptions.length, 0);
+        expect(subs.subscriptions.length, 1);
+        expect(
+          subs.getSubscriptionTopicStatus(topic),
+          MqttSubscriptionStatus.active,
+        );
+      });
+      test('Acknowledged but one failed subscription in list request removes pending subscription', () {
+        var cbCalled = 0;
+        void unsubCallback(MqttSubscription subscription) {
+          cbCalled++;
+          if (subscription.topic.rawTopic == 'testtopic2') {
+            fail(
+              'Acknowledged but one failed subscription in list request removes pending subscription - subscruption topic ${subscription.topic.rawTopic} should not be removed.',
+            );
           }
+        }
 
-          final clientEventBus = events.EventBus();
-          final testCHS = TestConnectionHandlerSend(
-            clientEventBus,
-            socketOptions: socketOptions,
-            socketTimeout: null,
-          );
-          const topic1 = 'testtopic1';
-          const topic2 = 'testtopic2';
-          const topic3 = 'testtopic3';
-          final subscription1 = MqttSubscription(MqttSubscriptionTopic(topic1));
-          final subscription2 = MqttSubscription(MqttSubscriptionTopic(topic2));
-          final subscription3 = MqttSubscription(MqttSubscriptionTopic(topic3));
-          final subs = MqttSubscriptionManager(testCHS, clientEventBus);
-          subs.onUnsubscribed = unsubCallback;
-          subs.messageIdentifierDispenser.reset();
-          subs.subscribeSubscriptionList([
-            subscription1,
-            subscription2,
-            subscription3,
-          ]);
-          // Confirm the subscription
-          final buffer = typed.Uint8Buffer();
-          buffer.add(0x90);
-          buffer.add(0x1a);
-          buffer.add(0x00); // Message identifier
-          buffer.add(0x01);
-          buffer.add(0x14); // Property length
-          buffer.add(0x1f); // Reason String
-          buffer.add(0x00);
-          buffer.add(0x06);
-          buffer.add('r'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('s'.codeUnitAt(0));
-          buffer.add('o'.codeUnitAt(0));
-          buffer.add('n'.codeUnitAt(0));
-          buffer.add(0x26); // User property
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('a'.codeUnitAt(0));
-          buffer.add('b'.codeUnitAt(0));
-          buffer.add('c'.codeUnitAt(0));
-          buffer.add(0x00);
-          buffer.add(0x03);
-          buffer.add('d'.codeUnitAt(0));
-          buffer.add('e'.codeUnitAt(0));
-          buffer.add('f'.codeUnitAt(0));
-          buffer.add(0x00); // Payload
-          buffer.add(0x00); // Payload
-          buffer.add(0x00); // Payload
-          final stream = MqttByteBuffer(buffer);
-          final baseMessage = MqttMessage.createFrom(stream)!;
-          final subAckMsg = baseMessage as MqttSubscribeAckMessage;
-          subs.confirmSubscription(subAckMsg);
-          // Unsubscribe
-          final user1 = MqttUserProperty();
-          user1.pairName = 'User 1 Name';
-          user1.pairValue = 'User 1 Value';
-          subscription1.userProperties = [user1];
-          // Unsubscribe
-          subs.unsubscribeSubscriptionList([
-            subscription1,
-            subscription2,
-            subscription3,
-          ]);
-          // Confirm the unsubscribe
-          final ubuffer = typed.Uint8Buffer();
-          ubuffer.add(0xb0);
-          ubuffer.add(0x1a);
-          ubuffer.add(0x00); // Message identifier
-          ubuffer.add(0x02);
-          ubuffer.add(0x14); // Property length
-          ubuffer.add(0x1f); // Reason String
-          ubuffer.add(0x00);
-          ubuffer.add(0x06);
-          ubuffer.add('r'.codeUnitAt(0));
-          ubuffer.add('e'.codeUnitAt(0));
-          ubuffer.add('a'.codeUnitAt(0));
-          ubuffer.add('s'.codeUnitAt(0));
-          ubuffer.add('o'.codeUnitAt(0));
-          ubuffer.add('n'.codeUnitAt(0));
-          ubuffer.add(0x26); // User property
-          ubuffer.add(0x00);
-          ubuffer.add(0x03);
-          ubuffer.add('a'.codeUnitAt(0));
-          ubuffer.add('b'.codeUnitAt(0));
-          ubuffer.add('c'.codeUnitAt(0));
-          ubuffer.add(0x00);
-          ubuffer.add(0x03);
-          ubuffer.add('d'.codeUnitAt(0));
-          ubuffer.add('e'.codeUnitAt(0));
-          ubuffer.add('f'.codeUnitAt(0));
-          ubuffer.add(0x00); // Payload
-          ubuffer.add(0x87); // Payload
-          ubuffer.add(0x00); // Payload
-          final ustream = MqttByteBuffer(ubuffer);
-          final ubaseMessage = MqttMessage.createFrom(ustream)!;
-          final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
-          final uret = subs.confirmUnsubscribe(ubm);
-          expect(uret, isFalse);
-          expect(cbCalled, 2);
-          expect(subs.pendingUnsubscriptions.length, 0);
-          expect(subs.subscriptions.length, 1);
-          expect(
-            subs.getSubscriptionTopicStatus(topic1),
-            MqttSubscriptionStatus.doesNotExist,
-          );
-          expect(
-            subs.getSubscriptionTopicStatus(topic3),
-            MqttSubscriptionStatus.doesNotExist,
-          );
-          expect(
-            subs.getSubscriptionTopicStatus(topic2),
-            MqttSubscriptionStatus.active,
-          );
-        },
-      );
+        final clientEventBus = events.EventBus();
+        final testCHS = TestConnectionHandlerSend(
+          clientEventBus,
+          socketOptions: socketOptions,
+          socketTimeout: null,
+        );
+        const topic1 = 'testtopic1';
+        const topic2 = 'testtopic2';
+        const topic3 = 'testtopic3';
+        final subscription1 = MqttSubscription(MqttSubscriptionTopic(topic1));
+        final subscription2 = MqttSubscription(MqttSubscriptionTopic(topic2));
+        final subscription3 = MqttSubscription(MqttSubscriptionTopic(topic3));
+        final subs = MqttSubscriptionManager(testCHS, clientEventBus);
+        subs.onUnsubscribed = unsubCallback;
+        subs.messageIdentifierDispenser.reset();
+        subs.subscribeSubscriptionList([
+          subscription1,
+          subscription2,
+          subscription3,
+        ]);
+        // Confirm the subscription
+        final buffer = typed.Uint8Buffer();
+        buffer.add(0x90);
+        buffer.add(0x1a);
+        buffer.add(0x00); // Message identifier
+        buffer.add(0x01);
+        buffer.add(0x14); // Property length
+        buffer.add(0x1f); // Reason String
+        buffer.add(0x00);
+        buffer.add(0x06);
+        buffer.add('r'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('s'.codeUnitAt(0));
+        buffer.add('o'.codeUnitAt(0));
+        buffer.add('n'.codeUnitAt(0));
+        buffer.add(0x26); // User property
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('a'.codeUnitAt(0));
+        buffer.add('b'.codeUnitAt(0));
+        buffer.add('c'.codeUnitAt(0));
+        buffer.add(0x00);
+        buffer.add(0x03);
+        buffer.add('d'.codeUnitAt(0));
+        buffer.add('e'.codeUnitAt(0));
+        buffer.add('f'.codeUnitAt(0));
+        buffer.add(0x00); // Payload
+        buffer.add(0x00); // Payload
+        buffer.add(0x00); // Payload
+        final stream = MqttByteBuffer(buffer);
+        final baseMessage = MqttMessage.createFrom(stream)!;
+        final subAckMsg = baseMessage as MqttSubscribeAckMessage;
+        subs.confirmSubscription(subAckMsg);
+        // Unsubscribe
+        final user1 = MqttUserProperty();
+        user1.pairName = 'User 1 Name';
+        user1.pairValue = 'User 1 Value';
+        subscription1.userProperties = [user1];
+        // Unsubscribe
+        subs.unsubscribeSubscriptionList([
+          subscription1,
+          subscription2,
+          subscription3,
+        ]);
+        // Confirm the unsubscribe
+        final ubuffer = typed.Uint8Buffer();
+        ubuffer.add(0xb0);
+        ubuffer.add(0x1a);
+        ubuffer.add(0x00); // Message identifier
+        ubuffer.add(0x02);
+        ubuffer.add(0x14); // Property length
+        ubuffer.add(0x1f); // Reason String
+        ubuffer.add(0x00);
+        ubuffer.add(0x06);
+        ubuffer.add('r'.codeUnitAt(0));
+        ubuffer.add('e'.codeUnitAt(0));
+        ubuffer.add('a'.codeUnitAt(0));
+        ubuffer.add('s'.codeUnitAt(0));
+        ubuffer.add('o'.codeUnitAt(0));
+        ubuffer.add('n'.codeUnitAt(0));
+        ubuffer.add(0x26); // User property
+        ubuffer.add(0x00);
+        ubuffer.add(0x03);
+        ubuffer.add('a'.codeUnitAt(0));
+        ubuffer.add('b'.codeUnitAt(0));
+        ubuffer.add('c'.codeUnitAt(0));
+        ubuffer.add(0x00);
+        ubuffer.add(0x03);
+        ubuffer.add('d'.codeUnitAt(0));
+        ubuffer.add('e'.codeUnitAt(0));
+        ubuffer.add('f'.codeUnitAt(0));
+        ubuffer.add(0x00); // Payload
+        ubuffer.add(0x87); // Payload
+        ubuffer.add(0x00); // Payload
+        final ustream = MqttByteBuffer(ubuffer);
+        final ubaseMessage = MqttMessage.createFrom(ustream)!;
+        final ubm = ubaseMessage as MqttUnsubscribeAckMessage;
+        final uret = subs.confirmUnsubscribe(ubm);
+        expect(uret, isFalse);
+        expect(cbCalled, 2);
+        expect(subs.pendingUnsubscriptions.length, 0);
+        expect(subs.subscriptions.length, 1);
+        expect(
+          subs.getSubscriptionTopicStatus(topic1),
+          MqttSubscriptionStatus.doesNotExist,
+        );
+        expect(
+          subs.getSubscriptionTopicStatus(topic3),
+          MqttSubscriptionStatus.doesNotExist,
+        );
+        expect(
+          subs.getSubscriptionTopicStatus(topic2),
+          MqttSubscriptionStatus.active,
+        );
+      });
     });
   });
 

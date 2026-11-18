@@ -297,14 +297,11 @@ void main() {
       }
       expect(raised, isTrue);
     });
-    test(
-      'MultiWildcard at end of topic is valid when preceeded by topic separator',
-      () {
-        const topic = 'a/topic/#';
-        final subTopic = MqttSubscriptionTopic(topic);
-        expect(subTopic.rawTopic, topic);
-      },
-    );
+    test('MultiWildcard at end of topic is valid when preceeded by topic separator', () {
+      const topic = 'a/topic/#';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(subTopic.rawTopic, topic);
+    });
     test('No Wildcards of any type is valid', () {
       const topic = 'a/topic/with/no/wildcard/is/good';
       final subTopic = MqttSubscriptionTopic(topic);
@@ -360,32 +357,26 @@ void main() {
         isTrue,
       );
     });
-    test(
-      'More than one single Wildcard at different levels matches topic with any value at those levels',
-      () {
-        const topic = 'finance/+/closingprice/month/+';
-        final subTopic = MqttSubscriptionTopic(topic);
-        expect(
-          subTopic.matches(
-            MqttPublicationTopic('finance/ibm/closingprice/month/october'),
-          ),
-          isTrue,
-        );
-      },
-    );
-    test(
-      'Single and MultiWildcard matches topic with any value at those levels and deeper',
-      () {
-        const topic = 'finance/+/closingprice/month/#';
-        final subTopic = MqttSubscriptionTopic(topic);
-        expect(
-          subTopic.matches(
-            MqttPublicationTopic('finance/ibm/closingprice/month/october/2014'),
-          ),
-          isTrue,
-        );
-      },
-    );
+    test('More than one single Wildcard at different levels matches topic with any value at those levels', () {
+      const topic = 'finance/+/closingprice/month/+';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(
+        subTopic.matches(
+          MqttPublicationTopic('finance/ibm/closingprice/month/october'),
+        ),
+        isTrue,
+      );
+    });
+    test('Single and MultiWildcard matches topic with any value at those levels and deeper', () {
+      const topic = 'finance/+/closingprice/month/#';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(
+        subTopic.matches(
+          MqttPublicationTopic('finance/ibm/closingprice/month/october/2014'),
+        ),
+        isTrue,
+      );
+    });
     test('Single Wildcard matches topic empty fragment at that point', () {
       const topic = 'finance/+/closingprice';
       final subTopic = MqttSubscriptionTopic(topic);
@@ -394,14 +385,11 @@ void main() {
         isTrue,
       );
     });
-    test(
-      'Single Wildcard at end matches topic with empty last fragment at that spot',
-      () {
-        const topic = 'finance/ibm/+';
-        final subTopic = MqttSubscriptionTopic(topic);
-        expect(subTopic.matches(MqttPublicationTopic('finance/ibm/')), isTrue);
-      },
-    );
+    test('Single Wildcard at end matches topic with empty last fragment at that spot', () {
+      const topic = 'finance/ibm/+';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(subTopic.matches(MqttPublicationTopic('finance/ibm/')), isTrue);
+    });
     test('Single level non equal topics do not match', () {
       const topic = 'finance';
       final subTopic = MqttSubscriptionTopic(topic);
@@ -415,14 +403,11 @@ void main() {
         isFalse,
       );
     });
-    test(
-      'Single Wildcard at end does not match topic that does not contain anything at same level',
-      () {
-        const topic = 'finance/+';
-        final subTopic = MqttSubscriptionTopic(topic);
-        expect(subTopic.matches(MqttPublicationTopic('finance')), isFalse);
-      },
-    );
+    test('Single Wildcard at end does not match topic that does not contain anything at same level', () {
+      const topic = 'finance/+';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(subTopic.matches(MqttPublicationTopic('finance')), isFalse);
+    });
     test('Multi level non equal topics do not match - same lengths', () {
       const topic = 'finance/ibm/closingprice';
       final subTopic = MqttSubscriptionTopic(topic);
@@ -449,14 +434,11 @@ void main() {
         );
       },
     );
-    test(
-      'MultiWildcard does not match topic with difference before Wildcard level',
-      () {
-        const topic = 'finance/#';
-        final subTopic = MqttSubscriptionTopic(topic);
-        expect(subTopic.matches(MqttPublicationTopic('money/ibm')), isFalse);
-      },
-    );
+    test('MultiWildcard does not match topic with difference before Wildcard level', () {
+      const topic = 'finance/#';
+      final subTopic = MqttSubscriptionTopic(topic);
+      expect(subTopic.matches(MqttPublicationTopic('money/ibm')), isFalse);
+    });
     test('Topics differing only by case do not match', () {
       const topic = 'finance';
       final subTopic = MqttSubscriptionTopic(topic);
