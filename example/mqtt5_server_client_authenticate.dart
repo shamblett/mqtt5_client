@@ -41,7 +41,7 @@ Future<int> main() async {
   /// Authentication message exchange can occur between the sending of the connect message and reception of the
   /// corresponding connect acknowledge message, to cater for this we must listen for incoming authentication messages,
   /// pre connecting.
-  client.authentication!.listen((final authMessage) {
+  client.authentication!.listen((authMessage) {
     print('EXAMPLE:: Authentication Message received - $authMessage');
 
     /// Authentication message received, do what you need to do here, we simply tell the broker the sequence has ended.

@@ -16,7 +16,7 @@ import 'package:mockito/mockito.dart';
 
 // Mock classes
 class MockCH extends Mock implements MqttServerConnectionHandler {
-  MockCH(var clientEventBus, {required int? maxConnectionAttempts});
+  MockCH(clientEventBus, {required int? maxConnectionAttempts});
   @override
   MqttConnectionStatus connectionStatus = MqttConnectionStatus();
 }
