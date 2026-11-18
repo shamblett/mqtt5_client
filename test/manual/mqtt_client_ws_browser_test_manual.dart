@@ -51,6 +51,7 @@ Future<void> hybridMain(StreamChannel channel) async {
   channel.sink.add(server.port);
 }
 ''';
+
   group('Broker tests', () {
     test('Connect mosquitto test broker', () async {
       var pongCount = 0;
@@ -106,7 +107,7 @@ Future<void> hybridMain(StreamChannel channel) async {
   });
 
   group('Connection close tests', () {
-    test('auto-reconnects after the broker closes the websocket', () async {
+    test('Auto-reconnects after the broker closes the websocket', () async {
       final broker = spawnHybridCode(brokerCode);
       final events = StreamIterator(broker.stream);
       expect(await events.moveNext(), isTrue);

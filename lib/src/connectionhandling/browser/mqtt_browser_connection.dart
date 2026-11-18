@@ -125,7 +125,7 @@ abstract class MqttBrowserConnection extends MqttConnectionBase<WebSocket> {
   /// OnError listener callback
   @override
   void onError(dynamic error) {
-    disconnect();
+    disconnect(auto: true);
     if (onDisconnected != null) {
       MqttLogger.log(
         'MqttConnectionBase::_onError - calling disconnected callback',
@@ -137,7 +137,7 @@ abstract class MqttBrowserConnection extends MqttConnectionBase<WebSocket> {
   /// OnDone listener callback
   @override
   void onDone() {
-    disconnect();
+    disconnect(auto: true);
     if (onDisconnected != null) {
       MqttLogger.log(
         'MqttConnectionBase::_onDone - calling disconnected callback',
