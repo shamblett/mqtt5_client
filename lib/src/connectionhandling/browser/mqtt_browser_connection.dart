@@ -150,7 +150,7 @@ abstract class MqttBrowserConnection extends MqttConnectionBase<WebSocket> {
   void _startListening() {
     MqttLogger.log('MqttBrowserConnection::_startListening');
     try {
-      onListen();
+      listeners.addAll(onListen());
     } on Exception catch (e) {
       MqttLogger.log(
         'MqttBrowserConnection::_startListening - exception raised $e',
