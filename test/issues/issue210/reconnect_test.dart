@@ -103,56 +103,59 @@ const _recorder = r'''
 external JSArray<JSString>? get _wsEvents;
 
 void main() {
-  test('auto-reconnects after the broker is killed and restarted',
-          () async {
-        web.document.head!.append(web.HTMLScriptElement()..text = _recorder);
+  test('auto-reconnects after the broker is killed and restarted', () async {
+    web.document.head!.append(web.HTMLScriptElement()..text = _recorder);
 
-        final broker = spawnHybridCode(_brokerCode);
-        final brokerEvents = StreamIterator(broker.stream);
-        expect(await brokerEvents.moveNext(), isTrue);
-        final port = brokerEvents.current as int;
-        final brokerLog = <String>[];
-        unawaited(() async {
-          while (await brokerEvents.moveNext()) {
-            brokerLog.add('${brokerEvents.current}');
-          }
-        }());
+    final broker = spawnHybridCode(_brokerCode);
+    final brokerEvents = StreamIterator(broker.stream);
+    expect(await brokerEvents.moveNext(), isTrue);
+    final port = brokerEvents.current as int;
+    final brokerLog = <String>[];
+    unawaited(() async {
+      while (await brokerEvents.moveNext()) {
+        brokerLog.add('${brokerEvents.current}');
+      }
+    }());
 
-        addTearDown(() {
-          print('--- ${web.window.navigator.userAgent}');
-          for (final e in _wsEvents?.toDart ?? <JSString>[]) {
-            print(e.toDart);
-          }
-          brokerLog.forEach(print);
-        });
+    addTearDown(() {
+      print('--- ${web.window.navigator.userAgent}');
+      for (final e in _wsEvents?.toDart ?? <JSString>[]) {
+        print(e.toDart);
+      }
+      brokerLog.forEach(print);
+    });
 
-        final client = MqttBrowserClient('ws://127.0.0.1', 'repro-client')
-          ..port = port
-          ..keepAlivePeriod = 60
-          ..autoReconnect = true
-          ..logging(on: false);
-        final reconnected = Completer<void>();
-        client.onAutoReconnected = () {
-          if (!reconnected.isCompleted) reconnected.complete();
-        };
+    final client = MqttBrowserClient('ws://127.0.0.1', 'repro-client')
+      ..port = port
+      ..keepAlivePeriod = 60
+      ..autoReconnect = true
+      ..logging(on: false);
+    final reconnected = Completer<void>();
+    client.onAutoReconnected = () {
+      if (!reconnected.isCompleted) reconnected.complete();
+    };
 
-        final status = await client.connect();
-        expect(status?.state, MqttConnectionState.connected);
+    final status = await client.connect();
+    expect(status?.state, MqttConnectionState.connected);
 
-        // Kill the broker; the client must notice and reconnect once it is back.
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-        broker.sink.add('drop');
-        var timedOut = false;
-        await reconnected.future.timeout(
-          const Duration(seconds: 20),
-          onTimeout: () => timedOut = true,
-        );
-        expect(timedOut, isFalse,
-            reason: 'onAutoReconnected never fired '
-                '(state: ${client.connectionStatus?.state})');
-        expect(client.connectionStatus?.state, MqttConnectionState.connected);
+    // Kill the broker; the client must notice and reconnect once it is back.
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    broker.sink.add('drop');
+    var timedOut = false;
+    await reconnected.future.timeout(
+      const Duration(seconds: 20),
+      onTimeout: () => timedOut = true,
+    );
+    expect(
+      timedOut,
+      isFalse,
+      reason:
+          'onAutoReconnected never fired '
+          '(state: ${client.connectionStatus?.state})',
+    );
+    expect(client.connectionStatus?.state, MqttConnectionState.connected);
 
-        client.autoReconnect = false;
-        client.disconnect();
-      });
+    client.autoReconnect = false;
+    client.disconnect();
+  });
 }
